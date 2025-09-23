@@ -2,46 +2,49 @@ import { supabase } from './supabase';
 
 export interface SignupData {
   brandName: string;
-  brandType: string;
   subdomain: string;
   fullName: string;
   email: string;
   password: string;
 }
 
+let signupCallCount = 0; // Track calls
+
 export async function completeSignup(data: SignupData): Promise<boolean> {
+  signupCallCount++;
+  console.log(`🔍 Signup call #${signupCallCount}`, data);
+  
   try {
-    // 1. Create the tenant
+    // Check if tenant already exists first
+    console.log('🔍 Checking if tenant exists...');
+    const { data: existingTenant } = await supabase
+      .from('tenants')
+      .select('id')
+      .eq('slug', data.subdomain)
+      .single();
+
+    if (existingTenant) {
+      console.log('❌ Tenant already exists, aborting');
+      throw new Error('Tenant with this subdomain already exists');
+    }
+
+    console.log('🔍 Creating tenant...');
     const { data: tenant, error: tenantError } = await supabase
       .from('tenants')
       .insert({
         name: data.brandName,
         slug: data.subdomain,
-        type: data.brandType,
-        industry: data.brandType,
         status: 'active'
       })
       .select()
       .single();
 
-    if (tenantError) throw tenantError;
+    if (tenantError) {
+      console.error('❌ Tenant creation error:', tenantError);
+      throw tenantError;
+    }
 
-    // 2. Create auth user with tenant context
-    const { data: authData, error: signUpError } = await supabase.auth.signUp({
-      email: data.email,
-      password: data.password,
-      options: {
-        data: {
-          first_name: data.fullName.split(' ')[0],
-          last_name: data.fullName.split(' ').slice(1).join(' '),
-          role: 'tenant_admin',
-          tenant_id: tenant.id
-        }
-      }
-    });
-
-    if (signUpError) throw signUpError;
-    if (!authData.user) throw new Error('User creation failed');
+    console.log('✅ Tenant created:', tenant.id);
 
     return true;
   } catch (error) {

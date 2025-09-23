@@ -9,7 +9,6 @@ import SuccessStep from './steps/SuccessStep';
 
 export interface SignupData {
   brandName: string;
-  brandType: 'beauty' | 'fashion' | 'wellness' | 'other';
   subdomain: string;
   fullName: string;
   email: string;
@@ -20,7 +19,6 @@ export default function SignupPage() {
   const [step, setStep] = useState(1);
   const [signupData, setSignupData] = useState<SignupData>({
     brandName: '',
-    brandType: 'beauty',
     subdomain: '',
     fullName: '',
     email: '',

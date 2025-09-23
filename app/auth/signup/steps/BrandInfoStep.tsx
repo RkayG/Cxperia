@@ -79,22 +79,6 @@ export default function BrandInfoStep({ data, updateData, nextStep, prevStep }: 
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Brand Type
-          </label>
-          <select
-            value={data.brandType}
-            onChange={(e) => updateData({ brandType: e.target.value as any })}
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-          >
-            <option value="beauty">Beauty & Skincare</option>
-            <option value="fashion">Fashion & Apparel</option>
-            <option value="wellness">Wellness & Health</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
             Your Subdomain *
           </label>
           <div className="flex items-center">

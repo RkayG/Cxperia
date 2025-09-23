@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef} from 'react';
 import { SignupData } from '../page';
 import { completeSignup } from '@/lib/auth-signup';
 
@@ -10,24 +10,32 @@ interface ProcessingStepProps {
 }
 
 export default function ProcessingStep({ data, nextStep }: ProcessingStepProps) {
+   const hasStarted = useRef(false); // Prevent multiple executions
+
   useEffect(() => {
+    // Only run once
+    if (hasStarted.current) return;
+    hasStarted.current = true;
+
+    console.log('🚀 Starting signup process...');
+
     const processSignup = async () => {
       try {
-        // This function handles tenant creation + user signup
         const success = await completeSignup(data);
         
         if (success) {
-          // Small delay for better UX
+          console.log('✅ Signup successful, proceeding to next step');
           setTimeout(nextStep, 1500);
         }
       } catch (error) {
-        console.error('Signup failed:', error);
-        // Handle error (you'd add error handling UI)
+        console.error('❌ Signup failed:', error);
+        // Handle error state (show error message to user)
       }
     };
 
     processSignup();
-  }, [data, nextStep]);
+  }, [data, nextStep]); 
+
 
   return (
     <div className="text-center animate-fade-in">
