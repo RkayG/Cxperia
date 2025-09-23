@@ -1,3 +1,4 @@
+// app/auth/signup/steps/SuccessStep.tsx
 'use client';
 
 import { useEffect } from 'react';
@@ -9,10 +10,12 @@ interface SuccessStepProps {
 
 export default function SuccessStep({ data }: SuccessStepProps) {
   useEffect(() => {
-    // Redirect to their subdomain after a delay
+    // Redirect to their subdomain dashboard
     const timer = setTimeout(() => {
-      window.location.href = `https://${data.subdomain}.beautyplatform.com/dashboard`;
-    }, 3000);
+      // Use window.location for full page reload to ensure auth state is fresh
+      window.location.href = `http://${data.subdomain}.localhost:3000/dashboard`; // Development
+      // window.location.href = `https://${data.subdomain}.yourdomain.com/dashboard`; // Production
+    }, 2000);
 
     return () => clearTimeout(timer);
   }, [data.subdomain]);
@@ -28,23 +31,25 @@ export default function SuccessStep({ data }: SuccessStepProps) {
       </h2>
       
       <p className="text-gray-600 mb-6">
-        Your brand space is ready. You'll be redirected to your dashboard shortly.
+        Your brand space is ready. Redirecting to your dashboard...
       </p>
 
       <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 mb-6">
         <p className="text-sm text-gray-700">
           Your brand URL: 
-          <a 
-            href={`https://${data.subdomain}.beautyplatform.com`}
-            className="font-mono text-green-600 hover:text-green-700 ml-2"
-          >
-            {data.subdomain}.beautyplatform.com
-          </a>
+          <span className="font-mono text-green-600 ml-2">
+            {data.subdomain}.yourdomain.com
+          </span>
         </p>
       </div>
 
       <div className="animate-pulse text-sm text-gray-500">
-        Redirecting to your dashboard...
+        <a 
+          href={`http://${data.subdomain}.localhost:3000/dashboard`}
+          className="text-blue-600 hover:text-blue-700"
+        >
+          Click here if you're not redirected automatically
+        </a>
       </div>
     </div>
   );
