@@ -9,8 +9,9 @@ import SuccessStep from './steps/SuccessStep';
 
 export interface SignupData {
   brandName: string;
-  subdomain: string;
-  fullName: string;
+  brandSlug: string; // For public URLs: myplatform.com/nivea/exp/abc123
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
 }
@@ -19,8 +20,9 @@ export default function SignupPage() {
   const [step, setStep] = useState(1);
   const [signupData, setSignupData] = useState<SignupData>({
     brandName: '',
-    subdomain: '',
-    fullName: '',
+    brandSlug: '',
+    firstName: '',
+    lastName: '',
     email: '',
     password: ''
   });

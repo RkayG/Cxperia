@@ -1,65 +1,52 @@
-import { supabase } from './supabase';
-
-export interface SignupData {
-  brandName: string;
-  subdomain: string;
-  fullName: string;
-  email: string;
-  password: string;
-}
-
-let signupCallCount = 0; // Track calls
+// lib/auth-signup.ts
+import { supabase } from '@/lib/supabase';
+import { type SignupData } from '@/app/auth/signup/page';
 
 export async function completeSignup(data: SignupData): Promise<boolean> {
-  signupCallCount++;
-  console.log(`🔍 Signup call #${signupCallCount}`, data);
-  
   try {
-    // Check if tenant already exists first
-    console.log('🔍 Checking if tenant exists...');
-    const { data: existingTenant } = await supabase
-      .from('tenants')
-      .select('id')
-      .eq('slug', data.subdomain)
-      .single();
-
-    if (existingTenant) {
-      console.log('❌ Tenant already exists, aborting');
-      throw new Error('Tenant with this subdomain already exists');
-    }
-
-    console.log('🔍 Creating tenant...');
-    const { data: tenant, error: tenantError } = await supabase
-      .from('tenants')
+    // 1. First create the brand
+    const { data: brand, error: brandError } = await supabase
+      .from('brands')
       .insert({
         name: data.brandName,
-        slug: data.subdomain,
-        status: 'active'
+        brand_slug: data.brandSlug,
       })
       .select()
       .single();
 
-    if (tenantError) {
-      console.error('❌ Tenant creation error:', tenantError);
-      throw tenantError;
-    }
+    if (brandError) throw brandError;
 
-    console.log('✅ Tenant created:', tenant.id);
+    // 2. Create the user with Supabase Auth
+    const { data: authData, error: signUpError } = await supabase.auth.signUp({
+      email: data.email,
+      password: data.password,
+      options: {
+        data: {
+          first_name: data.firstName,
+          last_name: data.lastName,
+          role: 'brand_admin',
+          brand_id: brand.id // Pass brand context
+        }
+      }
+    });
+
+    if (signUpError) throw signUpError;
+    if (!authData.user) throw new Error('User creation failed');
+
+    // 3. Update the profile with brand_id (trigger should handle this, but we ensure it)
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .update({ brand_id: brand.id })
+      .eq('id', authData.user.id);
+
+    if (profileError) {
+      console.warn('Profile update warning:', profileError);
+      // Non-critical error, continue
+    }
 
     return true;
   } catch (error) {
     console.error('Signup error:', error);
     throw error;
   }
-}
-
-// Check subdomain availability
-export async function checkSubdomainAvailability(subdomain: string): Promise<boolean> {
-  const { data, error } = await supabase
-    .from('tenants')
-    .select('slug')
-    .eq('slug', subdomain)
-    .single();
-
-  return !data; // Available if no tenant found
 }
