@@ -1,11 +1,6 @@
 'use client';
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import CardSwap, { Card } from './CardSwap';
-import Image from 'next/image';
-import img1 from '../assets/images/hero-image.png';
-import img2 from '../assets/images/package-with-qr.png';
-import img3 from '../assets/logo.png';
 import InfiniteScroll from './InfiniteScroll'
 
 const PostPurchaseSection = () => {

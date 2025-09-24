@@ -1,6 +1,6 @@
-import React from "react";
 import { Check } from "lucide-react";
-import { Button, buttonVariants } from "@/components/ui/button";
+import React from "react";
+import {  buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardContent,

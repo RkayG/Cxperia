@@ -1,4 +1,4 @@
-'use client';
+/* 'use client';
 
 import { UserButton, useUser } from "@stackframe/stack";
 import { useTheme } from "next-themes";
@@ -17,7 +17,7 @@ export default function HandlerHeader() {
           <UserButton colorModeToggle={() => setTheme(theme === 'dark' ? 'light' : 'dark')} />
         </div>
       </header>
-      <div className="min-h-14"/> {/* Placeholder for fixed header */}
+      <div className="min-h-14"/> {/* Placeholder for fixed header 
     </>
   );
-}
+} */

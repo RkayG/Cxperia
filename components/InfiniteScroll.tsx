@@ -1,7 +1,7 @@
 // InfiniteScroll.tsx
-import { useRef, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { Observer } from 'gsap/Observer';
+import { useEffect, useRef } from 'react';
 
 import './InfiniteScroll.css';
 

@@ -1,9 +1,9 @@
 'use client';
 import React from 'react';
 import Image from 'next/image';
+import { Button } from '@/components/ui/button';
 import hero from '../assets/images/hero-image.png';
 import GradientText from '../components/GradientText';
-import { Button } from '@/components/ui/button';
 import NavMenu from './nav-menu';
 
 const HeroSection = () => {

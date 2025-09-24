@@ -1,5 +1,5 @@
-import React from 'react';
 import Image from 'next/image';
+import React from 'react';
 import { Button } from '@/components/ui/button'; // Assuming shadcn/ui button
 import productBox from '../assets/images/package-with-qr.png'; 
 // Placeholder image

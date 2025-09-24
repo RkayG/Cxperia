@@ -3,9 +3,9 @@
 import { cn } from "@/lib/utils";
 //import { UserButton } from "@stackframe/stack";
 import { LucideIcon, Menu } from "lucide-react";
-import { useTheme } from "next-themes";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+//import { useTheme } from "next-themes";
 import { useState } from "react";
 import {
   Breadcrumb,
@@ -74,8 +74,8 @@ function SidebarContent(props: {
   sidebarTop?: React.ReactNode;
   basePath: string;
 }) {
-  const path = usePathname();
-  const segment = useSegment(props.basePath);
+  //const path = usePathname();
+  //const segment = useSegment(props.basePath);
 
   return (
     <div className="flex flex-col h-full items-stretch">
@@ -149,7 +149,7 @@ export default function SidebarLayout(props: {
   basePath: string;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { resolvedTheme, setTheme } = useTheme();
+ // const { resolvedTheme, setTheme } = useTheme();
 
   return (
     <div className="w-full flex">

@@ -1,4 +1,4 @@
-import { Footer } from "@/components/footer";
+/* import { Footer } from "@/components/footer";
 import { LandingPageHeader } from "@/components/landing-page-header";
 
 export default function Layout(props: { children: React.ReactNode }) {
@@ -23,3 +23,4 @@ export default function Layout(props: { children: React.ReactNode }) {
     </div>
   );
 }
+ */

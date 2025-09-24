@@ -1,5 +1,5 @@
-import CardNav from './CardNav';
 import logo from '@/assets/logo.png';
+import CardNav from './CardNav';
 
 const navMenuItems = [
 	{

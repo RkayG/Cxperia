@@ -1,4 +1,3 @@
-import { ForwardedRef } from 'react';
 
 export type RotatingTextProps = {
   texts: string[];

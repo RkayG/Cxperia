@@ -1,4 +1,4 @@
-import { FeatureGrid } from "@/components/features";
+/* import { FeatureGrid } from "@/components/features";
 import { Hero } from "@/components/hero";
 import { PricingGrid } from "@/components/pricing";
 import { stackServerApp } from "@/stack";
@@ -187,3 +187,4 @@ export default async function IndexPage() {
     </>
   );
 }
+ */

@@ -1,7 +1,6 @@
 // app/s/[subdomain]/dashboard/layout.tsx
-
-import SidebarLayout, { SidebarItem } from "@/components/sidebar-layout";
 import { BadgePercent, BarChart4, Columns3, Globe, Locate, Settings2, ShoppingBag, ShoppingCart, Users } from "lucide-react";
+import SidebarLayout, { SidebarItem } from "@/components/sidebar-layout";
 import { getTenantFromSubdomain } from '@/lib/tenant-utils';
 
 

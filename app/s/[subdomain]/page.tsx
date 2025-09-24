@@ -1,4 +1,4 @@
-import Link from 'next/link';
+/* import Link from 'next/link';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getSubdomainData } from '@/lib/subdomains';
@@ -61,3 +61,4 @@ export default async function SubdomainPage({
     </div>
   );
 }
+ */

@@ -1,7 +1,6 @@
 "use client";
-
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useState } from 'react';
 import { RotatingTextProps } from './RotatingText.types';
 
 import './RotatingText.css';

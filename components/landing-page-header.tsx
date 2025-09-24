@@ -1,4 +1,4 @@
-"use client";
+/* "use client";
 
 import { cn } from "@/lib/utils";
 import { useStackApp, useUser } from "@stackframe/stack";
@@ -159,3 +159,4 @@ export function LandingPageHeader(props: NavProps) {
     </header>
   );
 }
+ */

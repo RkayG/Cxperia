@@ -1,5 +1,6 @@
-import RotatingText from '@/components/RotatingText';
 import CircularGallery from '@/components/CircularGallery';
+import RotatingText from '@/components/RotatingText';
+
 
 export default function DesignedForSection() {
   return (

@@ -1,4 +1,4 @@
-'use client';
+/* 'use client';
 
 import SidebarLayout, { SidebarItem } from "@/components/sidebar-layout";
 //import { SelectedTeamSwitcher, useUser } from "@stackframe/stack";
@@ -83,7 +83,7 @@ export default function Layout(props: { children: React.ReactNode }) {
   if (!team) {
     router.push('/dashboard');
     return null;
-  } */
+  } 
 
   return (
     <div className="min-h-screen bg-gray-50"></div>
@@ -100,6 +100,7 @@ export default function Layout(props: { children: React.ReactNode }) {
       }]}
     >
       {props.children}
-    </SidebarLayout> */
+    </SidebarLayout> 
   );
-}
+} 
+*/
