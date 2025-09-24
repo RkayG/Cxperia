@@ -5,22 +5,6 @@ import './InfiniteScroll.css';
 
 gsap.registerPlugin(Observer);
 
-type InfiniteScrollItem = { content: string | React.ReactNode };
-
-interface InfiniteScrollProps {
-  items: InfiniteScrollItem[];
-  width?: string;
-  maxHeight?: string;
-  negativeMargin?: string;
-  itemMinHeight?: number;
-  isTilted?: boolean;
-  tiltDirection?: 'left' | 'right';
-  autoplay?: boolean;
-  autoplaySpeed?: number;
-  autoplayDirection?: 'down' | 'up';
-  pauseOnHover?: boolean;
-}
-
 export default function InfiniteScroll({
   width = '30rem',
   maxHeight = '100%',
@@ -33,9 +17,9 @@ export default function InfiniteScroll({
   autoplaySpeed = 0.5,
   autoplayDirection = 'down',
   pauseOnHover = false
-}: InfiniteScrollProps) {
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+}) {
+  const wrapperRef = useRef(null);
+  const containerRef = useRef(null);
 
   const getTiltTransform = () => {
     if (!isTilted) return 'none';
@@ -52,7 +36,7 @@ export default function InfiniteScroll({
     const divItems = gsap.utils.toArray(container.children);
     if (!divItems.length) return;
 
-    const firstItem = divItems[0] as HTMLElement;
+    const firstItem = divItems[0];
     const itemStyle = getComputedStyle(firstItem);
     const itemHeight = firstItem.offsetHeight;
     const itemMarginTop = parseFloat(itemStyle.marginTop) || 0;
@@ -71,10 +55,10 @@ export default function InfiniteScroll({
       type: 'wheel,touch,pointer',
       preventDefault: true,
       onPress: ({ target }) => {
-        (target as HTMLElement).style.cursor = 'grabbing';
+        target.style.cursor = 'grabbing';
       },
       onRelease: ({ target }) => {
-        (target as HTMLElement).style.cursor = 'grab';
+        target.style.cursor = 'grab';
       },
       onChange: ({ deltaY, isDragging, event }) => {
         const d = event.type === 'wheel' ? -deltaY : deltaY;
@@ -92,7 +76,7 @@ export default function InfiniteScroll({
       }
     });
 
-    let rafId: number;
+    let rafId;
     if (autoplay) {
       const directionFactor = autoplayDirection === 'down' ? 1 : -1;
       const speedPerFrame = autoplaySpeed * directionFactor;
@@ -166,16 +150,7 @@ export default function InfiniteScroll({
           }}
         >
           {items.map((item, i) => (
-            <div
-              className={`infinite-scroll-item ${
-                i % 3 === 0
-                  ? 'bg-[#ff4f8b]'
-                  : i % 3 === 1
-                  ? 'bg-[#8B008B]'
-                  : 'bg-[#B76E79]'
-              } text-white`}
-              key={i}
-            >
+            <div className="infinite-scroll-item" key={i}>
               {item.content}
             </div>
           ))}

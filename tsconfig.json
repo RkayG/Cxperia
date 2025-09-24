@@ -31,6 +31,6 @@
     },
     "target": "ES2017"
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.mjs", "vitest.config.ts", ".next/types/**/*.ts", "eslint.config.mjs"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.mjs", "vitest.config.ts", ".next/types/**/*.ts", "eslint.config.mjs", "components/InfiniteScroll.jsx"],
   "exclude": ["node_modules"]
 }

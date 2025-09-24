@@ -36,7 +36,7 @@ const PostPurchaseSection = () => {
               isTilted={true}
               tiltDirection="left"
               autoplay={true}
-              autoplaySpeed={0.1}
+              autoplaySpeed={1}
               autoplayDirection="down"
               pauseOnHover={true}
             />
@@ -45,13 +45,13 @@ const PostPurchaseSection = () => {
 
         {/* Right Column for Content */}
         <div className="lg:w-1/2 w-full text-white text-center lg:text-left">
-          <h2 className="text-4xl md:text-5xl bricolage-grotesque font-extrabold text-whitemb-4 leading-tight">
+          <h2 className="text-4xl max-w-lg md:text-5xl bricolage-grotesque font-extrabold text-whitemb-4 leading-tight">
             Create your product <br className="hidden md:inline" />
             post-purchase experience
           </h2>
           <p className="text-base md:text-lg bricolage-grotesque-light text-white mb-8 max-w-md mx-auto lg:mx-0">
-            Design the digital journey your customer will have after
-            purchase. Add tutorials, routines, product suggestions, and
+            Design the digital journey your customers will have after
+            purchase. Add tutorials, routines, product ingredients, application tips, and
             more.
           </p>
           <Button 

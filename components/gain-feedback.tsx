@@ -37,16 +37,17 @@ const GainFeedbackSection = () => {
               isTilted={true}
               tiltDirection="left"
               autoplay={true}
-              autoplaySpeed={0.1}
+              autoplaySpeed={1}
               autoplayDirection="down"
               pauseOnHover={true}
+              
             />
           </div>
         </div>
 
         {/* Right Column for Content */}
         <div className="lg:w-1/2 w-full text-white text-center lg:text-left">
-          <h2 className="text-4xl max-w-md md:text-5xl bricolage-grotesque font-extrabold text-whitemb-4 leading-tight">
+          <h2 className="text-4xl max-w-md md:text-5xl bricolage-grotesque font-extrabold text-white mb-4 leading-tight">
             Engage your Customers.
             Gain their Feedback. 
             Serve them better.

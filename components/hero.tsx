@@ -28,7 +28,7 @@ const HeroSection = () => {
             </GradientText>
             .
           </h1>
-          <p className="text-base sm:text-lg text-black mb-8 max-w-md mx-auto lg:mx-0">
+          <p className="text-base sm:text-lg bricolage-grotesque-light text-black mb-8 max-w-md mx-auto lg:mx-0">
             Delight your customers beyond purchase. Offer personalized routines,
             helpful insights, and exclusive experiences with smart, QR-powered
             packaging.
