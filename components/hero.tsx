@@ -1,56 +1,80 @@
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import Link from "next/link";
+'use client';
+import React from 'react';
+import Image from 'next/image';
+import hero from '../assets/images/hero-image.png';
+import GradientText from '../components/GradientText'; // Make sure this component is available
+import { Button } from '@/components/ui/button'; // Assuming you're using shadcn buttons
 
-export function Hero(props: {
-  capsuleText: string;
-  capsuleLink: string;
-  title: string;
-  subtitle: string;
-  credits?: React.ReactNode;
-  primaryCtaText: string;
-  primaryCtaLink: string;
-  secondaryCtaText: string;
-  secondaryCtaLink: string;
-}) {
+const HeroSection = () => {
   return (
-    <section className="space-y-6 py-32 md:py-48 lg:py-52">
-      <div className="container flex max-w-[64rem] flex-col items-center gap-4 text-center">
-        <Link
-          href={props.capsuleLink}
-          className="rounded-2xl bg-muted px-4 py-1.5 text-sm font-medium"
-          target="_blank"
-        >
-          {props.capsuleText}
-        </Link>
-        <h1 className="font-heading text-3xl sm:text-5xl lg:text-7xl">
-          {props.title}
-        </h1>
-        <p className="max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8">
-          {props.subtitle}
-        </p>
-        <div className="flex gap-4 flex-wrap justify-center">
-          <Link
-            href={props.primaryCtaLink}
-            className={cn(buttonVariants({ size: "lg" }))}
-          >
-            {props.primaryCtaText}
-          </Link>
+    <div className="bg-[#e9c0e9] p-4 sm:p-8 lg:px-16">
+      {/* Navbar - Simplified */}
+      <nav className="flex items-center justify-between max-w-7xl mx-auto py-4">
+        <div className="flex items-center space-x-4">
+          <a href="#" className="font-bold text-lg text-black">
+            qp.
+          </a>
+          <a href="#" className="text-sm text-black hidden sm:inline">
+            Story
+          </a>
+          <a href="#" className="text-sm text-black hidden sm:inline">
+            Shop
+          </a>
+          <a href="#" className="text-sm text-black hidden sm:inline">
+            Blog
+          </a>
+        </div>
+        <div className="flex items-center space-x-4">
+          <a href="#" className="text-sm text-black">
+            Login
+          </a>
+          <Button variant="default" className="bg-black text-white px-4 py-2 rounded-full text-sm">
+            Sign Up
+          </Button>
+        </div>
+      </nav>
 
-          <Link
-            href={props.secondaryCtaLink}
-            target="_blank"
-            rel="noreferrer"
-            className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
-          >
-            {props.secondaryCtaText}
-          </Link>
+      {/* Hero Content */}
+      <div className="flex flex-col lg:flex-row items-center justify-center pb-12 max-w-7xl mx-auto gap-8">
+        {/* Left Content */}
+        <div className="text-center lg:text-left lg:w-1/2 flex flex-col justify-center">
+          <h1 className="text-5xl sm:text-6xl md:text-7xl text-[#502274] bricolage-grotesque font-black mb-6 leading-tight">
+            Beyond the packaging. Into the{' '}
+            <GradientText
+              colors={['#ff4f8b', '#ff4f8b', '#4079ff',  '#502274', '#ff4f8b', '#ff4f8b']}
+              animationSpeed={3}
+              showBorder={false}
+               className="font-black text-5xl sm:text-6xl md:text-7xl inline-block align-middle"
+            >
+              experience
+            </GradientText>
+            .
+          </h1>
+          <p className="text-base sm:text-lg text-black mb-8 max-w-md mx-auto lg:mx-0">
+            Delight your customers beyond purchase. Offer personalized routines,
+            helpful insights, and exclusive experiences with smart, QR-powered
+            packaging.
+          </p>
+          <Button variant="default" className="bg-[#4d2d7c] text-white px-8 py-4 rounded-full font-semibold">
+            Get A Demo
+          </Button>
         </div>
 
-        {props.credits && (
-          <p className="text-sm text-muted-foreground mt-4">{props.credits}</p>
-        )}
+        {/* Right Content */}
+        <div className="lg:w-1/2 relative flex justify-center items-center mt-12 lg:mt-0">
+          <div className="relative w-full max-w-xl h-[500px] lg:h-[600px] flex items-center justify-center">
+            <Image
+              src={hero}
+              alt="Product Jar"
+              fill
+              style={{ objectFit: 'contain' }}
+              className="animate-float"
+            />
+          </div>
+        </div>
       </div>
-    </section>
+    </div>
   );
-}
+};
+
+export default HeroSection;
