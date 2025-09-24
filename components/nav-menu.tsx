@@ -35,7 +35,7 @@ const navMenuItems = [
 export default function NavMenu() {
 	return (
 		<CardNav
-			logo={logo}
+			logo={logo.src}
 			logoAlt="Cxperia"
 			items={navMenuItems}
 			baseColor="#fff"

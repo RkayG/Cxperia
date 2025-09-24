@@ -22,14 +22,14 @@ export default function DesignedForSection() {
       <div style={{ height: '600px', width: '100%', maxWidth: '1200px', position: 'relative' }}>
         <CircularGallery
           items={[
-            { image: 'https://images.unsplash.com/photo-1627471279204-be3a98555819?auto=format&fit=crop&w=800&q=80', text: 'Moisturizer' }, // Face cream/moisturizer
-            { image: 'https://images.unsplash.com/photo-1614271630985-1d4e0e2d5c34?auto=format&fit=crop&w=800&q=80', text: 'Lotion Bottle' }, // Lotion bottle
-            { image: 'https://images.unsplash.com/photo-1608625902127-d4e511470487?auto=format&fit=crop&w=800&q=80', text: 'Compact Powder' }, // Powder compact
-            { image: 'https://images.unsplash.com/photo-1596700877918-028a07c1b3f9?auto=format&fit=crop&w=800&q=80', text: 'Makeup Brushes' }, // Makeup brushes
-            { image: 'https://images.unsplash.com/photo-1555529094-1a482cc90899?auto=format&fit=crop&w=800&q=80', text: 'Lipstick' }, // Lipstick
-            { image: 'https://images.unsplash.com/photo-1612267568576-a006bfd92837?auto=format&fit=crop&w=800&q=80', text: 'Skincare' }, // General skincare products
-            { image: 'https://images.unsplash.com/photo-1606132789178-5a02422709e1?auto=format&fit=crop&w=800&q=80', text: 'Foundation' }, // Foundation bottle
-            { image: 'https://images.unsplash.com/photo-1596466982855-32130e61d858?auto=format&fit=crop&w=800&q=80', text: 'Hair Care' } // Hair care products
+            { image: 'https://images.unsplash.com/photo-1627471279204-be3a98555819?auto=format&fit=crop&w=800&q=80', text: '' }, // Face cream/moisturizer
+            { image: 'https://images.unsplash.com/photo-1614271630985-1d4e0e2d5c34?auto=format&fit=crop&w=800&q=80', text: '' }, // Lotion bottle
+            { image: 'https://images.unsplash.com/photo-1608625902127-d4e511470487?auto=format&fit=crop&w=800&q=80', text: '' }, // Powder compact
+            { image: 'https://images.unsplash.com/photo-1596700877918-028a07c1b3f9?auto=format&fit=crop&w=800&q=80', text: '' }, // Makeup brushes
+            { image: 'https://images.unsplash.com/photo-1555529094-1a482cc90899?auto=format&fit=crop&w=800&q=80', text: '' }, // Lipstick
+            { image: 'https://images.unsplash.com/photo-1612267568576-a006bfd92837?auto=format&fit=crop&w=800&q=80', text: '' }, // General skincare products
+            { image: 'https://images.unsplash.com/photo-1606132789178-5a02422709e1?auto=format&fit=crop&w=800&q=80', text: '' }, // Foundation bottle
+            { image: 'https://images.unsplash.com/photo-1596466982855-32130e61d858?auto=format&fit=crop&w=800&q=80', text: '' } // Hair care products
           ]}
           bend={3}
           textColor="#ffffff"

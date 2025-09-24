@@ -20,7 +20,7 @@ const QRCodeSection = () => {
           </p>
           <Button
             variant="default"
-            className="bg-[#4d2d7c] w-full text-white px-8 py-6 font-semibold hover:bg-opacity-90 transition-colors"
+            className="bg-[#191970] w-full text-white px-8 py-6 font-semibold hover:bg-opacity-90 transition-colors"
           >
             Get started for free
           </Button>

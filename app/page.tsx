@@ -4,6 +4,8 @@ import QRCodeSection from '@/components/qr-code-section';
 import GainFeedbackSection from '@/components/gain-feedback';
 import DesignedForSection from '@/components/designed-for';
 import { PricingCard } from '@/components/pricing';
+import { Footer } from '@/components/footer';
+
 export default async function IndexPage() {
 
   return (
@@ -14,6 +16,7 @@ export default async function IndexPage() {
       <GainFeedbackSection />
       <DesignedForSection />
       <PricingCard  />
+      <Footer />
     </>
   );
 }

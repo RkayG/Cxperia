@@ -1,9 +1,30 @@
+// InfiniteScroll.tsx
 import { useRef, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { Observer } from 'gsap/Observer';
+
 import './InfiniteScroll.css';
 
 gsap.registerPlugin(Observer);
+
+// Define proper TypeScript interfaces
+interface InfiniteScrollItem {
+  content: string | React.ReactElement;
+}
+
+interface InfiniteScrollProps {
+  width?: string;
+  maxHeight?: string;
+  negativeMargin?: string;
+  items?: InfiniteScrollItem[];
+  itemMinHeight?: number;
+  isTilted?: boolean;
+  tiltDirection?: 'left' | 'right';
+  autoplay?: boolean;
+  autoplaySpeed?: number;
+  autoplayDirection?: 'up' | 'down';
+  pauseOnHover?: boolean;
+}
 
 export default function InfiniteScroll({
   width = '30rem',
@@ -17,9 +38,9 @@ export default function InfiniteScroll({
   autoplaySpeed = 0.5,
   autoplayDirection = 'down',
   pauseOnHover = false
-}) {
-  const wrapperRef = useRef(null);
-  const containerRef = useRef(null);
+}: InfiniteScrollProps) {
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const getTiltTransform = () => {
     if (!isTilted) return 'none';
@@ -29,14 +50,16 @@ export default function InfiniteScroll({
   };
 
   useEffect(() => {
+
     const container = containerRef.current;
     if (!container) return;
     if (items.length === 0) return;
 
-    const divItems = gsap.utils.toArray(container.children);
+    const divItems = Array.from(container.children) as HTMLElement[];
     if (!divItems.length) return;
 
     const firstItem = divItems[0];
+    if (!firstItem) return;
     const itemStyle = getComputedStyle(firstItem);
     const itemHeight = firstItem.offsetHeight;
     const itemMarginTop = parseFloat(itemStyle.marginTop) || 0;
@@ -55,10 +78,10 @@ export default function InfiniteScroll({
       type: 'wheel,touch,pointer',
       preventDefault: true,
       onPress: ({ target }) => {
-        target.style.cursor = 'grabbing';
+        (target as HTMLElement).style.cursor = 'grabbing';
       },
       onRelease: ({ target }) => {
-        target.style.cursor = 'grab';
+        (target as HTMLElement).style.cursor = 'grab';
       },
       onChange: ({ deltaY, isDragging, event }) => {
         const d = event.type === 'wheel' ? -deltaY : deltaY;
@@ -76,7 +99,7 @@ export default function InfiniteScroll({
       }
     });
 
-    let rafId;
+    let rafId: number;
     if (autoplay) {
       const directionFactor = autoplayDirection === 'down' ? 1 : -1;
       const speedPerFrame = autoplaySpeed * directionFactor;
@@ -97,7 +120,10 @@ export default function InfiniteScroll({
 
       if (pauseOnHover) {
         const stopTicker = () => rafId && cancelAnimationFrame(rafId);
-        const startTicker = () => (rafId = requestAnimationFrame(tick));
+        const startTicker = () => {
+          if (rafId) cancelAnimationFrame(rafId);
+          rafId = requestAnimationFrame(tick);
+        };
 
         container.addEventListener('mouseenter', stopTicker);
         container.addEventListener('mouseleave', startTicker);
@@ -135,7 +161,7 @@ export default function InfiniteScroll({
         }
 
         .infinite-scroll-item {
-          height: ${itemMinHeight}px;
+          min-height: ${itemMinHeight}px;
           margin-top: ${negativeMargin};
         }
         `}

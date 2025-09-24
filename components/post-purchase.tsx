@@ -11,7 +11,7 @@ import InfiniteScroll from './InfiniteScroll'
 const PostPurchaseSection = () => {
   return (
     <div className="bg-[#e9c0e9] p-8 md:p-16 lg:p-24">
-      <div className="flex flex-col text-white border-5 bg-[#580F41] border-[#580F41] lg:flex-row max-w-7xl mx-auto items-center">
+      <div className="flex flex-col text-white border-5 bg-[#502274] border-[#580F41] lg:flex-row max-w-7xl mx-auto items-center">
         {/* Left Column for InfiniteScroll Text Animation */}
         <div className="lg:w-1/2  w-full mb-12 lg:mb-0 lg:pr-12 flex items-center justify-center">
           <div style={{ height: '500px', position: 'relative', width: '100%' }}>

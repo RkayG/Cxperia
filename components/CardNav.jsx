@@ -150,13 +150,13 @@ const CardNav = ({
           </div>
 
           <div className="logo-container">
-            <img src={logo} alt={logoAlt} className="logo" />
+            <img src={logo} alt={logoAlt} className="logo w-24 h-24" />
           </div>
 
           <button
             type="button"
             className="card-nav-cta-button"
-            style={{ backgroundColor: buttonBgColor, color: buttonTextColor }}
+            style={{ backgroundColor: '#191970', color: buttonTextColor }}
           >
             Get Started
           </button>

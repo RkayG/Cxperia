@@ -16,6 +16,7 @@ const GainFeedbackSection = () => {
         <div className="lg:w-1/2  w-full mb-12 lg:mb-0 lg:pr-12 flex items-center justify-center">
           <div style={{ height: '500px', position: 'relative', width: '100%' }}>
             {/* InfiniteScroll with mixed text and paragraph items, tilted left */}
+            {/* @ts-ignore */}
             <InfiniteScroll
               items={[
                 { content: "😠 'This cleanser dried out my skin.'" },

@@ -33,7 +33,7 @@ const HeroSection = () => {
             helpful insights, and exclusive experiences with smart, QR-powered
             packaging.
           </p>
-          <Button variant="default" className="bg-[#4d2d7c] text-white px-8 py-6  font-semibold">
+          <Button variant="default" className="bg-[#191970] text-white px-8 py-6  font-semibold">
             Get A Demo
           </Button>
         </div>
