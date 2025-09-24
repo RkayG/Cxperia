@@ -2,40 +2,18 @@
 import React from 'react';
 import Image from 'next/image';
 import hero from '../assets/images/hero-image.png';
-import GradientText from '../components/GradientText'; // Make sure this component is available
-import { Button } from '@/components/ui/button'; // Assuming you're using shadcn buttons
+import GradientText from '../components/GradientText';
+import { Button } from '@/components/ui/button';
+import NavMenu from './nav-menu';
 
 const HeroSection = () => {
   return (
     <div className="bg-[#e9c0e9] p-4 sm:p-8 lg:px-16">
-      {/* Navbar - Simplified */}
-      <nav className="flex items-center justify-between max-w-7xl mx-auto py-4">
-        <div className="flex items-center space-x-4">
-          <a href="#" className="font-bold text-lg text-black">
-            qp.
-          </a>
-          <a href="#" className="text-sm text-black hidden sm:inline">
-            Story
-          </a>
-          <a href="#" className="text-sm text-black hidden sm:inline">
-            Shop
-          </a>
-          <a href="#" className="text-sm text-black hidden sm:inline">
-            Blog
-          </a>
-        </div>
-        <div className="flex items-center space-x-4">
-          <a href="#" className="text-sm text-black">
-            Login
-          </a>
-          <Button variant="default" className="bg-black text-white px-4 py-2 rounded-full text-sm">
-            Sign Up
-          </Button>
-        </div>
-      </nav>
+      {/* NavMenu - Animated Navigation */}
+      <NavMenu />
 
       {/* Hero Content */}
-      <div className="flex flex-col lg:flex-row items-center justify-center pb-12 max-w-7xl mx-auto gap-8">
+      <div className="flex flex-col mt-16 lg:flex-row items-center justify-center pb-12 max-w-7xl mx-auto gap-8">
         {/* Left Content */}
         <div className="text-center lg:text-left lg:w-1/2 flex flex-col justify-center">
           <h1 className="text-5xl sm:text-6xl md:text-7xl text-[#502274] bricolage-grotesque font-black mb-6 leading-tight">

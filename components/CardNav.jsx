@@ -67,11 +67,11 @@ const CardNav = ({
 
     tl.to(navEl, {
       height: calculateHeight,
-      duration: 0.4,
+      duration: 0.15,
       ease
     });
 
-    tl.to(cardsRef.current, { y: 0, opacity: 1, duration: 0.4, ease, stagger: 0.08 }, '-=0.1');
+    tl.to(cardsRef.current, { y: 0, opacity: 1, duration: 0.15, ease, stagger: 0.03 }, '-=0.1');
 
     return tl;
   };
