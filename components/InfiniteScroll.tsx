@@ -166,7 +166,16 @@ export default function InfiniteScroll({
           }}
         >
           {items.map((item, i) => (
-            <div className="infinite-scroll-item" key={i}>
+            <div
+              className={`infinite-scroll-item ${
+                i % 3 === 0
+                  ? 'bg-[#ff4f8b]'
+                  : i % 3 === 1
+                  ? 'bg-[#8B008B]'
+                  : 'bg-[#B76E79]'
+              } text-white`}
+              key={i}
+            >
               {item.content}
             </div>
           ))}

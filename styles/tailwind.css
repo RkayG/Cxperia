@@ -46,6 +46,24 @@
     "wdth" 100;
 }
 
+.bricolage-grotesque-light {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
+
+.noto-sans {
+  font-family: "Noto Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
+
 /*
   ---break---
 */
@@ -177,3 +195,5 @@
     @apply bg-background text-foreground;
   }
 }
+
+

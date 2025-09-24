@@ -8,7 +8,7 @@ import img2 from '../assets/images/package-with-qr.png';
 import img3 from '../assets/logo.png';
 import InfiniteScroll from './InfiniteScroll'
 
-const PostPurchaseSection = () => {
+const GainFeedbackSection = () => {
   return (
     <div className="bg-[#e9c0e9] p-8 md:p-16 lg:p-24">
       <div className="flex flex-col text-white border-5 bg-[#580F41] border-[#580F41] lg:flex-row max-w-7xl mx-auto items-center">
@@ -18,20 +18,21 @@ const PostPurchaseSection = () => {
             {/* InfiniteScroll with mixed text and paragraph items, tilted left */}
             <InfiniteScroll
               items={[
-                { content: "Create tutorials for your product" },
-                { content: <p>Usage instructions and routines</p> },
-                { content: "Ingredients and product details" },
-                { content: <p>Support channels and contact info</p> },
-                { content: "Personalized product suggestions" },
-                { content: <p>Exclusive offers and loyalty rewards</p> },
-                { content: "Customer community and feedback" },
-                { content: <p>How-to videos and guides</p> },
-                { content: "Product care tips" },
-                { content: <p>FAQs and troubleshooting</p> },
-                { content: "Ingredient sourcing stories" },
-                { content: <p>Direct support chat</p> },
-                { content: "Warranty and returns info" },
-                { content: <p>Share your experience</p> }
+                { content: "😠 'This cleanser dried out my skin.'" },
+                { content: "😞 'The moisturizer felt heavy and greasy.'" },
+                { content: "😐 'Decent sunscreen, but left a white cast.'" },
+                { content: "😊 'Loved the serum, my skin feels smoother!'" },
+                { content: "😍 'Best face mask ever! My skin glows.'" },
+                { content: "😠 'Mascara clumped after one use.'" },
+                { content: "😞 'Lip balm didn’t last long.'" },
+                { content: "😐 'Foundation coverage was average.'" },
+                { content: "😊 'Gentle toner, no irritation.'" },
+                { content: "😍 'Amazing shampoo, smells great!'" },
+                { content: "😠 'Eye cream stung my eyes.'" },
+                { content: "😞 'Body lotion was too sticky.'" },
+                { content: "😐 'Face wash was okay, nothing special.'" },
+                { content: "😊 'Hydrating mist is refreshing.'" },
+                { content: "😍 'Love the texture of this cream!'" }
               ]}
               isTilted={true}
               tiltDirection="left"
@@ -45,14 +46,15 @@ const PostPurchaseSection = () => {
 
         {/* Right Column for Content */}
         <div className="lg:w-1/2 w-full text-white text-center lg:text-left">
-          <h2 className="text-4xl md:text-5xl bricolage-grotesque font-extrabold text-whitemb-4 leading-tight">
-            Create your product <br className="hidden md:inline" />
-            post-purchase experience
+          <h2 className="text-4xl max-w-md md:text-5xl bricolage-grotesque font-extrabold text-whitemb-4 leading-tight">
+            Engage your Customers.
+            Gain their Feedback. 
+            Serve them better.
           </h2>
           <p className="text-base md:text-lg bricolage-grotesque-light text-white mb-8 max-w-md mx-auto lg:mx-0">
-            Design the digital journey your customer will have after
-            purchase. Add tutorials, routines, product suggestions, and
-            more.
+            Use surveys and feedback forms to
+            gather insights directly from your customers. Understand their needs
+            and preferences to continually enhance their experience.
           </p>
           <Button 
             variant="default" 
@@ -66,4 +68,4 @@ const PostPurchaseSection = () => {
   );
 };
 
-export default PostPurchaseSection;
+export default GainFeedbackSection;

@@ -8,12 +8,12 @@ import NavMenu from './nav-menu';
 
 const HeroSection = () => {
   return (
-    <div className="bg-[#e9c0e9] p-4 sm:p-8 lg:px-16">
+    <div className="bg-[#e9c0e9] p-8 md:p-16 lg:p-24 pb-0">
       {/* NavMenu - Animated Navigation */}
       <NavMenu />
 
       {/* Hero Content */}
-      <div className="flex flex-col mt-16 lg:flex-row items-center justify-center pb-12 max-w-7xl mx-auto gap-8">
+      <div className="flex flex-col mt-16 lg:flex-row items-center justify-center  max-w-7xl mx-auto gap-8">
         {/* Left Content */}
         <div className="text-center lg:text-left lg:w-1/2 flex flex-col justify-center">
           <h1 className="text-5xl sm:text-6xl md:text-7xl text-[#502274] bricolage-grotesque font-black mb-6 leading-tight">
@@ -33,7 +33,7 @@ const HeroSection = () => {
             helpful insights, and exclusive experiences with smart, QR-powered
             packaging.
           </p>
-          <Button variant="default" className="bg-[#4d2d7c] text-white px-8 py-4 rounded-full font-semibold">
+          <Button variant="default" className="bg-[#4d2d7c] text-white px-8 py-6  font-semibold">
             Get A Demo
           </Button>
         </div>
