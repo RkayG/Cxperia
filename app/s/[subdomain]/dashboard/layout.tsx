@@ -1,10 +1,84 @@
 // app/s/[subdomain]/dashboard/layout.tsx
+
+import SidebarLayout, { SidebarItem } from "@/components/sidebar-layout";
+import { BadgePercent, BarChart4, Columns3, Globe, Locate, Settings2, ShoppingBag, ShoppingCart, Users } from "lucide-react";
 import { getTenantFromSubdomain } from '@/lib/tenant-utils';
+
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
   params: { subdomain: string };
 }
+
+const navigationItems: SidebarItem[] = [
+  {
+    name: "Overview",
+    href: "/overview",
+    icon: Globe,
+    type: "item",
+  },
+  {
+    type: 'label',
+    name: 'Management',
+  },
+  {
+    name: "Products",
+    href: "/products",
+    icon: ShoppingBag,
+    type: "item",
+  },
+  {
+    name: "People",
+    href: "/people",
+    icon: Users,
+    type: "item",
+  },
+  {
+    name: "Segments",
+    href: "/segments",
+    icon: Columns3,
+    type: "item",
+  },
+  {
+    name: "Regions",
+    href: "/regions",
+    icon: Locate,
+    type: "item",
+  },
+  {
+    type: 'label',
+    name: 'Monetization',
+  },
+  {
+    name: "Revenue",
+    href: "/revenue",
+    icon: BarChart4,
+    type: "item",
+  },
+  {
+    name: "Orders",
+    href: "/orders",
+    icon: ShoppingCart,
+    type: "item",
+  },
+  {
+    name: "Discounts",
+    href: "/discounts",
+    icon: BadgePercent,
+    type: "item",
+  },
+  {
+    type: 'label',
+    name: 'Settings',
+  },
+  {
+    name: "Configuration",
+    href: "/configuration",
+    icon: Settings2,
+    type: "item",
+  },
+];
+
 
 export default async function DashboardLayout({ 
   children, 
@@ -24,22 +98,23 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <h1 className="text-xl font-semibold">{tenant.name} Dashboard</h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-500">
-                {params.subdomain}.yourdomain.com
-              </span>
-            </div>
-          </div>
+    <SidebarLayout
+      items={navigationItems}
+      basePath={`/s/${params.subdomain}/dashboard`}
+      sidebarTop={
+        <div className="px-4 py-6">
+          <h1 className="text-xl font-semibold">{tenant.name} Dashboard</h1>
+          <span className="text-sm text-gray-500 block mt-1">
+            {params.subdomain}.yourdomain.com
+          </span>
         </div>
-      </nav>
+      }
+      baseBreadcrumb={[{
+        title: tenant.name,
+        href: `/s/${params.subdomain}/dashboard`,
+      }]}
+    >
       {children}
-    </div>
+    </SidebarLayout>
   );
 }

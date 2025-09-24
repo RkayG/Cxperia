@@ -1,7 +1,7 @@
 'use client';
 
 import SidebarLayout, { SidebarItem } from "@/components/sidebar-layout";
-import { SelectedTeamSwitcher, useUser } from "@stackframe/stack";
+//import { SelectedTeamSwitcher, useUser } from "@stackframe/stack";
 import { BadgePercent, BarChart4, Columns3, Globe, Locate, Settings2, ShoppingBag, ShoppingCart, Users } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 
@@ -76,17 +76,18 @@ const navigationItems: SidebarItem[] = [
 
 export default function Layout(props: { children: React.ReactNode }) {
   const params = useParams<{ teamId: string }>();
-  const user = useUser({ or: 'redirect' });
-  const team = user.useTeam(params.teamId);
+ // const user = useUser({ or: 'redirect' });
+ // const team = user.useTeam(params.teamId);
   const router = useRouter();
-
+/* 
   if (!team) {
     router.push('/dashboard');
     return null;
-  }
+  } */
 
   return (
-    <SidebarLayout 
+    <div className="min-h-screen bg-gray-50"></div>
+  /*   <SidebarLayout 
       items={navigationItems}
       basePath={`/dashboard/${team.id}`}
       sidebarTop={<SelectedTeamSwitcher 
@@ -99,6 +100,6 @@ export default function Layout(props: { children: React.ReactNode }) {
       }]}
     >
       {props.children}
-    </SidebarLayout>
+    </SidebarLayout> */
   );
 }

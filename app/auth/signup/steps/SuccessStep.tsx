@@ -45,7 +45,7 @@ export default function SuccessStep({ data }: SuccessStepProps) {
 
       <div className="animate-pulse text-sm text-gray-500">
         <a 
-          href={`http://${data.subdomain}.localhost:3000/dashboard`}
+          href={`http://${data.subdomain}.localhost:3001/dashboard`}
           className="text-blue-600 hover:text-blue-700"
         >
           Click here if you're not redirected automatically
