@@ -46,19 +46,9 @@ export default function ProcessingStep({ data, nextStep }: ProcessingStepProps) 
       <h2 className="text-2xl font-bold text-gray-900 mb-4">
         Creating your brand space...
       </h2>
-      
-      <p className="text-gray-600 mb-2">Setting up {data.subdomain}.beautyplatform.com</p>
-      <p className="text-gray-500 text-sm">This will just take a moment</p>
 
       <div className="mt-8 space-y-2">
-        <div className="flex items-center justify-center text-sm text-gray-500">
-          <span className="w-4 h-4 bg-green-500 rounded-full mr-2 animate-pulse"></span>
-          <span>Creating tenant space</span>
-        </div>
-        <div className="flex items-center justify-center text-sm text-gray-500">
-          <span className="w-4 h-4 bg-green-500 rounded-full mr-2 animate-pulse" style={{animationDelay: '0.3s'}}></span>
-          <span>Setting up admin account</span>
-        </div>
+      
         <div className="flex items-center justify-center text-sm text-gray-500">
           <span className="w-4 h-4 bg-blue-500 rounded-full mr-2 animate-pulse" style={{animationDelay: '0.6s'}}></span>
           <span>Preparing your dashboard</span>

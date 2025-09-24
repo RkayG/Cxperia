@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { SignupData } from '../page';
 
 interface BrandInfoStepProps {
@@ -25,6 +26,7 @@ export default function BrandInfoStep({ data, updateData, nextStep, prevStep }: 
     });
   };
 
+ const canProceed = data.brandName && data.brandSlug && data.brandSlug.length >= 3;
   return (
     <div className="animate-fade-in">
       <h2 className="text-2xl font-bold text-gray-900 mb-2">Tell us about your brand</h2>
@@ -66,6 +68,21 @@ export default function BrandInfoStep({ data, updateData, nextStep, prevStep }: 
       </div>
 
       {/* ... rest of the component */}
+      <div className="flex gap-3 mt-8">
+        <button
+          onClick={prevStep}
+          className="flex-1 py-3 px-4 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors"
+        >
+          Back
+        </button>
+        <button
+          onClick={nextStep}
+          disabled={!canProceed}
+          className="fle  x-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold py-3 px-4 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:from-purple-600 hover:to-pink-600 transition-all duration-200 transform hover:scale-105 disabled:hover:scale-100"
+        >
+          Continue
+        </button>
+      </div>
     </div>
   );
 }

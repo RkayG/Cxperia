@@ -1,54 +1,49 @@
-// middleware.ts - Improved version
+// middleware.ts - Simplified version for path-based routing
 import { type NextRequest, NextResponse } from 'next/server';
-import { rootDomain } from '@/lib/utils';
-
-function extractSubdomain(request: NextRequest): string | null {
-  const host = request.headers.get('host') || '';
-  const hostname = host.split(':')[0];
-  if (!hostname) return null;
-
-  // Local development
-  if (hostname.includes('localhost') || hostname.includes('127.0.0.1')) {
-    if (hostname.includes('.localhost')) {
-      return hostname.split('.')[0] || null;
-    }
-    return null;
-  }
-
-  // Production - extract subdomain from your actual domain
-  const rootDomainFormatted = rootDomain.replace('https://', '').replace('http://', '');
-  if (hostname.endsWith(rootDomainFormatted) && hostname !== rootDomainFormatted) {
-    const sub = hostname.replace(`.${rootDomainFormatted}`, '');
-    return sub || null;
-  }
-
-  return null;
-}
+import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const subdomain = extractSubdomain(request);
 
-  // If subdomain detected, route to tenant space
-  if (subdomain) {
-    const url = request.nextUrl.clone();
-    
-    // Block admin access from subdomains
-    if (pathname.startsWith('/admin')) {
-      return NextResponse.redirect(new URL('/', request.url));
-    }
+  // Create a Supabase client for middleware
+  const res = NextResponse.next();
+  const supabase = createMiddlewareClient({ req: request, res });
 
-    // Rewrite all subdomain routes to /s/[subdomain] structure
-    url.pathname = `/s/${subdomain}${pathname}`;
-    
-    return NextResponse.rewrite(url);
+  // Get the user session
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  // Protect dashboard routes - require authentication
+  if (pathname.startsWith('/dashboard') && !session) {
+    const redirectUrl = new URL('/auth/login', request.url);
+    redirectUrl.searchParams.set('redirect', pathname);
+    return NextResponse.redirect(redirectUrl);
   }
 
-  return NextResponse.next();
+  // Redirect authenticated users away from auth pages
+  if (pathname.startsWith('/auth') && session) {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
+  }
+
+  // Public experience pages are accessible to everyone
+  if (pathname.startsWith('/exp/')) {
+    // No authentication required for QR code pages
+    return res;
+  }
+
+  return res;
 }
 
 export const config = {
   matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)',
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 };
