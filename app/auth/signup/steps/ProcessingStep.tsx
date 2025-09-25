@@ -4,7 +4,7 @@
 import { useEffect, useState } from 'react';
 import { SignupData } from '../page';
 import { completeSignup } from '@/lib/auth-signup';
-import EmailVerificationStep from './EmailVerificationStep';
+import CodeVerificationStep from './CodeVerificationStep';
 
 interface ProcessingStepProps {
   data: SignupData;
@@ -14,17 +14,21 @@ interface ProcessingStepProps {
 export default function ProcessingStep({ data, nextStep }: ProcessingStepProps) {
   const [status, setStatus] = useState<'processing' | 'email_sent' | 'error'>('processing');
   const [error, setError] = useState('');
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     const processSignup = async () => {
       try {
         setStatus('processing');
         
-        const result = await completeSignup(data);
+        const { userId } = await completeSignup(data);
         
-        if (result) {
+        if (userId) {
+          setUserId(userId);
           setStatus('email_sent');
           // Don't auto-redirect - wait for email confirmation
+        } else {
+          throw new Error("Signup completed but user ID was not returned.");
         }
       } catch (error: any) {
         setStatus('error');
@@ -53,8 +57,8 @@ export default function ProcessingStep({ data, nextStep }: ProcessingStepProps) 
     );
   }
 
-  if (status === 'email_sent') {
-    return <EmailVerificationStep email={data.email} />;
+  if (status === 'email_sent' && userId) {
+    return <CodeVerificationStep email={data.email} userId={userId} onSuccess={nextStep} />;
   }
 
   return (
