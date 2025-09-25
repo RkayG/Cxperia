@@ -11,6 +11,7 @@ export default async function IndexPage() {
 
   return (
     <>
+      <div className='bg-[#e9c0e9]'>
       <HeroSection />
       <PostPurchaseSection />
       <QRCodeSection />
@@ -18,6 +19,7 @@ export default async function IndexPage() {
       <DesignedForSection />
       <PricingCard  />
       <Footer />
+      </div>
     </>
   );
 }

@@ -7,7 +7,7 @@ import NavMenu from './nav-menu';
 
 const HeroSection = () => {
   return (
-    <div className="bg-[#e9c0e9] p-8 md:p-16 lg:p-24 pb-0">
+    <div className="bg-[#e9c0e9] p-8 mt-16 md:mt-auto md:p-16 lg:p-24 pb-0">
       {/* NavMenu - Animated Navigation */}
       <NavMenu />
 

@@ -151,7 +151,7 @@ const CardNav = ({
           </div>
 
           <div className="logo-container">
-            <img src={logo} alt={logoAlt} className="logo w-24 h-24" />
+            <img src={logo} alt={logoAlt} className="logo w-36 h-16 object-cover" />
           </div>
           <div className="flex gap-2">
             <Link href="/auth/signup" passHref legacyBehavior>

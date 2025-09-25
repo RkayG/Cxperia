@@ -43,7 +43,7 @@ export default function ConfirmPasswordStep({ data, updateData, nextStep, prevSt
     data.password === data.confirmPassword;
 
   return (
-    <div className="flex items-center justify-center px-4">
+    <div className="flex items-center justify-center">
       <div className="max-w-md w-full space-y-8">
         <div className="flex flex-col items-center mb-5">
           <h1 className="text-center text-2xl bricolage-grotesque-light font-bold text-gray-900">

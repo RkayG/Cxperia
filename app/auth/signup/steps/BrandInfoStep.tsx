@@ -14,7 +14,7 @@ interface BrandInfoStepProps {
 export default function BrandInfoStep({ data, updateData, nextStep, prevStep }: BrandInfoStepProps) {
   // Only collect brand name and website URL
   return (
-    <div className="  flex items-center justify-center px-4 ">
+    <div className="  flex items-center justify-center  ">
       <div className="max-w-md w-full space-y-8">
         <div className="flex flex-col items-center mb-8">
           <h1 className="text-center bricolage-grotesque-light text-2xl font-bold text-gray-900">

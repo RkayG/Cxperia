@@ -20,6 +20,7 @@ export default function Stepper({
   nextButtonText = 'Continue',
   disableStepIndicators = false,
   renderStepIndicator,
+  validateStep = () => true,
   ...rest
 }) {
   const [currentStep, setCurrentStep] = useState(initialStep);
@@ -46,24 +47,26 @@ export default function Stepper({
   };
 
   const handleNext = () => {
-    if (!isLastStep) {
+    if (!isLastStep && validateStep(currentStep)) {
       setDirection(1);
       updateStep(currentStep + 1);
     }
   };
 
   const handleComplete = () => {
-    setDirection(1);
-    updateStep(totalSteps + 1);
+    if (validateStep(currentStep)) {
+      setDirection(1);
+      updateStep(totalSteps + 1);
+    }
   };
 
   return (
     <div className="outer-container " {...rest}>
       <Link href="/">
-        <Image src={logo} alt="Cxperia Logo" className="h-16 -mb-3 w-36 flex justify-self-center mx-auto " />
+        <Image src={logo} alt="Cxperia Logo" className="h-16  w-36 flex justify-self-center mx-auto " />
       </Link>
       <div className={`step-circle-container ${stepCircleContainerClassName}`} style={{ }}>
-        <div className={`step-indicator-row ${stepContainerClassName}`}>
+        {/* <div className={`step-indicator-row ${stepContainerClassName}`}>
           {stepsArray.map((_, index) => {
             const stepNumber = index + 1;
             const isNotLastStep = index < totalSteps - 1;
@@ -93,7 +96,7 @@ export default function Stepper({
               </React.Fragment>
             );
           })}
-        </div>
+        </div> */}
 
         <StepContentWrapper
           isCompleted={isCompleted}
@@ -117,7 +120,13 @@ export default function Stepper({
                 </button>
               )}
               
-              <button onClick={isLastStep ? handleComplete : handleNext} className="next-button" {...nextButtonProps}>
+              <button
+                onClick={isLastStep ? handleComplete : handleNext}
+                className="next-button"
+                {...nextButtonProps}
+                disabled={!validateStep(currentStep)}
+                style={{ opacity: validateStep(currentStep) ? 1 : 0.5, cursor: validateStep(currentStep) ? 'pointer' : 'not-allowed' }}
+              >
                 {isLastStep ? 'Complete' : nextButtonText}
               </button>
             </div>
@@ -139,7 +148,7 @@ function StepContentWrapper({ isCompleted, currentStep, direction, children, cla
   return (
     <motion.div
       className={className}
-      style={{ position: 'relative', overflow: 'hidden' }}
+      style={{ position: 'relative', maxHeight: '300px', minHeight: '300px', overflowY: 'auto', marginTop: '8px'}}
       animate={{ height: isCompleted ? 0 : parentHeight }}
       transition={{ type: 'spring', duration: 0.08 }}
     >

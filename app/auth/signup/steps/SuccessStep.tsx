@@ -2,6 +2,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { SignupData } from '../page';
 
 interface SuccessStepProps {
@@ -10,38 +11,29 @@ interface SuccessStepProps {
 
 // app/auth/signup/steps/SuccessStep.tsx
 export default function SuccessStep({ data }: SuccessStepProps) {
-  useEffect(() => {
-    // Redirect to dashboard (not subdomain)
-    const timer = setTimeout(() => {
-      window.location.href = '/dashboard';
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, []);
+  
+  const router = useRouter();
+useEffect(() => {
+  const timer = setTimeout(() => {
+    router.push('/dashboard');
+  }, 3000);
+  return () => clearTimeout(timer);
+}, [router]);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <div className="flex items-center bricolage-grotesque-light justify-center">
       <div className="max-w-md w-full space-y-8">
         <div className="flex flex-col items-center mb-8">
-          <img src="/cxperia.png" alt="Cxperia Logo" className="h-16 mb-4" />
-          <h1 className="text-center text-3xl font-bold text-gray-900">
-            Welcome to {data.brandName}!
+          <h1 className="text-center bricolage-grotesque-light text-3xl font-bold text-gray-900">
+            Welcome {data.brandName} to Cxperia!
           </h1>
         </div>
         <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center">
-          <span className="text-3xl text-white">🎉</span>
         </div>
         <p className="text-gray-600 mb-6">
           Your brand has been created successfully. Redirecting to your dashboard...
         </p>
-        <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 mb-6">
-          <p className="text-sm text-gray-700">
-            Your public URL: 
-            <span className="font-mono text-green-600 ml-2">
-              myplatform.com/{data.brandSlug}/exp/[experience-id]
-            </span>
-          </p>
-        </div>
+      
         <div className="animate-pulse text-sm text-gray-500">
           <a 
             href="/dashboard"
