@@ -1,12 +1,10 @@
 // app/s/[subdomain]/dashboard/layout.tsx
 import { BadgePercent, BarChart4, Columns3, Globe, Locate, Settings2, ShoppingBag, ShoppingCart, Users } from "lucide-react";
 import SidebarLayout, { SidebarItem } from "@/components/sidebar-layout";
-import { getTenantFromSubdomain } from '@/lib/tenant-utils';
-
+import { getCurrentUserBrand, getBrandStats } from '@/lib/data/brands';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
-  params: { subdomain: string };
 }
 
 const navigationItems: SidebarItem[] = [
@@ -79,38 +77,22 @@ const navigationItems: SidebarItem[] = [
 ];
 
 
-export default async function DashboardLayout({ 
-  children, 
-  params 
-}: DashboardLayoutProps) {
-  const tenant = await getTenantFromSubdomain(params.subdomain);
-  
-  if (!tenant) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900">Tenant Not Found</h1>
-          <p className="text-gray-600">This subdomain does not exist.</p>
-        </div>
-      </div>
-    );
-  }
+export default async function DashboardLayout({ children }: DashboardLayoutProps) {
+  const brand = await getCurrentUserBrand();
+  const brandName = brand?.name || "Your Brand";
 
   return (
     <SidebarLayout
       items={navigationItems}
-      basePath={`/s/${params.subdomain}/dashboard`}
+      basePath="/dashboard"
       sidebarTop={
         <div className="px-4 py-6">
-          <h1 className="text-xl font-semibold">{tenant.name} Dashboard</h1>
-          <span className="text-sm text-gray-500 block mt-1">
-            {params.subdomain}.yourdomain.com
-          </span>
+          <h1 className="text-xl font-semibold">{brandName} Dashboard</h1>
         </div>
       }
       baseBreadcrumb={[{
-        title: tenant.name,
-        href: `/s/${params.subdomain}/dashboard`,
+        title: brandName,
+        href: "/dashboard",
       }]}
     >
       {children}

@@ -13,31 +13,31 @@ export function Footer() {
   ];
 
   return (
-    <footer className="bg-[#4d2d7c] text-white pt-16 pb-8 footer-component">
+    <footer className="bg-[#e9c0e9] to-[#191970] text-black pt-16 pb-16 footer-component">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center mb-12">
           {/* Logo and tagline */}
-          <div className="mb-8 md:mb-0">
+          <div className="mb-8 md:mb-0  p-4 ">
             <div className="flex items-center space-x-3">
-              <img src={logo.src} alt="SmartMention Logo" className="h-10 w-auto"/>
+              <img src={logo.src} alt="Cxperia Logo" className="h-16 w-auto"/>
             </div>
-            <p className="text-slate-400 mt-2 max-w-xs">
+            <p className="text-[#191970] mt-2 bricolage-grotesque-light max-w-xs">
              Creating customer experiences that delight.
             </p>
           </div>
 
           {/* Quick links */}
-          <div className="grid grid-cols-2 gap-8 md:grid-cols-3">
+          <div className="grid text-[#191970] bricolage-grotesque-light grid-cols-2 gap-8 md:grid-cols-3">
             <div>
-              <h3 className="text-blue-400 font-medium mb-3">Product</h3>
+              <h3 className=" font-medium mb-3">Product</h3>
               <ul className="space-y-2">
-                <li><a href="#features" className="text-slate-400 hover:text-white transition-colors">Features</a></li>
-                <li><a href="#pricing" className="text-slate-400 hover:text-white transition-colors">Pricing</a></li>
-              
+                <li><a href="#features" className=" hover:underline transition-colors">Features</a></li>
+                <li><a href="#pricing" className="text-s hover:underline transition-colors">Pricing</a></li>
+
               </ul>
             </div>
             <div>
-              <h3 className="text-blue-400 font-medium mb-3">Resources</h3>
+              <h3 className="font-medium mb-3">Resources</h3>
               <ul className="space-y-2">
                 {/* <li><a href="#" className="text-slate-400 hover:text-white transition-colors">Documentation</a></li>
                 <li><a href="#" className="text-slate-400 hover:text-white transition-colors">Guides</a></li> */}
@@ -45,16 +45,17 @@ export function Footer() {
                 <li>
                   <a 
                   onClick={() => window.location.href='/auth/login'} 
-                  className="text-slate-400 hover:text-white transition-colors">Demo</a></li>
+                  className="text-[#191970] bricolage-grotesque-light hover:underline transition-colors">Demo</a></li>
               
               </ul>
             </div>
-            <div className="col-span-2 md:col-span-1">
-              <h3 className="text-blue-400 font-medium mb-3">Company</h3>
+            <div className="col-span-2 text-[#191970] bricolage-grotesque-light md:col-span-1">
+              <h3 className="text-[#191970] bricolage-grotesque-light mb-3 font-medium">Company</h3>
               <ul className="space-y-2">
-                {/* <li><a href="#" className="text-slate-400 hover:text-white transition-colors">About</a></li> */}
+                <li><a href="#" className=" hover:underline transition-colors">About</a></li>
                 <li><a href="https://linkedin.com/company/smartmention" 
-                className="text-slate-400 hover:text-white transition-colors">Contact</a></li>
+                className="hover:underline  transition-colors">Contact</a></li>
+
               </ul>
             </div>
           </div>
@@ -66,7 +67,7 @@ export function Footer() {
             <a 
               key={link.name}
               href={link.url}
-              className="text-slate-400 hover:text-blue-400 transition-colors"
+              className="text-[#191970] bricolage-grotesque-light hover:text-blue-400 transition-colors"
               aria-label={link.name}
             >
               <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -87,8 +88,8 @@ export function Footer() {
         {/* Bottom section with copyright and legal links */}
         <div className="border-t border-slate-700 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-slate-400 text-sm mb-4 md:mb-0">
-              © {new Date().getFullYear()} SmartMention. All rights reserved.
+            <p className="text-[#191970] bricolage-grotesque-light text-sm mb-4 md:mb-0">
+              © {new Date().getFullYear()} Cxperia. France. All rights reserved. 
             </p>
             <div className="flex flex-wrap justify-center gap-x-8 gap-y-2">
               {footerLinks.map((link) => (
@@ -96,7 +97,7 @@ export function Footer() {
                   
                   key={link.name}
                   href={link.url} 
-                  className="text-sm text-slate-400 hover:text-blue-400 transition-colors"
+                  className="text-sm text-[#191970] bricolage-grotesque-light hover:underline transition-colors"
                 >
                   {link.name}
                 </a>

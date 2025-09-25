@@ -1,4 +1,5 @@
-import Image from 'next/image';
+'use client';
+import TiltedCard from './TiltedCard';
 import React from 'react';
 import { Button } from '@/components/ui/button'; // Assuming shadcn/ui button
 import productBox from '../assets/images/package-with-qr.png'; 
@@ -26,23 +27,27 @@ const QRCodeSection = () => {
           </Button>
         </div>
 
-        {/* Right Column for Image */}
+        {/* Right Column for TiltedCard Image */}
         <div className="lg:w-1/2 w-full flex justify-center lg:justify-end">
-          {/* Placeholder for your product box image */}
-          {/* You would use next/image here with your actual image source */}
-          <div className="w-[300px] h-[300px] md:w-[400px] md:h-[400px] flex items-center justify-center rounded-lg">
-            {/* Replace this with your actual Next.js Image component */}
-            
-            <Image
-              src={productBox}
-              alt="Product box with QR code"
-              width={400} // Adjust based on your image
-              height={400} // Adjust based on your image
-              className="object-contain"
-            />
-            
-    
-          </div>
+          <TiltedCard
+            imageSrc={productBox.src}
+            altText="Product box with QR code"
+            captionText="Scan to unlock your experience"
+            containerHeight="400px"
+            containerWidth="400px"
+            imageHeight="400px"
+            imageWidth="400px"
+            rotateAmplitude={14}
+            scaleOnHover={1.15}
+            showMobileWarning={false}
+            showTooltip={true}
+            displayOverlayContent={true}
+            overlayContent={
+              <p className="tilted-card-demo-text font-bold text-lg text-white bg-[#191970] px-4 py-2 rounded-lg">
+                Try scanning your product!
+              </p>
+            }
+          />
         </div>
       </div>
     </div>

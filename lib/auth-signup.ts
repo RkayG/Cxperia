@@ -1,10 +1,10 @@
 // lib/auth-signup.ts
-import { supabase } from '@/lib/supabase';
-import { type SignupData } from '@/app/auth/signup/page';
+import { supabase } from './supabase';
+import { SignupData } from '@/app/auth/signup/page';
 
-export async function completeSignup(data: SignupData): Promise<boolean> {
+export async function completeSignup(data: SignupData) {
   try {
-    // 1. First create the brand
+    // 1. Create brand first
     const { data: brand, error: brandError } = await supabase
       .from('brands')
       .insert({
@@ -16,7 +16,7 @@ export async function completeSignup(data: SignupData): Promise<boolean> {
 
     if (brandError) throw brandError;
 
-    // 2. Create the user with Supabase Auth
+    // 2. Create user with Supabase Auth (will send confirmation email)
     const { data: authData, error: signUpError } = await supabase.auth.signUp({
       email: data.email,
       password: data.password,
@@ -25,27 +25,22 @@ export async function completeSignup(data: SignupData): Promise<boolean> {
           first_name: data.firstName,
           last_name: data.lastName,
           role: 'brand_admin',
-          brand_id: brand.id // Pass brand context
-        }
+          brand_id: brand.id
+        },
+        // Optional: Customize the email template
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`
       }
     });
 
     if (signUpError) throw signUpError;
-    if (!authData.user) throw new Error('User creation failed');
 
-    // 3. Update the profile with brand_id (trigger should handle this, but we ensure it)
-    const { error: profileError } = await supabase
-      .from('profiles')
-      .update({ brand_id: brand.id })
-      .eq('id', authData.user.id);
-
-    if (profileError) {
-      console.warn('Profile update warning:', profileError);
-      // Non-critical error, continue
-    }
-
-    return true;
-  } catch (error) {
+    return {
+      success: true,
+      user: authData.user,
+      brand: brand,
+      // Supabase will have sent the confirmation email automatically
+    };
+  } catch (error: any) {
     console.error('Signup error:', error);
     throw error;
   }

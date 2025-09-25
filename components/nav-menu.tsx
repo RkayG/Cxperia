@@ -3,33 +3,53 @@ import CardNav from './CardNav';
 
 const navMenuItems = [
 	{
-		label: "About",
-		bgColor: "#0D0716",
+		label: "Learn",
+		bgColor: "#191970",
 		textColor: "#fff",
 		links: [
-			{ label: "Company", ariaLabel: "About Company", href: "#" },
-			{ label: "Careers", ariaLabel: "About Careers", href: "#" }
+			{ label: "About Company", ariaLabel: "About Company", href: "#features" },
+			{ label: 'Features', ariaLabel: 'Features', href: '#features' },
+            { label: "Use Cases", ariaLabel: "Use Cases", href: "#tutorials" },
+			{ label: "FAQ", ariaLabel: "FAQ", href: "#faq" }
 		]
 	},
 	{
-		label: "Projects",
-		bgColor: "#170D27",
+		label: "Pricing",
+		bgColor: "#191970",
 		textColor: "#fff",
 		links: [
-			{ label: "Featured", ariaLabel: "Featured Projects", href: "#" },
-			{ label: "Case Studies", ariaLabel: "Project Case Studies", href: "#" }
+			{ label: "Plans", ariaLabel: "Pricing Plans", href: "#pricing" },
+			{ label: "Compare", ariaLabel: "Compare Plans", href: "#compare" }
+		]
+	},
+/* 	{
+		label: "Brands",
+		bgColor: "#191970",
+		textColor: "#fff",
+		links: [
+			{ label: "Our Brands", ariaLabel: "Our Brands", href: "#brands" },
+			{ label: "Join as Brand", ariaLabel: "Join as Brand", href: "#join-brand" }
+		]
+	},
+	{
+		label: "Tutorials",
+		bgColor: "#191970",
+		textColor: "#fff",
+		links: [
+			{ label: "Video Guides", ariaLabel: "Video Guides", href: "#video-guides" },
+			{ label: "Tips & Tricks", ariaLabel: "Tips & Tricks", href: "#tips" }
 		]
 	},
 	{
 		label: "Contact",
-		bgColor: "#271E37",
+		bgColor: "#191970",
 		textColor: "#fff",
 		links: [
-			{ label: "Email", ariaLabel: "Email us", href: "#" },
-			{ label: "Twitter", ariaLabel: "Twitter", href: "#" },
-			{ label: "LinkedIn", ariaLabel: "LinkedIn", href: "#" }
+			{ label: "Email", ariaLabel: "Email us", href: "mailto:hello@cxperia.com" },
+			{ label: "Instagram", ariaLabel: "Instagram", href: "https://instagram.com/cxperia" },
+			{ label: "Support", ariaLabel: "Support", href: "#support" }
 		]
-	}
+	} */
 ];
 
 export default function NavMenu() {

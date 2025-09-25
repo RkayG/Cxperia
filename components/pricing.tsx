@@ -13,47 +13,57 @@ import Link from "next/link";
 
 export function PricingCard() {
   // Static tier data
-  const tiers = [
+ const tiers = [
     {
       title: "Starter",
       price: "Free",
-      description: "Perfect for individuals starting out",
+      description: "Perfect for emerging beauty brands",
       features: [
-        "1 user",
-        "3 experiences",
-        "Basic analytics",
-        "Email support"
+        "1 brand admin",
+        "3 product experiences",
+        "Basic QR code generation",
+        'Basic Analytics',
+        "Email support",
+        'Customer Feedbacks'
       ],
-      buttonText: "Get Started",
+      buttonText: "Start Creating",
       buttonHref: "/auth/signup",
       isPopular: false
     },
     {
       title: "Pro",
       price: "€",
-      description: "For growing teams and brands",
+      description: "For growing beauty brands",
       features: [
-        "Up to 5 users",
-        "Unlimited experiences",
-        "Advanced analytics",
+        'Everything in Starter, plus',
+        "Up to 5 team members",
+        "Unlimited product experiences",
+        "Customised QR code generation",
+        "Advanced QR analytics",
+        "Custom branding",
         "Priority email support",
-        "Custom branding"
+        "Skin type Recommendations",
+        "Product usage tracking"
       ],
       buttonText: "Upgrade to Pro",
       buttonHref: "/auth/signup",
       isPopular: true
     },
     {
-      title: "Business",
+      title: "Enterprise",
       price: "€",
-      description: "For established businesses",
+      description: "For established beauty companies",
       features: [
-        "Unlimited users",
-        "Unlimited experiences",
-        "Full analytics suite",
-        "Dedicated support",
-        "API access",
-        "Custom integrations"
+        'Everything in Pro, plus',
+        "Unlimited team members",
+        "Unlimited experiences + products",
+        "Customised QR code generation",
+        "Advanced customer insights",
+        "Dedicated account manager",
+        "White-label solutions",
+        "Custom domain support",
+        "Multi-language support",
+        "SLA guarantee"
       ],
       buttonText: "Contact Sales",
       buttonHref: "/contact",
@@ -62,25 +72,25 @@ export function PricingCard() {
   ];
 
   return (
-    <div className="flex flex-wrap bg-gradient-to-b from-[#e9c0e9] to-[#4d2d7c] justify-center  p-8 md:p-16 lg:p-24 gap-8">
+    <div className="flex flex-wrap bg-[#e9c0e9] to-[#191970] justify-center  p-8 md:p-16 lg:p-24 gap-8">
       {tiers.map((tier, idx) => (
         <Card
           key={tier.title}
-          className={`w-full max-w-sm ${tier.isPopular ? "border-primary border-2 shadow-lg" : ""}`}
+          className={`w-full max-w-sm bg-[#4d2d7c] text-white ${tier.isPopular ? "border-white border-2 shadow-lg" : ""}`}
         >
           <CardHeader>
             <CardTitle className="text-2xl font-bold">{tier.title}</CardTitle>
-            <CardDescription>{tier.description}</CardDescription>
+            <CardDescription className="text-white">{tier.description}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="mb-4">
               <span className="text-4xl font-bold">{tier.price}</span>
-              <span className="text-muted-foreground">/month</span>
+              <span className="text-white">/month</span>
             </div>
             <ul className="space-y-2">
               {tier.features.map((feature, index) => (
                 <li key={index} className="flex items-center">
-                  <Check className="mr-2 h-4 w-4 text-primary" />
+                  <Check className="mr-2 h-4 w-4 text-white" />
                   <span>{feature}</span>
                 </li>
               ))}
