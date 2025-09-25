@@ -16,7 +16,7 @@ export function PricingCard() {
  const tiers = [
     {
       title: "Starter",
-      price: "Free",
+      price: "€",
       description: "Perfect for emerging beauty brands",
       features: [
         "1 brand admin",

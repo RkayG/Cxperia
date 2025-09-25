@@ -23,7 +23,7 @@ const QRCodeSection = () => {
             variant="default"
             className="bg-[#191970] w-full text-white px-8 py-6 font-semibold hover:bg-opacity-90 transition-colors"
           >
-            Get started for free
+            Get A Demo
           </Button>
         </div>
 

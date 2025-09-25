@@ -2,11 +2,11 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import InfiniteScroll from './InfiniteScroll'
-
+//bg-[#580F41]
 const GainFeedbackSection = () => {
   return (
     <div className="bg-[#e9c0e9] p-8 md:p-16 lg:p-24">
-      <div className="flex flex-col text-white border-5 bg-[#580F41] border-[#580F41] lg:flex-row max-w-7xl mx-auto items-center">
+      <div className="flex flex-col text-white border-5  bg-[#191970] border-[#580F41] lg:flex-row max-w-7xl mx-auto items-center">
         {/* Left Column for InfiniteScroll Text Animation */}
         <div className="lg:w-1/2  w-full mb-12 lg:mb-0 lg:pr-12 flex items-center justify-center">
           <div style={{ height: '500px', position: 'relative', width: '100%' }}>
@@ -57,7 +57,7 @@ const GainFeedbackSection = () => {
             variant="default" 
             className="bg-white text-[#580F41] px-8 py-4 rounded-full font-semibold hover:bg-opacity-90 hover:text-white transition-colors"
           >
-            Get started for free
+            See Demo
           </Button>
         </div>
       </div>

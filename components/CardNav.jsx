@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
+import Link from 'next/link';
 // use your own icon import if react-icons is not available
 import { GoArrowUpRight } from 'react-icons/go';
 import './CardNav.css';
@@ -152,14 +153,25 @@ const CardNav = ({
           <div className="logo-container">
             <img src={logo} alt={logoAlt} className="logo w-24 h-24" />
           </div>
+          <div className="flex gap-2">
+            <Link href="/auth/signup" passHref legacyBehavior>
+              <a
+                className="card-nav-cta-button py-2 transition-transform duration-200 ease-out hover:scale-105"
+                style={{ backgroundColor: '#191970', padding: '8px 16px', color: buttonTextColor }}
+              >
+                Get Started
+              </a>
+            </Link>
 
-          <button
-            type="button"
-            className="card-nav-cta-button"
-            style={{ backgroundColor: '#191970', color: buttonTextColor }}
-          >
-            Get Started
-          </button>
+            <Link href="/dashboard" passHref legacyBehavior>
+              <a
+                className="card-nav-cta-button transition-transform duration-200 ease-out hover:scale-105"
+                style={{ backgroundColor: 'white', padding: '8px 16px', color: '#191970' }}
+              >
+                Dashboard
+              </a>
+            </Link>
+          </div>
         </div>
 
         <div className="card-nav-content" aria-hidden={!isExpanded}>

@@ -53,7 +53,7 @@ const PostPurchaseSection = () => {
             variant="default" 
             className="bg-white text-[#580F41] px-8 py-4 rounded-full font-semibold hover:bg-opacity-90 hover:text-white transition-colors"
           >
-            Get started for free
+            See Demo
           </Button>
         </div>
       </div>

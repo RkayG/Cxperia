@@ -42,7 +42,6 @@ const HeroSection = () => {
           <TiltedCard
             imageSrc="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=600&q=80"
             altText="Cosmetic Product Jar"
-            captionText="Smart Cosmetic Packaging"
             containerHeight="400px"
             containerWidth="400px"
             imageHeight="400px"

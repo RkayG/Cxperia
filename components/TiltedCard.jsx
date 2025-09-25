@@ -114,7 +114,7 @@ export default function TiltedCard({
         )}
       </motion.div>
 
-      {showTooltip && (
+     {/*  {showTooltip && (
         <motion.figcaption
           className="tilted-card-caption"
           style={{
@@ -126,7 +126,7 @@ export default function TiltedCard({
         >
           {captionText}
         </motion.figcaption>
-      )}
+      )} */}
     </figure>
   );
 }

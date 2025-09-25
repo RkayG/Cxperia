@@ -6,7 +6,6 @@ import DesignedForSection from '@/components/designed-for';
 import { PricingCard } from '@/components/pricing';
 import { Footer } from '@/components/footer';
 import HeroSection from '@/components/hero';
-import HowToSection from '@/components/how-to';
 
 export default async function IndexPage() {
 
@@ -19,7 +18,6 @@ export default async function IndexPage() {
       <DesignedForSection />
       <PricingCard  />
       <Footer />
-      <HowToSection />
     </>
   );
 }
