@@ -102,7 +102,7 @@ export function PricingCard() {
               className={buttonVariants({
                 variant: tier.isPopular ? "default" : "outline",
               })}
-            >
+              legacyBehavior>
               {tier.buttonText}
             </Link>
           </CardFooter>

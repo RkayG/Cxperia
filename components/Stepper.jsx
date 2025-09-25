@@ -62,7 +62,7 @@ export default function Stepper({
 
   return (
     <div className="outer-container " {...rest}>
-      <Link href="/">
+      <Link href="/" legacyBehavior>
         <Image src={logo} alt="Cxperia Logo" className="h-16  w-36 flex justify-self-center mx-auto " />
       </Link>
       <div className={`step-circle-container ${stepCircleContainerClassName}`} style={{ }}>

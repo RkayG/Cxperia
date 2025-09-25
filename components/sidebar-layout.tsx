@@ -61,7 +61,7 @@ function NavItem(props: {
       )}
       onClick={props.onClick}
       prefetch={true}
-    >
+      legacyBehavior>
       <props.item.icon className="mr-2 h-5 w-5" />
       {props.item.name}
     </Link>

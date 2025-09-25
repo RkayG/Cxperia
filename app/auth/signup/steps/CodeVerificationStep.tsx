@@ -1,8 +1,8 @@
-// app/auth/signup/steps/CodeVerificationStep.tsx
 'use client';
 
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 
 interface CodeVerificationStepProps {
   email: string;
@@ -11,27 +11,12 @@ interface CodeVerificationStepProps {
 }
 
 export default function CodeVerificationStep({ email, userId, onSuccess }: CodeVerificationStepProps) {
-  const [code, setCode] = useState(['', '', '', '', '', '']);
+  const [code, setCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleCodeChange = (value: string, index: number) => {
-    if (!/^\d?$/.test(value)) return;
-
-    const newCode = [...code];
-    newCode[index] = value;
-    setCode(newCode);
-
-    // Auto-focus next input
-    if (value && index < 5) {
-      const nextInput = document.getElementById(`code-${index + 1}`);
-      if (nextInput) (nextInput as HTMLInputElement).focus();
-    }
-  };
-
   const handleVerify = async () => {
-    const fullCode = code.join('');
-    if (fullCode.length !== 6) {
+    if (code.length !== 6) {
       setError('Please enter a 6-digit code');
       return;
     }
@@ -43,7 +28,7 @@ export default function CodeVerificationStep({ email, userId, onSuccess }: CodeV
       const { data, error } = await supabase
         .from('email_confirmations')
         .select('*')
-        .eq('confirmation_code', fullCode)
+        .eq('confirmation_code', code)
         .eq('user_id', userId)
         .eq('used', false)
         .gt('expires_at', new Date())
@@ -88,18 +73,21 @@ export default function CodeVerificationStep({ email, userId, onSuccess }: CodeV
       </p>
       <p className="font-mono text-purple-600 mb-6">{email}</p>
 
-      <div className="flex justify-center space-x-2 mb-6">
-        {code.map((digit, index) => (
-          <input
-            key={index}
-            id={`code-${index}`}
-            type="text"
-            maxLength={1}
-            value={digit}
-            onChange={(e) => handleCodeChange(e.target.value, index)}
-            className="w-12 h-12 text-center text-2xl font-bold border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none"
-          />
-        ))}
+      <div className="flex justify-center mb-6">
+        <InputOTP
+          maxLength={6}
+          value={code}
+          onChange={setCode}
+        >
+          <InputOTPGroup className="gap-2">
+            <InputOTPSlot index={0} className="w-12 h-12 text-2xl font-bold border-2 border-gray-300 rounded-lg focus:border-purple-500" />
+            <InputOTPSlot index={1} className="w-12 h-12 text-2xl font-bold border-2 border-gray-300 rounded-lg focus:border-purple-500" />
+            <InputOTPSlot index={2} className="w-12 h-12 text-2xl font-bold border-2 border-gray-300 rounded-lg focus:border-purple-500" />
+            <InputOTPSlot index={3} className="w-12 h-12 text-2xl font-bold border-2 border-gray-300 rounded-lg focus:border-purple-500" />
+            <InputOTPSlot index={4} className="w-12 h-12 text-2xl font-bold border-2 border-gray-300 rounded-lg focus:border-purple-500" />
+            <InputOTPSlot index={5} className="w-12 h-12 text-2xl font-bold border-2 border-gray-300 rounded-lg focus:border-purple-500" />
+          </InputOTPGroup>
+        </InputOTP>
       </div>
 
       {error && (
@@ -108,7 +96,7 @@ export default function CodeVerificationStep({ email, userId, onSuccess }: CodeV
 
       <button
         onClick={handleVerify}
-        disabled={isLoading || code.join('').length !== 6}
+        disabled={isLoading || code.length !== 6}
         className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold py-3 px-4 rounded-xl disabled:opacity-50"
       >
         {isLoading ? 'Verifying...' : 'Verify Code'}

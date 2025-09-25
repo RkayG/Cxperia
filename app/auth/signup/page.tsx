@@ -45,19 +45,13 @@ export default function SignupPage() {
     switch (step) {
       case 1:
         // BrandInfoStep: require brandName and brandSlug (website URL)
-        return (
-          signupData.brandName.trim().length > 0 &&
-          signupData.brandSlug.trim().length > 0 &&
-          /^https?:\/\/.+\..+/.test(signupData.brandSlug.trim())
-        );
+        return (signupData.brandName.trim().length > 0 &&
+        signupData.brandSlug.trim().length > 0 && /^https?:\/\/.+\..+/.test(signupData.brandSlug.trim()));
       case 2:
         // AccountInfoStep: require firstName, lastName, email
-        return (
-          signupData.firstName.trim().length > 0 &&
-          signupData.lastName.trim().length > 0 &&
-          signupData.email.trim().length > 0 &&
-          /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(signupData.email.trim())
-        );
+        return (signupData.firstName.trim().length > 0 &&
+        signupData.lastName.trim().length > 0 &&
+        signupData.email.trim().length > 0 && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(signupData.email.trim()));
       case 3:
         // ConfirmPasswordStep: require strong password and match
         const password = signupData.password;
