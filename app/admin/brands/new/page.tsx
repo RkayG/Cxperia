@@ -1,7 +1,10 @@
 // app/admin/brands/new/page.tsx
 'use client';
-import { useState } from 'react';
+import InputField from '@/components/input-field';
+import { showToast } from '@/lib/toast';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { Toaster } from 'react-hot-toast';
 
 export default function NewBrandPage() {
   const router = useRouter();
@@ -9,7 +12,8 @@ export default function NewBrandPage() {
   const [formData, setFormData] = useState({
     name: '',
     contact_email: '',
-    contact_name: '',
+    first_name: '',
+    last_name: '',
     contact_phone: '',
     plan_tier: 'enterprise',
     monthly_volume: '',
@@ -18,30 +22,49 @@ export default function NewBrandPage() {
     notes: ''
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsSubmitting(true);
 
-    try {
-      const response = await fetch('/api/admin/brands', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
+  try {
+    const response = await fetch('/api/admin/brands', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ...formData,
+        sales_rep: 'Current Sales Rep'
+      })
+    });
 
-      if (response.ok) {
-        const { brandId } = await response.json();
-        router.push(`/admin/brands/${brandId}?tab=onboarding`);
-      }
-    } catch (error) {
-      console.error('Error creating brand:', error);
-    } finally {
-      setIsSubmitting(false);
+    if (response.ok) {
+      const result = await response.json();
+
+      showToast.success(`Brand created successfully! Invitation sent to ${formData.contact_email}`);
+      router.push(`/admin/brands/${result.brandId}`);
+    } else {
+      let errorMsg = 'Failed to create brand';
+      try {
+        const errorData = await response.json();
+        if (errorData && typeof errorData === 'object' && typeof (errorData as any).error === 'string') {
+          errorMsg = (errorData as any).error;
+        }
+      } catch {}
+      showToast.error(String(errorMsg));
     }
-  };
+  } catch (error) {
+    console.error('Error creating brand:', error);
+    showToast.error('Error creating brand. Please try again.');
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   return (
+    <>
+      <Toaster />
+    
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Onboard New Brand</h1>
         <p className="text-gray-600 mt-2">Create a new brand account after contract signing</p>
@@ -54,20 +77,20 @@ export default function NewBrandPage() {
             <h3 className="text-lg font-medium text-gray-900 mb-4">Brand Information</h3>
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Brand Name *
-                </label>
-                <input
-                  type="text"
+                <InputField
+                  id='brand_name'
+                  type="text" 
                   required
                   value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  placeholder="Nivea Skincare"
+                  label='Brand Name *'
+
+                  onChange={(val) => setFormData({...formData, name: val})}
+                  placeholder=""
+
                 />
               </div>
 
-              <div>
+              <div> 
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Plan Tier *
                 </label>
@@ -89,43 +112,46 @@ export default function NewBrandPage() {
             <h3 className="text-lg font-medium text-gray-900 mb-4">Contact Information</h3>
             <div className="grid md:grid-cols-3 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Contact Name *
-                </label>
-                <input
+                <InputField
+                  id="first_name"
                   type="text"
+                  label="First Name *"
+                  placeholder=""
+                  value={formData.first_name}
+                  onChange={(val) => setFormData({ ...formData, first_name: val })}
                   required
-                  value={formData.contact_name}
-                  onChange={(e) => setFormData({...formData, contact_name: e.target.value})}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  placeholder="John Doe"
                 />
               </div>
-
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Contact Email *
-                </label>
-                <input
+                <InputField
+                  id="last_name"
+                  type="text"
+                  label="Last Name *"
+                  placeholder=""
+                  value={formData.last_name}
+                  onChange={(val) => setFormData({ ...formData, last_name: val })}
+                  required
+                />
+              </div>
+              <div>
+                <InputField
+                  id="contact_email"
                   type="email"
-                  required
+                  label="Contact Email *"
+                  placeholder=""
                   value={formData.contact_email}
-                  onChange={(e) => setFormData({...formData, contact_email: e.target.value})}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  placeholder="john@brand.com"
+                  onChange={(val) => setFormData({ ...formData, contact_email: val })}
+                  required
                 />
               </div>
-
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Contact Phone
-                </label>
-                <input
+                <InputField
+                  id="contact_phone"
                   type="tel"
+                  label=""
+                  placeholder="+33"
                   value={formData.contact_phone}
-                  onChange={(e) => setFormData({...formData, contact_phone: e.target.value})}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  placeholder="+1 (555) 000-0000"
+                  onChange={(val) => setFormData({ ...formData, contact_phone: val })}
                 />
               </div>
             </div>
@@ -202,5 +228,6 @@ export default function NewBrandPage() {
         </div>
       </form>
     </div>
+    </>
   );
 }

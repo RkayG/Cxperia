@@ -1,8 +1,8 @@
 // app/admin/layout.tsx
+import AdminNav from '@/components/admin/AdminNav';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import AdminNav from '@/components/admin/AdminNav';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
