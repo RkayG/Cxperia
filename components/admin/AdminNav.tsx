@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import Image from 'next/image';
+import logo from '@/assets/logo.png';
 
 interface AdminNavProps {
   user: any;
@@ -23,11 +25,11 @@ export default function AdminNav({ user }: AdminNavProps) {
   };
 
   return (
-    <nav className="bg-white shadow-sm border-b">
+    <nav className="bg-white border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <h1 className="text-xl font-semibold">BeautyConnect Admin</h1>
+            <Image src={logo} alt="BeautyConnect Logo" className="h-8 w-auto" />
             <div className="ml-6 flex space-x-4">
               {navItems.map((item) => (
                 <Link

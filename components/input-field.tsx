@@ -8,9 +8,12 @@ interface InputFieldProps {
   placeholder: string;
   value: string;
   onChange: (value: string) => void;
+  onKeyPress?: (e: React.KeyboardEvent) => void;
   showPasswordToggle?: boolean;
+  autoComplete?: string;
   onTogglePassword?: () => void;
   showPassword?: boolean;
+  required?: boolean;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -20,7 +23,10 @@ const InputField: React.FC<InputFieldProps> = ({
   placeholder,
   value,
   onChange,
+  onKeyPress,
+  required = false,
   showPasswordToggle = false,
+  autoComplete,
   onTogglePassword,
   showPassword = false
 }) => {
@@ -33,7 +39,10 @@ const InputField: React.FC<InputFieldProps> = ({
         <input
           id={id}
           type={showPasswordToggle ? (showPassword ? 'text' : 'password') : type}
+           onKeyPress={onKeyPress}
           placeholder={placeholder}
+          autoComplete={autoComplete}
+          required={required}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           className="w-full bricolage-grotesque-light px-4 py-3 bg-gray-50 border border-purple-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:bg-white transition-all duration-200"
