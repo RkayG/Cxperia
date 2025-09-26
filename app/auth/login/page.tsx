@@ -40,11 +40,9 @@ export default function Login() {
       <div className="relative hidden lg:flex items-center justify-center bg-[#e9c0e9]">
         <div className="text-center w-full px-8">
           <h1 className="font-black text-4xl bricolage-grotesque-light md:text-4xl lg:text-4xl text-[#502274] leading-tight">
-            Welcome back to your beauty dashboard.
+            Sign in to to your beauty dashboard to connect with your customers and unlock new digital experiences.
           </h1>
-          <p className="mt-6 text-lg text-[#502274] font-medium">
-            Sign in to manage your brand, connect with your customers, and unlock new digital experiences.
-          </p>
+         
         </div>
       </div>
       {/* Right: Login Form */}
@@ -62,7 +60,7 @@ export default function Login() {
                 id="email"
                 type="email"
                 label="Email"
-                placeholder="example.@company.com"
+                placeholder="example@brand.com"
                 value={email}
                 onChange={setEmail}
               />
@@ -102,10 +100,10 @@ export default function Login() {
                   onClick={() => handleSocialLogin('apple')} 
                 />
               </div> */}
-              <p className="text-sm text-gray-700 mt-6">
+              {/* <p className="text-sm text-gray-700 mt-6">
                 Don't have an account yet?{' '}
                 <a href="/auth/signup" className="text-purple-600 font-semibold hover:underline">Create account</a>
-              </p>
+              </p> */}
             </div>
           </div>
         </div>

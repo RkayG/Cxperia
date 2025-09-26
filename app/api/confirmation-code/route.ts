@@ -71,6 +71,6 @@ async function sendConfirmationCodeEmail(email: string, code: string) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, code })
   });
-  
+  console.log('Email send response:', response);
   if (!response.ok) throw new Error('Failed to send confirmation email');
 }

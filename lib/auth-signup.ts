@@ -10,6 +10,11 @@ export async function completeSignup(data: SignupData) {
       .insert({
         name: data.brandName,
         brand_slug: data.brandSlug,
+        business_address: data.businessAddress,
+        zip_code: data.zipCode,
+        city: data.city,
+        country: data.country,
+        contact_info: data.contactInfo,
       })
       .select()
       .single();
@@ -64,13 +69,11 @@ export async function completeSignup(data: SignupData) {
 
 // Email service function (you'll need to implement this)
 async function sendConfirmationCodeEmail(email: string, code: string) {
-  // Use Resend, SendGrid, or any email service
-  // Example with Resend:
   const response = await fetch('/api/send-confirmation-code', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, code })
   });
-  
-  if (!response.ok) throw new Error('Failed to send confirmation email');
+  console.log('Email send response:', response);
+  if (!response.ok) throw new Error('Failed to send confirmation code email');
 }
