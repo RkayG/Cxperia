@@ -2,12 +2,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 
+// Mailtrap SMTP config for testing
 const transporter = nodemailer.createTransport({
-  host: process.env.MAIL_HOST,
-  port: Number(process.env.MAIL_PORT),
+  host: process.env.MAILTRAP_HOST || 'sandbox.smtp.mailtrap.io',
+  port: Number(process.env.MAILTRAP_PORT) || 587,
   auth: {
-    user: process.env.MAIL_USERNAME,
-    pass: process.env.MAIL_PASSWORD,
+    user: process.env.MAILTRAP_USER,
+    pass: process.env.MAILTRAP_PASS,
   },
 });
 

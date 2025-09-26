@@ -6,6 +6,7 @@ const supabaseAdmin = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
+
 export async function POST(request: NextRequest) {
   try {
     const data = await request.json() as {
@@ -28,7 +29,7 @@ export async function POST(request: NextRequest) {
         name: data.name,
         brand_slug: generateSlug(data.name),
         plan_tier: data.plan_tier,
-        status: 'pending_setup',
+        status: 'pending_activation', // New status
         contact_email: data.contact_email,
         contact_name: `${data.first_name} ${data.last_name}`,
         contact_phone: data.contact_phone,
@@ -41,55 +42,57 @@ export async function POST(request: NextRequest) {
 
     if (brandError) throw brandError;
 
-    // 2. Create user account for the brand contact, or fetch if exists
-    let userId = null;
-    let userCreated = false;
-    let userData = null;
-    let userError = null;
-    try {
-      const result = await supabaseAdmin.auth.admin.createUser({
-        email: data.contact_email,
-        password: generateTemporaryPassword(),
-        email_confirm: true,
-        user_metadata: {
-          first_name: data.first_name,
-          last_name: data.last_name,
-          role: 'brand_admin',
-          brand_id: brand.id
-        }
-      });
-      userData = result.data;
-      userError = result.error;
-      if (userData && userData.user) {
-        userId = userData.user.id;
-        userCreated = true;
+    // 2. Create user WITHOUT password - they'll set it during activation
+    const { data: userData, error: userError } = await supabaseAdmin.auth.admin.createUser({
+      email: data.contact_email,
+      // NO PASSWORD HERE - let user set it during activation
+      email_confirm: false, // Don't confirm yet - wait for activation
+      user_metadata: {
+        first_name: data.first_name,
+        last_name: data.last_name,
+        role: 'brand_admin',
+        brand_id: brand.id
       }
-    } catch (err: any) {
-      userError = err;
-    }
+    });
 
-    // If user already exists, abort to prevent accidental overwrite
-    if (userError && userError.code === 'email_exists') {
-      return NextResponse.json({ error: 'A user with this email address has already been registered.' }, { status: 409 });
-    } else if (userError) {
-      throw userError;
-    }
+    if (userError) throw userError;
 
-    // 3. Create profile record only if user was just created
-    if (userId && userCreated) {
+    // 3. Create profile record
+    if (userData.user) {
       await supabaseAdmin
         .from('profiles')
         .upsert({
-          id: userId,
+          id: userData.user.id,
           brand_id: brand.id,
           role: 'brand_admin',
           first_name: data.first_name,
           last_name: data.last_name,
-          status: 'active'
+          status: 'pending_activation' // Matches brand status
         });
     }
 
-    // 4. Send CUSTOM invitation email via API route
+    // 4. Generate activation link (NOT temporary password)
+
+    // Supabase requires a password for signup link, but user will set it on first login. Use a random strong temp password.
+    const tempPassword = `Welcome${Math.random().toString(36).slice(2, 8)}!${Math.floor(Math.random()*100)}`;
+    const { data: inviteData, error: inviteError } = await supabaseAdmin.auth.admin.generateLink({
+      type: 'signup',
+      email: data.contact_email,
+      password: tempPassword,
+      options: {
+        data: {
+          first_name: data.first_name,
+          last_name: data.last_name,
+          role: 'brand_admin',
+          brand_id: brand.id
+        },
+        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`
+      }
+    });
+
+    if (inviteError) throw inviteError;
+
+    // 5. Send activation email via the send-brand-invitation API endpoint
     await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/admin/send-brand-invitation`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -97,8 +100,7 @@ export async function POST(request: NextRequest) {
         to: data.contact_email,
         brandName: data.name,
         contactName: `${data.first_name} ${data.last_name}`,
-        brandId: brand.id,
-        loginEmail: data.contact_email,
+        activationLink: inviteData?.properties?.action_link,
         salesRep: data.sales_rep || 'Cxperia Team'
       })
     });
@@ -106,7 +108,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ 
       success: true, 
       brandId: brand.id,
-      message: 'Brand onboarded successfully. Invitation email sent.' 
+      message: 'Brand created. Activation email sent.' 
     });
 
   } catch (error: any) {
@@ -121,8 +123,4 @@ function generateSlug(name: string): string {
     .replace(/[^a-z0-9]/g, '-')
     .replace(/-+/g, '-')
     .replace(/^-|-$/g, '');
-}
-
-function generateTemporaryPassword(): string {
-  return `Welcome${Math.random().toString(36).slice(2, 8)}!`;
 }

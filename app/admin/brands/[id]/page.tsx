@@ -15,7 +15,7 @@ export default async function BrandPage({ params }: BrandPageProps) {
 		.single();
 
 	if (error || !brand) {
-		return notFound();
+		notFound();
 	}
 
 	return (

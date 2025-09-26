@@ -45,8 +45,15 @@ const handleSubmit = async (e: React.FormEvent) => {
       let errorMsg = 'Failed to create brand';
       try {
         const errorData = await response.json();
-        if (errorData && typeof errorData === 'object' && typeof (errorData as any).error === 'string') {
-          errorMsg = (errorData as any).error;
+        if (errorData && typeof errorData === 'object') {
+          const err = errorData as any;
+          if (err.code === '23505' && err.message?.includes('brands_email_unique')) {
+            errorMsg = 'A brand with this contact email already exists.';
+          } else if (err.code === '23505' && err.message?.includes('brands_brand_slug_key')) {
+            errorMsg = 'A brand with this brand name already exists.';
+          } else if (typeof err.error === 'string') {
+            errorMsg = 'Error creating brand. Please try again.';
+          }
         }
       } catch {}
       showToast.error(String(errorMsg));
