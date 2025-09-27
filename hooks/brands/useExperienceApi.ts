@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import * as api from '../../../Cyxperia/CxperiaPlatform/src/services/experienceService';
+import * as api from '@/services/brands/experienceService';
 
 export function useExperiences(brand_id?: string | undefined) {
   return useQuery({

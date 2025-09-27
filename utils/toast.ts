@@ -7,7 +7,7 @@ export const showToast = {
       style: {
         background: '#10B981',
         color: 'white',
-        fontSize: '14px',
+        fontSize: '20px',
         fontWeight: 'semibold',
         minWidth: '350px',
       },
@@ -33,7 +33,7 @@ export const showToast = {
     style: {
       background: '#3B82F6',
       color: 'white',
-      fontSize: '14px',
+      fontSize: '20px',
       fontWeight: 'semibold',
       minWidth: '350px',
     },

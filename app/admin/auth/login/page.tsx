@@ -76,7 +76,7 @@ export default function Login() {
             <div className="flex flex-col items-center mb-8">
               <Image 
                 src={logo} 
-                alt="BeautyConnect Logo" 
+                alt="Cxperia Logo" 
                 className="h-16 w-36 mb-4"
                 priority
               />

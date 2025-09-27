@@ -74,7 +74,7 @@ export interface StepIndicatorProps {
   totalSteps?: number;
 }
 
-import type { ValidationErrors } from '../utils/validation';
+import type { ValidationErrors } from '@/utils/validation';
 export interface ProductFormProps {
   data: Experience;
   onUpdate: (data: Partial<Experience>) => void;

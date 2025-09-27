@@ -1,11 +1,21 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-//import { UserButton } from "@stackframe/stack";
-import { LucideIcon, Menu } from "lucide-react";
+import { 
+  BadgePercent, 
+  BarChart4, 
+  Columns3, 
+  Globe, 
+  Locate, 
+  Settings2, 
+  ShoppingBag, 
+  ShoppingCart, 
+  Users,
+  LucideIcon,
+  Menu 
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-//import { useTheme } from "next-themes";
 import { useState } from "react";
 import {
   Breadcrumb,
@@ -19,6 +29,19 @@ import { buttonVariants } from "./ui/button";
 import { Separator } from "./ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 
+// Create an icon map
+const iconMap: Record<string, LucideIcon> = {
+  Globe,
+  ShoppingBag,
+  Users,
+  Columns3,
+  Locate,
+  BarChart4,
+  ShoppingCart,
+  BadgePercent,
+  Settings2,
+};
+
 function useSegment(basePath: string) {
   const path = usePathname();
   const result = path.slice(basePath.length, path.length);
@@ -28,7 +51,7 @@ function useSegment(basePath: string) {
 type Item = {
   name: React.ReactNode;
   href: string;
-  icon: LucideIcon;
+  icon: string; // Change from LucideIcon to string
   type: "item";
 };
 
@@ -50,19 +73,21 @@ function NavItem(props: {
 }) {
   const segment = useSegment(props.basePath);
   const selected = segment === props.item.href;
+  const IconComponent = iconMap[props.item.icon];
 
   return (
     <Link
       href={props.basePath + props.item.href}
       className={cn(
         buttonVariants({ variant: "ghost", size: "sm" }),
-        selected && "bg-muted",
-        "flex-grow justify-start text-md text-zinc-800 dark:text-zinc-300 px-2"
+        selected && "bg-purple-200",
+        "flex-grow justify-start text-md bricolage-grotesque-light text-zinc-800 dark:text-zinc-300 px-2"
       )}
       onClick={props.onClick}
       prefetch={true}
-      legacyBehavior>
-      <props.item.icon className="mr-2 h-5 w-5" />
+    >
+      {/* Remove the fragment and put all children directly under Link */}
+      {IconComponent && <IconComponent className="mr-2 h-5 w-5" />}
       {props.item.name}
     </Link>
   );
@@ -153,7 +178,7 @@ export default function SidebarLayout(props: {
 
   return (
     <div className="w-full flex">
-      <div className="flex-col border-r w-[240px] h-screen sticky top-0 hidden md:flex">
+      <div className="flex-col border-r w-[240px] bg-[#ede8f3] h-screen sticky top-0 hidden md:flex">
         <SidebarContent items={props.items} sidebarTop={props.sidebarTop} basePath={props.basePath} />
       </div>
       <div className="flex flex-col flex-grow w-0">

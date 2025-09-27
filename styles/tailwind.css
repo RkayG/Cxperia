@@ -55,6 +55,10 @@
     "wdth" 100;
 }
 
+* {
+  font-family: "Bricolage Grotesque", sans-serif;
+}
+
 .noto-sans {
   font-family: "Noto Sans", sans-serif;
   font-optical-sizing: auto;

@@ -1,7 +1,8 @@
-// app/s/[subdomain]/dashboard/layout.tsx
-import { BadgePercent, BarChart4, Columns3, Globe, Locate, Settings2, ShoppingBag, ShoppingCart, Users } from "lucide-react";
+// app/dashboard/layout.tsx (Server Component)
+import Image from "next/image";
+import logo from '../../assets/logo.png'
 import SidebarLayout, { SidebarItem } from "@/components/sidebar-layout";
-import { getCurrentUserBrand, getBrandStats } from '@/lib/data/brands';
+import { getCurrentUserBrand } from '@/lib/data/brands';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -11,7 +12,7 @@ const navigationItems: SidebarItem[] = [
   {
     name: "Overview",
     href: "/overview",
-    icon: Globe,
+    icon: "Globe", // String instead of component
     type: "item",
   },
   {
@@ -21,25 +22,25 @@ const navigationItems: SidebarItem[] = [
   {
     name: "Products",
     href: "/products",
-    icon: ShoppingBag,
+    icon: "ShoppingBag",
     type: "item",
   },
   {
     name: "People",
     href: "/people",
-    icon: Users,
+    icon: "Users",
     type: "item",
   },
   {
     name: "Segments",
     href: "/segments",
-    icon: Columns3,
+    icon: "Columns3",
     type: "item",
   },
   {
     name: "Regions",
     href: "/regions",
-    icon: Locate,
+    icon: "Locate",
     type: "item",
   },
   {
@@ -49,19 +50,19 @@ const navigationItems: SidebarItem[] = [
   {
     name: "Revenue",
     href: "/revenue",
-    icon: BarChart4,
+    icon: "BarChart4",
     type: "item",
   },
   {
     name: "Orders",
     href: "/orders",
-    icon: ShoppingCart,
+    icon: "ShoppingCart",
     type: "item",
   },
   {
     name: "Discounts",
     href: "/discounts",
-    icon: BadgePercent,
+    icon: "BadgePercent",
     type: "item",
   },
   {
@@ -71,14 +72,14 @@ const navigationItems: SidebarItem[] = [
   {
     name: "Configuration",
     href: "/configuration",
-    icon: Settings2,
+    icon: "Settings2",
     type: "item",
   },
 ];
 
-
 export default async function DashboardLayout({ children }: DashboardLayoutProps) {
   const brand = await getCurrentUserBrand();
+  console.log("Current Brand in Layout:", brand);
   const brandName = brand?.name || "Your Brand";
 
   return (
@@ -87,7 +88,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
       basePath="/dashboard"
       sidebarTop={
         <div className="px-4 py-6">
-          <h1 className="text-xl font-semibold">{brandName} Dashboard</h1>
+          <Image src={logo} alt="Logo" className="h-10 w-24" />
         </div>
       }
       baseBreadcrumb={[{

@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
           </div>
           <div class="content">
             <h2>Hello ${contactName},</h2>
-            <p>Your Cxperia account for <strong>${brandName}</strong> has been prepared by our team. You're one click away from accessing your dashboard.</p>
+            <p>Your Cxperia account for <strong>${brandName}</strong> has been prepared by our team. You're one click away from activating your account.</p>
             <div style="text-align: center; margin: 40px 0;">
               <a href="${activationLink}" class="button">Activate Your Account</a>
             </div>

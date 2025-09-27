@@ -1,7 +1,7 @@
 // DEBUG: Hook loaded
 console.log('[useEnableDisableFeatures] loaded');
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import * as api from '../../../Cyxperia/CxperiaPlatform/src/services/enableDisableFeatureService';
+import * as api from '@/services/brands/enableDisableFeatureService';
 
 // Enable a feature for an experience
 export function useEnableFeature() {

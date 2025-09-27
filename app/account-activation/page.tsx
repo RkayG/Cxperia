@@ -17,6 +17,7 @@ export default function ActivateAccount() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
+  // Only use token from query param (Supabase Otp token)
   const token = searchParams.get('token');
 
   // Check if we have a valid token on page load
@@ -35,6 +36,7 @@ export default function ActivateAccount() {
         });
 
         if (error) {
+            console.error('Token verification error:', error);
           setError('Invalid or expired activation link');
         } else if (data.user) {
           setUserEmail(data.user.email || 'your account');

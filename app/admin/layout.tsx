@@ -31,15 +31,15 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
   
   if (sessionError) {
     console.error('Session error:', sessionError);
-    redirect('/auth/login');
+    redirect('/admin/auth/login');
   }
   if (sessionError) {
     console.error('Session error:', sessionError);
-    redirect('/auth/login');
+    redirect('/admin/auth/login');
   }
 
   if (!session?.user) {
-    redirect('/auth/login?redirect=/admin');
+    redirect('/admin/auth/login?redirect=/admin');
   }
 
   // Get user's profile with role
