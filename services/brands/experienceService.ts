@@ -2,8 +2,8 @@
 // src/services/experienceService.ts
 // Service for Experience API calls
 
-const API_BASE = import.meta.env.VITE_BACKEND_URL || '167.172.18.243/api';
-import { getAuthHeaders } from '../utils/getAuthHeaders';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:4000/api';
+import { getAuthHeaders } from '@/utils/getAuthHeaders';
 
 // Create Experience
 export async function createExperience(data: any) {

@@ -103,3 +103,32 @@ export interface ProductPayload {
   net_content?: string | null;
   estimated_usage_duration_days?: number;
 }
+
+
+/** ====================================
+* PREVIEW TYPES
+* =====================================
+*/
+export interface MobilePreviewProps {
+  experienceId: string; // Experience ID required for preview embedding
+}
+
+export interface QrCodeGeneratorProps {
+  onGenerateQrCode: () => void;
+  qrCodeImageUrl?: string; // URL of the generated QR code
+  isLoading?: boolean;
+}
+
+export interface DownloadOptionsProps {
+  onDownload: (format: string) => void;
+}
+
+export interface PreviewPageProps {
+  // These props would typically come from a parent component or state management
+  mobilePreviewData: MobilePreviewProps;
+  qrCodeImageUrl?: string; // Pass generated QR code URL down
+  onGenerateQrCode: () => void;
+  onDownloadQrCode: (format: string) => void;
+  onFinish: () => void;
+  isGeneratingQr: boolean;
+}

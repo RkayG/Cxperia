@@ -1,9 +1,10 @@
+'use client';
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { FaSearch } from "react-icons/fa";
 import { useExperiences } from "@/hooks/brands/useExperienceApi";
 import { Skeleton } from "@/components/ui/skeleton";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
 import ProjectCard from "./components/ProjectCard";
 import { useRecentTutorials } from "@/hooks/brands/useFeatureApi";
 import {
@@ -19,6 +20,8 @@ import recentBanner2 from '@/assets/images/recent-banner2.png'
 export default function RecentPage() {
   const { data, isLoading: isLoadingExperiences } = useExperiences();
   const router = useRouter();
+  // Banner image loading state (must be top-level for hooks)
+  const [bannerLoaded, setBannerLoaded] = React.useState(false);
   // Normalize experiences array
   const experiences = Array.isArray(data?.data)
     ? data.data
@@ -82,28 +85,33 @@ export default function RecentPage() {
   ]; */
 
   return (
-    <div className="bg-gray-50 mx-auto max-w-screen-lg mb-24 min-h-screen">
-      {/* Header Section */}
-      <div
-        className="relative mb-8 p-4 hidden  md:block md:p-8 bg-gradient-to-r from-purple-200 to-white  overflow-hidden"
-        style={{
-          backgroundImage: `url(${recentBanner2})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        <div className="flex flex-col  items-center text-center relative z-10">
-          <h1
-            className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-700 text-transparent bg-clip-text mb-4"
-            style={{ fontFamily: "Mozilla Headline, sans-serif" }}
-          >
-            Hello, Brand
-          </h1>
-          <p className="text-gray-700 mb-6 max-w-sm md:max-w-xl">
-            View and manage your latest product experiences and tutorials.
-          </p>
+    <>
+    <div className="relative w-[90%] mx-auto mt-4 mb-8 hidden md:block h-32">
+      {!bannerLoaded && (
+        <div className="absolute inset-0 z-0">
+          <Skeleton className="w-full h-full rounded-xl" />
         </div>
+      )}
+      <Image
+        src={recentBanner2}
+        alt="Banner"
+        className="rounded-xl w-full h-full object-cover"
+        fill={false}
+        onLoad={() => setBannerLoaded(true)}
+        style={{ display: bannerLoaded ? 'block' : 'none' }}
+      />
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center z-10">
+        <h1
+          className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-700 text-transparent bg-clip-text mb-2 mt-6"
+        >
+          Hello, Brand
+        </h1>
+        <p className="text-gray-700 mb-6 max-w-sm md:max-w-xl">
+          View your latest product experiences and tutorials.
+        </p>
       </div>
+    </div>
+    <div className="mb-24 min-h-screen">
 
       <div className="w-full max-w-xs mb-12 mt-12 md:mt-auto mx-auto md:max-w-xl relative">
         <input
@@ -167,8 +175,8 @@ export default function RecentPage() {
               </>
             )}
           </CarouselContent>
-          <CarouselPrevious className="-left-4 top-1/2 -translate-y-1/2" />
-          <CarouselNext className="-right-4 top-1/2 -translate-y-1/2" />
+      {/*     <CarouselPrevious className="-left-4 top-1/2 -translate-y-1/2" />
+          <CarouselNext className="-right-4 top-1/2 -translate-y-1/2" /> */}
         </Carousel>
         {/* See All Products Button */}
         <div className="flex justify-center mb-12 md:mb-auto mt-4">
@@ -229,8 +237,8 @@ export default function RecentPage() {
               </>
             )}
           </CarouselContent>
-          <CarouselPrevious className="-left-4 top-1/2 -translate-y-1/2" />
-          <CarouselNext className="-right-4 top-1/2 -translate-y-1/2" />
+        {/*   <CarouselPrevious className="-left-4 top-1/2 -translate-y-1/2" />
+          <CarouselNext className="-right-4 top-1/2 -translate-y-1/2" /> */}
         </Carousel>
         {/* See All Tutorials Button */}
         <div className="flex justify-center mt-4 mb-16 ">
@@ -276,5 +284,6 @@ export default function RecentPage() {
         }
       `}</style>
     </div>
+    </>
   );
 }

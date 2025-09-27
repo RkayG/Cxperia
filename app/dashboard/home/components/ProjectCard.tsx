@@ -1,4 +1,5 @@
-import { useRouter } from "next/router";
+'use client';
+import { useRouter } from "next/navigation";
 import { FaPlus } from "react-icons/fa";
 import { MdOutlinePlaylistAdd, MdQrCode, MdPending } from "react-icons/md";
 import {

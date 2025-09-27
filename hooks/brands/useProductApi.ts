@@ -5,7 +5,7 @@ import {
 	getProductById,
 	updateProduct,
 	deleteProduct,
-} from '../../../Cyxperia/CxperiaPlatform/src/services/productService';
+} from '@/services/brands/productService';
 
 // Fetch all products 
 export function useProducts() {

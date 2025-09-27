@@ -1,8 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import * as api from '../../../Cyxperia/CxperiaPlatform/src/services/featureService';
+import * as api from '@/services/brands/featureService';
 
 // --- INCI Ingredient Search ---
-import { searchInciIngredients } from '../../../Cyxperia/CxperiaPlatform/src/services/featureService';
+import { searchInciIngredients } from '@/services/brands/featureService';
 
 // --- Ingredients ---
 export function useIngredients(experienceId?: string) {

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { getOrSetPublicUrl } from '../../../Cyxperia/CxperiaPlatform/src/services/publicUrlSerivce';
+import { getOrSetPublicUrl } from '@/services/brands/publicUrlSerivce';
 
 /**
  * usePublicUrl - React hook to get or set public experience URL

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { generateQrCode } from '../../../Cyxperia/CxperiaPlatform/src/services/qrService';
+import { generateQrCode } from '@/services/brands/qrService';
 
 /**
  * useQrApi - React hook to generate QR codes from text/URL
