@@ -38,9 +38,9 @@ const ProjectCard = ({
  console.log("ProjectCard props:", { id, type, title, imageUrl, videoUrl, mediaUrl, qr_code_url, isCreateCard });
   const handleCreateClick = () => {
     if (type === "product experience") {
-      router.push(`/create-experience?step=product-details&new=true`);
+      router.push(`/dashboard/experience/create?step=product-details&new=true`);
     } else if (type === "tutorial") {
-      router.push("/tutorial?mode=create");
+      router.push("/dashboard/tutorial?mode=create");
     }
   };
 

@@ -142,13 +142,18 @@ export type HeaderBreadcrumbItem = { title: string; href: string };
 
 function HeaderBreadcrumb(props: { items: SidebarItem[], baseBreadcrumb?: HeaderBreadcrumbItem[], basePath: string }) {
   const segment = useSegment(props.basePath);
-  console.log(segment)
   const item = props.items.find((item) => item.type === 'item' && item.href === segment);
-  const title: string | undefined = (item as any)?.name
+  const title: string | undefined = (item as any)?.name;
+  // Get brand from store
+  const brand = require('@/store/brands/useExperienceStore').useExperienceStore((state: any) => state.brand);
 
   return (
     <Breadcrumb>
       <BreadcrumbList>
+        <BreadcrumbItem>
+          <BreadcrumbLink href="/dashboard/home">{brand?.name || 'Brand'}</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
         {props.baseBreadcrumb?.map((item, index) => (
           <>
             <BreadcrumbItem key={index}>
@@ -157,7 +162,6 @@ function HeaderBreadcrumb(props: { items: SidebarItem[], baseBreadcrumb?: Header
             <BreadcrumbSeparator key={`separator-${index}`} />
           </>
         ))}
-
         <BreadcrumbItem>
           <BreadcrumbPage>{title}</BreadcrumbPage>
         </BreadcrumbItem>

@@ -1,10 +1,12 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Experience, FeatureSettings } from '@/types/productExperience';
-
+import type { Brand } from '@/types/brand';
 
 
 interface ExperienceState {
+  brand: Brand | null;
+  setBrand: (brand: Brand | null) => void;
   // Unified Experience Data
   experienceData: Experience;
   setExperienceData: (data: Partial<Experience>) => void;
@@ -58,9 +60,11 @@ export const initialExperienceData: Experience = {
 
 export const useExperienceStore = create<ExperienceState>()(
   persist(
-    (set, get) => ({
+  (set, get) => ({
       // Initial state
-      experienceData: initialExperienceData,
+  experienceData: initialExperienceData,
+  brand: null,
+  setBrand: (brand) => set({ brand }),
       experienceId: null,
       productId: null,
       isLoading: false,

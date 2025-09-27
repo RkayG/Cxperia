@@ -1,8 +1,7 @@
 // src/components/PreviewMode/QrCodeGenerator.tsx
-
-import React from "react";
 import { Image as ImageIcon, Loader2 } from "lucide-react";
-import { useQrApi } from "../../../../hooks/useQrApi";
+import React from "react";
+import { useQrApi } from "@/hooks/brands/useQrApi";
 
 interface QrCodeGeneratorProps {
   setQrCodeImageUrl?: (url: string) => void;

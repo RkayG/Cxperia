@@ -90,7 +90,7 @@ const MediaUpload: React.FC<MediaUploadProps> = ({ images, onImagesUpdate, error
         const mapped = updated.map(img => ({ ...img } as UploadedImage));
         let uidx = 0;
         for (let i = 0; i < mapped.length; i++) {
-          if (mapped[i].uploading && mapped[i].file) {
+          if (mapped[i]?.uploading && mapped[i]?.file) {
             mapped[i].url = uploadedUrls[uidx] || '';
             mapped[i].uploading = false;
             mapped[i].file = undefined;
@@ -192,7 +192,7 @@ const MediaUpload: React.FC<MediaUploadProps> = ({ images, onImagesUpdate, error
                   return (
                     <div key={id} className="relative group">
                       <div className="w-full h-24 rounded-lg border border-gray-200 overflow-hidden flex items-center justify-center bg-gray-50">
-                        <Image src={src} alt="Upload preview" width={96} height={96} className="w-full h-full object-cover" />
+                        <Image src={src || ''} alt="Upload preview" width={96} height={96} className="w-full h-full object-cover" />
                         {typeof image !== 'string' && image.uploading && (
                           <div className="absolute inset-0 flex items-center justify-center bg-black/50">
                             <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-white" />

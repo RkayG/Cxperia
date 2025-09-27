@@ -1,6 +1,6 @@
 import React from "react";
-import DropdownSelect from "../../../../components/common/DropdownSelect";
-import type { ProductFormProps } from "../../../../types/productExperience";
+import DropdownSelect from "./CategoryDropdown";
+import type { ProductFormProps } from "@/types/productExperience";
 
 const ProductForm: React.FC<ProductFormProps> = ({
   data,
@@ -14,6 +14,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
     "Toner",
     "Moisturizer",
     "Sunscreen",
+    "Deodorant",
     "Face Mask",
     "Eye Cream",
     "Exfoliator",
@@ -60,7 +61,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
             value={data.productName}
             onChange={(e) => onUpdate({ productName: e.target.value })}
             placeholder="e.g., HydraGlow Night Serum"
-            className={`w-full px-4 py-3.5 text-base border-2 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 ${
+            className={`w-full px-4 py-3.5 lg:py-3 text-base border-2 lg:border-1 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 ${
               errors.productName
                 ? "border-red-600 bg-red-50"
                 : "border-purple-800"
@@ -135,7 +136,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
           }}
           placeholder="e.g., Glow all night!"
           maxLength={80}
-          className={`w-full px-4 py-3.5 text-base border-2 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 ${
+          className={`w-full px-4 py-3.5 lg:py-3 text-base border-2 lg:border-1 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 ${
             errors.tagline ? "border-red-600 bg-red-50" : "border-purple-800"
           } ${data.tagline ? "bg-[#ede8f3]" : "bg-white"}`}
         />
@@ -164,7 +165,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
           onChange={(e) => onUpdate({ description: e.target.value })}
           placeholder="e.g., A hydrating night serum that rejuvenates and restores your skin while you sleep."
           rows={4}
-          className={`w-full px-4 py-3.5 text-base border-2 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 resize-none ${
+          className={`w-full px-4 py-3.5 lg:py-3 text-base border-2 lg:border-1 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 resize-none ${
             errors.description
               ? "border-red-600 bg-red-50"
               : "border-purple-800"
@@ -192,7 +193,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
           value={data.storeLink}
           onChange={(e) => onUpdate({ storeLink: e.target.value })}
           placeholder="https://yourstore.com/product"
-          className={`w-full px-4 py-3.5 text-base border-2 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 ${
+          className={`w-full px-4 py-3.5 lg:py-3 text-base border-2 lg:border-1 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 ${
             errors.storeLink ? "border-red-600 bg-red-50" : "border-purple-800"
           } ${data.storeLink ? "bg-[#ede8f3]" : "bg-white"}`}
         />
@@ -223,7 +224,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
               })
             }
             placeholder="e.g., 50"
-            className="w-full px-4 py-3.5 text-base border-2 border-purple-800 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 bg-white"
+            className="w-full px-4 py-3.5 lg:py-3 text-base border-2 lg:border-1 border-purple-800 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 bg-white"
           />
         </div>
 
@@ -247,7 +248,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
               })
             }
             placeholder="e.g., 100"
-            className="w-full px-4 py-3.5 text-base border-2 border-purple-800 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 bg-white"
+            className="w-full px-4 py-3.5 lg:py-3 text-base border-2 lg:border-1 border-purple-800 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 bg-white"
           />
         </div>
 
@@ -271,7 +272,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
               })
             }
             placeholder="e.g., 80"
-            className="w-full px-4 py-3.5 text-base border-2 border-purple-800 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 bg-white"
+            className="w-full px-4 py-3.5 lg:py-3 text-base border-2 lg:border-1 border-purple-800 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 bg-white"
           />
         </div>
 

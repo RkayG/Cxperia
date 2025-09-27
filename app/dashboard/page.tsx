@@ -3,6 +3,7 @@ import { getCurrentUserBrand, getBrandStats } from '@/lib/data/brands';
 import { supabase } from '@/lib/supabase';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useExperienceStore } from '@/store/brands/useExperienceStore';
 
 interface Brand {
   id: string;
@@ -18,7 +19,7 @@ interface Stats {
 
 export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
-  const [brand, setBrand] = useState<Brand | null>(null);
+  const { brand, setBrand } = useExperienceStore();
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -44,9 +45,10 @@ export default function DashboardPage() {
 
         // Get brand data
         const brandData = await getCurrentUserBrand();
+        console.log("Current Brand in DashboardPage:", brandData);  
         if (!brandData) {
           console.log('No brand found, redirecting to setup');
-          router.push('/setup');
+          router.push('/auth/signup');
           return;
         }
         setBrand(brandData);

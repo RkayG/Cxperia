@@ -1,10 +1,11 @@
+"use client";
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
-import StepOne from "./stepOne/page";
-import StepTwo from "./stepTwo/page";
+import StepIndicator from "@/components/StepIndicator";
+import { useExperienceStore } from "@/store/brands/useExperienceStore";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import StepOne from "./product-details/page";
+import StepTwo from "./customise-features/page";
 import PreviewPage from "./preview/page";
-import StepIndicator from "../../components/common/StepIndicator";
-import { useExperienceStore } from "../../store/useExperienceStore";
 
 interface CreateExperienceFlowProps {
   stepOverride?: number;
@@ -13,30 +14,33 @@ interface CreateExperienceFlowProps {
 const CreateExperienceFlow: React.FC<CreateExperienceFlowProps> = ({
   stepOverride,
 }) => {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const router = useRouter();
   const params = useParams();
+  const searchParams = useSearchParams();
   
   // Zustand store
   const { resetAll } = useExperienceStore();
   
-  // Get experienceId from route params
-  const experienceIdFromRoute = params.id;
+  // Get action and experienceId from route params
+  const action = params?.action as string;
+  const experienceIdFromRoute = params?.id as string | undefined;
+
+  // Validate experienceId for edit action
+  const isEdit = action === "edit";
+  const isMissingId = isEdit && !experienceIdFromRoute;
 
   // Read new param from query
-  const searchParams = new URLSearchParams(location.search);
   const isNew = searchParams.get("new") === "true";
 
   // Determine step from route and query
   const getStepFromRoute = () => {
-    const params = new URLSearchParams(location.search);
-    const stepParam = params.get("step");
+    const stepParam = searchParams.get("step");
     if (stepParam === "product-details") return 1;
     if (stepParam === "customise-features") return 2;
     if (stepParam === "preview") return 3;
     return stepOverride ?? 1;
   };
-  
+
   const [step, setStepState] = useState<number>(getStepFromRoute());
 
   // Reset store when creating new experience
@@ -49,28 +53,23 @@ const CreateExperienceFlow: React.FC<CreateExperienceFlowProps> = ({
   // Update step in state and URL
   const setStep = (newStep: number) => {
     setStepState(newStep);
-    
     const stepLabels = ["product-details", "customise-features", "preview"];
     const stepLabel = stepLabels[newStep - 1] || "product-details";
-    
     if (stepLabel === "product-details") {
-      navigate("/create-experience?step=product-details", { replace: true });
+      if (action === "create") {
+        router.replace("/dashboard/experience/create?step=product-details&new=true");
+      } else {
+        router.replace(`/dashboard/experience/edit/${experienceIdFromRoute}?step=product-details`);
+      }
       return;
     }
-    
     if (!experienceIdFromRoute) return;
-    
     if (stepLabel === "customise-features") {
-      navigate(`/create-experience/${experienceIdFromRoute}?step=customise-features`, { 
-        replace: true 
-      });
+      router.replace(`/dashboard/experience/${action}/${experienceIdFromRoute}?step=customise-features`);
       return;
     }
-    
     if (stepLabel === "preview") {
-      navigate(`/create-experience/${experienceIdFromRoute}?step=preview`, { 
-        replace: true 
-      });
+      router.replace(`/dashboard/experience/${action}/${experienceIdFromRoute}?step=preview`);
       return;
     }
   };
@@ -81,11 +80,11 @@ const CreateExperienceFlow: React.FC<CreateExperienceFlowProps> = ({
     if (newStep !== step) {
       setStepState(newStep);
     }
-  }, [location.pathname, location.search]);
+  }, [searchParams]);
 
   // Step indicator configuration
   const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
-  const stepParam = new URLSearchParams(location.search).get("step");
+  const stepParam = searchParams.get("step");
   const steps = [
     { key: "product-details", label: isMobile ? "Product" : "Product Details" },
     { key: "customise-features", label: isMobile ? "Features" : "Customize Features" },
@@ -107,17 +106,41 @@ const CreateExperienceFlow: React.FC<CreateExperienceFlowProps> = ({
   };
 
   const handleStepTwoBack = () => {
-    navigate("/create-experience?step=product-details");
+    if (action === "create") {
+      router.push("/dashboard/experience/create?step=product-details&new=true");
+    } else {
+      router.push(`/dashboard/experience/edit/${experienceIdFromRoute}?step=product-details`);
+    }
   };
 
+  if (isMissingId) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white py-4 sm:px-6 lg:px-8">
+        <div className="mx-auto text-center">
+          <h1 className="text-2xl font-bold text-red-600 mb-4">Invalid Experience ID</h1>
+          <p className="text-gray-700 mb-6">No experience ID was provided for editing. Please select a valid experience to edit.</p>
+          <button
+            className="px-6 py-2 bg-purple-800 text-white rounded-full font-semibold shadow hover:bg-purple-700 transition-all"
+            onClick={() => router.push("/dashboard/overview")}
+          >
+            Go to Overview
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen  bg-white py-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen  bg-white ">
       <div className="mx-auto">
         {/* Header */}
-        <div className="p-4 sm:p-8">
-          <h1 className="text-left text-3xl font-bold text-gray-900 mb-2">
-            Create New Product Experience
+        <div className="flex-1 space-y-4 p-8 pt-6">
+          <div className="flex items-center justify-between space-y-2">
+          <h1 className="text-2xl font-bold tracking-tight">
+            {action === "edit" ? "Edit Product Experience" : "Create New Product Experience"}
           </h1>
+          </div>
+       
           <p className="text-gray-600 text-left text-sm sm:text-base leading-relaxed">
             Design a tailored post-purchase journey for your product, from
             detailed info to engaging interactions.
@@ -149,13 +172,11 @@ const CreateExperienceFlow: React.FC<CreateExperienceFlowProps> = ({
 
         {step === 3 && experienceIdFromRoute && (
           <PreviewPage
-            experienceId={experienceIdFromRoute}
-            onFinish={() => setStep(1)}
-            onBack={() => setStep(2)}
           />
         )}
       </div>
     </div>
+  
   );
 };
 

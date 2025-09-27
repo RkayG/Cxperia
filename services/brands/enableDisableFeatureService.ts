@@ -3,9 +3,8 @@
 console.log('[enableDisableFeatureService] loaded');
 // src/services/enableFeatureService.ts
 // Service for Experience Feature API calls (modeled after featureService.ts)
-import { getAuthHeaders } from '../utils/getAuthHeaders';
-const API_BASE = import.meta.env.VITE_BACKEND_URL || '';
-
+import { getAuthHeaders } from '@/utils/getAuthHeaders';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api';
 // Add/enable a feature for an experience
 export async function enableFeature(experienceId: string, featureName: string) {
 	const res = await fetch(`${API_BASE}/experiences/${experienceId}/features`, {

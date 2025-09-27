@@ -1,16 +1,17 @@
+"use client";
 import React, { useState, useEffect, useCallback } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 import ProductForm from "./components/ProductForm";
 import MediaUpload from "./components/MediaUpload";
-import { useExperienceStore, initialExperienceData } from "../../../store/useExperienceStore";
-import { useExperienceOperations } from "../../../hooks/useExperienceOperations";
-import { validateStepOne, scrollToError } from "../../../utils/validation";
-import type { ValidationErrors } from "../../../utils/validation";
-import { hasFormChanges, isExperienceDataEqual } from "../../../utils/compare";
-import ScrollToTop from "../../../components/common/ScrollToTop";
+import { useExperienceStore, initialExperienceData } from "@/store/brands/useExperienceStore";
+import { useExperienceOperations } from "@/hooks/brands/useExperienceOperations";
+import { validateStepOne, scrollToError } from "@/utils/validation";
+import type { ValidationErrors } from "@/utils/validation";
+import { hasFormChanges, isExperienceDataEqual } from "@/utils/compare";
+import ScrollToTop from "@/components/ScrollToTop";
 
-import SavingOverlay from "../../../components/common/SavingOverlay";
-import type { UploadedImage, Experience } from '../../../types/productExperience';
+import SavingOverlay from "@/components/SavingOverlay";
+import type { UploadedImage, Experience } from '@/types/productExperience';
 
 interface StepOneProps {
   onNext?: () => void;
@@ -27,9 +28,9 @@ const StepOne: React.FC<StepOneProps> = ({
   buttonLabel = "Next", 
   isSubmitting = false 
 }) => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const params = useParams();
-  const location = useLocation();
+  const searchParams = useSearchParams();
 
   // Zustand store
   const { experienceData, setExperienceData, setIds, isLoading, setLoading } =
@@ -42,7 +43,7 @@ const StepOne: React.FC<StepOneProps> = ({
   const [initialFormData, setInitialFormData] = useState<Experience>(() => ({ ...initialExperienceData, ...useExperienceStore.getState().experienceData }));
 
   // Get experienceId from route params
-  const experienceId = params.id || null;
+  const experienceId = params?.id || null;
 
   // Fetch experience data if editing
   /* const { data: experienceData } = useExperience(
@@ -123,58 +124,48 @@ const StepOne: React.FC<StepOneProps> = ({
 
   // Prefill data for create/edit
   useEffect(() => {
-  if (isNew) {
-    // Strip new=true from URL
-    const params = new URLSearchParams(location.search);
-    if (params.has("new")) {
-      params.delete("new");
-      navigate({
-        pathname: location.pathname,
-        search: params.toString() ? `?${params.toString()}` : ""
-      }, { replace: true });
+    if (isNew) {
+      // Strip new=true from URL
+      const paramsObj = new URLSearchParams(searchParams.toString());
+      if (paramsObj.has("new")) {
+        paramsObj.delete("new");
+        router.replace(
+          `${window.location.pathname}${paramsObj.toString() ? `?${paramsObj.toString()}` : ""}`
+        );
+      }
+
+      // Clear experience/product IDs in store
+      setIds(null, null);
+
+      // Clear data for new experience (Experience type)
+      const emptyData = { ...initialExperienceData };
+      if (JSON.stringify(experienceData) !== JSON.stringify(emptyData)) {
+        setExperienceData(emptyData);
+      }
+      setInitialFormData(emptyData);
+      return;
     }
 
-    // Clear experience/product IDs in store
-    setIds(null, null);
-
-    // Clear data for new experience (Experience type)
-    const emptyData = { ...initialExperienceData };
-    if (JSON.stringify(experienceData) !== JSON.stringify(emptyData)) {
-      setExperienceData(emptyData);
+    // If editing, always use API data for the current experienceId
+    if (!isNew && experienceId && experienceData?.data) {
+      const formData = mapToFormData(experienceData.data);
+      // Only update if different
+      if (JSON.stringify(formData) !== JSON.stringify(experienceData)) {
+        setExperienceData(formData);
+      }
+      setInitialFormData(formData);
+      return;
     }
-    setInitialFormData(emptyData);
-    return;
-  }
 
-  // If editing, always use API data for the current experienceId
-  if (!isNew && experienceId && experienceData?.data) {
-    const formData = mapToFormData(experienceData.data);
-    // Only update if different
-    if (JSON.stringify(formData) !== JSON.stringify(experienceData)) {
-      setExperienceData(formData);
+    // Prefill from navigation state if available (for quick navigation)
+    // Next.js does not support location.state, so skip this part
+
+    // If store data exists and matches the current experienceId, use it
+    if (experienceData && (experienceData as Experience).id === experienceId) {
+      setInitialFormData(experienceData as Experience);
+      return;
     }
-    setInitialFormData(formData);
-    return;
-  }
-
-  // Prefill from navigation state if available (for quick navigation)
-  const experienceDataFromState =
-    location.state?.experience || location.state?.expData;
-  if (experienceDataFromState) {
-    const formData = mapToFormData(experienceDataFromState);
-    if (JSON.stringify(formData) !== JSON.stringify(experienceData)) {
-      setExperienceData(formData);
-    }
-    setInitialFormData(formData);
-    return;
-  }
-
-  // If store data exists and matches the current experienceId, use it
-  if (experienceData && (experienceData as Experience).id === experienceId) {
-    setInitialFormData(experienceData as Experience);
-    return;
-  }
-}, [isNew, experienceId, experienceData, location.state, mapToFormData, setExperienceData]);
+  }, [isNew, experienceId, experienceData, searchParams, mapToFormData, setExperienceData, router]);
 
   const validateForm = (): boolean => {
     const validationErrors = validateStepOne(experienceData);
@@ -222,7 +213,7 @@ const StepOne: React.FC<StepOneProps> = ({
     if (unchanged && experienceData && (experienceData as Experience).experienceId) {
       // Always sync initialFormData to the latest experienceData after successful save
       setInitialFormData(experienceData as Experience);
-      navigate(`/create-experience/${(experienceData as Experience).experienceId}?step=customise-features`);
+      router.push(`/create-experience/${(experienceData as Experience).experienceId}?step=customise-features`);
       if (onNext) onNext();
       return;
     }
@@ -297,7 +288,7 @@ const StepOne: React.FC<StepOneProps> = ({
         // After successful save, sync initialFormData to the new experienceData
         setInitialFormData({ ...experienceData, features: featuresObj });
         // Navigate to step 2 with experience id
-        navigate(`/create-experience/${res.data.id}?step=customise-features`);
+        router.push(`/create-experience/${res.data.id}?step=customise-features`);
         if (onNext) onNext();
       }
     } catch (err) {

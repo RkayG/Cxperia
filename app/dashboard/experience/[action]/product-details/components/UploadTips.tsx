@@ -7,7 +7,7 @@ import {
   LightbulbIcon,
   PictureInPictureIcon,
 } from "lucide-react";
-import type { UploadTipProps } from "../../../../types/productExperience";
+import type { UploadTipProps } from "@/types/productExperience";
 
 const UploadTip: React.FC<UploadTipProps> = ({
   icon,

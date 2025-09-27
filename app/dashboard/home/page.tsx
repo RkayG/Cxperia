@@ -22,6 +22,8 @@ export default function RecentPage() {
   const router = useRouter();
   // Banner image loading state (must be top-level for hooks)
   const [bannerLoaded, setBannerLoaded] = React.useState(false);
+  // Get brand from store
+  const brand = require('@/store/brands/useExperienceStore').useExperienceStore((state: any) => state.brand);
   // Normalize experiences array
   const experiences = Array.isArray(data?.data)
     ? data.data
@@ -104,7 +106,7 @@ export default function RecentPage() {
         <h1
           className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-700 text-transparent bg-clip-text mb-2 mt-6"
         >
-          Hello, Brand
+          Hello, {brand?.name || 'Brand'}
         </h1>
         <p className="text-gray-700 mb-6 max-w-sm md:max-w-xl">
           View your latest product experiences and tutorials.
@@ -133,7 +135,7 @@ export default function RecentPage() {
       {/* Recent Experiences Carousel (shadcn) */}
       <div className="mx-auto px-4 max-w-screen-lg recent-carousel-section">
         <div className="flex items-center px-2 justify-between mb-4">
-          <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Recent Products</h2>
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Recent Experiences</h2>
         </div>
         <Carousel className="relative  max-w-screen-lg ">
           <CarouselContent className="flex gap-2 pb-4">
@@ -184,7 +186,7 @@ export default function RecentPage() {
             className="px-6 py-2 bg-gray-100 rounded-none w-full sm:w-auto sm:rounded-full text-gray-700 hover:text-white rounded-full font-semibold shadow hover:bg-purple-800 transition-all"
               onClick={() => router.push('/dashboard/overview')}
           >
-            See All Products
+            See All Experiences
           </button>
         </div>
       </div>

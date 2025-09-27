@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
-import { useAddCustomerSupportLinks, useCustomerSupportLinksByBrand } from '../../../../../hooks/useFeatureApi';
+import { useAddCustomerSupportLinks, useCustomerSupportLinksByBrand } from '@/hooks/brands/useFeatureApi';
 import { X, MessageCircle, Phone, Mail, HelpCircle, Facebook, Instagram, Twitter, Youtube, Video } from "lucide-react";
 import { validateField } from "./ValidationUtils";
-import type { CustomerSupportLinksData, CustomerSupportLinksModalProps } from "../../../../../../types/customerServiceTypes";
+import type { CustomerSupportLinksData, CustomerSupportLinksModalProps } from "@/types/customerServiceTypes";
 import IntegrationSettings from "./IntegrationSettings";
 // If you have a TikTok icon, import it, else use Video as fallback
 // TikTok icon not available in lucide-react; use Video as fallback
