@@ -1,27 +1,28 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import * as api from '@/services/brands/experienceService';
+import { experienceService } from '@/services/brands/experienceService';
 
-export function useExperiences(brand_id?: string | undefined) {
+// Get all experiences for a brand
+export function useExperiences(brand_id?: string) {
   return useQuery({
     queryKey: brand_id ? ['experiences', brand_id] : ['experiences'],
-    queryFn: () => api.getExperiences(brand_id),
+    queryFn: () => experienceService.getAll(brand_id),
   });
 }
 
-// Recent experiences (last 30 days) - uses client-side filter in the service
-export function useRecentExperiences(brand_id?: string | undefined) {
+// Recent experiences (last 30 days)
+export function useRecentExperiences(brand_id?: string) {
   return useQuery({
     queryKey: brand_id ? ['recentExperiences', brand_id] : ['recentExperiences'],
-    queryFn: () => api.getRecentExperiences(brand_id),
+    queryFn: () => experienceService.getRecent(),
     enabled: true,
   });
 }
 
 // Get experience by ID
-export function useExperience(id: string | undefined) {
+export function useExperience(id: string) {
   return useQuery({
     queryKey: ['experience', id],
-    queryFn: () => api.getExperienceById(id),
+    queryFn: () => experienceService.getById(id),
     enabled: !!id,
     
   });
@@ -29,9 +30,10 @@ export function useExperience(id: string | undefined) {
 
 // Create Experience
 export function useCreateExperience() {
+  console.log('[useCreateExperience] loaded');
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: any) => api.createExperience(data),
+    mutationFn: (data: any) => experienceService.create(data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['experiences'] })
   });
 }
@@ -39,7 +41,7 @@ export function useCreateExperience() {
 export function useUpdateExperience() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, data }: { id: string | undefined; data: any }) => api.updateExperience(id, data),
+    mutationFn: ({ id, data }: { id: string; data: any }) => experienceService.update(id, data),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['experience', variables.id] });
       queryClient.invalidateQueries({ queryKey: ['experiences'] });
@@ -47,10 +49,10 @@ export function useUpdateExperience() {
   });
 }
 // Get Experience URL by ID
-export function useExperienceUrl(id: string | undefined) {
+export function useExperienceUrl(id: string) {
   return useQuery({
     queryKey: ['experienceUrl', id],
-    queryFn: () => api.getExperienceUrl(id),
+    queryFn: () => experienceService.getExperienceUrl(id),
     enabled: !!id,
   });
 }
@@ -59,7 +61,7 @@ export function useExperienceUrl(id: string | undefined) {
 export function useDeleteExperience() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string | undefined) => api.deleteExperience(id),
+    mutationFn: (id: string) => experienceService.delete(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['experiences'] })
   });
 }
@@ -67,7 +69,7 @@ export function useDeleteExperience() {
 export function useSetPublishStatus() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, is_published }: { id: string | undefined; is_published: boolean }) => api.setPublishStatus(id, is_published),
+    mutationFn: ({ id, is_published }: { id: string; is_published: boolean }) => experienceService.setPublishStatus(id, is_published),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['experience', variables.id] });
       queryClient.invalidateQueries({ queryKey: ['experiences'] });

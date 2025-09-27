@@ -1,101 +1,128 @@
-
-// src/services/experienceService.ts
-// Service for Experience API calls
-
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:4000/api';
-import { getAuthHeaders } from '@/utils/getAuthHeaders';
-
-// Create Experience
-export async function createExperience(data: any) {
-  const res = await fetch(`${API_BASE}/experiences/`, {
-    method: 'POST',
-    headers: getAuthHeaders(),
-    body: JSON.stringify(data),
-  });
-  console.log('Create Experience response status:', res.status);
-  return res.json();
+import { Experience, Product} from '@/lib/db/experiences';
+import  config  from '@/config/api';
+const { endpoints } = config;
+const {} = config;
+export interface CreateExperienceData {
+  product_id?: string;
+  product?: Product;
+  experience_id?: string;
 }
+console.log('[experienceService] loaded');
+export const experienceService = {
+  async getAll(brandId?: string) {
+    const url = brandId ? `/api/experiences?brand_id=${brandId}` : '/api/experiences';
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch experiences');
+    }
+    
+    return response.json();
+  },
 
-// Get all Experiences (optionally by brand)
-export async function getExperiences(brand_id?: string | undefined) {
-  const url = brand_id
-    ? `${API_BASE}/experiences?brand_id=${brand_id}`
-    : `${API_BASE}/experiences`;
-  const res = await fetch(url, { headers: getAuthHeaders() });
+  async getById(id: string) {
+    const response = await fetch(endpoints.EXPERIENCE.DETAIL(id));
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch experience');
+    }
+    
+    return response.json();
+  },
 
-  return res.json();
-}
+  async create(data: CreateExperienceData) {
+    const response = await fetch(endpoints.EXPERIENCE.CREATE, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to create experience');
+    }
+    
+    return response.json();
+  },
 
-// Get recent experiences (last 30 days) - client-side filter over the experiences endpoint
-export async function getRecentExperiences(brand_id?: string | undefined) {
-  // Reuse the experiences endpoint and filter on the client to avoid backend changes
-  const url = brand_id
-    ? `${API_BASE}/experiences?brand_id=${brand_id}`
-    : `${API_BASE}/experiences`;
-  const res = await fetch(url, { headers: getAuthHeaders() });
-  const payload = await res.json();
-  // Expecting backend shape: { success: true, data: [...] }
-  const rows = payload && payload.data ? payload.data : (Array.isArray(payload) ? payload : []);
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - 30);
-  const filtered = (rows || []).filter((e: any) => {
-    const created = new Date(e.created_at || e.createdAt || e.createdAtDate || 0);
-    return created >= cutoff;
-  });
-  return { success: true, data: filtered };
-}
+  async update(id: string, updates: Partial<Experience>) {
+    const response = await fetch(endpoints.EXPERIENCE.UPDATE(id), {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updates),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to update experience');
+    }
+    
+    return response.json();
+  },
 
-// Get Experience by ID
-export async function getExperienceById(id: string | undefined) {
-  const res = await fetch(`${API_BASE}/experiences/single/${id}`, {
-    headers: getAuthHeaders(),
-  });
-  return res.json();
-}
+  async delete(id: string) {
+    const response = await fetch(endpoints.EXPERIENCE.DELETE(id), {
+      method: 'DELETE',
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to delete experience');
+    }
+    
+    return response.json();
+  },
 
-// Update Experience
-export async function updateExperience(id: string | undefined, data: any) {
-  const res = await fetch(`${API_BASE}/experiences/single/${id}`, {
-    method: 'PUT',
-    headers: getAuthHeaders(),
-    body: JSON.stringify(data),
-  });
-  return res.json();
-}
+  async setPublishStatus(id: string, isPublished: boolean) {
+    const response = await fetch(endpoints.EXPERIENCE.PUBLISH(id), {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ is_published: isPublished }),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to update publish status');
+    }
+    
+    return response.json();
+  },
 
-// Get Experience URL by ID
-export async function getExperienceUrl(id: string | undefined) {
-  const res = await fetch(`${API_BASE}/experiences/single/${id}/url`, {
-    headers: getAuthHeaders(),
-  });
-  return res.json();
-}
+  async setThemeAndColor(id: string, theme?: string, primary_color?: string) {
+    const response = await fetch(endpoints.EXPERIENCE.THEME(id), {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ theme, primary_color }),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to update theme');
+    }
+    
+    return response.json();
+  },
 
-// Set theme and primary_color for an experience
-export async function setThemeAndColor(id: string | undefined, theme: string, primary_color: string) {
-  const res = await fetch(`${API_BASE}/experiences/single/${id}/theme`, {
-    method: 'PATCH',
-    headers: getAuthHeaders(),
-    body: JSON.stringify({ theme, primary_color }),
-  });
-  return res.json();
-}
+  async getExperienceUrl(id: string) {
+    const response = await fetch(endpoints.EXPERIENCE.URL(id));
+    
+    if (!response.ok) {
+      throw new Error('Failed to get experience URL');
+    }
+    
+    return response.json();
+  },
 
-// Delete Experience
-export async function deleteExperience(id: string | undefined) {
-  const res = await fetch(`${API_BASE}/experiences/single/${id}`, {
-    method: 'DELETE',
-    headers: getAuthHeaders(),
-  });
-  return res.json();
-}
-
-// Publish/Unpublish Experience
-export async function setPublishStatus(id: string | undefined, is_published: boolean) {
-  const res = await fetch(`${API_BASE}/experiences/single/${id}/publish`, {
-    method: 'PATCH',
-    headers: getAuthHeaders(),
-    body: JSON.stringify({ is_published }),
-  });
-  return res.json();
-}
+  async getRecent() {
+    const response = await fetch(endpoints.EXPERIENCE.RECENTS);
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch recent experiences');
+    }
+    
+    return response.json();
+  },
+};

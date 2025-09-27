@@ -1,0 +1,251 @@
+import { supabase } from '@/lib/supabase';
+import { setDefaultExperienceFeatures } from './experienceFeatures';
+
+export interface Experience {
+  id?: string;
+  brand_id: string;
+  product_id?: string;
+  is_published: boolean;
+  public_slug?: string;
+  experience_url?: string;
+  qr_code_url?: string;
+  theme?: string;
+  primary_color?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface Product {
+  id?: string;
+  brand_id: string;
+  name: string;
+  tagline?: string;
+  description?: string;
+  category?: string;
+  skin_type?: string;
+  store_link?: string;
+  product_image_url?: string[];
+  logo_url?: string;
+  net_content?: string;
+  estimated_usage_duration_days?: number;
+  original_price?: number;
+  discounted_price?: number;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export async function createExperience(experienceData: Omit<Experience, 'id' | 'created_at' | 'updated_at'>) {
+  // Generate unique public_slug
+  const public_slug = await generateUniqueSlug();
+  
+  const { data, error } = await supabase
+    .from('experiences')
+    .insert([{ ...experienceData, public_slug }])
+    .select(`
+      *,
+      products (*)
+    `)
+    .single();
+
+  if (error) {
+    throw new Error(`Failed to create experience: ${error.message}`);
+  }
+
+  // Set default features
+  await setDefaultExperienceFeatures({
+    experienceId: data.id,
+    brandId: experienceData.brand_id,
+  });
+
+  return data;
+}
+
+export async function getExperienceById(id: string, brandId?: string) {
+  let query = supabase
+    .from('experiences')
+    .select(`
+      *,
+      products (*),
+      digital_instructions (*),
+      ingredients (*),
+      experience_features (*),
+      tutorials (*)
+    `)
+    .eq('id', id);
+
+  if (brandId) {
+    query = query.eq('brand_id', brandId);
+  }
+
+  const { data, error } = await query.single();
+
+  if (error) {
+    throw new Error(`Failed to fetch experience: ${error.message}`);
+  }
+
+  if (!data) {
+    throw new Error('Experience not found');
+  }
+
+  return data;
+}
+
+export async function updateExperience(id: string, updates: Partial<Experience>) {
+  const { data, error } = await supabase
+    .from('experiences')
+    .update({ ...updates, updated_at: new Date().toISOString() })
+    .eq('id', id)
+    .select(`
+      *,
+      products (*)
+    `)
+    .single();
+
+  if (error) {
+    throw new Error(`Failed to update experience: ${error.message}`);
+  }
+
+  return data;
+}
+
+export async function deleteExperience(id: string) {
+  const { error } = await supabase
+    .from('experiences')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    throw new Error(`Failed to delete experience: ${error.message}`);
+  }
+}
+
+export async function getExperiencesByBrand(brandId: string) {
+  const { data, error } = await supabase
+    .from('experiences')
+    .select(`
+      *,
+      products (*)
+    `)
+    .eq('brand_id', brandId)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    throw new Error(`Failed to fetch experiences: ${error.message}`);
+  }
+
+  return data;
+}
+
+export async function getRecentExperiences(brandId: string) {
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+  const { data, error } = await supabase
+    .from('experiences')
+    .select(`
+      *,
+      products (*)
+    `)
+    .eq('brand_id', brandId)
+    .gte('created_at', thirtyDaysAgo.toISOString())
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    throw new Error(`Failed to fetch recent experiences: ${error.message}`);
+  }
+
+  return data;
+}
+
+export async function setPublishStatus(id: string, isPublished: boolean) {
+  const { data, error } = await supabase
+    .from('experiences')
+    .update({ 
+      is_published: isPublished, 
+      updated_at: new Date().toISOString() 
+    })
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error(`Failed to update publish status: ${error.message}`);
+  }
+
+  return data;
+}
+
+export async function setThemeAndColor(id: string, theme?: string, primary_color?: string) {
+  const updates: any = { updated_at: new Date().toISOString() };
+  if (theme !== undefined) updates.theme = theme;
+  if (primary_color !== undefined) updates.primary_color = primary_color;
+
+  const { data, error } = await supabase
+    .from('experiences')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error(`Failed to update theme and color: ${error.message}`);
+  }
+
+  return data;
+}
+
+export async function getOrSetExperienceUrl(id: string) {
+  // First, get the experience
+  const experience = await getExperienceById(id);
+  
+  if (experience.experience_url) {
+    return experience.experience_url;
+  }
+
+  // Generate experience URL
+  const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+  const public_slug = experience.public_slug || await generateUniqueSlug();
+  
+  const experience_url = `${baseUrl}/experience/${public_slug}`;
+
+  // Update the experience with the URL and slug
+  const { error } = await supabase
+    .from('experiences')
+    .update({ 
+      experience_url, 
+      public_slug,
+      updated_at: new Date().toISOString() 
+    })
+    .eq('id', id);
+
+  if (error) {
+    throw new Error(`Failed to set experience URL: ${error.message}`);
+  }
+
+  return experience_url;
+}
+
+async function generateUniqueSlug(): Promise<string> {
+  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let isUnique = false;
+  let slug = '';
+
+  while (!isUnique) {
+    slug = '';
+    for (let i = 0; i < 8; i++) {
+      slug += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+
+    const { data } = await supabase
+      .from('experiences')
+      .select('id')
+      .eq('public_slug', slug)
+      .single();
+
+    if (!data) {
+      isUnique = true;
+    }
+  }
+
+  return slug;
+}

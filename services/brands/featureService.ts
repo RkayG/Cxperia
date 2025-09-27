@@ -1,5 +1,5 @@
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:4000/api';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3000/api';
 
 // Link tutorials to an experience (many-to-many)
 export async function linkTutorialsToExperience(experienceId: string, tutorialIds: string[]) {

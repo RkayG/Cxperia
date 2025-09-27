@@ -2,9 +2,10 @@ import { useCallback } from 'react';
 import { useExperienceStore } from '@/store/brands/useExperienceStore';
 import { useCreateExperience } from './useExperienceApi';
 import { showToast } from '@/lib/toast';
-import type { Experience } from '../../../Cyxperia/CxperiaPlatform/src/types/productExperience';
+import type { Experience } from '@/types/productExperience';
 
 export const useExperienceOperations = () => {
+  console.log('[useExperienceOperations] loaded');
   const { mutateAsync: createExperienceMutation } = useCreateExperience();
   const { setExperienceData, setIds, setLoading } = useExperienceStore();
 

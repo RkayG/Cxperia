@@ -6,7 +6,7 @@ import UploadTips from './UploadTips';
 import demo3Image from '@/assets/images/demo3.jpg';
 import demo4Image from '@/assets/images/demo4.png';
 import demo6Image from '@/assets/images/demo6.png';
-import { uploadFiles } from '@/services/brands/uploadService';
+import { useUpload } from '@/hooks/brands/use-uploads';
 
 const MediaUpload: React.FC<MediaUploadProps> = ({ images, onImagesUpdate, errors }) => {
 
@@ -37,79 +37,53 @@ const MediaUpload: React.FC<MediaUploadProps> = ({ images, onImagesUpdate, error
     }
   }, [images, onImagesUpdate]);
 
-  const handleFiles = useCallback((files: FileList | null) => {
-    if (!files) return;
+  const { upload, uploading, progress, error } = useUpload();
 
-    const newImages: UploadedImage[] = [];
-    Array.from(files).forEach((file) => {
-      if (file.type.startsWith('image/') && images.length + newImages.length < 10) {
-        const id = Math.random().toString(36).substring(7);
-        const preview = URL.createObjectURL(file);
-        newImages.push({
-          id,
-          file,
-          preview,
-          url: '',
-          uploading: true,
-          uploadError: null,
-        } as UploadedImage);
+  const handleFiles = useCallback(
+    async (files: FileList | null) => {
+      if (!files) return;
+
+      const newImages: UploadedImage[] = [];
+      Array.from(files).forEach((file) => {
+        if (file.type.startsWith('image/') && images.length + newImages.length < 10) {
+          const id = Math.random().toString(36).substring(7);
+          const preview = URL.createObjectURL(file);
+          newImages.push({
+            id,
+            file,
+            preview,
+            url: '',
+            uploading: true,
+            uploadError: null,
+          } as UploadedImage);
+        }
+      });
+
+      const updated = [...images, ...newImages];
+      onImagesUpdate(updated);
+
+      for (let i = 0; i < newImages.length; i++) {
+        const img = newImages[i];
+        try {
+          const res: any = await upload(img.file!, 'experience_images');
+          let url = '';
+          if (res?.url) url = res.url;
+          else if (res?.secure_url) url = res.secure_url;
+          else if (res?.data?.url) url = res.data.url;
+          else if (res?.data?.secure_url) url = res.data.secure_url;
+          // Update image with url
+          updated[images.length + i].url = url;
+          updated[images.length + i].uploading = false;
+          updated[images.length + i].file = undefined;
+        } catch (e: any) {
+          updated[images.length + i].uploading = false;
+          updated[images.length + i].uploadError = e?.message || 'Upload failed';
+        }
+        onImagesUpdate([...updated]);
       }
-    });
-
-    const updated = [...images, ...newImages];
-    onImagesUpdate(updated);
-
-    (async () => {
-      const filesToUpload = newImages.map(n => n.file!).filter(Boolean);
-      if (filesToUpload.length === 0) return;
-      try {
-        const res: any = await uploadFiles(filesToUpload, 'experience_images');
-        //console.log('[MediaUpload] uploadFiles response:', res);
-
-        let uploadedUrls: string[] = [];
-        // common shapes: array of {url}, { success, data: [...] }, { data: { results: [...] } }, { raw: ... }
-        if (Array.isArray(res)) {
-          uploadedUrls = res.map((r: any) => r.url || r.secure_url).filter(Boolean);
-        } else if (res && Array.isArray(res.data)) {
-          uploadedUrls = res.data.map((r: any) => r.url || r.secure_url).filter(Boolean);
-        } else if (res && Array.isArray(res.results)) {
-          uploadedUrls = res.results.map((r: any) => r.url || r.secure_url).filter(Boolean);
-        } else if (res && res.data && Array.isArray(res.data.results)) {
-          uploadedUrls = res.data.results.map((r: any) => r.url || r.secure_url).filter(Boolean);
-        } else if (res && res.raw) {
-          const raw = res.raw;
-          // support raw data shapes returned by the upload controller: { success: true, data: [...], records: [...] }
-          if (Array.isArray(raw)) uploadedUrls = raw.map((r: any) => r.url || r.secure_url).filter(Boolean);
-          else if (Array.isArray(raw.data)) uploadedUrls = raw.data.map((r: any) => r.url || r.secure_url).filter(Boolean);
-          else if (Array.isArray(raw.records)) uploadedUrls = raw.records.map((r: any) => r.url || r.secure_url || r.cloudinary?.secure_url).filter(Boolean);
-          else if (raw && Array.isArray(raw.results)) uploadedUrls = raw.results.map((r: any) => r.url || r.secure_url).filter(Boolean);
-        } else if (res && res.url) {
-          uploadedUrls = [res.url];
-        }
-
-        const mapped = updated.map(img => ({ ...img } as UploadedImage));
-        let uidx = 0;
-        for (let i = 0; i < mapped.length; i++) {
-          if (mapped[i]?.uploading && mapped[i]?.file) {
-            mapped[i].url = uploadedUrls[uidx] || '';
-            mapped[i].uploading = false;
-            mapped[i].file = undefined;
-            uidx++;
-          }
-        }
-        onImagesUpdate(mapped);
-      } catch (e: any) {
-        const mapped = updated.map(img => ({ ...img } as UploadedImage));
-        for (let i = 0; i < mapped.length; i++) {
-          if (mapped[i].uploading && mapped[i].file) {
-            mapped[i].uploading = false;
-            mapped[i].uploadError = e?.message || 'Upload failed';
-          }
-        }
-        onImagesUpdate(mapped);
-      }
-    })();
-  }, [images, onImagesUpdate]);
+    },
+    [images, onImagesUpdate, upload]
+  );
 
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();

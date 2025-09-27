@@ -1,5 +1,4 @@
 import { supabase } from '@/lib/supabase';
-import { getCurrentUser } from '@/lib/auth';
 
 export interface UploadRecord {
   id?: string;

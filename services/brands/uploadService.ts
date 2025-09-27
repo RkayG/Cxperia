@@ -1,4 +1,3 @@
-import { supabase } from '@/lib/supabase';
 
 const DEFAULTS = {
   maxImageSize: 10 * 1024 * 1024,
