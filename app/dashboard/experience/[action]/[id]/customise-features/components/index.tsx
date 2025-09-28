@@ -2,13 +2,13 @@
 import { Sparkles } from "lucide-react";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FaBoxOpen } from "react-icons/fa";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import EmptyCatalogModal from "@/components/EmptyCatalogModal";
-import ExperienceOverviewSection from "./components/ExperienceOverviewSection";
+import ExperienceOverviewSection from "./ExperienceOverviewSection";
 import ScrollToTop from "@/components/ScrollToTop";
-import StepTwoActions from "./components/StepTwoActions";
-import StepTwoFeatures from "./components/StepTwoFeatures";
-import StepTwoModals from "./components/StepTwoModals";
+import StepTwoActions from "./StepTwoActions";
+import StepTwoFeatures from "./StepTwoFeatures";
+import StepTwoModals from "./StepTwoModals";
 import { useExperienceStore } from "@/store/brands/useExperienceStore";
 import { useFeatureToggles } from "@/hooks/brands/useFeatureToggle";
 import { useProducts } from "@/hooks/brands/useProductApi";
@@ -16,12 +16,14 @@ import { useTutorials } from "@/hooks/brands/useFeatureApi";
 import type { FeatureSettings } from "@/types/productExperience";
 import { showToast } from "@/utils/toast";
 import { validateFeatures } from "@/utils/featureValidation";
-interface StepTwoProps {
+
+interface CustomiseFeaturesStepProps {
+  experienceId: string;
   onNext: () => void;
   onBack: () => void;
 }
 
-const StepTwo: React.FC<StepTwoProps> = ({ onNext, onBack }) => {
+const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ experienceId, onNext, onBack }) => {
   // Validation error state
   const [featureErrors, setFeatureErrors] = useState<{ missingRequired: string[]; notEnoughSelected: boolean }>({ missingRequired: [], notEnoughSelected: false });
 
@@ -35,17 +37,14 @@ const StepTwo: React.FC<StepTwoProps> = ({ onNext, onBack }) => {
     }
   };
 
-  const params = useParams();
-  const experienceId = params?.id as string | undefined;
   const router = useRouter();
 
   // Zustand store
   const { experienceData, setExperienceData, setFeaturesForExperience, getFeaturesForExperience } = useExperienceStore();
-  console.log("[StepTwo] experienceData from store:", experienceData);
-
+  
   // Get features for current experience from store
-  const currentFeatureSettings = experienceId ? getFeaturesForExperience(experienceId) : undefined;
- console.log("[StepTwo] currentFeatureSettings from store:", currentFeatureSettings);
+  const currentFeatureSettings = getFeaturesForExperience(experienceId);
+
   // Local state for overview section
   const [_overviewData, setOverviewData] = useState(experienceData);
 
@@ -59,14 +58,7 @@ const StepTwo: React.FC<StepTwoProps> = ({ onNext, onBack }) => {
   const { data: tutorialsData = [] } = useTutorials();
 
   // Central feature hook (fallback to old logic if no store features)
-  const { featureSettings, setFeatureSettings, onToggleCore } = useFeatureToggles(experienceId || "");
-
-  // Mount counter using ref (dev only)
-  const mountCount = useRef(0);
-  useEffect(() => {
-    mountCount.current += 1;
-    console.log("[StepTwo] mount count:", mountCount.current);
-  }, []);
+  const { featureSettings, setFeatureSettings, onToggleCore } = useFeatureToggles(experienceId);
 
   // Modal state grouped
   const [modals, setModals] = useState({
@@ -94,12 +86,10 @@ const StepTwo: React.FC<StepTwoProps> = ({ onNext, onBack }) => {
     closeModal("ingredient");
     await onToggleCore("ingredientList", true);
     // Also update global store
-    if (experienceId) {
-      setFeaturesForExperience(experienceId, {
-        ...((currentFeatureSettings || featureSettings) as FeatureSettings),
-        ingredientList: true,
-      });
-    }
+    setFeaturesForExperience(experienceId, {
+      ...((currentFeatureSettings || featureSettings) as FeatureSettings),
+      ingredientList: true,
+    });
   }, [onToggleCore, setFeatureSettings, closeModal, experienceId, setFeaturesForExperience, currentFeatureSettings, featureSettings]);
 
   const handleSaveDigitalInstructions = useCallback(async (instructions: any[], onFeatureEnable?: () => void) => {
@@ -109,12 +99,10 @@ const StepTwo: React.FC<StepTwoProps> = ({ onNext, onBack }) => {
     closeModal("digitalInstructions");
     await onToggleCore("productUsage", true);
     // Also update global store
-    if (experienceId) {
-      setFeaturesForExperience(experienceId, {
-        ...((currentFeatureSettings || featureSettings) as FeatureSettings),
-        productUsage: true,
-      });
-    }
+    setFeaturesForExperience(experienceId, {
+      ...((currentFeatureSettings || featureSettings) as FeatureSettings),
+      productUsage: true,
+    });
   }, [onToggleCore, setFeatureSettings, closeModal, experienceId, setFeaturesForExperience, currentFeatureSettings, featureSettings]);
 
   const handleSaveCustomerSupport = useCallback(async (payload: any) => {
@@ -123,12 +111,10 @@ const StepTwo: React.FC<StepTwoProps> = ({ onNext, onBack }) => {
     closeModal("customerSupport");
     await onToggleCore("customerService", true);
     // Also update global store
-    if (experienceId) {
-      setFeaturesForExperience(experienceId, {
-        ...((currentFeatureSettings || featureSettings) as FeatureSettings),
-        customerService: true,
-      });
-    }
+    setFeaturesForExperience(experienceId, {
+      ...((currentFeatureSettings || featureSettings) as FeatureSettings),
+      customerService: true,
+    });
   }, [onToggleCore, setFeatureSettings, closeModal, experienceId, setFeaturesForExperience, currentFeatureSettings, featureSettings]);
 
   const handleAutoEnableCustomerService = useCallback(() => {
@@ -158,9 +144,7 @@ const StepTwo: React.FC<StepTwoProps> = ({ onNext, onBack }) => {
         }
       }
       await onToggleCore(featureId, enabled);
-      if (experienceId) {
-        setFeaturesForExperience(experienceId, buildFeatureSettings(currentFeatureSettings || featureSettings, featureId, enabled));
-      }
+      setFeaturesForExperience(experienceId, buildFeatureSettings(currentFeatureSettings || featureSettings, featureId, enabled));
       return;
     }
 
@@ -174,9 +158,7 @@ const StepTwo: React.FC<StepTwoProps> = ({ onNext, onBack }) => {
         }
         openModal("recommendedProducts");
         await onToggleCore(featureId, true);
-        if (experienceId) {
-          setFeaturesForExperience(experienceId, buildFeatureSettings(currentFeatureSettings || featureSettings, featureId, true));
-        }
+        setFeaturesForExperience(experienceId, buildFeatureSettings(currentFeatureSettings || featureSettings, featureId, true));
         return;
       }
 
@@ -188,16 +170,12 @@ const StepTwo: React.FC<StepTwoProps> = ({ onNext, onBack }) => {
       }
 
       await onToggleCore(featureId, true);
-      if (experienceId) {
-        setFeaturesForExperience(experienceId, buildFeatureSettings(currentFeatureSettings || featureSettings, featureId, true));
-      }
+      setFeaturesForExperience(experienceId, buildFeatureSettings(currentFeatureSettings || featureSettings, featureId, true));
       return;
     }
 
     await onToggleCore(featureId, false);
-    if (experienceId) {
-      setFeaturesForExperience(experienceId, buildFeatureSettings(currentFeatureSettings || featureSettings, featureId, false));
-    }
+    setFeaturesForExperience(experienceId, buildFeatureSettings(currentFeatureSettings || featureSettings, featureId, false));
   }, [tutorialsData, productsData, onToggleCore, openModal, experienceId, setFeaturesForExperience, currentFeatureSettings, featureSettings]);
 
   const experienceOverview = useMemo(() => ({
@@ -300,12 +278,10 @@ const StepTwo: React.FC<StepTwoProps> = ({ onNext, onBack }) => {
         onAutoEnableCustomerService={handleAutoEnableCustomerService}
         onFeatureEnable={() => {
           setFeatureSettings(prev => ({ ...prev, productUsage: true }));
-          if (experienceId) {
-            setFeaturesForExperience(experienceId, {
-              ...((currentFeatureSettings || featureSettings) as FeatureSettings),
-              productUsage: true,
-            });
-          }
+          setFeaturesForExperience(experienceId, {
+            ...((currentFeatureSettings || featureSettings) as FeatureSettings),
+            productUsage: true,
+          });
           closeModal("digitalInstructions");
         }}
         ingredients={[]}
@@ -344,4 +320,4 @@ const StepTwo: React.FC<StepTwoProps> = ({ onNext, onBack }) => {
   );
 };
 
-export default StepTwo;
+export default CustomiseFeaturesStep;

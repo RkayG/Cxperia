@@ -31,6 +31,7 @@ const navigationItems: SidebarItem[] = [
     icon: "Users",
     type: "item",
   },
+
   {
     name: "Feedback",
     href: "/feedback",
@@ -38,8 +39,8 @@ const navigationItems: SidebarItem[] = [
     type: "item",
   },
   {
-    name: "Regions",
-    href: "/regions",
+    name: "Chatbot",
+    href: "/chatbot",
     icon: "Locate",
     type: "item",
   },

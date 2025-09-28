@@ -3,10 +3,10 @@ import { ChevronLeft } from "lucide-react";
 import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
-import MobilePreview from "./components/MobilePreview";
-import QrCodeGenerator from "./components/QrCodeGenerator";
-import DownloadOptions from "./components/DownloadOptions";
-import BrandColorPicker from "./components/BrandColorPicker";
+import MobilePreview from "./MobilePreview";
+import QrCodeGenerator from "./QrCodeGenerator";
+import DownloadOptions from "./DownloadOptions";
+import BrandColorPicker from "./BrandColorPicker";
 import ScrollToTop from "@/components/ScrollToTop";
 
 export default function PreviewPage() {

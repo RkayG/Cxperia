@@ -77,7 +77,7 @@ const ContentDashboardFilter: React.FC<ContentDashboardFilterProps> = ({
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search content..."
-            className="w-full pl-10 pr-4 py-3.5 text-gray-900 border border-gray-300 rounded-xl focus:ring-purple-500 focus:border-purple-500 text-sm"
+            className="w-full pl-10 pr-4 py-2 text-gray-900 border border-gray-300 rounded-xl focus:ring-purple-500 focus:border-purple-500 text-sm"
           />
           <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
         </div>

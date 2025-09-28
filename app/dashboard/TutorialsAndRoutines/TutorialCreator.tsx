@@ -1,15 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
-import { showToast } from "@/lib/toast";
+import { showToast } from "../../../utils/toast";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   useAddTutorial,
   useUpdateTutorial,
   useTutorial,
-} from "@/hooks/brands/useFeatureApi";
+} from "../../../hooks/useFeatureApi";
 import { validateTutorial } from "./TutorialValidation";
-import DropdownSelect from "@/components/DropdownSelect";
-import { uploadFile } from "@/services/brands/uploadService";
-import ResponseModal from "@/components/ResponseModal";
+import DropdownSelect from "../../common/DropdownSelect";
+import { uploadFile } from "../../../services/uploadService";
+import ResponseModal from "../../common/ResponseModal";
 import {
   Plus,
   Minus,

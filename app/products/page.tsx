@@ -1,0 +1,109 @@
+// src/pages/ProductDashboard.tsx
+import React, { useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useExperiences } from '@/hooks/brands/useExperienceApi';
+import { Camera, Play, Clock } from 'lucide-react';
+import ProductPerformanceOverview from './components/ProductPerformanceOverview';
+import ProductListings from './components/ProductListings';
+import type { PerformanceMetric, Product } from './components/productTypes';
+
+const ProductDashboard: React.FC = () => {
+  // Fetch experiences as products
+  const { data: experiencesRaw, isLoading: isLoadingExperiences } = useExperiences();
+  const location = useLocation();
+  // Remove context usage; use localStorage directly or zustand if needed
+ //console.log('Experiences fetched:', experiencesRaw);
+  // On mount, check for ref param and clear experience if needed
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('ref') === 'experience-complete') {
+      // Clear experienceId from localStorage directly
+      localStorage.removeItem('experienceId');
+    }
+    // Only run on mount or when location.search changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search]);
+
+  // Calculate metrics based on experiences
+  const experienceArr: any[] = React.useMemo(() => {
+    if (!experiencesRaw) return [];
+    if (experiencesRaw.error || (experiencesRaw.data && !Array.isArray(experiencesRaw.data))) {
+      return [];
+    }
+    if (Array.isArray(experiencesRaw)) return experiencesRaw;
+    if (Array.isArray(experiencesRaw.data)) return experiencesRaw.data;
+    return [];
+  }, [experiencesRaw]);
+
+  const activeQrCount = experienceArr.filter(exp => exp.qr_code_url).length;
+  const pendingQrCount = experienceArr.filter(exp => !exp.qr_code_url).length;
+
+  const performanceMetrics: PerformanceMetric[] = [
+    {
+      id: 'totalBrand',
+      title: 'Total Scans',
+      value: '0',
+      change: '+5.5% MoM',
+      isPositive: true,
+      lastUpdated: '1 hour ago',
+      icon: Camera,
+    },
+    {
+      id: 'totalCampaigns',
+      title: 'Active QR Codes',
+      value: String(activeQrCount),
+      change: '-1.2% MoM',
+      isPositive: activeQrCount >= 0,
+      lastUpdated: '',
+      icon: Play,
+    },
+    {
+      id: 'newListings',
+      title: 'Pending QR Codes',
+      value: String(pendingQrCount),
+      change: '+2.1% MoM',
+      isPositive: pendingQrCount >= 0,
+      lastUpdated: '',
+      icon: Clock,
+    },
+  ];
+
+  // Map experiences to Product[] shape expected by ProductListings
+  const products: Product[] = React.useMemo(() => {
+    return experienceArr.map((exp: any) => ({
+      id: exp.experience_id,
+      image: exp.product_image_url ? exp.product_image_url[0] || '/src/assets/images/demo6.png' : '/src/assets/images/demo6.png',
+      name: exp.name || exp.title || 'Untitled Product',
+      category: exp.category || 'Uncategorized',
+      experience: exp.name + ' experience' || exp.experience_name || '',
+      qrCodeStatus: exp.qr_code_url ? 'Generated' : 'Pending',
+      addedDate: exp.created_at ? new Date(exp.created_at).toISOString().slice(0, 10) : '',
+      // Attach full experience data for navigation
+      _fullExp: exp,
+    }));
+  }, [experienceArr]);
+
+  // Navigation handler to experience edit page with prefill data
+  const navigate = useNavigate();
+  const handleEditExperience = (exp: any) => {
+    navigate(`/experience/${exp.experience_id}?mode=edit&step=1`, {
+      state: { experience: exp }
+    });
+  };
+
+  return (
+    <div className="min-h-screen mx-auto pb-32 bg-gray-50 sm:pb-32 sm:p-6 lg:p-8">
+      <ProductPerformanceOverview metrics={performanceMetrics} />
+      {isLoadingExperiences ? (
+        <div className="text-center text-gray-500 py-8">Loading products...</div>
+      ) : (
+        <ProductListings
+          products={products}
+          onEditExperience={handleEditExperience}
+        />
+      )}
+    </div>
+  );
+};
+
+export default ProductDashboard;

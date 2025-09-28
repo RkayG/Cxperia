@@ -91,7 +91,7 @@ const ContentDashboardPage: React.FC = () => {
   };
 
   return (
-    <div className="font-sans relative border-6 max-w-screen-lg overflow-hidden flex justify-center p-0 ">
+    <div className="font-sans bg-gray-50 relative h-screen flex justify-center p-0 ">
       <div className="w-full overflow-hidden flex flex-col">
         <Header />
         <ScrollArea className="flex-1 overflow-y-auto">
@@ -111,12 +111,12 @@ const ContentDashboardPage: React.FC = () => {
             {isLoadingTutorials ? (
               <div className="text-center text-gray-500 py-8">Loading tutorials...</div>
             ) : filteredArticles.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-24">
+              <div className="flex flex-col items-center bg-gray-50 justify-center pb-24">
                 <Sparkles className="w-20 h-20 text-yellow-400 mb-6" />
                 <h2 className="text-2xl font-bold text-gray-700 mb-2">Nothing to see here yet</h2>
                 <p className="text-gray-500 mb-6">Create your first tutorial to get started.</p>
                 <button
-                  onClick={() => router.push('/create-tutorial')}
+                  onClick={() => router.push('/dashboard/tutorial?mode=create')}
                   className="px-8 py-3 bg-purple-700 text-white font-medium rounded-xl hover:bg-purple-800 transition-colors shadow-lg"
                 >
                   Create Tutorial

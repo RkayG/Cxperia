@@ -1,95 +1,46 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import StepIndicator from "@/components/StepIndicator";
-import { useExperienceStore } from "@/store/brands/useExperienceStore";
+import React from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
+import StepIndicator from "@/components/StepIndicator";
 
-import StepOne from "../[id]/product-details/page";
-import StepTwo from "./customise-features/page";
-import PreviewPage from "./preview/page";
+// Import the step components
+import ProductDetailsStep from "./product-details/components";
+import CustomiseFeaturesStep from "./customise-features/components";
+import PreviewStep from "./preview/components";
 
-interface ExperienceFlowProps {
-  stepOverride?: number;
-}
-
-const ExperienceFlow: React.FC<ExperienceFlowProps> = ({ stepOverride }) => {
+// This is the main flow controller for an experience that has an ID.
+// It reads the `step` from the URL and renders the appropriate component.
+const ExperienceFlowPage: React.FC = () => {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
 
-  // Zustand store
-  const { resetAll } = useExperienceStore();
+  const action = params.action as string;
+  const experienceId = params.id as string;
+  const currentStepKey = searchParams.get("step") || "product-details";
 
-  // Get action and experienceId from route params
-  const action = params?.action as string;
-  const experienceId = params?.id as string | undefined;
-
-  // Determine step from route and query
-  const getStepFromRoute = () => {
-    const stepParam = searchParams.get("step");
-    if (stepParam === "product-details") return 1;
-    if (stepParam === "customise-features") return 2;
-    if (stepParam === "preview") return 3;
-    return stepOverride ?? 1;
+  // Navigation handlers
+  const navigateToStep = (stepKey: string) => {
+    router.push(`/dashboard/experience/${action}/${experienceId}?step=${stepKey}`);
   };
 
-  const [step, setStepState] = useState<number>(getStepFromRoute());
-
-  // Sync step with URL changes
-  useEffect(() => {
-    const newStep = getStepFromRoute();
-    if (newStep !== step) {
-      setStepState(newStep);
-    }
-  }, [searchParams]);
-
-  // Step indicator configuration
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
-  const stepParam = searchParams.get("step");
+  // Step configuration
   const steps = [
-    { key: "product-details", label: isMobile ? "Product" : "Product Details" },
-    { key: "customise-features", label: isMobile ? "Features" : "Customize Features" },
-    { key: "preview", label: "Preview" },
+    { key: "product-details", label: "Product Details", component: ProductDetailsStep },
+    { key: "customise-features", label: "Customize Features", component: CustomiseFeaturesStep },
+    { key: "preview", label: "Preview", component: PreviewStep },
   ];
 
-  const currentStepIndex = steps.findIndex(s => s.key === stepParam);
+  const currentStepIndex = steps.findIndex(s => s.key === currentStepKey);
+  const CurrentStepComponent = steps[currentStepIndex]?.component;
+
   const indicatorSteps = steps.map((s, idx) => ({
     number: idx + 1,
-    label: s.label
+    label: s.label,
   }));
 
-  const setStep = (newStep: number) => {
-    setStepState(newStep);
-    const stepLabels = ["product-details", "customise-features", "preview"];
-    const stepLabel = stepLabels[newStep - 1] || "product-details";
-    if (stepLabel === "product-details") {
-      router.replace(`/dashboard/experience/${action}/${experienceId}?step=product-details`);
-      return;
-    }
-    if (stepLabel === "customise-features") {
-      router.replace(`/dashboard/experience/${action}/${experienceId}/customise-features?step=customise-features`);
-      return;
-    }
-    if (stepLabel === "preview") {
-      router.replace(`/dashboard/experience/${action}/${experienceId}/preview?step=preview`);
-      return;
-    }
-  };
-
-  const handleStepOneNext = () => {
-    setStep(2);
-  };
-
-  const handleStepTwoNext = () => {
-    setStep(3);
-  };
-
-  const handleStepTwoBack = () => {
-    router.push(`/dashboard/experience/${action}/${experienceId}?step=product-details`);
-  };
-
   return (
-    <div className="min-h-screen bg-white ">
+    <div className="min-h-screen bg-white">
       <div className="mx-auto">
         {/* Header */}
         <div className="flex-1 space-y-4 p-8 pt-6">
@@ -106,19 +57,21 @@ const ExperienceFlow: React.FC<ExperienceFlowProps> = ({ stepOverride }) => {
             <StepIndicator currentStep={currentStepIndex + 1} steps={indicatorSteps} />
           </div>
         </div>
-        {/* Step rendering logic */}
-        {step === 1 && (
-          <StepOne onNext={handleStepOneNext} isNew={false} />
-        )}
-        {step === 2 && experienceId && (
-          <StepTwo onNext={handleStepTwoNext} onBack={handleStepTwoBack} />
-        )}
-        {step === 3 && experienceId && (
-          <PreviewPage />
-        )}
+
+        {/* Render the current step component */}
+        <div className="p-8">
+          {CurrentStepComponent && (
+            <CurrentStepComponent
+              experienceId={experienceId}
+              onNext={() => navigateToStep(steps[currentStepIndex + 1]?.key)}
+              onBack={() => navigateToStep(steps[currentStepIndex - 1]?.key)}
+              isNew={action !== 'edit'}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
 };
 
-export default ExperienceFlow;
+export default ExperienceFlowPage;

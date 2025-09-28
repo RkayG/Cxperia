@@ -1,15 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
-import { showToast } from "@/lib/toast";
+import { showToast } from "../../../utils/toast";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   useAddTutorial,
   useUpdateTutorial,
   useTutorial,
-} from "@/hooks/brands/useFeatureApi";
+} from "../../../hooks/useFeatureApi";
 import { validateTutorial } from "./TutorialValidation";
-import DropdownSelect from "@/components/DropdownSelect";
-import { uploadFile } from "@/services/brands/uploadService";
-import ResponseModal from "@/components/ResponseModal";
+import DropdownSelect from "../../common/DropdownSelect";
+import { uploadFile } from "../../../services/uploadService";
 import {
   Plus,
   Minus,
@@ -85,12 +84,9 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
   const navigate = useNavigate();
   // Detect if navigation originated from TutorialSelectionModal
   const fromModal = location.state && location.state.fromModal;
-  // Detect if user came from experience step 2 (callback)
-  const searchParams = new URLSearchParams(location.search);
-  const fromExperience =
-    searchParams.get("from") === "experience" &&
-    searchParams.get("step") === "2";
 
+  // Get id param from URL or route params
+  const searchParams = new URLSearchParams(location.search);
   const tutorialId =
     searchParams.get("id") ||
     (location.pathname.startsWith("/tutorial/")
@@ -145,8 +141,7 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
   };
 
   const [tutorial, setTutorial] = useState<Tutorial>(getInitialTutorial);
-  // Response modal state for callback flow
-  const [showResponseModal, setShowResponseModal] = useState(false);
+
   // Pre-fill form if editing
   useEffect(() => {
     if (
@@ -278,7 +273,7 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
   };
 
   // Product Management Functions
-  /* const addProductToStep = (stepId: string) => {
+  const addProductToStep = (stepId: string) => {
     const newProduct: Product = {
       id: Date.now().toString(),
       name: "",
@@ -296,7 +291,7 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
 
     setTutorial({ ...tutorial, steps: updatedSteps });
   };
- */
+
   const removeProductFromStep = (stepId: string, productId: string) => {
     const updatedSteps = tutorial.steps.map((step) =>
       step.id === stepId
@@ -386,9 +381,6 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
 
   // const addCustomTag = (tag: string) => { ... };
 
-  const handlePreview = () => {
-    navigate("/tutorial?mode=preview", { state: { tutorial } });
-  };
   const handleSave = async () => {
     setSaveError(null);
     setSaveSuccess(false);
@@ -419,10 +411,6 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
         try {
           localStorage.removeItem(TUTORIAL_DRAFT_KEY);
         } catch (e) {}
-        if (fromExperience) {
-          setShowResponseModal(true);
-          return;
-        }
         navigate(-1); // Go back to previous page after creation
       }
       // If navigated from modal, go back after save
@@ -435,56 +423,21 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
     }
   };
 
-  // Handler for "Continue to Experience" in response modal
-  const handleContinueToExperience = () => {
-    setShowResponseModal(false);
-    // Go back to StepTwo and toggle on tutorialsRoutines feature
-    // Use afterTutorial=1 param to trigger toggle in StepTwo
-    navigate("/create-experience?step=2&afterTutorial=1", { replace: true });
-  };
-
-  // Handler for "Create more" in response modal
-  const handleCreateMore = () => {
-    setShowResponseModal(false);
-    // Reset form for new tutorial
-    setTutorial({
-      id: Date.now().toString(),
-      title: "",
-      description: "",
-      category: "",
-      difficulty: "Beginner",
-      totalDuration: "",
-      skinTypes: [],
-      occasion: [],
-      tags: [],
-      steps: [
-        {
-          id: "1",
-          stepNumber: 1,
-          title: "",
-          description: "",
-          duration: "",
-          products: [],
-          tips: [""],
-        },
-      ],
-      featuredImage: "",
-      videoUrl: "",
-    });
+  const handlePreview = () => {
+    navigate("/tutorial?mode=preview", { state: { tutorial } });
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen  bg-gray-50">
       <Toaster />
       {/* Header */}
-      <div className="lg:bg-white px-6 sticky top-0 z-10 lg:shadow-sm border-b">
-        <div className="sm:max-w-7xl max-w-sm mx-auto px-4 md:px-6 py-4">
+      <div className="bg-white  sticky top-0 z-10 shadow-sm border-b">
+        <div className="max-w-7xl  mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-semibold text-gray-900">
+            <h1 className="md:text-2xl text-lg font-bold text-purple-900">
               Create Tutorial & Routine
             </h1>
             <div className="flex gap-3 lg:block hidden">
-              <div className="flex justify-between gap-3">
               <button
                 onClick={handlePreview}
                 className="flex items-center px-4 py-2 text-purple-800 bg-white border border-purple-300 rounded-xl hover:bg-purple-50 transition-colors"
@@ -504,13 +457,12 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
                 <Save className="w-4 h-4 mr-2" />
                 {tutorialId ? "Update Tutorial" : "Publish Tutorial"}
               </button>
-              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto md:px-6 py-6">
+      <div className="max-w-7xl mx-auto px-6 py-6">
         {/* Save feedback */}
         {saveError && (
           <div className="mb-4 absolute top-2 mx-auto justify-center p-3 bg-red-100 text-red-700 rounded">
@@ -525,7 +477,7 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
         )}
         {/* Loading state handled by status === 'pending' above */}
         {/* Navigation Tabs */}
-        <div className="mb-6 px-2">
+        <div className="mb-6">
           <nav className="flex space-x-8 border-b border-gray-200">
             {[
               { id: "overview", label: "Overview", icon: Edit3 },
@@ -536,7 +488,7 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
-                  className={`flex items-center py-2 px-1 border-b-2 font-semibold text-sm transition-colors ${
+                  className={`flex items-center py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
                     activeTab === tab.id
                       ? "border-purple-800 text-purple-800"
                       : "border-transparent text-gray-500 hover:text-gray-700"
@@ -551,9 +503,9 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
         </div>
 
         {/* Tab Content */}
-        <div className="md:bg-white px-1 md:rounded-lg md:shadow">
+        <div className="bg-white rounded-lg shadow">
           {activeTab === "overview" && (
-            <div className="md:p-6 px-2">
+            <div className="p-6">
               <h2 className="text-xl text-purple-800 font-semibold mb-6">
                 Tutorial Overview
               </h2>
@@ -561,7 +513,7 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
               {/* Basic Information */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div className="md:col-span-2">
-                  <label className="block text-left text-purple-800 text-sm font-semibold mb-2">
+                  <label className="block text-left text-purple-800 text-sm font-medium mb-2">
                     Tutorial Title *
                   </label>
                   <input
@@ -570,7 +522,7 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
                     onChange={(e) =>
                       setTutorial({ ...tutorial, title: e.target.value })
                     }
-                    className={`w-full px-4 py-3.5 border-2 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 ${
+                    className={`w-full px-4 py-3 border-1 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 ${
                       validationErrors.some((e) =>
                         e.toLowerCase().includes("tutorial title")
                       )
@@ -589,7 +541,7 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-left text-purple-800 text-sm font-semibold mb-2">
+                  <label className="block text-left text-purple-800 text-sm font-medium mb-2">
                     Description
                   </label>
                   <textarea
@@ -598,7 +550,7 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
                       setTutorial({ ...tutorial, description: e.target.value })
                     }
                     rows={3}
-                    className={`w-full px-4 py-3.5 border-2 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 resize-none ${
+                    className={`w-full px-4 py-3 border-1 rounded-xl focus:ring-2 focus:ring-purple-500 focus-border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 resize-none ${
                       validationErrors.some((e) =>
                         e.toLowerCase().includes("tutorial description")
                       )
@@ -619,7 +571,7 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-left text-purple-800 text-sm font-semibold mb-2">
+                  <label className="block text-left text-purple-800 text-sm font-medium mb-2">
                     Category
                   </label>
                   <DropdownSelect
@@ -647,7 +599,7 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-left text-purple-800 text-sm font-semibold mb-2">
+                  <label className="block text-left text-purple-800 text-sm font-medium mb-2">
                     <Clock className="w-4 h-4 inline mr-1" />
                     Total Duration
                   </label>
@@ -660,7 +612,7 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
                         totalDuration: e.target.value,
                       })
                     }
-                    className={`w-full px-4 py-3.5 border-2 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 ${
+                    className={`w-full px-4 py-3 border-1 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 ${
                       validationErrors.some((e) =>
                         e.toLowerCase().includes("total duration")
                       )
@@ -681,7 +633,7 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
                 {/* Featured Image and Video Side by Side */}
                 <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-left text-purple-800 text-sm font-semibold mb-2">
+                    <label className="block text-left text-purple-800 text-sm font-medium mb-2">
                       Featured Image
                     </label>
                     <div
@@ -755,7 +707,7 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
                       ))}
                   </div>
                   <div>
-                    <label className="block text-left text-purple-800 text-sm font-semibold mb-2">
+                    <label className="block text-left text-purple-800 text-sm font-medium mb-2">
                       Featured Video (YouTube, Vimeo, etc.)
                     </label>
                     <input
@@ -764,7 +716,7 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
                       onChange={(e) =>
                         setTutorial({ ...tutorial, videoUrl: e.target.value })
                       }
-                      className={`w-full px-4 py-3.5 border-2 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 ${
+                      className={`w-full px-4 py-3 border-1 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 ${
                         validationErrors.some((e) =>
                           e.toLowerCase().includes("video")
                         )
@@ -779,7 +731,7 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
 
               {/* Skin Types */}
               <div className="mb-6">
-                <label className="block text-left text-purple-800 text-sm font-semibold mb-3">
+                <label className="block text-left text-purple-800 text-sm font-medium mb-3">
                   <Users className="w-4 h-4 inline mr-1" />
                   Suitable for Skin Types
                 </label>
@@ -839,8 +791,8 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
               </div>
 
               {/* Occasions */}
-              <div className="mb-18">
-                <label className="block text-left text-purple-800 text-sm font-semibold mb-3">
+              <div className="mb-6">
+                <label className="block text-left text-purple-800 text-sm font-medium mb-3">
                   <Calendar className="w-4 h-4 inline mr-1" />
                   Perfect for Occasions
                 </label>
@@ -904,25 +856,25 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
           )}
 
           {activeTab === "steps" && (
-            <div className="md:p-6  mx-auto">
-              <div className="flex px-2 md:px-0 items-center justify-between mb-6">
-                <h2 className="text-lg md:text-xl text-purple-800 font-semibold">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl text-purple-800 font-semibold">
                   Tutorial Steps
                 </h2>
                 <button
                   onClick={addStep}
-                  className="flex items-center px-3 md:px-4 py-2 bg-purple-800 text-white rounded-md hover:bg-purple-700 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  className="flex items-center px-4 py-2 bg-purple-800 text-white rounded-xl hover:bg-purple-700 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   Add Step
                 </button>
               </div>
 
-              <div className="space-y-6 mb-18 ">
+              <div className="space-y-6">
                 {tutorial.steps.map((step, index) => (
                   <div
                     key={step.id}
-                    className="border border-purple-200 rounded-2xl py-6 px-3 md:p-6 bg-[#f9f7fb]"
+                    className="border border-purple-200 rounded-2xl p-6 bg-[#f9f7fb]"
                   >
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="text-lg font-semibold text-purple-900">
@@ -951,7 +903,7 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div>
-                        <label className="block text-left text-purple-800 text-sm font-semibold mb-2">
+                        <label className="block text-left text-purple-800 text-sm font-medium mb-2">
                           Step Title
                         </label>
                         <input
@@ -960,7 +912,7 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
                           onChange={(e) =>
                             updateStep(step.id, "title", e.target.value)
                           }
-                          className={`w-full px-4 py-3.5 border-2 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 ${
+                          className={`w-full px-4 py-3 border-1 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 ${
                             validationErrors.some(
                               (e) =>
                                 e.toLowerCase().includes("step") &&
@@ -989,7 +941,7 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
                           ))}
                       </div>
                       <div>
-                        <label className="block text-left text-purple-800 text-sm font-semibold mb-2">
+                        <label className="block text-left text-purple-800 text-sm font-medium mb-2">
                           Duration
                         </label>
                         <input
@@ -998,7 +950,7 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
                           onChange={(e) =>
                             updateStep(step.id, "duration", e.target.value)
                           }
-                          className={`w-full px-4 py-3.5 border-2 rounded-xl focus:ring-2 focus:ring-purple-500 focus-border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 ${
+                          className={`w-full px-4 py-3 border-1 rounded-xl focus:ring-2 focus:ring-purple-500 focus-border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 ${
                             validationErrors.some(
                               (e) =>
                                 e.toLowerCase().includes("step") &&
@@ -1029,7 +981,7 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
                     </div>
 
                     <div className="mb-4">
-                      <label className="block text-left text-purple-800 text-sm font-semibold mb-2">
+                      <label className="block text-left text-purple-800 text-sm font-medium mb-2">
                         Description
                       </label>
                       <textarea
@@ -1038,7 +990,7 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
                           updateStep(step.id, "description", e.target.value)
                         }
                         rows={3}
-                        className={`w-full px-4 py-3.5 border-2 rounded-xl focus:ring-2 focus-ring-purple-500 focus-border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 resize-none ${
+                        className={`w-full px-4 py-3 border-1 rounded-xl focus:ring-2 focus-ring-purple-500 focus-border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 resize-none ${
                           validationErrors.some(
                             (e) =>
                               e.toLowerCase().includes("step") &&
@@ -1066,8 +1018,8 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
 
                     {/* Products for this step */}
                     <div className="mb-4">
-                     {/*  <div className="flex items-center justify-between mb-3">
-                        <label className="block text-left text-purple-800 text-sm font-semibold">
+                      <div className="flex items-center justify-between mb-3">
+                        <label className="block text-left text-purple-800 text-sm font-medium">
                           Products Used
                         </label>
                         <button
@@ -1076,7 +1028,7 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
                         >
                           + Add Product
                         </button>
-                      </div> */}
+                      </div>
 
                       {step.products.map((product) => (
                         <div
@@ -1156,7 +1108,7 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
                     {/* Tips for this step */}
                     <div>
                       <div className="flex items-center justify-between mb-3">
-                        <label className="block text-left text-purple-800 text-sm font-semibold">
+                        <label className="block text-left text-purple-800 text-sm font-medium">
                           Pro Tips
                         </label>
                         <button
@@ -1175,7 +1127,7 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
                             onChange={(e) =>
                               updateTip(step.id, tIndex, e.target.value)
                             }
-                            className="flex-1 px-4 py-3.5 border-2 border-purple-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500"
+                            className="flex-1 px-4 py-3 border-1 border-purple-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500"
                             placeholder={`Tip ${tIndex + 1}...`}
                           />
                           <button
@@ -1190,9 +1142,9 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
                     </div>
 
                     {/* Media Upload */}
-                    {/* <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-left text-purple-800 text-sm font-semibold mb-2">
+                        <label className="block text-left text-purple-800 text-sm font-medium mb-2">
                           Step Image
                         </label>
                         <div className="border-2 border-dashed border-purple-300 rounded-xl p-4 text-center hover:border-purple-400 transition-colors cursor-pointer bg-[#f6f2fa]">
@@ -1202,8 +1154,18 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
                           </span>
                         </div>
                       </div>
-      
-                    </div> */}
+                      <div>
+                        <label className="block text-left text-purple-800 text-sm font-medium mb-2">
+                          Step Video
+                        </label>
+                        <div className="border-2 border-dashed border-purple-300 rounded-xl p-4 text-center hover:border-purple-400 transition-colors cursor-pointer bg-[#f6f2fa]">
+                          <Play className="w-5 h-5 mx-auto text-purple-400 mb-1" />
+                          <span className="text-xs text-purple-700">
+                            Upload video
+                          </span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -1230,7 +1192,7 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
                         key={step.id}
                         className="border border-gray-200 rounded-lg p-4"
                       >
-                        <h3 className="font-semibold text-gray-900 mb-3">
+                        <h3 className="font-medium text-gray-900 mb-3">
                           Step {step.stepNumber}:{" "}
                           {step.title || "Untitled Step"}
                         </h3>
@@ -1263,30 +1225,20 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
         <div className="flex gap-3">
           <button
             onClick={handlePreview}
-            className="flex-1 flex items-center justify-center px-2 md:px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md"
+            className="flex-1 flex items-center justify-center px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md"
           >
             <Eye className="w-4 h-4 mr-2" />
             Preview
           </button>
           <button
             onClick={handleSave}
-            className="flex-1 flex items-center justify-center px-2 md:px-4 py-2 bg-purple-800 text-white rounded-md"
+            className="flex-1 flex items-center justify-center px-4 py-2 bg-purple-800 text-white rounded-md"
           >
             <Save className="w-4 h-4 mr-2" />
-            Publish
+            Publish Tutorial
           </button>
         </div>
       </div>
-      {/* Response Modal for callback flow */}
-      <ResponseModal
-        isOpen={showResponseModal}
-        message="Tutorial created successfully!"
-        onClose={() => setShowResponseModal(false)}
-        primaryActionLabel="Continue to Experience"
-        onPrimaryAction={handleContinueToExperience}
-        secondaryActionLabel="Create more tutorials"
-        onSecondaryAction={handleCreateMore}
-      />
     </div>
   );
 };

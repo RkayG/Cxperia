@@ -104,8 +104,18 @@ function SidebarContent(props: {
 
   return (
     <div className="flex flex-col h-full items-stretch">
+      
       <div className="h-14 flex items-center px-2 shrink-0 mr-10 md:mr-0 border-b">
         {props.sidebarTop}
+      </div>
+      {/* Add Create button here */}
+      <div className="p-4">
+        <Link
+          href="/dashboard/experience/create?step=product-details&new=true"
+          className={cn(buttonVariants({ variant: 'default' }), "w-full")}
+        >
+          Create
+        </Link>
       </div>
       <div className="flex flex-grow flex-col gap-2 pt-4 overflow-y-auto">
         {props.items.map((item, index) => {
@@ -134,6 +144,7 @@ function SidebarContent(props: {
 
         <div className="flex-grow" />
       </div>
+      
     </div>
   );
 }
@@ -178,7 +189,6 @@ export default function SidebarLayout(props: {
   basePath: string;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
- // const { resolvedTheme, setTheme } = useTheme();
 
   return (
     <div className="w-full flex">
@@ -214,11 +224,12 @@ export default function SidebarLayout(props: {
             </div>
           </div>
 
-          <div className="items-center hidden md:flex gap-4">
+          {/* Remove the Create button from here */}
+          {/* <div className="items-center hidden md:flex gap-4">
             <Link href="/dashboard/experience/create?step=product-details&new=true" className={cn(buttonVariants({ variant: 'default' }))}>
                 Create
             </Link>
-          </div>
+          </div> */}
         </div>
         <div className="flex-grow">{props.children}</div>
       </div>
