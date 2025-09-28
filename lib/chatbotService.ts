@@ -1,3 +1,4 @@
+
 // lib/api-service.ts
 import { supabase } from './supabase'
 
@@ -70,7 +71,23 @@ export interface ChatbotConfig {
 }
 
 export class HybridChatbotService {
-  // Get FAQ bot with product context
+ 
+  // Update chatbot config
+  async updateChatbotConfig(id: string, updates: Partial<ChatbotConfig>) {
+    const { data, error } = await supabase
+      .from('chatbot_configs')
+      .update({
+        ...updates,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
+   // Get FAQ bot with product context
   async getContextualFAQBot(experienceSlug: string) {
     // First, get the experience with product and brand info
     const { data: experience, error: expError } = await supabase
