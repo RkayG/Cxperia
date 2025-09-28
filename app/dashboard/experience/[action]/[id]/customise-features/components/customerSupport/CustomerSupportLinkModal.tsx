@@ -220,30 +220,31 @@ const CustomerSupportLinksModal: React.FC<CustomerSupportLinksModalProps & { onA
 
   return (
     <Drawer open={isOpen} onOpenChange={onClose}>
-      <DrawerContent className="w-screen bg-gray-50 max-w-full h-[90vh] max-h-[90vh]">
-        <div className="relative w-screen mb-24 text-gray-900 flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
-          {/* Enhanced Header */}
-          <div className="relative px-8 py-4 text-white">
-            <button
+      <DrawerContent className="mx-auto bg-gray-50 max-w-screen-lg min-h-[90vh]  max-h-[90vh]">
+        <button
               onClick={onClose}
-              className="absolute top-6 right-6 p-2 rounded-xl bg-gray-200 text-black hover:bg-purple-600 hover:text-white  hover:rotate-90 transition-all duration-200 backdrop-blur-sm"
+              className="absolute top-2 z-50 right-2 p-1 rounded-xl bg-white text-black hover:bg-purple-600 hover:text-white  hover:rotate-90 transition-all duration-200 backdrop-blur-sm"
               aria-label="Close modal"
             >
               <X size={20} />
             </button>
+        <div className="relative overflow-y-auto mb-24 text-gray-900 flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
+          {/* Enhanced Header */}
+          <div className="relative px-8 py-2 text-white">
             
-            <div className="max-w-2xl">
+            
+            <div className="max-w-2xl ">
               <h2 className=" text-xl md:text-2xl text-left  text-gray-900  font-bold mb-2">
                 Customer Support Hub
               </h2>
-              <p className="text-md  text-left text-gray-900 leading-relaxed">
+              <p className="text-sm  text-left text-gray-900 leading-relaxed">
                 Connect your customers with multiple support channels and social media platforms for seamless communication
               </p>
             </div>
           </div>
 
           {/* Tab Navigation */}
-          <div className="flex border-b border-gray-200 bg-gray-50 px-8">
+          <div className="flex border-b border-gray-200 bg-gray-50 px-6">
             <button
               onClick={() => setActiveTab('support')}
               className={`px-6 py-4 text-sm font-medium border-b-2 transition-all duration-200 ${
@@ -269,7 +270,7 @@ const CustomerSupportLinksModal: React.FC<CustomerSupportLinksModalProps & { onA
           </div>
 
           {/* Content Area */}
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 ">
             <div className="md:p-8">
               {activeTab === 'support' && (
                 <div className="space-y-8">
@@ -343,13 +344,13 @@ const CustomerSupportLinksModal: React.FC<CustomerSupportLinksModalProps & { onA
             <div className="flex gap-6">
               <button
                 onClick={onClose}
-                className="px-8 py-3 bg-gray-200 text-gray-700 font-medium rounded-xl hover:bg-gray-300 hover:scale-105 transition-all duration-200"
+                className="px-6 py-2 bg-gray-50 text-gray-700 font-medium rounded-xl hover:bg-gray-200 hover:scale-105 transition-all duration-200"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSave}
-                className="px-8 py-3 bg-purple-800 text-white font-medium rounded-xl hover:from-purple-700 hover:to-indigo-700 hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
+                className="px-6 py-2 bg-purple-800 text-white font-medium rounded-xl hover:from-purple-700 hover:to-indigo-700 hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
               >
                 Save
               </button>

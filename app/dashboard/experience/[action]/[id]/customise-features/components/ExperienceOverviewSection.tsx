@@ -87,7 +87,7 @@ const ExperienceOverviewSection: React.FC<ExperienceOverviewProps> = ({ data, on
   };
 
   return (
-    <div className="bg-[#ede8f3] rounded-2xl border-2 border-purple-800 p-6">
+    <div className="bg-[#ede8f3] rounded-2xl border-1 border-purple-800 p-6">
       <Toaster />
       {/* Header */}
       <div className="flex items-center justify-between mb-6">

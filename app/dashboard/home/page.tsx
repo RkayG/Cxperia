@@ -106,7 +106,7 @@ export default function RecentPage() {
         <h1
           className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-700 text-transparent bg-clip-text mb-2 mt-6"
         >
-          Hello, {brand?.name || 'Brand'}
+          Hello, {brand?.name || ''}
         </h1>
         <p className="text-gray-700 mb-6 max-w-sm md:max-w-xl">
           View your latest product experiences and tutorials.

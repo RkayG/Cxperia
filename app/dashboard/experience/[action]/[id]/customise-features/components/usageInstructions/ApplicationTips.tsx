@@ -686,13 +686,13 @@ const CosmeticProductModal: React.FC<CosmeticProductModalProps> = ({
       onOpenChange={setInternalOpen}
       shouldScaleBackground={true}
     >
-      <DrawerContent className="w-screen bg-gray-50 max-w-screen-lg mx-auto h-[90vh] max-h-[90vh] rounded-t-lg p-0 overflow-hidden">
+      <DrawerContent className=" bg-gray-50 max-w-screen-lg mx-auto min-h-[90vh] max-h-[90vh] rounded-t-lg p-0 overflow-hidden">
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-center bg-gray-50 justify-between px-8 py-3 text-purple-900 sticky top-0 z-20 ">
             <div className="flex items-center space-x-3">
               <div className="">
-                <h2 className="text-xl font-bold text-black">
+                <h2 className="text-xl -mt-2 font-bold text-black">
                   {productName} Usage Instructions
                 </h2>
                 <p className="text-purple-700 text-left text-sm">
@@ -702,7 +702,7 @@ const CosmeticProductModal: React.FC<CosmeticProductModalProps> = ({
             </div>
             <button
               onClick={() => setInternalOpen(false)}
-              className="p-2 rounded-xl  hover:rotate-90  hover:bg-purple-600 transition-all duration-200 group hover:text-white"
+              className="p-1 rounded-xl absolute right-2 -top-4 bg-white  hover:rotate-90  hover:bg-purple-600 transition-all duration-200 group hover:text-white"
               aria-label="Close drawer"
             >
               <X

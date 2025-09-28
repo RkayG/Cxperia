@@ -42,14 +42,7 @@ const StepTwoFeatures: React.FC<StepTwoFeaturesProps> = ({
         icon: '🧪',
         required: true
       },
-      {
-        id: 'skinRecommendations',
-        title: 'Skin Recommendations',
-        description: 'Suggest your products by skin type',
-        icon: '�',
-        recommended: true
-      },
-      
+    
       {
         id: 'tutorialsRoutines',
         title: 'Tutorials / Routines',
@@ -88,7 +81,14 @@ const StepTwoFeatures: React.FC<StepTwoFeaturesProps> = ({
         recommended: true,
         comingSoon: true
       },
-      
+        {
+        id: 'skinRecommendations',
+        title: 'Skin Recommendations',
+        description: 'Suggest your products by skin type',
+        icon: '�',
+        recommended: true,
+        comingSoon: true
+      }   
    
   ];
   const featuresToUse = features || defaultFeatures;
@@ -96,17 +96,17 @@ const StepTwoFeatures: React.FC<StepTwoFeaturesProps> = ({
     <div className="shadow-md border rounded-2xl p-6">
       <div className="text-center mb-6">
         <h3 className="text-lg font-semibold text-purple-900 mb-2">
-          We recommend selecting up to 6 features
+          We recommend selecting up to 4 features
         </h3>
         <div className="text-sm text-gray-600">
           Selected: <span className="font-medium text-purple-600">{selectedFeatures}</span> / {defaultFeatures.length}
         </div>
       </div>
       <div>
-        <h4 className=" font-bold text-3xl text-gray-900 mb-4">
+        <h4 className=" font-bold text-3xl text-center text-gray-900 mb-4">
           Customize User Experience Features
         </h4>
-        <p className="text-sm text-gray-600 mb-6">
+        <p className="text-sm text-gray-600 text-center mb-6">
           Select interactive elements to provide a rich post-purchase experience for your customers.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

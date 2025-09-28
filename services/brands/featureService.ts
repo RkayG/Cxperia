@@ -42,7 +42,7 @@ export async function getIngredients(experienceId: string) {
   return res.json();
 }
 export async function addIngredient(_experienceId: string, data: any) {
-  const res = await fetch(`${API_BASE}/experiences/ingredients`, {
+  const res = await fetch(`${API_BASE}/experiences/${_experienceId}/ingredients`, {
     method: 'POST',
     headers: getAuthHeaders(),
     body: JSON.stringify(data),
@@ -190,7 +190,7 @@ export async function addCustomerSupportLinks(links: any[]) {
 // Set brand logo URL (after uploading image via /upload)
 export async function setBrandLogo(logoUrl: string) {
   const res = await fetch(`${API_BASE}/brands/logo`, {
-    method: 'PATCH',
+    method: 'POST',
     headers: getAuthHeaders(),
     body: JSON.stringify({ logo_url: logoUrl }),
   });

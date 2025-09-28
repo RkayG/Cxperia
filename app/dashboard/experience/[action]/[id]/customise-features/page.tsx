@@ -257,6 +257,7 @@ const StepTwo: React.FC<StepTwoProps> = ({ onNext, onBack }) => {
     <>
       <ScrollToTop />
 
+    <div className="px-4 sm:px-6">
       <ExperienceOverviewSection
         data={experienceOverview}
         onUpdate={setExperienceData}
@@ -338,6 +339,7 @@ const StepTwo: React.FC<StepTwoProps> = ({ onNext, onBack }) => {
           router.push("/create-tutorial?from=experience&step=2"); 
         }}
       />
+      </div>
     </>
   );
 };

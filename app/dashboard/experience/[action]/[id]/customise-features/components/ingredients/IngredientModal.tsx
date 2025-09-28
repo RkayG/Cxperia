@@ -32,11 +32,7 @@ import {
 import React, { useState, useEffect } from "react";
 import IngredientSummary from "./IngredientSummary";
 import QuickAddIngredients from "./QuickAddIngredients";
-import {
-  addIngredients,
-  deleteIngredient as apiDeleteIngredient,
-  //updateIngredient as apiUpdateIngredient,
-} from "@/services/brands/featureService";
+import { useAddIngredients, useDeleteIngredient } from '@/hooks/brands/useFeatureApi';
 
 interface IngredientModalProps {
   isOpen: boolean;
@@ -58,6 +54,7 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
   const [productName, _setProductName] = useState(initialProductName);
   const [ingredients, setIngredients] = useState<Ingredient[]>(initialIngredients);
   const { data: fetchedIngredients } = useIngredients(experienceId || undefined);
+  const addIngredientsMutation = useAddIngredients(experienceId || '');
   const [editingIngredientId, setEditingIngredientId] = useState<string | null>(null);
   const [_showQuickAdd, setShowQuickAdd] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -253,7 +250,7 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
           id: ing.id || undefined,
         }));
 
-        const res: any = await addIngredients(payload);
+        const res: any = await addIngredientsMutation.mutateAsync(payload);
         if (res && res.data) {
           const rows = Array.isArray(res.data) ? res.data : res.data.data || [];
           const mapped: Ingredient[] = (rows || []).map((r: any) => ({
@@ -315,19 +312,19 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
       />
       
       <Drawer open={isOpen} onOpenChange={onClose} shouldScaleBackground>
-        <DrawerContent className="w-screen bg-gray-50 max-w-screen-lg h-[90vh] max-h-[90vh]  mx-auto">
+        <DrawerContent className="bg-gray-50 max-w-screen-lg min-h-[95vh] max-h-[90vh]  mx-auto">
           <DrawerHeader>
-            <div className="flex items-center gap-2 lg:gap-3 pl-2">
+            <div className="flex -mt-4 items-center gap-2 lg:gap-3 pl-2">
               
               <div>
-                <DrawerTitle className='text-xl font-semibold uppercase text-black'>{productName}</DrawerTitle>
+                <DrawerTitle className='text-xl font-semibold text-left text-black'>{productName} Ingredients</DrawerTitle>
                 <DrawerDescription>Manage your product's ingredient information</DrawerDescription>
               </div>
             </div>
              <DrawerClose asChild>
               <button
                 onClick={onClose}
-                className="absolute top-4 right-4 p-1.5 lg:p-2 rounded-xl bg-white text-gray-600 hover:bg-purple-600 hover:text-white hover:rotate-90 transition-all duration-200 group"
+                className="absolute top-2 right-2 p-1 rounded-xl bg-white text-gray-600 hover:bg-purple-600 hover:text-white hover:rotate-90 transition-all duration-200 group"
                 aria-label="Close modal"
               >
                 <X size={20} className="group-hover:rotate-90 transition-transform duration-200" />
@@ -337,16 +334,16 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
 
           <div className="flex-1 overflow-y-auto lg:px-6">
             <QuickAddIngredients onAddIngredient={handleQuickAddIngredient} />
-            <div className="mt-6 bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div className="mt-6 bg-white text-purple-700 rounded-xl border border-gray-200 overflow-hidden">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="text-center w-8">#</TableHead>
-                    <TableHead>INCI Name</TableHead>
-                    <TableHead>Common Name</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Function</TableHead>
-                    <TableHead className="text-center">
+                    <TableHead className="text-center w-8 text-purple-800">#</TableHead>
+                    <TableHead className="text-purple-800">INCI Name</TableHead>
+                    <TableHead className="text-purple-800">Common Name</TableHead>
+                    <TableHead className="text-purple-800">Category</TableHead>
+                    <TableHead className="text-purple-800">Function</TableHead>
+                    <TableHead className="text-center text-purple-800">
                       <HoverCard>
                         <HoverCardTrigger asChild>
                           <span className="cursor-help">Conc.</span>
@@ -357,14 +354,14 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
                         </HoverCardContent>
                       </HoverCard>
                     </TableHead>
-                    <TableHead className="text-center">
+                    <TableHead className="text-center text-purple-800">
                       <HoverCard>
                         <HoverCardTrigger asChild>
                           <span className="cursor-help">Allergen</span>
                         </HoverCardTrigger>
                         <HoverCardContent>
                           <div className="text-sm font-semibold mb-1">Allergen</div>
-                          <div className="text-xs text-muted-foreground">Indicates if this ingredient is a known allergen. This is set based on ingredient data.</div>
+                          <div className="text-xs text-muted-foreground ">Indicates if this ingredient is a known allergen. This is set based on ingredient data.</div>
                         </HoverCardContent>
                       </HoverCard>
                     </TableHead>
