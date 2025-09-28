@@ -1,11 +1,11 @@
+import config from "@/config/api";
+const { endpoints, API_BASE_URL } = config;
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3000/api';
+const API_BASE = API_BASE_URL || 'http://localhost:8000/api';
 
-// Link tutorials to an experience (many-to-many)
 export async function linkTutorialsToExperience(experienceId: string, tutorialIds: string[]) {
-  const res = await fetch(`${API_BASE}/experiences/${experienceId}/tutorials/link`, {
+  const res = await fetch(endpoints.TUTORIAL.LINK(experienceId), {
     method: 'POST',
-    headers: getAuthHeaders(),
     body: JSON.stringify({ tutorialIds }),
   });
   return res.json();
@@ -13,8 +13,7 @@ export async function linkTutorialsToExperience(experienceId: string, tutorialId
 
 // Get recent tutorials for a brand (last 30 days)
 export async function getRecentTutorials() {
-  const res = await fetch(`${API_BASE}/tutorials/recent`, {
-    headers: getAuthHeaders(),
+  const res = await fetch(endpoints.TUTORIAL.RECENTS, {
   });
   return res.json();
 }
@@ -22,58 +21,50 @@ export async function getRecentTutorials() {
 // Service for Experience Feature API calls
 
 
-function getAuthHeaders() {
-  // Prefer token from cookie (name: 'token'), fallback to localStorage
-  function getCookie(name: string) {
-    if (typeof document === 'undefined') return null;
-    const match = document.cookie.match(new RegExp('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)'));
-    return match ? decodeURIComponent(match[2]) : null;
-  }
-  const token = getCookie('token') || localStorage.getItem('token');
-  return {
-    'Content-Type': 'application/json',
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  };
-}
 
 // INGREDIENTS
 export async function getIngredients(experienceId: string) {
-  const res = await fetch(`${API_BASE}/experiences/${experienceId}/ingredients`, { headers: getAuthHeaders() });
+  const res = await fetch(endpoints.INGREDIENT.LIST(experienceId));
   return res.json();
 }
+
 export async function addIngredient(_experienceId: string, data: any) {
-  const res = await fetch(`${API_BASE}/experiences/${_experienceId}/ingredients`, {
+  
+  if (!_experienceId && data && data.experienceId) {
+    _experienceId = data.experienceId;
+  }
+  if (!_experienceId) {
+    throw new Error('Missing experienceId for adding ingredient');
+  }
+  const res = await fetch(endpoints.INGREDIENT.ADD(_experienceId), {
     method: 'POST',
-    headers: getAuthHeaders(),
-    body: JSON.stringify(data),
+    body: JSON.stringify(data.payload),
   });
   return res.json();
 }
 
-// Bulk add ingredients: accepts an array of ingredient objects or { ingredients: [...] }
-// NOTE: backend currently exposes POST /experiences/:experience_id/ingredients. If you prefer
-// a dedicated bulk endpoint, create POST /experiences/ingredients on the server to accept
-// per-item experience_id/product_id in the body. This client function posts to that path.
-export async function addIngredients(data: any) {
-  const res = await fetch(`${API_BASE}/experiences/ingredients`, {
-    method: 'POST',
-    headers: getAuthHeaders(),
-    body: JSON.stringify(data),
-  });
-  return res.json();
-}
 export async function updateIngredient(experienceId: string, ingredientId: string, data: any) {
-  const res = await fetch(`${API_BASE}/experiences/${experienceId}/ingredients/${ingredientId}`, {
+  if (!experienceId) {
+    throw new Error('Missing experienceId for updating ingredient');
+  }
+  if (!ingredientId) {
+    throw new Error('Missing ingredientId for updating ingredient');
+  }
+  const res = await fetch(endpoints.INGREDIENT.UPDATE(experienceId, ingredientId), {
     method: 'PUT',
-    headers: getAuthHeaders(),
     body: JSON.stringify(data),
   });
   return res.json();
 }
 export async function deleteIngredient(experienceId: string, ingredientId: string) {
-  const res = await fetch(`${API_BASE}/experiences/${experienceId}/ingredients/${ingredientId}`, {
+  if (!experienceId) {
+    throw new Error('Missing experienceId for deleting ingredient');
+  }
+  if (!ingredientId) {
+    throw new Error('Missing ingredientId for deleting ingredient');
+  }
+  const res = await fetch(endpoints.INGREDIENT.DELETE(experienceId, ingredientId), {
     method: 'DELETE',
-    headers: getAuthHeaders(),
   });
   return res.json();
 }
@@ -100,15 +91,15 @@ export async function searchInciIngredients(searchTerm: string, limit: number = 
 // TUTORIALS
 // Get all tutorials for an experience (pass experienceId as query param)
 export async function getTutorials() {
-  const res = await fetch(`${API_BASE}/experiences/tutorials`, { headers: getAuthHeaders() });
+  const res = await fetch(endpoints.TUTORIAL.LIST, {
+  });
   return res.json();
 }
 
 // Add a tutorial (experience_id in body)
 export async function addTutorial(data: any) {
-  const res = await fetch(`${API_BASE}/experiences/tutorials`, {
+  const res = await fetch(endpoints.TUTORIAL.CREATE, {
     method: 'POST',
-    headers: getAuthHeaders(),
     body: JSON.stringify(data),
   });
   return res.json();
@@ -116,18 +107,16 @@ export async function addTutorial(data: any) {
 
 // Get a tutorial by id
 export async function getTutorialById(tutorialId: string) {
-  const res = await fetch(`${API_BASE}/experiences/tutorials/${tutorialId}`, {
+  const res = await fetch(endpoints.TUTORIAL.DETAIL(tutorialId), {
     method: 'GET',
-    headers: getAuthHeaders(),
   });
   return res.json();
 }
 
 // Update a tutorial by id
 export async function updateTutorial(tutorialId: string, data: any) {
-  const res = await fetch(`${API_BASE}/experiences/tutorials/${tutorialId}`, {
+  const res = await fetch(endpoints.TUTORIAL.UPDATE(tutorialId), {
     method: 'PUT',
-    headers: getAuthHeaders(),
     body: JSON.stringify(data),
   });
   return res.json();
@@ -135,37 +124,31 @@ export async function updateTutorial(tutorialId: string, data: any) {
 
 // Delete a tutorial by id
 export async function deleteTutorial(tutorialId: string) {
-  const res = await fetch(`${API_BASE}/experiences/tutorials/${tutorialId}`, {
+  const res = await fetch(endpoints.TUTORIAL.DELETE(tutorialId), {
     method: 'DELETE',
-    headers: getAuthHeaders(),
   });
   return res.json();
 }
 
 // Get tutorial IDs linked to an experience
 export async function getTutorialIdsLinkedToExperience(experienceId: string) {
-  const res = await fetch(`${API_BASE}/experiences/tutorials-linked/${experienceId}`, { headers: getAuthHeaders() });
+  const res = await fetch(endpoints.TUTORIAL.LINK(experienceId));
   return res.json();
 }
 
 
 // DIGITAL INSTRUCTIONS
 export async function getInstructions(experienceId: string ) {
-  console.log('Fetching instructions for experienceId:', experienceId);
-  const res = await fetch(`${API_BASE}/experiences/${experienceId}/instructions`, {
-     headers: getAuthHeaders(),
+  const res = await fetch(endpoints.INSTRUCTION.LIST(experienceId), {
   });
-  console.log('Get instructions response status:', res.status);
-  console.log('Get instructions response headers:', res.headers);
-  console.log('Get instructions response body:', await res.clone().text());
+ 
   return res.json();
 }
 
 export async function addInstruction(experienceId: string, data: any) {
   // usage_time_type can be included in data
-  const res = await fetch(`${API_BASE}/experiences/instructions`, {
+  const res = await fetch(endpoints.INSTRUCTION.ADD(experienceId), {
     method: 'POST',
-    headers: getAuthHeaders(),
     body: JSON.stringify({ ...data, experience_id: experienceId }),
   });
   return res.json();
@@ -174,14 +157,13 @@ export async function addInstruction(experienceId: string, data: any) {
 
 // CUSTOMER SUPPORT LINKS (brand scoped)
 export async function getCustomerSupportLinksByBrand() {
-  const res = await fetch(`${API_BASE}/brands/support-links`, { headers: getAuthHeaders() });
+  const res = await fetch(endpoints.BRAND.SUPPORT_LINKS);
   return res.json();
 }
 // Add one or multiple support links for a brand
 export async function addCustomerSupportLinks(links: any[]) {
-  const res = await fetch(`${API_BASE}/brands/support-links`, {
+  const res = await fetch(endpoints.BRAND.SUPPORT_LINKS, {
     method: 'POST',
-    headers: getAuthHeaders(),
     body: JSON.stringify(links),
   });
   return res.json();
@@ -189,9 +171,8 @@ export async function addCustomerSupportLinks(links: any[]) {
 
 // Set brand logo URL (after uploading image via /upload)
 export async function setBrandLogo(logoUrl: string) {
-  const res = await fetch(`${API_BASE}/brands/logo`, {
+  const res = await fetch(endpoints.BRAND.LOGO, {
     method: 'POST',
-    headers: getAuthHeaders(),
     body: JSON.stringify({ logo_url: logoUrl }),
   });
   console.log('setBrandLogo response status:', res.status);
@@ -202,19 +183,18 @@ export async function setBrandLogo(logoUrl: string) {
 
 // Get brand logo URL
 export async function getBrandLogo() {
-  const res = await fetch(`${API_BASE}/brands/logo`, { headers: getAuthHeaders() });
+  const res = await fetch(endpoints.BRAND.LOGO);
   return res.json();
 }
 
 // FEEDBACK FORMS
 export async function getFeedbackForms(experienceId: string) {
-  const res = await fetch(`${API_BASE}/experiences/${experienceId}/feedback-forms`, { headers: getAuthHeaders() });
+  const res = await fetch(`${API_BASE}/experiences/${experienceId}/feedback-forms`);
   return res.json();
 }
 export async function updateFeedbackForms(experienceId: string, data: any) {
   const res = await fetch(`${API_BASE}/experiences/${experienceId}/feedback-forms`, {
     method: 'PUT',
-    headers: getAuthHeaders(),
     body: JSON.stringify(data),
   });
   return res.json();

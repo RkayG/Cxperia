@@ -1,3 +1,5 @@
+import { BRAND } from "zod";
+
 console.log('[api config] loaded');
 const API_BASE = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000/api';
 const config = {
@@ -35,21 +37,38 @@ const config = {
     },
 
     TUTORIAL: {
-      LIST: '/tutorials',
-      DETAIL: (id: string | number) => `/tutorials/${id}`,
-      CREATE: '/tutorials',
-      UPDATE: (id: string | number) => `/tutorials/${id}`,
-      LINK_TO_EXPERIENCE: (experienceId: string | number) => `/experiences/${experienceId}/tutorials`,
+      LIST: '/api/tutorials',
+      DETAIL: (id: string) => `/api/tutorials/${id}`,
+      CREATE: '/api/tutorials',
+      UPDATE: (id: string) => `/api/tutorials/${id}`,
+      DELETE: (id: string) => `/api/tutorials/${id}`,
+      RECENTS: '/api/tutorials/recents',
+      LINK: (experienceId: string) => `/api/experiences/${experienceId}/tutorials/link`,
     },
 
     INGREDIENT: {
-      LIST: (experienceId: string | number) => `/experiences/${experienceId}/ingredients`,
-      ADD: (experienceId: string | number) => `/experiences/${experienceId}/ingredients`,
+      LIST: (experienceId: string) => `/api/experiences/${experienceId}/ingredients`,
+      ADD: (experienceId: string) => `/api/experiences/${experienceId}/ingredients`,
+      UPDATE: (experienceId: string, ingredientId: string) => `/api/experiences/${experienceId}/ingredients/${ingredientId}`,
+      DELETE: (experienceId: string, ingredientId: string) => `/api/experiences/${experienceId}/ingredients/${ingredientId}`,
     },
 
+    INSTRUCTION: {
+      LIST: (experienceId: string) => `/api/experiences/${experienceId}/instructions`,
+      ADD: (experienceId: string) => `/api/experiences/${experienceId}/instructions`,
+      UPDATE: (experienceId: string, instructionId: string) => `/api/experiences/${experienceId}/instructions/${instructionId}`,
+      DELETE: (experienceId: string, instructionId: string) => `/api/experiences/${experienceId}/instructions/${instructionId}`,
+    },
+    
     FEATURE: {
-      LIST: (experienceId: string | number) => `/experiences/${experienceId}/features`,
-      UPDATE: (experienceId: string | number) => `/experiences/${experienceId}/features`,
+      LIST: (experienceId: string) => `/api/experiences/${experienceId}/features`,
+      ENABLE: (experienceId: string) => `/api/experiences/${experienceId}/features`,
+      DISABLE: (experienceId: string, featureId: string) => `/api/experiences/${experienceId}/features/${featureId}`,
+    },
+
+    BRAND: {
+      LOGO: '/api/brands/logo',
+      SUPPORT_LINKS: '/api/brands/support-links',
     },
 
     UPLOAD: {

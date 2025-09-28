@@ -32,7 +32,7 @@ import {
 import React, { useState, useEffect } from "react";
 import IngredientSummary from "./IngredientSummary";
 import QuickAddIngredients from "./QuickAddIngredients";
-import { useAddIngredients, useDeleteIngredient } from '@/hooks/brands/useFeatureApi';
+import { useAddIngredient, useDeleteIngredient } from '@/hooks/brands/useFeatureApi';
 
 interface IngredientModalProps {
   isOpen: boolean;
@@ -54,7 +54,7 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
   const [productName, _setProductName] = useState(initialProductName);
   const [ingredients, setIngredients] = useState<Ingredient[]>(initialIngredients);
   const { data: fetchedIngredients } = useIngredients(experienceId || undefined);
-  const addIngredientsMutation = useAddIngredients(experienceId || '');
+  const addIngredientsMutation = useAddIngredient(experienceId || '');
   const [editingIngredientId, setEditingIngredientId] = useState<string | null>(null);
   const [_showQuickAdd, setShowQuickAdd] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -154,7 +154,7 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
     (async () => {
       if (experienceId && id) {
         try {
-          await apiDeleteIngredient(String(experienceId), String(id));
+          await useDeleteIngredient(String(experienceId), String(id));
           setIngredients((prev) => prev.filter((ing) => ing.id !== id));
         } catch (e) {
           console.warn(
@@ -250,7 +250,7 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
           id: ing.id || undefined,
         }));
 
-        const res: any = await addIngredientsMutation.mutateAsync(payload);
+        const res: any = await addIngredientsMutation.mutateAsync({ experienceId, payload });
         if (res && res.data) {
           const rows = Array.isArray(res.data) ? res.data : res.data.data || [];
           const mapped: Ingredient[] = (rows || []).map((r: any) => ({
