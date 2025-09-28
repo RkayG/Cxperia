@@ -81,7 +81,7 @@ function NavItem(props: {
       className={cn(
         buttonVariants({ variant: "ghost", size: "sm" }),
         selected && "bg-purple-200",
-        "flex-grow justify-start text-md bricolage-grotesque-light text-zinc-800 dark:text-zinc-300 px-2"
+        "flex-grow justify-start text-md bricolage-grotesque-light text-purple-900 dark:text-zinc-300 px-2"
       )}
       onClick={props.onClick}
       prefetch={true}
@@ -191,7 +191,7 @@ export default function SidebarLayout(props: {
             <HeaderBreadcrumb baseBreadcrumb={props.baseBreadcrumb} basePath={props.basePath} items={props.items} />
           </div>
 
-          <div className="flex md:hidden items-center">
+          <div className="flex items-center md:hidden">
             <Sheet
               onOpenChange={(open) => setSidebarOpen(open)}
               open={sidebarOpen}
@@ -214,11 +214,11 @@ export default function SidebarLayout(props: {
             </div>
           </div>
 
-          {/* <UserButton
-            colorModeToggle={() =>
-              setTheme(resolvedTheme === "light" ? "dark" : "light")
-            }
-          /> */}
+          <div className="items-center hidden md:flex gap-4">
+            <Link href="/dashboard/experience/create?step=product-details&new=true" className={cn(buttonVariants({ variant: 'default' }))}>
+                Create
+            </Link>
+          </div>
         </div>
         <div className="flex-grow">{props.children}</div>
       </div>

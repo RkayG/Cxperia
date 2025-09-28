@@ -26,14 +26,14 @@ const navigationItems: SidebarItem[] = [
     type: "item",
   },
   {
-    name: "People",
-    href: "/people",
+    name: "Content",
+    href: "/content",
     icon: "Users",
     type: "item",
   },
   {
-    name: "Segments",
-    href: "/segments",
+    name: "Feedback",
+    href: "/feedback",
     icon: "Columns3",
     type: "item",
   },

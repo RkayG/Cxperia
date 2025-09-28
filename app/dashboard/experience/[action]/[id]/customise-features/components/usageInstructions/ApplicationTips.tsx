@@ -276,13 +276,13 @@ const CosmeticProductModal: React.FC<CosmeticProductModalProps> = ({
   const mainPanel = (
     <div className="lg:flex bg-gray-50">
       {/* Sidebar */}
-      <div className="w-64 bg-gray-50 mt-28 hidden lg:block border-r border-gray-200 p-4 fixed left-0 top-0 h-full z-30">
+      <div className="w-64 bg-gray-50 relative hidden lg:block border-r border-gray-200 p-4 fixed left-0 top-0 h-full z-30">
         <nav className="space-y-2">
           <button
             onClick={() => setActiveTab("instructions")}
             className={`w-full flex items-center gap-2 text-left px-3 py-2 rounded-xl transition-colors ${
               activeTab === "instructions"
-                ? "bg-purple-100 text-purple-800 font-semibold"
+                ? "bg-gray-100 text-purple-800 font-semibold"
                 : "hover:bg-gray-100 text-gray-900"
             }`}
           >
@@ -292,7 +292,7 @@ const CosmeticProductModal: React.FC<CosmeticProductModalProps> = ({
             onClick={() => setActiveTab("tips")}
             className={`w-full flex items-center gap-2 text-left px-3 py-2 rounded-xl transition-colors ${
               activeTab === "tips"
-                ? "bg-purple-100 text-purple-800 font-semibold"
+                ? "bg-gray-100 text-purple-800 font-semibold"
                 : "hover:bg-gray-100 text-gray-900"
             }`}
           >
@@ -302,7 +302,7 @@ const CosmeticProductModal: React.FC<CosmeticProductModalProps> = ({
             onClick={() => setActiveTab("warnings")}
             className={`w-full flex items-center gap-2 text-left px-3 py-2 rounded-xl transition-colors ${
               activeTab === "warnings"
-                ? "bg-purple-100 text-purple-800 font-semibold"
+                ? "bg-gray-100 text-purple-800 font-semibold"
                 : "hover:bg-gray-100 text-gray-900"
             }`}
           >
@@ -311,8 +311,8 @@ const CosmeticProductModal: React.FC<CosmeticProductModalProps> = ({
         </nav>
       </div>
 
-  <div className="mb-6 px-2 w-full bg-gray-50 relative overflow-x-auto lg:hidden" style={{ marginLeft: 0 }}>
-        <nav className="flex space-x-8 border-b border-gray-200">
+  <div className="mb-6 px-2 bg-gray-50 relative overflow-x-auto lg:hidden" style={{ marginLeft: 0 }}>
+        <nav className="flex space-x-2 border-b border-gray-200">
           {[
             {
               id: "instructions",
@@ -331,7 +331,7 @@ const CosmeticProductModal: React.FC<CosmeticProductModalProps> = ({
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center min-w-xs py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                className={`overflow-x-auto flex w-full py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
                   activeTab === tab.id
                     ? "border-purple-800 flex text-purple-800"
                     : "border-transparent flex  text-gray-500 hover:text-gray-700"
@@ -346,12 +346,12 @@ const CosmeticProductModal: React.FC<CosmeticProductModalProps> = ({
       </div>
 
       {/* Main Content */}
-      <div className="lg:ml-64 lg:flex-1 bg-gray-50 overflow-y-auto">
-        <div className="p-8">
+      <div className="lg:flex-1 bg-gray-50 mb-12 overflow-y-auto">
+        <div className="p-8 overflow-y-auto " style={{ maxHeight: "calc(100vh - 160px)" }}>
           {/* Basic Information only for instructions tab */}
           {activeTab === "instructions" && (
             <div className="mb-8">
-              <h3 className="text-xl font-semibold text-purple-900 mb-4">
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">
                 Basic Information
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -365,7 +365,7 @@ const CosmeticProductModal: React.FC<CosmeticProductModalProps> = ({
                     onChange={(e) =>
                       setFormData({ ...formData, frequency: e.target.value })
                     }
-                    className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 border-purple-900 ${
+                    className={`w-full px-4 py-3 lg:py-2 border-2 lg:border-1 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 border-purple-900 ${
                       formData.frequency ? "bg-[#ede8f3]" : ""
                     }`}
                     placeholder="e.g., Once daily, Twice weekly"
@@ -382,7 +382,7 @@ const CosmeticProductModal: React.FC<CosmeticProductModalProps> = ({
                     onChange={(e) =>
                       setFormData({ ...formData, duration: e.target.value })
                     }
-                    className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 border-purple-900 ${
+                    className={`w-full px-4 py-3 lg:py-2 border-2 lg:border-1 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 border-purple-900 ${
                       formData.duration ? "bg-[#ede8f3]" : ""
                     }`}
                     placeholder="e.g., Leave on overnight, Rinse after 10 minutes"
@@ -498,8 +498,8 @@ const CosmeticProductModal: React.FC<CosmeticProductModalProps> = ({
 
           {/* Tab Content */}
           {activeTab === "instructions" && (
-            <div>
-              <h3 className="text-xl font-semibold mb-4 text-purple-800">
+            <div className="">
+              <h3 className="text-xl font-semibold mb-4 text-gray-900">
                 Usage Instructions
               </h3>
               {/* General How to Use */}
@@ -513,7 +513,7 @@ const CosmeticProductModal: React.FC<CosmeticProductModalProps> = ({
                     setFormData({ ...formData, howToUse: e.target.value })
                   }
                   rows={4}
-                  className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 border-purple-900 ${
+                  className={`w-full px-4 py-3 border-2 lg:border-1 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 border-purple-900 ${
                     formData.howToUse ? "bg-[#ede8f3]" : ""
                   }`}
                   placeholder="Describe the general usage instructions for this product..."
@@ -521,7 +521,7 @@ const CosmeticProductModal: React.FC<CosmeticProductModalProps> = ({
                 {errors.howToUse && <p className="text-xs text-red-600 mt-2">{errors.howToUse}</p>}
               </div>
               {/* Step-by-Step Application */}
-              <div>
+              <div className="mb-12">
                 <div className="flex items-center justify-between mb-4">
                   <label className="block text-left text-purple-800 text-sm font-medium">
                     Step-by-Step Application
@@ -558,7 +558,7 @@ const CosmeticProductModal: React.FC<CosmeticProductModalProps> = ({
                         onChange={(e) =>
                           updateApplicationStep(step.id, "step", e.target.value)
                         }
-                        className={`px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 border-purple-900 ${
+                        className={`px-4 py-3 border-2 lg:border-1 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 border-purple-900 ${
                           step.step ? "bg-[#ede8f3]" : ""
                         }`}
                         placeholder="Step title (e.g., Cleanse face)"
@@ -573,7 +573,7 @@ const CosmeticProductModal: React.FC<CosmeticProductModalProps> = ({
                             e.target.value
                           )
                         }
-                        className={`px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 border-purple-900 ${
+                        className={`px-4 py-3 border-2 lg:border-1 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 border-purple-900 ${
                           step.description ? "bg-[#ede8f3]" : ""
                         }`}
                         placeholder="Detailed description"
@@ -695,8 +695,9 @@ const CosmeticProductModal: React.FC<CosmeticProductModalProps> = ({
                 <h2 className="text-xl -mt-2 font-bold text-black">
                   {productName} Usage Instructions
                 </h2>
-                <p className="text-purple-700 text-left text-sm">
+                <p className="text-gray-500 text-left text-sm">
                   {/* Optionally show step count or other info here */}
+                  Describe how users should apply and use {productName}.
                 </p>
               </div>
             </div>

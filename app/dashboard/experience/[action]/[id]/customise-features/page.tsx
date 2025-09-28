@@ -257,7 +257,7 @@ const StepTwo: React.FC<StepTwoProps> = ({ onNext, onBack }) => {
     <>
       <ScrollToTop />
 
-    <div className="px-4 sm:px-6">
+    <div className="px-4 fade-in sm:px-6">
       <ExperienceOverviewSection
         data={experienceOverview}
         onUpdate={setExperienceData}

@@ -4,7 +4,7 @@ import StepIndicator from "@/components/StepIndicator";
 import { useExperienceStore } from "@/store/brands/useExperienceStore";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 
-import StepOne from "./product-details/page";
+import StepOne from "../[id]/product-details/page";
 import StepTwo from "./customise-features/page";
 import PreviewPage from "./preview/page";
 

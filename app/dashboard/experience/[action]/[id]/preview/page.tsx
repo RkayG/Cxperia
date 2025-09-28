@@ -7,6 +7,7 @@ import MobilePreview from "./components/MobilePreview";
 import QrCodeGenerator from "./components/QrCodeGenerator";
 import DownloadOptions from "./components/DownloadOptions";
 import BrandColorPicker from "./components/BrandColorPicker";
+import ScrollToTop from "@/components/ScrollToTop";
 
 export default function PreviewPage() {
   const [qrCodeImageUrl, setQrCodeImageUrl] = useState<string | undefined>(undefined);
@@ -54,10 +55,11 @@ export default function PreviewPage() {
   };
 
   return (
-    <div>
+    <div className="fade-in bg-gray-50">
+    <ScrollToTop />
       <button
         onClick={() => router.push("/create-experience/customize-features")}
-        className="w-fit px-8 py-3  flex justify-left mb-3  bg-gray-200 text-gray-800 font-medium rounded-xl hover:bg-gray-300 transition-colors duration-200 shadow-md"
+        className="w-fit px-8 py-3  flex justify-left mb-3   text-gray-800 font-medium rounded-xl  transition-colors duration-200"
       >
         <ChevronLeft className="mr-2" size={20} />
         Back
