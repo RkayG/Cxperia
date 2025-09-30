@@ -2,21 +2,19 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 
 const PUBLIC_EXPERIENCE_SECRET = process.env.NEXT_PUBLIC_EXPERIENCE_SECRET || 'your-frontend-secret';
-// const CACHE_TTL_SECONDS = 604800; // 7 days
+const CACHE_TTL_SECONDS = 604800; // 7 days
 
 // --- GET /api/public/experience/[slug]/tutorials ---
 // Mapped from: async function getPublicTutorials(req, res)
 export async function GET(req: NextRequest, { params }: { params: { slug: string } }) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const slug = params.slug;
 
   // Security Check: Validate Secret Key
   const secret = req.headers.get('x-public-secret') || req.nextUrl.searchParams.get('secret');
   if (!secret || secret !== PUBLIC_EXPERIENCE_SECRET) {
-    return NextResponse.json({ success: false, message: 'Invalid or missing secret key' }, { status: 403 });
+    return NextResponse.json({ success: false, message: 'Invalid!!!' }, { status: 403 });
   }
-
-  // NOTE: Original caching logic (e.g., Redis/KV store) was here.
 
   try {
     // 1. Get experience to find brand_id
@@ -44,9 +42,14 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
     if (tutorialsError) throw tutorialsError;
 
     const response = { success: true, tutorials: tutorials || [] };
-    // NOTE: Caching implementation would typically be here.
 
-    return NextResponse.json(response);
+    // Return with caching headers
+    return NextResponse.json(response, {
+      headers: {
+        'Cache-Control': `public, s-maxage=${CACHE_TTL_SECONDS}, stale-while-revalidate=86400`,
+        'CDN-Cache-Control': `public, s-maxage=${CACHE_TTL_SECONDS}`,
+      },
+    });
   } catch (error: any) {
     console.error('Error getting public tutorials:', error);
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });

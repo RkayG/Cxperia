@@ -61,31 +61,6 @@ export default function RecentPage() {
   console.log('filteredExperiences:', filteredExperiences);
   console.log('filteredTutorials:', filteredTutorials);
 
-  // Example data for top scans (replace with real API data)
-/*   const topScansData = [
-    {
-      id: "1",
-      productName: "HydraGlow Serum",
-      imageUrl: "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=400&q=80",
-      scanCount: 42,
-      lastScan: "2025-09-14 15:32",
-    },
-    {
-      id: "2",
-      productName: "Radiant Cleanser",
-      imageUrl: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=400&q=80",
-      scanCount: 35,
-      lastScan: "2025-09-13 10:21",
-    },
-    {
-      id: "3",
-      productName: "Night Repair Cream",
-      imageUrl: "https://images.unsplash.com/photo-1602488257133-58d5fc939286?auto=format&fit=crop&w=400&q=80",
-      scanCount: 28,
-      lastScan: "2025-09-12 19:05",
-    },
-  ]; */
-
   return (
     <>
     <div className="relative w-[90%] mx-auto mt-4 mb-8 hidden md:block h-32">
@@ -95,7 +70,9 @@ export default function RecentPage() {
         </div>
       )}
       <Image
-        src={recentBanner2}
+        src={recentBanner2.src}
+        width={1200}
+        height={200}
         alt="Banner"
         className="rounded-xl w-full h-full object-cover"
         fill={false}

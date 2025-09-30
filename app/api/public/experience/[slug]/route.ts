@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server'; // Assumes Supabase server client setup
+import { createClient } from '@/lib/supabase/server';
 
 const PUBLIC_EXPERIENCE_SECRET = process.env.NEXT_PUBLIC_EXPERIENCE_SECRET || 'your-frontend-secret';
 const CACHE_TTL_SECONDS = 604800; // 7 days
 
 // --- GET /api/public/experience/[slug] ---
-// Mapped from: async function getPublicExperience(req, res)
 export async function GET(req: NextRequest, { params }: { params: { slug: string } }) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const slug = params.slug;
-  
+
   if (!slug) {
     return NextResponse.json({ success: false, message: 'Missing slug parameter' }, { status: 400 });
   }
@@ -17,18 +16,25 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
   // Security Check: Validate Secret Key
   const secret = req.headers.get('x-public-secret') || req.nextUrl.searchParams.get('secret');
   if (!secret || secret !== PUBLIC_EXPERIENCE_SECRET) {
-    return NextResponse.json({ success: false, message: 'Invalid or missing secret key' }, { status: 403 });
+    return NextResponse.json({ success: false, message: 'Invalid!!!' }, { status: 403 });
   }
 
-  // NOTE: Original caching logic (e.g., Redis/KV store) was here.
-  // In a production Next.js app, you might use:
-  // fetch(..., { next: { revalidate: CACHE_TTL_SECONDS, tags: ['public-experience', slug] } });
-
   try {
-    // 1. Fetch basic experience info
+    // --- ONE QUERY with nested joins ---
     const { data: exp, error: expError } = await supabase
       .from('experiences')
-      .select('*')
+      .select(`
+        *,
+        product:products(*),
+        digital_instructions(*),
+        ingredients(*),
+        experience_features(*),
+        brand:brands(
+          logo_url,
+          name,
+          customer_support_links(*)
+        )
+      `)
       .eq('public_slug', slug)
       .single();
 
@@ -38,66 +44,52 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
       }
       throw expError;
     }
-    
-    // Initialize combined response object
+
+    // --- Normalize / post-process the response ---
     const combinedExp: Record<string, any> = { ...exp };
-    const brand_id = exp.brand_id;
 
-    // --- Data Joins ---
-    
-    // 2. Join product info
-    if (exp.product_id) {
-      const { data: product } = await supabase
-        .from('products')
-        .select('*')
-        .eq('id', exp.product_id)
-        .single();
-      combinedExp.product = product || null;
-    } else {
-      combinedExp.product = null;
+    // Compute enabled features list
+    combinedExp.features_enabled = (exp.experience_features || [])
+      .filter((f: any) => f.is_enabled)
+      .map((f: any) => f.feature_name);
+
+    // Simplify customer support links
+    combinedExp.customer_support_links_simple = (exp.brand?.customer_support_links || []).map((l: any) => ({
+      type: l.type,
+      value: l.value,
+    }));
+
+
+  // Expose brand_logo_url and brand_name directly
+  combinedExp.brand_logo_url = exp.brand?.logo_url || null;
+  combinedExp.brand_name = exp.brand?.name || null;
+
+
+    // Remove nested brand.customer_support_links and brand_id (security)
+    if (combinedExp.brand) {
+      delete combinedExp.brand.customer_support_links;
+      delete combinedExp.brand_id;
+    }
+    // Also remove brand_id at top level if present
+    if ('brand_id' in combinedExp) {
+      delete combinedExp.brand_id;
     }
 
-    // 3. Join digital_instructions, ingredients, features
-    const [{ data: instructions }, { data: ingredients }, { data: features }] = await Promise.all([
-      supabase.from('digital_instructions').select('*').eq('experience_id', exp.id),
-      supabase.from('ingredients').select('*').eq('experience_id', exp.id),
-      supabase.from('experience_features').select('*').eq('experience_id', exp.id),
-    ]);
-
-    combinedExp.digital_instructions = instructions || [];
-    combinedExp.ingredients = ingredients || [];
-    combinedExp.features = features || [];
-    
-    // Compute enabled features array
-    combinedExp.features_enabled = (features || [])
-      .filter(f => f.is_enabled)
-      .map(f => f.feature_name);
-
-    // 4. Join brand logo and support links (requires brand_id)
-    if (brand_id) {
-      const [{ data: brand }, { data: supportLinks }] = await Promise.all([
-        supabase.from('brands').select('logo_url').eq('id', brand_id).single(),
-        supabase.from('customer_support_links').select('*').eq('brand_id', brand_id),
-      ]);
-
-      combinedExp.brand_logo_url = brand?.logo_url || null;
-      combinedExp.customer_support_links = supportLinks || [];
-      
-      // Add simplified customer support links
-      combinedExp.customer_support_links_simple = (supportLinks || []).map(l => ({ type: l.type, value: l.value }));
-    } else {
-      combinedExp.brand_logo_url = null;
-      combinedExp.customer_support_links = [];
-      combinedExp.customer_support_links_simple = [];
-    }
-    
     const response = { success: true, data: combinedExp };
-    // NOTE: Caching implementation would typically be here (e.g., setting the result to Redis).
-
-    return NextResponse.json(response);
+    
+    // Return with caching headers
+    return NextResponse.json(response, {
+      headers: {
+        'Cache-Control': `public, s-maxage=${CACHE_TTL_SECONDS}, stale-while-revalidate=86400`,
+        'CDN-Cache-Control': `public, s-maxage=${CACHE_TTL_SECONDS}`,
+      },
+    });
 
   } catch (error: any) {
     console.error('Error getting public experience:', error);
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
 }
+
+// Optional: Set revalidation time for Next.js data cache
+export const revalidate = CACHE_TTL_SECONDS;

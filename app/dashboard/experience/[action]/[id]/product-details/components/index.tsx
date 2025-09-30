@@ -1,71 +1,72 @@
-"use client"
-import React, { useState, useEffect, useCallback } from "react"
-import { useRouter, useParams, useSearchParams } from "next/navigation"
-import ProductForm from "./ProductForm"
-import MediaUpload from "./MediaUpload"
-import { useExperienceStore, initialExperienceData } from "@/store/brands/useExperienceStore"
-import { useExperienceOperations } from "@/hooks/brands/useExperienceOperations"
-import { validateStepOne, scrollToError } from "@/utils/validation"
-import type { ValidationErrors } from "@/utils/validation"
-import { hasFormChanges, isExperienceDataEqual } from "@/utils/compare"
-import ScrollToTop from "@/components/ScrollToTop"
-
-import SavingOverlay from "@/components/SavingOverlay"
-import type { UploadedImage, Experience } from "@/types/productExperience"
+'use client';
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
+import ProductForm from "./ProductForm";
+import MediaUpload from "./MediaUpload";
+import { useExperienceStore, initialExperienceData } from "@/store/brands/useExperienceStore";
+import { useExperienceOperations } from "@/hooks/brands/useExperienceOperations";
+import { validateStepOne, scrollToError } from "@/utils/validation";
+import type { ValidationErrors } from "@/utils/validation";
+import { hasFormChanges, isExperienceDataEqual } from "@/utils/compare";
+import ScrollToTop from "@/components/ScrollToTop";
+import SavingOverlay from "@/components/SavingOverlay";
+import type { UploadedImage, Experience } from "@/types/productExperience";
 
 interface StepOneProps {
-  onNext?: () => void
-  onSubmit?: (data: Experience) => Promise<void>
-  isNew?: boolean
-  buttonLabel?: string
-  isSubmitting?: boolean
+  onNext?: () => void;
+  onSubmit?: (data: Experience) => Promise<void>;
+  isNew?: boolean;
+  buttonLabel?: string;
+  isSubmitting?: boolean;
 }
 
 const StepOne: React.FC<StepOneProps> = ({
   onNext,
   onSubmit,
-  isNew = false,
+  isNew: isNewProp = false,
   buttonLabel = "Next",
   isSubmitting = false,
 }) => {
-  const router = useRouter()
-  const params = useParams()
-  const searchParams = useSearchParams()
+  const router = useRouter();
+  const params = useParams();
+  const searchParams = useSearchParams();
 
   // Zustand store
-  const { experienceData, setExperienceData, setIds, isLoading, setLoading } = useExperienceStore()
-
-  const { createExperience } = useExperienceOperations()
+  const { experienceData, setExperienceData, setIds, isLoading, setLoading } = useExperienceStore();
+  const { createExperience } = useExperienceOperations();
 
   // Local state
-  const [errors, setErrors] = useState<ValidationErrors>({})
-  const [initialFormData, setInitialFormData] = useState<Experience>(() => ({
-    ...initialExperienceData,
-    ...useExperienceStore.getState().experienceData,
-  }))
+  const [errors, setErrors] = useState<ValidationErrors>({});
+  const [initialFormData, setInitialFormData] = useState<Experience>(initialExperienceData);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  // Get action and experienceId from route params
-  const action = params?.action || "create"
-  const experienceId = params?.id || null
-
-  // Fetch experience data if editing
-  /* const { data: experienceData } = useExperience(
-    !isNew && experienceId ? experienceId : ""
-  );
-  console.log('Experience Data:', experienceData); */
+  // Get stable experience ID - FIXED: Handle both string and array params
+  const experienceId = params?.id 
+    ? (Array.isArray(params.id) ? params.id[0] : params.id)
+    : null;
+  
+  // Determine if this is new experience - FIXED: Use prop if provided, otherwise derive from ID
+  const isNew = isNewProp || !experienceId || experienceId === 'new';
+  
+  console.log('StepOne debug:', { 
+    experienceId, 
+    isNew, 
+    isInitialized,
+    hasStoreData: !!experienceData?.experienceId 
+  });
 
   // Helper to map API/state data to form data
   const mapToFormData = useCallback((exp: any): Experience => {
-    // DEBUG: Log incoming exp.features
-    console.log("mapToFormData: exp.features", exp.features)
-    let images: UploadedImage[] = []
-    const imageUrls = exp.product_image_url || exp.product?.product_image_url
+    console.log("mapToFormData: exp.features", exp.features);
+
+    let images: UploadedImage[] = [];
+    const imageUrls = exp.product_image_url || exp.product?.product_image_url;
     if (Array.isArray(imageUrls)) {
       images = imageUrls.map((url: string, index: number) => ({
         id: `img-${index}-${Date.now()}`,
         url: url,
         file: undefined,
-      }))
+      }));
     } else if (typeof imageUrls === "string") {
       images = [
         {
@@ -73,7 +74,7 @@ const StepOne: React.FC<StepOneProps> = ({
           url: imageUrls,
           file: undefined,
         },
-      ]
+      ];
     }
 
     // Map backend features array to FeatureSettings object
@@ -86,8 +87,8 @@ const StepOne: React.FC<StepOneProps> = ({
       feedbackForm: true,
       customerService: false,
       productUsage: false,
-    }
-    let featuresObj = { ...defaultFeatures }
+    };
+    let featuresObj = { ...defaultFeatures };
     if (Array.isArray(exp.features)) {
       exp.features.forEach((f: any) => {
         if (
@@ -95,19 +96,17 @@ const StepOne: React.FC<StepOneProps> = ({
           typeof f.is_enabled === "boolean" &&
           Object.prototype.hasOwnProperty.call(defaultFeatures, f.feature_name)
         ) {
-          ;(featuresObj as any)[f.feature_name] = f.is_enabled
+          (featuresObj as any)[f.feature_name] = f.is_enabled;
         }
-      })
+      });
     } else if (exp.features) {
-      featuresObj = { ...featuresObj, ...exp.features }
+      featuresObj = { ...featuresObj, ...exp.features };
     } else if (exp.product?.features) {
-      featuresObj = { ...featuresObj, ...exp.product.features }
+      featuresObj = { ...featuresObj, ...exp.product.features };
     }
 
-    // DEBUG: Log mapped featuresObj
-    console.log("mapToFormData: mapped featuresObj", featuresObj)
+    console.log("mapToFormData: mapped featuresObj", featuresObj);
 
-    // Map all fields to Experience type
     return {
       experienceId: exp.id || exp.experienceId || null,
       name: exp.name || exp.product?.name || "",
@@ -123,140 +122,167 @@ const StepOne: React.FC<StepOneProps> = ({
       estimatedDurationDays: exp.estimated_usage_duration_days ?? exp.product?.estimated_usage_duration_days ?? 30,
       skinType: exp.skin_type || exp.product?.skin_type || "",
       features: featuresObj,
-      // Add any additional fields from backend as needed
-    }
-  }, [])
+    };
+  }, []);
 
-  // Prefill data for create/edit
+  // SINGLE INITIALIZATION EFFECT - FIXED: Much simpler and more reliable
   useEffect(() => {
-    if (isNew) {
-      // Strip new=true from URL
-      const paramsObj = new URLSearchParams(searchParams.toString())
-      if (paramsObj.has("new")) {
-        paramsObj.delete("new")
-        router.replace(`${window.location.pathname}${paramsObj.toString() ? `?${paramsObj.toString()}` : ""}`)
-      }
-
-      // Clear experience/product IDs in store
-      setIds(null, null)
-
-      // Clear data for new experience (Experience type)
-      const emptyData = { ...initialExperienceData }
-      if (JSON.stringify(experienceData) !== JSON.stringify(emptyData)) {
-        setExperienceData(emptyData)
-      }
-      setInitialFormData(emptyData)
-      return
+    // Skip if already initialized
+    if (isInitialized) {
+      console.log('Already initialized, skipping');
+      return;
     }
 
-    // If editing, always use API data for the current experienceId
-    if (!isNew && experienceId && experienceData?.data) {
-      const formData = mapToFormData(experienceData.data)
-      // Only update if different
-      if (JSON.stringify(formData) !== JSON.stringify(experienceData)) {
-        setExperienceData(formData)
+    const initializeForm = async () => {
+      console.log("Initializing form:", { isNew, experienceId });
+
+      if (isNew) {
+        // For new experiences, set empty data but preserve any existing state
+        const currentData = experienceData as Experience;
+        const shouldReset = !currentData?.experienceId || 
+                           currentData.experienceId === 'new' || 
+                           JSON.stringify(currentData) === JSON.stringify(initialExperienceData);
+        
+        if (shouldReset) {
+          console.log('Setting new experience data');
+          setExperienceData(initialExperienceData);
+          setInitialFormData(initialExperienceData);
+        } else {
+          console.log('Preserving existing new experience data');
+          setInitialFormData(currentData);
+        }
+
+        // Clean up URL if needed
+        const paramsObj = new URLSearchParams(searchParams.toString());
+        if (paramsObj.has("new")) {
+          paramsObj.delete("new");
+          const newUrl = `${window.location.pathname}${paramsObj.toString() ? `?${paramsObj.toString()}` : ""}`;
+          router.replace(newUrl);
+        }
+      } else if (experienceId) {
+        // For editing existing experiences
+        console.log('Editing existing experience:', experienceId);
+        
+        const currentExpData = experienceData as Experience;
+        
+        // If store data matches the experience we're editing, use it
+        if (currentExpData?.experienceId === experienceId) {
+          console.log('Using existing store data for editing');
+          const mapped = mapToFormData(currentExpData);
+          setInitialFormData(mapped);
+          // Don't reset experienceData here - preserve the current state
+        } else {
+          // TODO: Fetch experience data if not in store
+          console.log('Need to fetch experience data for:', experienceId);
+          // You would add your data fetching logic here
+        }
       }
-      setInitialFormData(formData)
-      return
-    }
 
-    // Prefill from navigation state if available (for quick navigation)
-    // Next.js does not support location.state, so skip this part
+      setIsInitialized(true);
+    };
 
-    // If store data exists and matches the current experienceId, use it
-    if (experienceData && (experienceData as Experience).id === experienceId) {
-      setInitialFormData(experienceData as Experience)
-      return
+    initializeForm();
+  }, [isNew, experienceId, isInitialized]); // Only depend on these
+
+  // Separate effect for handling store persistence
+  useEffect(() => {
+    if (!isInitialized) return;
+
+    // When editing and we have valid data, ensure it's persisted
+    if (!isNew && experienceId && experienceData?.experienceId === experienceId) {
+      console.log('Ensuring edit data is persisted');
+      const mapped = mapToFormData(experienceData);
+      setInitialFormData(mapped);
     }
-  }, [isNew, experienceId, experienceData, searchParams, mapToFormData, setExperienceData, router])
+  }, [isInitialized, isNew, experienceId, experienceData, mapToFormData]);
 
   const validateForm = (): boolean => {
-    const validationErrors = validateStepOne(experienceData)
-    setErrors(validationErrors)
+    const validationErrors = validateStepOne(experienceData);
+    setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length > 0) {
-      scrollToError(validationErrors)
-
-      // Show toast for image errors specifically
-      /*  if (validationErrors.images && Object.keys(validationErrors).length === 1) {
-        showToast.error("At least one image is required.");
-      } */
-
-      return false
+      scrollToError(validationErrors);
+      return false;
     }
 
-    return true
-  }
+    return true;
+  };
 
   const handleFormUpdate = (data: Partial<Experience>) => {
-    setExperienceData(data)
+    setExperienceData(data);
 
     // Clear error for updated field
-    const key = Object.keys(data)[0]
+    const key = Object.keys(data)[0];
     if (errors[key as keyof ValidationErrors]) {
-      setErrors((prev) => ({ ...prev, [key as keyof ValidationErrors]: undefined }))
+      setErrors((prev) => ({ ...prev, [key as keyof ValidationErrors]: undefined }));
     }
-  }
+  };
 
   const handleNext = async () => {
     if (!validateForm()) {
-      return
+      return;
     }
 
     // If onSubmit is provided (CreateProductPage), call it and do not navigate
     if (onSubmit) {
-      await onSubmit(experienceData as Experience)
-      return
+      await onSubmit(experienceData as Experience);
+      return;
     }
-    console.log("checking experience data:", experienceData)
-    console.log("initial form data:", initialFormData)
+
+    const currentExpData = experienceData as Experience;
+
+    console.log("checking experience data:", currentExpData);
+    console.log("initial form data:", initialFormData);
 
     // Check if form is unchanged using the utility function
-    const unchanged = isExperienceDataEqual(initialFormData, experienceData)
-    if (unchanged && experienceData && (experienceData as Experience).experienceId) {
-      // Always sync initialFormData to the latest experienceData after successful save
-      setInitialFormData(experienceData as Experience)
-      router.push(`/dashboard/experience/${action}/${(experienceData as Experience).experienceId}?step=customise-features`)
-      if (onNext) onNext()
-      return
+    const unchanged = isExperienceDataEqual(initialFormData, currentExpData);
+
+    if (unchanged && currentExpData?.experienceId) {
+      // No changes, just navigate - FIXED: Use Next.js navigation
+      const action = params?.action || "edit";
+      router.push(`/dashboard/experience/${action}/${currentExpData.experienceId}?step=customise-features`);
+      if (onNext) onNext();
+      return;
     }
 
-    // Otherwise, continue with experience creation flow
-    setLoading(true)
+    // Otherwise, continue with experience creation/update flow
+    setLoading(true);
     try {
-      let imageUrls: string[] = []
-      const productImages = (experienceData as Experience).product_image_url
+      let imageUrls: string[] = [];
+      const productImages = currentExpData.product_image_url;
       if (Array.isArray(productImages) && productImages.length > 0) {
-        imageUrls = productImages.map((img: any) => img.url || img).filter(Boolean)
+        imageUrls = productImages.map((img: any) => img.url || img).filter(Boolean);
       }
 
-      const payload = {
-        name: (experienceData as Experience).name,
-        tagline: (experienceData as Experience).tagline,
-        skin_type: (experienceData as Experience).skin_type || null,
-        description: (experienceData as Experience).description || null,
-        category: (experienceData as Experience).category,
-        store_link: (experienceData as Experience).store_link,
+      // Wrap all product fields in a product object for backend compatibility
+      const product = {
+        name: currentExpData.name || "",
+        tagline: currentExpData.tagline || "",
+        skin_type: currentExpData.skinType || null,
+        description: currentExpData.description || null,
+        category: currentExpData.category || "",
+        store_link: currentExpData.storeLink || "",
         product_image_url: imageUrls.length > 0 ? imageUrls : null,
-        logo_url: null,
-        original_price: (experienceData as Experience).original_price || null,
-        discounted_price: (experienceData as Experience).discounted_price || null,
-        net_content: (experienceData as Experience).net_content || null,
-        estimated_usage_duration_days: (experienceData as Experience).estimated_usage_duration_days ?? 30,
-        // Add any other fields needed for the API
-      }
+        logo_url: currentExpData.logo_url || null,
+        original_price: currentExpData.originalPrice || null,
+        discounted_price: currentExpData.discountedPrice || null,
+        net_content: currentExpData.netContent || null,
+        estimated_usage_duration_days: currentExpData.estimatedDurationDays ?? 30,
+      };
 
+      console.log("Prepared product data for submission:", product);
+
+      const payload: any = { product };
       // If we have an experience id, include it for update
-      if ((experienceData as Experience).id) {
-        ;(payload as any).experience_id = (experienceData as Experience).id
+      if (currentExpData.experienceId && currentExpData.experienceId !== 'new') {
+        payload.experience_id = currentExpData.experienceId;
       }
 
-      const res = await createExperience(payload, experienceData as Experience)
-      console.log("CreateExperience response:", res)
+      const res = await createExperience(payload, currentExpData);
+      console.log("CreateExperience response:", res);
 
-      // Map backend features to Experience type after createExperience returns
       if (res?.data) {
-        // Map backend features array to FeatureSettings object
+        // Map backend features to FeatureSettings object
         const defaultFeatures = {
           tutorialsRoutines: false,
           ingredientList: false,
@@ -266,8 +292,8 @@ const StepOne: React.FC<StepOneProps> = ({
           feedbackForm: true,
           customerService: false,
           productUsage: false,
-        }
-        let featuresObj = { ...defaultFeatures }
+        };
+        let featuresObj = { ...defaultFeatures };
         if (Array.isArray(res.data.features)) {
           res.data.features.forEach((f: any) => {
             if (
@@ -275,56 +301,83 @@ const StepOne: React.FC<StepOneProps> = ({
               typeof f.is_enabled === "boolean" &&
               Object.prototype.hasOwnProperty.call(defaultFeatures, f.feature_name)
             ) {
-              ;(featuresObj as any)[f.feature_name] = f.is_enabled
+              (featuresObj as any)[f.feature_name] = f.is_enabled;
             }
-          })
-        } else if (res.data.features) {
-          featuresObj = { ...featuresObj, ...res.data.features }
+          });
         }
 
         // Update experienceData in store with mapped features
-        setExperienceData({ features: featuresObj })
-        setIds(res.data.id || res.data.experienceId || null, res.data.productId || null)
-        // After successful save, sync initialFormData to the new experienceData
-        setInitialFormData({ ...experienceData, features: featuresObj })
-        // Navigate to step 2 with experience id
-        router.push(`/dashboard/experience/${action}/${res.data.id}?step=customise-features`)
-        if (onNext) onNext()
+        const updatedData = { 
+          ...currentExpData, 
+          experienceId: res.data.id,
+          features: featuresObj 
+        };
+        setExperienceData(updatedData);
+        setIds(res.data.id || null, res.data.productId || null);
+        console.log("Created experience ID:", res.data.id);
+        
+        // Update initial form data to prevent future unnecessary saves
+        setInitialFormData(updatedData);
+
+        // Navigate to step 2 with experience id - FIXED: Use Next.js navigation
+        const action = params?.action || "edit";
+        router.push(`/dashboard/experience/${action}/${res.data.id}?step=customise-features`);
+        if (onNext) onNext();
       }
     } catch (err) {
       // Error handling is done in the createExperience function
+      console.error("Error creating experience:", err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
+  };
+
+  // Debug info
+  const hasChanges = hasFormChanges(initialFormData, experienceData);
+  const canSkipApiCall = !hasChanges && (experienceData as Experience)?.experienceId;
+  const showSavingOverlay = (isLoading || isSubmitting) && !canSkipApiCall;
+
+  console.log("StepOne render:", {
+    isInitialized,
+    hasChanges,
+    canSkipApiCall,
+    showSavingOverlay,
+    experienceId: (experienceData as Experience)?.experienceId,
+  });
+
+  // Show loading state until initialized
+  if (!isInitialized) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
   }
 
-  // Add debug info to UI for testing
-  const hasChanges = hasFormChanges(initialFormData, experienceData)
-  const canSkipApiCall = !hasChanges && (experienceData as Experience)?.id
-
-  // Only show SavingOverlay if actually saving (not skipping API)
-  const showSavingOverlay = (isLoading || isSubmitting) && !canSkipApiCall
-
   return (
-    <div className="relative mx-auto mb-32 h-screen py-4 sm:px-6 lg:px-8">
+    <div className="relative mx-auto mb-32 h-screen py-4 ">
       <ScrollToTop />
       {showSavingOverlay && <SavingOverlay visible={true} message="Saving your progress..." />}
 
       <div className="mx-auto">
-        <div className="rounded-2xl border-gray-200 bg-white p-6 shadow-sm sm:border sm:p-8">
+        <div className="rounded-2xl border-gray-200 bg-white px-4 shadow-sm sm:border sm:px-6">
           {/* Debug info - remove in production */}
-          {/* {process.env.NODE_ENV === 'development' && (
+          {process.env.NODE_ENV === 'development' && (
             <div className="mb-4 p-3 bg-gray-100 rounded-lg text-sm">
+              <div>Initialized: {isInitialized ? 'Yes' : 'No'}</div>
               <div>Has changes: {hasChanges ? 'Yes' : 'No'}</div>
-              <div>Can skip API: {canSkipApiCall ? 'Yes' : 'No'}</div>
-              <div>Experience ID: {experienceData.experienceId || 'None'}</div>
+              <div>Experience ID: {(experienceData as Experience)?.experienceId || 'None'}</div>
+              <div>Mode: {isNew ? 'New' : 'Edit'}</div>
             </div>
-          )} */}
+          )}
 
           {/* Product Form Section */}
           <div className="mb-8">
             <div className="mb-6">
-              <h2 className="mb-2 text-2xl font-semibold text-gray-900">Describe your product</h2>
+              <h2 className="mb-2 text-2xl font-semibold text-gray-900 md:mt-4">Describe your product</h2>
               <p className="text-md text-gray-600">
                 Provide essential details about your product, including its name and a comprehensive description.
               </p>
@@ -342,6 +395,7 @@ const StepOne: React.FC<StepOneProps> = ({
             />
           </div>
         </div>
+
         {/* Action Buttons */}
         <div className="float-right mt-12 mr-8 flex flex-col justify-end gap-3 pt-6 pb-32 sm:flex-row sm:gap-4">
           <button
@@ -354,7 +408,7 @@ const StepOne: React.FC<StepOneProps> = ({
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default StepOne
+export default StepOne;

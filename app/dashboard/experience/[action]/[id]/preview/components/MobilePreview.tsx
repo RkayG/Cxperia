@@ -2,18 +2,28 @@
 
 import React from 'react';
 import type { MobilePreviewProps } from '@/types/productExperience';
-import { useExperienceUrl } from '@/hooks/brands/useExperienceApi';
+import { useExperienceStore } from '@/store/brands/useExperienceStore';
+import SparkleOverlay from '@/components/SparkleOverlay';
+
 
 
 const MobilePreview: React.FC<MobilePreviewProps> = ({ experienceId }) => {
   const [loading, setLoading] = React.useState(true);
   const [_showSparkle, setShowSparkle] = React.useState(true);
-  const { data, isLoading, error, refetch } = useExperienceUrl(experienceId);
+  const { experienceUrl, fetchExperienceUrl, isLoading } = useExperienceStore();
+  const [error, setError] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (experienceId) {
+      fetchExperienceUrl(experienceId)
+        .then(() => setError(null))
+        .catch((e) => setError('Error preparing preview.'));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [experienceId]);
 
   // Fallback to default preview if no experience_url
-  const previewUrl = data?.experience_url
-    ? `${data.experience_url}`
-    : `https://cyxperia.vercel.app`;
+  const previewUrl = experienceUrl ? `${experienceUrl}` : null;
 
   React.useEffect(() => {
     if (!isLoading && !loading) {
@@ -22,7 +32,9 @@ const MobilePreview: React.FC<MobilePreviewProps> = ({ experienceId }) => {
   }, [isLoading, loading]);
 
   return (
+
     <div className="flex justify-center items-center p-4">
+      {/* <SparkleOverlay /> */}
       <div className="relative  sm:min-w-102 h-[600px] bg-black rounded-[2.5rem] shadow-xl flex items-center justify-center overflow-hidden">
         {/* Phone Bezel */}
         <div
@@ -48,7 +60,7 @@ const MobilePreview: React.FC<MobilePreviewProps> = ({ experienceId }) => {
                 onClick={() => {
                   setLoading(true);
                   setShowSparkle(true);
-                  refetch();
+                  if (experienceId) fetchExperienceUrl(experienceId).then(() => setError(null)).catch(() => setError('Error preparing preview.'));
                 }}
               >
                 Retry
@@ -56,7 +68,7 @@ const MobilePreview: React.FC<MobilePreviewProps> = ({ experienceId }) => {
             </div>
           ) : (
             <iframe
-              src={previewUrl}
+              src={previewUrl || undefined}
               title="Live Customer Preview"
               className="w-full h-full border-0 rounded-[2rem]"
               style={{ minHeight: 0, minWidth: 0 }}

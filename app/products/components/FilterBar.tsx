@@ -9,20 +9,20 @@ import {
   DropdownMenuItem,
 } from '../../../components/ui/dropdown-menu';
 import type { FilterBarProps } from './productTypes';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 
 const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSortChange }) => {
   // State for dropdowns
   const [selectedFilter, setSelectedFilter] = useState('');
   const [selectedSort, setSelectedSort] = useState('');
-  const navigate = useNavigate();
+  const router = useRouter();
   // Options for dropdowns
   const filterOptions = ['All', 'Active QR Codes', 'Pending QR Codes'];
   const sortOptions = ['Sort By', 'None', 'Name', 'Added Date'];
 
   // Handler for Add New Product button
   const handleAddNewProduct = () => {
-   navigate('/create-experience?step=product-details&new=true')
+    router.push('/dashboard/experience/create?step=product-details&new=true');
   };
 
 

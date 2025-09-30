@@ -12,7 +12,7 @@ import {
   Lightbulb,
   AlertTriangle,
 } from "lucide-react";
-
+import { useIsMobile } from "@/hooks/brands/use-mobile";
 interface ApplicationStep {
   id: string;
   step: string;
@@ -68,6 +68,8 @@ const CosmeticProductModal: React.FC<CosmeticProductModalProps> = ({
   const [activeTab, setActiveTab] = useState<
     "instructions" | "tips" | "warnings"
   >("instructions");
+
+  const isMobile = useIsMobile();
 
   const [formData, setFormData] = useState<
     ProductUsageData & { usageTimeType?: string[] }
@@ -346,7 +348,7 @@ const CosmeticProductModal: React.FC<CosmeticProductModalProps> = ({
       </div>
 
       {/* Main Content */}
-      <div className="lg:flex-1 bg-gray-50 mb-12 overflow-y-auto">
+      <div className="lg:flex-1 bg-gray-50 mb-12  overflow-y-auto">
         <div className="p-8 overflow-y-auto " style={{ maxHeight: "calc(100vh - 160px)" }}>
           {/* Basic Information only for instructions tab */}
           {activeTab === "instructions" && (
@@ -521,7 +523,7 @@ const CosmeticProductModal: React.FC<CosmeticProductModalProps> = ({
                 {errors.howToUse && <p className="text-xs text-red-600 mt-2">{errors.howToUse}</p>}
               </div>
               {/* Step-by-Step Application */}
-              <div className="mb-12">
+              <div className="mb-24 lg:mb-12">
                 <div className="flex items-center justify-between mb-4">
                   <label className="block text-left text-purple-800 text-sm font-medium">
                     Step-by-Step Application
@@ -718,17 +720,17 @@ const CosmeticProductModal: React.FC<CosmeticProductModalProps> = ({
 
           {/* Footer */}
           <div className="flex items-center bg-gray-50 justify-end border-t border-gray-200 px-8 py-4 sticky bottom-0 z-20">
-            <div className="flex items-center space-x-3">
-              <button
+            <div className="flex w-full items-center space-x-3">
+              {/* <button
                 onClick={handlePreview}
                 className="flex items-center px-4 py-2 text-purple-800 bg-white border border-gray-300 rounded-xl hover:bg-purple-50 transition-all duration-200"
               >
                 <Eye className="w-4 h-4 mr-2" />
                 Preview
-              </button>
+              </button> */}
               <button
                 onClick={handleSave}
-                className="flex items-center px-6 py-2 bg-purple-800 text-white font-medium rounded-xl hover:bg-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-60"
+                className="flex items-center justify-center w-full md:w-auto px-6 py-2 bg-purple-800 text-white font-medium rounded-lg hover:bg-purple-700 transition-all duration-200  hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-60"
                 disabled={isSaving}
               >
                 {isSaving ? (
@@ -737,7 +739,7 @@ const CosmeticProductModal: React.FC<CosmeticProductModalProps> = ({
                   </>
                 ) : (
                   <>
-                    Save Instructions
+                    { isMobile ? 'Save' : 'Save Instructions'}
                   </>
                 )}
               </button>

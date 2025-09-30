@@ -1,4 +1,5 @@
 // src/components/ProductDashboard/ProductCard.tsx
+
 import React from 'react';
 import { Pencil, MoreHorizontal, Eye, Trash2, QrCode, Download } from 'lucide-react';
 import jsPDF from 'jspdf';

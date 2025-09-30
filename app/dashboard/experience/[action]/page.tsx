@@ -3,6 +3,7 @@ import React from "react";
 import { useParams, useRouter } from "next/navigation";
 import StepIndicator from "@/components/StepIndicator";
 import ProductDetailsStep from "./[id]/product-details/components";
+import { useIsMobile } from "@/hooks/brands/use-mobile";
 
 // This page handles the initial step of creating a new experience,
 // before an experience ID has been generated.
@@ -11,10 +12,10 @@ const CreateExperiencePage: React.FC = () => {
   const params = useParams();
   const action = params.action as string;
 
-  // Define the steps for the indicator
+  const isMobile = useIsMobile();
   const steps = [
-    { number: 1, label: "Product Details" },
-    { number: 2, label: "Customize Features" },
+    { number: 1, label: isMobile ? "Product" : "Product Details" },
+    { number: 2, label: isMobile ? "Features" : "Customize Features" },
     { number: 3, label: "Preview" },
   ];
 
@@ -25,10 +26,10 @@ const CreateExperiencePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen max-w-screen-xl mx-auto bg-white">
       <div className="mx-auto">
         {/* Header */}
-        <div className="flex-1 space-y-4 p-8 pt-6">
+        <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
           <div className="flex items-center justify-between space-y-2">
             <h1 className="text-2xl font-bold tracking-tight">
               Create New Product Experience

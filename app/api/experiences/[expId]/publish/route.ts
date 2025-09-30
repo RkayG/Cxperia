@@ -4,7 +4,7 @@ import { setPublishStatus } from '@/lib/db/experiences';
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { expId: string } }
 ) {
   try {
     const user = await getCurrentUser();
@@ -19,7 +19,7 @@ export async function PATCH(
       return NextResponse.json({ error: 'is_published boolean is required' }, { status: 400 });
     }
 
-    const experience = await setPublishStatus(params.id, is_published);
+    const experience = await setPublishStatus(params.expId, is_published);
     return NextResponse.json({ success: true, data: experience });
 
   } catch (error) {

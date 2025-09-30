@@ -36,19 +36,52 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await request.json();
-    const { product_id, product, experience_id } = body;
 
-    // If experience_id is provided, update existing experience
+    const body = await request.json();
+    console.log('Create experience request body:', body);
+    const { product_id, product, experience_id } = body;
+    let logo_url = body.logo_url || (product && product.logo_url) || null;
+    let finalProductId = product_id || null;
+
+    // Normalize product images from both product.product_image_url and root product_image_url
+    let productImagesFromBody = null;
+    if (product && typeof product === 'object') {
+      if (Array.isArray(product.product_image_url))
+        productImagesFromBody = product.product_image_url.filter(Boolean);
+      else if (product.product_image_url)
+        productImagesFromBody = [product.product_image_url];
+    } else if (Array.isArray(body.product_image_url)) {
+      productImagesFromBody = body.product_image_url.filter(Boolean);
+    } else if (body.product_image_url) {
+      productImagesFromBody = [body.product_image_url];
+    }
+    const mergedProductImages = [].concat(productImagesFromBody || []).filter(Boolean);
+
+    // If experience_id is provided, update existing experience (not handled here)
     if (experience_id) {
-      // This would be handled by the PATCH route
       return NextResponse.json({ error: 'Use PATCH /api/experiences/[id] for updates' }, { status: 400 });
     }
 
-    let finalProductId = product_id || null;
+    // If product_id is present, update product with new images/logo if provided
+    if (finalProductId) {
+      const updates = {};
+      if (mergedProductImages.length > 0) {
+        updates.product_image_url = mergedProductImages;
+      }
+      if (logo_url) {
+        updates.logo_url = logo_url;
+      }
+      if (Object.keys(updates).length > 0) {
+        try {
+          await (await import('@/lib/db/products')).updateProduct(finalProductId, updates);
+        } catch (e) {
+          console.warn('Failed to update existing product images/logo', e);
+        }
+      }
+    }
 
     // Create product if needed
-    if (!finalProductId && product) {
+    if (!finalProductId && product && typeof product === 'object') {
       const productData = {
         name: product.name,
         tagline: product.tagline ? String(product.tagline).slice(0, 80) : '',
@@ -56,25 +89,32 @@ export async function POST(request: NextRequest) {
         category: product.category,
         skin_type: product.skinType || '',
         store_link: product.store_link,
-        product_image_url: Array.isArray(product.product_image_url) 
-          ? product.product_image_url.filter(Boolean)
-          : product.product_image_url ? [product.product_image_url] : null,
-        logo_url: product.logo_url || null,
+        product_image_url: mergedProductImages.length > 0 ? mergedProductImages : null,
+        logo_url: product.logo_url || logo_url || null,
         net_content: product.net_content || null,
         estimated_usage_duration_days: product.estimated_usage_duration_days || 30,
         original_price: product.original_price || null,
         discounted_price: product.discounted_price || null,
       };
+      try {
+        const newProduct = await createProduct(user.brand_id, productData);
+        finalProductId = newProduct.id;
+      } catch (err) {
+        console.error('Error creating product:', err);
+        return NextResponse.json({ error: 'Failed to create product', details: err instanceof Error ? err.message : err }, { status: 500 });
+      }
+    }
 
-      const newProduct = await createProduct(user.brand_id, productData);
-      finalProductId = newProduct.id;
-
-      // Update brand logo if provided
-      if (productData.logo_url && user.brand_id) {
+    // Optionally update brand logo if provided
+    if (logo_url && user.brand_id) {
+      try {
+        const { supabase } = await import('@/lib/supabase');
         await supabase
           .from('brands')
-          .update({ logo_url: productData.logo_url })
+          .update({ logo_url })
           .eq('id', user.brand_id);
+      } catch (e) {
+        console.warn('Failed to persist brand logo_url', e);
       }
     }
 
@@ -84,6 +124,21 @@ export async function POST(request: NextRequest) {
       product_id: finalProductId,
       is_published: false,
     });
+
+    // Always return experience with joined product and features (if available)
+    // (createExperience already returns joined product, but not features)
+    let features = [];
+    try {
+      const { supabase } = await import('@/lib/supabase');
+      const { data: featuresData } = await supabase
+        .from('experience_features')
+        .select('*')
+        .eq('experience_id', experience.id);
+      if (featuresData) features = featuresData;
+    } catch (e) {
+      console.warn('Failed to fetch experience features', e);
+    }
+    experience.features = features;
 
     return NextResponse.json({ success: true, data: experience });
 

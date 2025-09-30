@@ -2,7 +2,7 @@
 import { Sparkles } from "lucide-react";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FaBoxOpen } from "react-icons/fa";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import EmptyCatalogModal from "@/components/EmptyCatalogModal";
 import ExperienceOverviewSection from "./ExperienceOverviewSection";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -18,13 +18,15 @@ import { showToast } from "@/utils/toast";
 import { validateFeatures } from "@/utils/featureValidation";
 
 interface CustomiseFeaturesStepProps {
-  experienceId: string;
   onNext: () => void;
   onBack: () => void;
 }
 
-const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ experienceId, onNext, onBack }) => {
+const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, onBack }) => {
   // Validation error state
+  const params = useParams();
+  const experienceId = params.id as string;
+  console.log('experienceId from params in customise features step', experienceId)
   const [featureErrors, setFeatureErrors] = useState<{ missingRequired: string[]; notEnoughSelected: boolean }>({ missingRequired: [], notEnoughSelected: false });
 
   // Scroll to first error feature if validation fails
@@ -41,7 +43,7 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ experienc
 
   // Zustand store
   const { experienceData, setExperienceData, setFeaturesForExperience, getFeaturesForExperience } = useExperienceStore();
-  
+  console.log('experience data from store ', experienceData)
   // Get features for current experience from store
   const currentFeatureSettings = getFeaturesForExperience(experienceId);
 
@@ -235,7 +237,7 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ experienc
     <>
       <ScrollToTop />
 
-    <div className="px-4 fade-in sm:px-6">
+    <div className="px-4 mt-4 md:px-0 md:-mt-4 fade-in ">
       <ExperienceOverviewSection
         data={experienceOverview}
         onUpdate={setExperienceData}

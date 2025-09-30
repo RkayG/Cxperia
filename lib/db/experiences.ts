@@ -61,6 +61,14 @@ export async function createExperience(experienceData: Omit<Experience, 'id' | '
 }
 
 export async function getExperienceById(id: string, brandId?: string) {
+
+  if (!id ) {
+    throw new Error('Experience ID is required');
+  }
+  if (brandId === '' || brandId === null) {
+    throw new Error('Brand ID cannot be an empty string');
+  }
+
   let query = supabase
     .from('experiences')
     .select(`
@@ -90,7 +98,31 @@ export async function getExperienceById(id: string, brandId?: string) {
   return data;
 }
 
+// Fetch only meta fields to avoid heavy joins
+export async function getExperienceMetaById(id: string) {
+
+  if (!id) {
+    throw new Error('Experience ID is required');
+  }
+
+  const { data, error } = await supabase
+    .from('experiences')
+    .select('id, public_slug, experience_url')
+    .eq('id', id)
+    .single();
+
+  if (error) throw new Error(`Failed to fetch experience meta: ${error.message}`);
+  if (!data) throw new Error('Experience not found');
+  return data;
+}
+
 export async function updateExperience(id: string, updates: Partial<Experience>) {
+  if (Object.keys(updates).length === 0) {
+    throw new Error('No updates provided');
+  }
+  if (!id) {
+    throw new Error('Experience ID is required');
+  }
   const { data, error } = await supabase
     .from('experiences')
     .update({ ...updates, updated_at: new Date().toISOString() })
@@ -109,6 +141,9 @@ export async function updateExperience(id: string, updates: Partial<Experience>)
 }
 
 export async function deleteExperience(id: string) {
+  if (!id) {
+    throw new Error('Experience ID is required');
+  }
   const { error } = await supabase
     .from('experiences')
     .delete()
@@ -120,6 +155,9 @@ export async function deleteExperience(id: string) {
 }
 
 export async function getExperiencesByBrand(brandId: string) {
+  if (!brandId) {
+    throw new Error('Brand ID is required');
+  }
   const { data, error } = await supabase
     .from('experiences')
     .select(`
@@ -137,6 +175,9 @@ export async function getExperiencesByBrand(brandId: string) {
 }
 
 export async function getRecentExperiences(brandId: string) {
+  if (!brandId) {
+    throw new Error('Brand ID is required');
+  }
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -158,6 +199,11 @@ export async function getRecentExperiences(brandId: string) {
 }
 
 export async function setPublishStatus(id: string, isPublished: boolean) {
+
+  if (!id) {
+    throw new Error('Experience ID is required');
+  }
+
   const { data, error } = await supabase
     .from('experiences')
     .update({ 
@@ -176,6 +222,9 @@ export async function setPublishStatus(id: string, isPublished: boolean) {
 }
 
 export async function setThemeAndColor(id: string, theme?: string, primary_color?: string) {
+  if (!id) {
+    throw new Error('Experience ID is required');
+  }
   const updates: any = { updated_at: new Date().toISOString() };
   if (theme !== undefined) updates.theme = theme;
   if (primary_color !== undefined) updates.primary_color = primary_color;
@@ -195,8 +244,11 @@ export async function setThemeAndColor(id: string, theme?: string, primary_color
 }
 
 export async function getOrSetExperienceUrl(id: string) {
+  if (!id) {
+    throw new Error('Experience ID is required');
+  }
   // First, get the experience
-  const experience = await getExperienceById(id);
+  const experience = await getExperienceMetaById(id);
   
   if (experience.experience_url) {
     return experience.experience_url;

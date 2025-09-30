@@ -7,6 +7,7 @@ import StepIndicator from "@/components/StepIndicator";
 import ProductDetailsStep from "./product-details/components";
 import CustomiseFeaturesStep from "./customise-features/components";
 import PreviewStep from "./preview/components";
+import { useIsMobile } from "@/hooks/brands/use-mobile";
 
 // This is the main flow controller for an experience that has an ID.
 // It reads the `step` from the URL and renders the appropriate component.
@@ -17,6 +18,7 @@ const ExperienceFlowPage: React.FC = () => {
 
   const action = params.action as string;
   const experienceId = params.id as string;
+  console.log("[ExperienceFlowPage] action =", action, "experienceId =", experienceId);
   const currentStepKey = searchParams.get("step") || "product-details";
 
   // Navigation handlers
@@ -25,11 +27,13 @@ const ExperienceFlowPage: React.FC = () => {
   };
 
   // Step configuration
-  const steps = [
-    { key: "product-details", label: "Product Details", component: ProductDetailsStep },
-    { key: "customise-features", label: "Customize Features", component: CustomiseFeaturesStep },
-    { key: "preview", label: "Preview", component: PreviewStep },
-  ];
+   const isMobile = useIsMobile();
+   const steps = [
+     { key: "product-details",  label: isMobile ? "Product" : "Product Details" , component: ProductDetailsStep},
+     { key: "customise-features", label: isMobile ? "Features" : "Customize Features" , component: CustomiseFeaturesStep },
+     { key: "preview", label: "Preview", component: PreviewStep },
+   ];
+
 
   const currentStepIndex = steps.findIndex(s => s.key === currentStepKey);
   const CurrentStepComponent = steps[currentStepIndex]?.component;
@@ -40,10 +44,10 @@ const ExperienceFlowPage: React.FC = () => {
   }));
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen max-w-screen-xl mx-auto bg-white">
       <div className="mx-auto">
         {/* Header */}
-        <div className="flex-1 space-y-4 p-8 pt-6">
+        <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
           <div className="flex items-center justify-between space-y-2">
             <h1 className="text-2xl font-bold tracking-tight">
               {action === "edit" ? "Edit Product Experience" : "Create New Product Experience"}
@@ -53,16 +57,15 @@ const ExperienceFlowPage: React.FC = () => {
             Design a tailored post-purchase journey for your product, from detailed info to engaging interactions.
           </p>
           {/* Step Indicator */}
-          <div className="mt-8">
+          <div className="mt-6 md:mt-8">
             <StepIndicator currentStep={currentStepIndex + 1} steps={indicatorSteps} />
           </div>
         </div>
 
         {/* Render the current step component */}
-        <div className="p-8">
+        <div className="md:p-8">
           {CurrentStepComponent && (
             <CurrentStepComponent
-              experienceId={experienceId}
               onNext={() => navigateToStep(steps[currentStepIndex + 1]?.key)}
               onBack={() => navigateToStep(steps[currentStepIndex - 1]?.key)}
               isNew={action !== 'edit'}

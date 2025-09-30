@@ -1,5 +1,6 @@
+'use client'
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useRouter, usePathname } from "next/navigation";
 import {
   FaHome,
   FaCrown,
@@ -17,24 +18,26 @@ interface BottomNavLink {
 
 const bottomNavLinks: BottomNavLink[] = [
   { id: 1, label: "Home", icon: FaHome, path: "/home" },
-  { id: 2, label: "Catalog", icon: FaCrown, path: "/product-dashboard" },
-  { id: 3, label: "Create", icon: FaPlus, path: "/create-experience?step=product-details&new=true" },
-  { id: 4, label: "Content", icon: FaFileAlt, path: "/content-dashboard" },
-  { id: 5, label: "Insights", icon: FaBell, path: "/insights" },
+  { id: 2, label: "Catalog", icon: FaCrown, path: "/dashboard/products" },
+  { id: 3, label: "Create", icon: FaPlus, path: "/dashboard/experience/create?step=product-details&new=true" },
+  { id: 4, label: "Content", icon: FaFileAlt, path: "/dashboard/content" },
+  { id: 5, label: "Overview", icon: FaBell, path: "/dashboard/overview" },
 ];
 
 const MobileBottomNav: React.FC = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [activeTab, setActiveTab] = useState(location.pathname);
+  const navigate = useRouter().push;
+  // const location = useRouter().location; // useRouter does not have location
+  // Use usePathname to get the current path
+  const pathname = usePathname();
+  const [activeTab, setActiveTab] = useState(pathname);
 
   // Update active tab when route changes
   useEffect(() => {
-    setActiveTab(location.pathname);
-  }, [location.pathname]);
+    setActiveTab(pathname);
+  }, [pathname]);
 
   const handleNavigation = (path: string) => {
-    if (path !== location.pathname) {
+    if (path !== pathname) {
       navigate(path);
       setActiveTab(path);
     }

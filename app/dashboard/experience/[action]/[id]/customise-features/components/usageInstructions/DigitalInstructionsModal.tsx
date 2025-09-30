@@ -5,6 +5,7 @@ import { useInstructions } from '@/hooks/brands/useFeatureApi';
 // import { useExperienceContext } from '../../../context/ExperienceContext';
 
 import CosmeticProductModal from './ApplicationTips'
+import ProductUsageModal from './usageModal';
 
 
 interface DigitalInstructionsModalProps {
@@ -32,6 +33,7 @@ const DigitalInstructionsModal: React.FC<DigitalInstructionsModalProps> = ({
   onFeatureEnable,
   productName,
 }) => {
+  console.log('DigitalInstructionsModal rendered with experienceId:', experienceId);
   const { data: fetchedInstructions } = useInstructions(experienceId);
   const [instructions, setInstructions] = useState<any>(initialInstructions);
 
@@ -56,18 +58,13 @@ const DigitalInstructionsModal: React.FC<DigitalInstructionsModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="">
-      {/* Main Content Area: CosmeticProductModal handles all product usage UI */}
-      <div className="">
-        <CosmeticProductModal
-          experienceId={experienceId}
-          initialInstructions={instructions}
-          productName={productName}
-          onClose={onClose}
-          onFeatureEnable={onFeatureEnable}
-        />
-      </div>
-    </div>
+    <ProductUsageModal
+      experienceId={experienceId}
+      initialInstructions={instructions}
+      productName={productName}
+      onClose={onClose}
+      onFeatureEnable={onFeatureEnable}
+    />
   );
 };
 

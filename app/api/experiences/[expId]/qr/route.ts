@@ -8,7 +8,7 @@ const PUBLIC_EXPERIENCE_DOMAIN = process.env.PUBLIC_EXPERIENCE_DOMAIN || "https:
 // --- GET /api/experience/[expId]/qr (Fetch existing QR code) ---
 // Mapped from: static async fetchQrCode(req, res)
 export async function GET(req: NextRequest, { params }: { params: { expId: string } }) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const experienceId = params.expId;
 
   if (!experienceId) {

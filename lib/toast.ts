@@ -23,8 +23,8 @@ export const showToast = {
         border: '1px solid rgba(139, 92, 246, 0.8)',
       },
       iconTheme: {
-        primary: '#C4B5FD', // Light purple icon
-        secondary: '#6D28D9',
+        primary:  '#6D28D9', // Light purple icon
+        secondary: '#C4B5FD',
       },
     });
   },

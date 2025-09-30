@@ -81,7 +81,7 @@ function NavItem(props: {
       className={cn(
         buttonVariants({ variant: "ghost", size: "sm" }),
         selected && "bg-purple-200",
-        "flex-grow justify-start text-md bricolage-grotesque-light text-purple-900 dark:text-zinc-300 px-2"
+        "flex-grow justify-start text-md bricolage-grotesque-light text-black dark:text-zinc-300 px-2"
       )}
       onClick={props.onClick}
       prefetch={true}
@@ -192,16 +192,16 @@ export default function SidebarLayout(props: {
 
   return (
     <div className="w-full flex">
-      <div className="flex-col border-r w-[240px] bg-[#ede8f3] h-screen sticky top-0 hidden md:flex">
+      <div className="flex-col border-r w-[240px] bg-[#ede8f3] h-screen sticky top-0 hidden lg:flex">
         <SidebarContent items={props.items} sidebarTop={props.sidebarTop} basePath={props.basePath} />
       </div>
       <div className="flex flex-col flex-grow w-0">
         <div className="h-14 border-b z-50 flex items-center justify-between sticky top-0 bg-white dark:bg-black z-10 px-4 md:px-6">
-          <div className="hidden md:flex">
+          <div className="hidden lg:flex">
             <HeaderBreadcrumb baseBreadcrumb={props.baseBreadcrumb} basePath={props.basePath} items={props.items} />
           </div>
 
-          <div className="flex items-center md:hidden">
+          <div className="flex items-center lg:hidden">
             <Sheet
               onOpenChange={(open) => setSidebarOpen(open)}
               open={sidebarOpen}
@@ -219,7 +219,7 @@ export default function SidebarLayout(props: {
               </SheetContent>
             </Sheet>
 
-            <div className="ml-4 flex md:hidden">
+            <div className="ml-4 flex lg:hidden">
               <HeaderBreadcrumb baseBreadcrumb={props.baseBreadcrumb} basePath={props.basePath} items={props.items} />
             </div>
           </div>

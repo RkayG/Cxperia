@@ -3,6 +3,7 @@ import Image from "next/image";
 import logo from '../../assets/logo.png'
 import SidebarLayout, { SidebarItem } from "@/components/sidebar-layout";
 import { getCurrentUserBrand } from '@/lib/data/brands';
+import MobileBottomNav from "@/components/MobileBottomNavbar";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -98,6 +99,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
       }]}
     >
       {children}
+      <MobileBottomNav />
     </SidebarLayout>
   );
 }

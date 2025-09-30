@@ -38,7 +38,7 @@ const UploadTip: React.FC<UploadTipProps> = ({
 
 const UploadTips: React.FC = () => {
   return (
-    <div className="bg-gray-50 rounded-2xl p-6">
+    <div className="bg-gray-50 rounded-2xl p-4 md:p-6">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-semibold text-gray-900">
           Tips for great photos
@@ -76,7 +76,7 @@ const UploadTips: React.FC = () => {
       <div className="mt-6 pt-4 border-t border-gray-200">
         <div className="flex items-center justify-between text-sm">
           <span className="text-gray-600">Recommended size:</span>
-          <span className="font-medium text-gray-900">1200 x 1200px</span>
+          <span className="font-medium text-gray-900">600 x 600px</span>
         </div>
         <div className="flex items-center justify-between text-sm mt-2">
           <span className="text-gray-600">Max file size:</span>

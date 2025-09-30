@@ -9,7 +9,7 @@ interface ExperienceState {
   setBrand: (brand: Brand | null) => void;
   // Unified Experience Data
   experienceData: Experience;
-  setExperienceData: (data: Partial<Experience>) => void;
+  setExperienceData: (data: Partial<Experience>, slug?: string) => void;
   clearExperienceData: () => void;
 
   // Features by Experience ID
@@ -23,12 +23,35 @@ interface ExperienceState {
   setIds: (experienceId: string | null, productId: string | null) => void;
   clearIds: () => void;
 
+  // Experience URL
+  experienceUrl: string | null;
+  setExperienceUrl: (url: string | null) => void;
+  fetchExperienceUrl: (experienceId: string) => Promise<void>;
+
   // Status
   isLoading: boolean;
   setLoading: (loading: boolean) => void;
 
   // Reset everything
   resetAll: () => void;
+}
+// Utility to store/fetch experience data by slug in localStorage
+function setExperienceDataBySlug(slug: string, data: Experience) {
+  if (typeof window !== 'undefined' && slug) {
+    localStorage.setItem(`experience:${slug}`, JSON.stringify(data));
+  }
+}
+
+export function getExperienceDataBySlug(slug: string): Experience | null {
+  if (typeof window !== 'undefined' && slug) {
+    const raw = localStorage.getItem(`experience:${slug}`);
+    if (raw) {
+      try {
+        return JSON.parse(raw) as Experience;
+      } catch {}
+    }
+  }
+  return null;
 }
 
 
@@ -58,29 +81,54 @@ export const initialExperienceData: Experience = {
 };
 
 
+import { experienceService } from '@/services/brands/experienceService';
+
 export const useExperienceStore = create<ExperienceState>()(
   persist(
-  (set, get) => ({
+    (set, get) => ({
       // Initial state
-  experienceData: initialExperienceData,
-  brand: null,
-  setBrand: (brand) => set({ brand }),
+      experienceData: initialExperienceData,
+      brand: null,
+      setBrand: (brand) => set({ brand }),
       experienceId: null,
       productId: null,
       isLoading: false,
       featuresByExperienceId: {},
+      experienceUrl: null,
 
       // Actions
-      setExperienceData: (data) => 
-        set((state) => ({ 
-          experienceData: { ...state.experienceData, ...data } 
-        })),
+      setExperienceData: (data, slug) => {
+        set((state) => {
+          const merged = { ...state.experienceData, ...data };
+          // Store in localStorage by slug if provided
+          if (slug) setExperienceDataBySlug(slug, merged);
+          return { experienceData: merged };
+        });
+      },
 
       clearExperienceData: () => set({ experienceData: initialExperienceData }),
 
       setIds: (experienceId, productId) => set({ experienceId, productId }),
 
       clearIds: () => set({ experienceId: null, productId: null }),
+
+      setExperienceUrl: (url) => set({ experienceUrl: url }),
+
+      fetchExperienceUrl: async (experienceId) => {
+        set({ isLoading: true });
+        try {
+          const res = await experienceService.getExperienceUrl(experienceId);
+          if (res && res.experience_url) {
+            set({ experienceUrl: res.experience_url });
+          } else {
+            set({ experienceUrl: null });
+          }
+        } catch (e) {
+          set({ experienceUrl: null });
+        } finally {
+          set({ isLoading: false });
+        }
+      },
 
       setLoading: (loading) => set({ isLoading: loading }),
 
@@ -105,6 +153,7 @@ export const useExperienceStore = create<ExperienceState>()(
         productId: null,
         isLoading: false,
         featuresByExperienceId: {},
+        experienceUrl: null,
       }),
     }),
     {

@@ -47,10 +47,10 @@ const keyMap: Record<string, string> = {
 }
 
 // Add ingredient(s)
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(req: NextRequest, { params }: { params: { expId: string } }) {
   const supabase = await createClient()
   const user = await getCurrentUser()
-  const experience_id = params.id
+  const experience_id = params.expId
   const session_brand_id = user?.brand_id
   const body: any = await req.json()
 
@@ -130,10 +130,10 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 }
 
 // Get all ingredients for an experience
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: { expId: string } }) {
   const supabase = await createClient()
   const user = await getCurrentUser()
-  const experience_id = params.id
+  const experience_id = params.expId
   const brand_id = user?.brand_id
 
   if (!experience_id) {

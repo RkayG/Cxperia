@@ -1,6 +1,7 @@
 // src/pages/ProductDashboard.tsx
+'use client';
 import React, { useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { usePathname, useRouter } from 'next/navigation';
 import { useExperiences } from '@/hooks/brands/useExperienceApi';
 import { Camera, Play, Clock } from 'lucide-react';
 import ProductPerformanceOverview from './components/ProductPerformanceOverview';
@@ -10,19 +11,19 @@ import type { PerformanceMetric, Product } from './components/productTypes';
 const ProductDashboard: React.FC = () => {
   // Fetch experiences as products
   const { data: experiencesRaw, isLoading: isLoadingExperiences } = useExperiences();
-  const location = useLocation();
+  const pathname = usePathname();
   // Remove context usage; use localStorage directly or zustand if needed
  //console.log('Experiences fetched:', experiencesRaw);
   // On mount, check for ref param and clear experience if needed
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
+    const params = new URLSearchParams(pathname.search);
     if (params.get('ref') === 'experience-complete') {
       // Clear experienceId from localStorage directly
       localStorage.removeItem('experienceId');
     }
-    // Only run on mount or when location.search changes
+    // Only run on mount or when pathname.search changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.search]);
+  }, [pathname.search]);
 
   // Calculate metrics based on experiences
   const experienceArr: any[] = React.useMemo(() => {
@@ -84,10 +85,10 @@ const ProductDashboard: React.FC = () => {
   }, [experienceArr]);
 
   // Navigation handler to experience edit page with prefill data
-  const navigate = useNavigate();
+  const router = useRouter();
   const handleEditExperience = (exp: any) => {
-    navigate(`/experience/${exp.experience_id}?mode=edit&step=1`, {
-      state: { experience: exp }
+    router.push(`/dashboard/experience/edit/${exp.experience_id}?step=product-details`, {
+      state: { experienceData: exp } // Pass full experience data via state
     });
   };
 

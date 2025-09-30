@@ -4,7 +4,7 @@ import { setThemeAndColor } from '@/lib/db/experiences';
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { expId: string } }
 ) {
   try {
     const user = await getCurrentUser();
@@ -19,7 +19,7 @@ export async function PATCH(
       return NextResponse.json({ error: 'theme or primary_color is required' }, { status: 400 });
     }
 
-    const experience = await setThemeAndColor(params.id, theme, primary_color);
+    const experience = await setThemeAndColor(params.expId, theme, primary_color);
     return NextResponse.json({ success: true, data: experience });
 
   } catch (error) {

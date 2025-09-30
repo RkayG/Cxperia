@@ -324,7 +324,7 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
              <DrawerClose asChild>
               <button
                 onClick={onClose}
-                className="absolute top-2 right-2 p-1 rounded-xl bg-white text-gray-600 hover:bg-purple-600 hover:text-white hover:rotate-90 transition-all duration-200 group"
+                className="absolute top-2 right-2 p-1 rounded-xl text-gray-600 hover:bg-purple-600 hover:text-white hover:rotate-90 transition-all duration-200 group"
                 aria-label="Close modal"
               >
                 <X size={20} className="group-hover:rotate-90 transition-transform duration-200" />

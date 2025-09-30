@@ -8,6 +8,9 @@ export async function GET(request: NextRequest) {
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    if (!user.brand_id) {
+      return NextResponse.json({ error: 'No brand associated with user' }, { status: 400 });
+    }
 
     const experiences = await getRecentExperiences(user.brand_id);
     return NextResponse.json({ success: true, data: experiences });

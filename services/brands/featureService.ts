@@ -13,8 +13,7 @@ export async function linkTutorialsToExperience(experienceId: string, tutorialId
 
 // Get recent tutorials for a brand (last 30 days)
 export async function getRecentTutorials() {
-  const res = await fetch(endpoints.TUTORIAL.RECENTS, {
-  });
+  const res = await fetch(endpoints.TUTORIAL.LIST('recents'));
   return res.json();
 }
 // src/services/featureService.ts
@@ -89,10 +88,9 @@ export async function searchInciIngredients(searchTerm: string, limit: number = 
 }
 
 // TUTORIALS
-// Get all tutorials for an experience (pass experienceId as query param)
-export async function getTutorials() {
-  const res = await fetch(endpoints.TUTORIAL.LIST, {
-  });
+// Get all tutorials (optionally pass type: 'all' | 'recents')
+export async function getTutorials(type: 'all' | 'recents' = 'all') {
+  const res = await fetch(endpoints.TUTORIAL.LIST(type));
   return res.json();
 }
 

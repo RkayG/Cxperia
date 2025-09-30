@@ -45,6 +45,7 @@ const StepTwoModals: React.FC<StepTwoModalsProps> = ({
   onAutoEnableCustomerService,
   onFeatureEnable,
 }) => {
+  console.log('Rendering StepTwoModals with experienceId:', experienceId);
     // Memoize customerSupportLinks to prevent unnecessary remounts
     const memoizedCustomerSupportLinks = useMemo(() => customerSupportLinks, [customerSupportLinks]);
     return (

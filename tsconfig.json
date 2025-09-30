@@ -40,6 +40,6 @@
     ".next/types/**/*.ts",
     "eslint.config.mjs",
     "components/InfiniteScroll.tsx"
-  ],
+, "app/load"  ],
   "exclude": ["node_modules"]
 }
