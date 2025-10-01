@@ -125,30 +125,51 @@ const InteractiveWelcome: React.FC = () => {
   const [purchaseLocation, setPurchaseLocation] = useState<'online' | 'in_store' | null>(null);
   const [currentText, setCurrentText] = useState<string>("");
   const [showButtons, setShowButtons] = useState(false);
+  const [customerCheckComplete, setCustomerCheckComplete] = useState(false);
   const autoProceedRef = useRef<NodeJS.Timeout>();
 
   const router = useRouter();
 
   // Check if this is a returning customer
   useEffect(() => {
-    if (slug) {
-      console.log("Checking returning customer for slug:", slug);
-      const hasScannedBefore = localStorage.getItem(`scanned_${slug}`);
-      console.log("Has scanned before:", hasScannedBefore);
-      if (hasScannedBefore) {
+    if (slug && !customerCheckComplete) {
+      console.log("Checking customer status for slug:", slug);
+      
+      // Check if this is their first time scanning ANY product
+      const hasScannedAnyProduct = localStorage.getItem('has_scanned_any_product');
+      const hasScannedThisProduct = localStorage.getItem(`scanned_${slug}`);
+      
+      console.log("Has scanned any product:", hasScannedAnyProduct);
+      console.log("Has scanned this product:", hasScannedThisProduct);
+      
+      if (hasScannedThisProduct) {
+        // They've scanned this specific product before - returning customer
         setIsReturningCustomer(true);
         setCurrentText(FLOW_CONFIG.returningCustomer.text);
         setCurrentStep(FLOW_CONFIG.returningCustomer.directToStep);
         setShowButtons(true);
-      } else {
+        setCustomerCheckComplete(true);
+        console.log("Returning customer - scanned this product before");
+      } else if (hasScannedAnyProduct) {
+        // They've scanned other products but not this one - new to this product
         setIsReturningCustomer(false);
         localStorage.setItem(`scanned_${slug}`, 'true');
+        setCustomerCheckComplete(true);
         startNewCustomerFlow();
-      } 
-    } else {
-        return;
+        console.log("New to this product - but has scanned other products");
+      } else {
+        // First time scanning anything - completely new customer
+        setIsReturningCustomer(false);
+        localStorage.setItem('has_scanned_any_product', 'true');
+        localStorage.setItem(`scanned_${slug}`, 'true');
+        setCustomerCheckComplete(true);
+        startNewCustomerFlow();
+        console.log("Completely new customer - first scan ever");
       }
-  }, [slug]);
+    } else if (!slug) {
+      return;
+    }
+  }, [slug, customerCheckComplete]);
 
   // New customer automatic flow
   const startNewCustomerFlow = () => {
