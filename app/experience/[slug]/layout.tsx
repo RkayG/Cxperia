@@ -65,14 +65,7 @@ export default function ExperienceSlugLayout({ children }: { children: React.Rea
     );
   }
 
-  if (isLoading || !experience) {
-    console.log("Loading experience for slug:", slug);
-    return (
-      <div className="min-h-screen flex items-center justify-center text-center bg-white">
-        <span className="text-lg text-gray-500 animate-pulse">Loading product experience...</span>
-      </div>
-    );
-  }
+  // Removed loading state - experience will load in background
 
 
   if (error) {

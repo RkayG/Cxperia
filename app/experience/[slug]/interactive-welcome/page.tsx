@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from "framer-motion";
-import TextType from '@/components/TextType';
 import { usePublicExpStore } from '@/store/public/usePublicExpStore';
 
 type WelcomeStep = 
@@ -126,21 +125,30 @@ const InteractiveWelcome: React.FC = () => {
   const [currentText, setCurrentText] = useState<string>("");
   const [showButtons, setShowButtons] = useState(false);
   const [customerCheckComplete, setCustomerCheckComplete] = useState(false);
+  const [lastCheckedSlug, setLastCheckedSlug] = useState<string | null>(null);
   const autoProceedRef = useRef<NodeJS.Timeout>();
 
   const router = useRouter();
 
   // Check if this is a returning customer
   useEffect(() => {
+    // Reset customer check if slug has changed
+    if (slug && slug !== lastCheckedSlug) {
+      console.log("🔄 Slug changed, resetting customer check");
+      setCustomerCheckComplete(false);
+      setLastCheckedSlug(slug);
+    }
+    
     if (slug && !customerCheckComplete) {
-      console.log("Checking customer status for slug:", slug);
+      console.log("🔍 Checking customer status for slug:", slug);
       
       // Check if this is their first time scanning ANY product
       const hasScannedAnyProduct = localStorage.getItem('has_scanned_any_product');
       const hasScannedThisProduct = localStorage.getItem(`scanned_${slug}`);
       
-      console.log("Has scanned any product:", hasScannedAnyProduct);
-      console.log("Has scanned this product:", hasScannedThisProduct);
+      console.log("📊 Has scanned any product:", hasScannedAnyProduct);
+      console.log("📊 Has scanned this product:", hasScannedThisProduct);
+      console.log("🔄 Customer check complete:", customerCheckComplete);
       
       if (hasScannedThisProduct) {
         // They've scanned this specific product before - returning customer
@@ -167,9 +175,12 @@ const InteractiveWelcome: React.FC = () => {
         console.log("Completely new customer - first scan ever");
       }
     } else if (!slug) {
+      console.log("❌ No slug provided, skipping customer check");
       return;
+    } else {
+      console.log("⏭️ Customer check already complete, skipping");
     }
-  }, [slug, customerCheckComplete]);
+  }, [slug, customerCheckComplete, lastCheckedSlug]);
 
   // New customer automatic flow
   const startNewCustomerFlow = () => {
@@ -332,19 +343,18 @@ const InteractiveWelcome: React.FC = () => {
       </div>
 
       <div className="w-full max-w-md flex flex-col items-stretch px-2 sm:px-0 flex-1">
-        {/* Typing Text */}
+        {/* Text Display */}
         <div className="mb-8 min-h-[120px] flex items-start justify-center" style={{height: '120px'}}>
-          <TextType
-            text={[currentText]}
-            typingSpeed={10}
-            pauseDuration={1500}
-            initialDelay={0}
-            startOnVisible={true}
-            showCursor={true}
-            deletingSpeed={15}
-            cursorCharacter="|"
+          <motion.div
+            key={currentText} // This ensures re-animation when text changes
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
             className="text-2xl font-medium text-white leading-relaxed text-center"
-          />
+          >
+            {currentText}
+          </motion.div>
         </div>
 
         {/* Interactive Elements */}
