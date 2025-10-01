@@ -23,7 +23,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => (
   // Desktop Sidebar
   <div className="w-64 bg-gray-50 relative hidden lg:block border-r border-gray-200 p-4 fixed left-0 top-0 h-full z-30">
-    <nav className="space-y-2 pt-16">
+    <nav className="space-y-2 ">
       {navItems.map((item) => {
         const Icon = item.icon;
         return (

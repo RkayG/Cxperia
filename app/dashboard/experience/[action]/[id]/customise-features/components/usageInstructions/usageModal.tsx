@@ -152,7 +152,7 @@ const ProductUsageModal: React.FC<CosmeticProductModalProps> = ({
       <MobileTabNav activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {/* Main Content Area */}
-      <div className="lg:flex-1 bg-gray-50 mb-24 sm:mb-12 overflow-y-auto lg:ml-64">
+      <div className="lg:flex-1 bg-gray-50 mb-24 sm:mb-12 overflow-y-auto4">
         <div className="p-8 overflow-y-auto" style={{ maxHeight: "calc(100vh - 160px)" }}>
           {activeTab === "instructions" && (
             <InstructionsTab

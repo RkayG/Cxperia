@@ -23,10 +23,11 @@ interface CustomiseFeaturesStepProps {
 }
 
 const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, onBack }) => {
+  //console.log('CustomiseFeaturesStep: Component rendered with props:', { onNext, onBack });
   // Validation error state
   const params = useParams();
   const experienceId = params.id as string;
-  console.log('experienceId from params in customise features step', experienceId)
+
   const [featureErrors, setFeatureErrors] = useState<{ missingRequired: string[]; notEnoughSelected: boolean }>({ missingRequired: [], notEnoughSelected: false });
 
   // Scroll to first error feature if validation fails
@@ -43,7 +44,7 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
 
   // Zustand store
   const { experienceData, setExperienceData, setFeaturesForExperience, getFeaturesForExperience } = useExperienceStore();
-  console.log('experience data from store ', experienceData)
+
   // Get features for current experience from store
   const currentFeatureSettings = getFeaturesForExperience(experienceId);
 
@@ -54,6 +55,7 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
   useEffect(() => {
     setOverviewData(experienceData);
   }, [experienceData]);
+
 
   // Fetchers
   const { data: productsData = [] } = useProducts();

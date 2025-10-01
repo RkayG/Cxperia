@@ -79,7 +79,7 @@ const DropdownSelect: React.FC<DropdownSelectProps> = ({
       <button
         type="button"
         onClick={handleToggle}
-        className={`w-full px-4  lg:py-3 border-2  border-purple-900 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 cursor-pointer text-left flex items-center justify-between ${value ? 'bg-[#ede8f3]' : 'bg-white'}`}
+        className={`w-full px-4  py-3.5 border-2  border-purple-900 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 cursor-pointer text-left flex items-center justify-between ${value ? 'bg-[#ede8f3]' : 'bg-white'}`}
       >
         <span className={value ? 'text-gray-900' : 'text-gray-500'}>
           {value || placeholder}

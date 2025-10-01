@@ -8,7 +8,7 @@ import {
   FaBell,
   FaPlus
 } from "react-icons/fa";
-
+import { useIsMobile } from "@/hooks/brands/use-mobile";
 interface BottomNavLink {
   id: number;
   label: string;
@@ -43,8 +43,9 @@ const MobileBottomNav: React.FC = () => {
     }
   };
 
+  const isMobile = useIsMobile();
   // Only show on mobile devices
-  if (window.innerWidth >= 1024) {
+  if (isMobile) {
     return null;
   }
 

@@ -11,9 +11,10 @@ import { hasFormChanges, isExperienceDataEqual } from "@/utils/compare";
 import ScrollToTop from "@/components/ScrollToTop";
 import SavingOverlay from "@/components/SavingOverlay";
 import type { UploadedImage, Experience } from "@/types/productExperience";
+import { showToast } from "@/utils/toast";
 
 interface StepOneProps {
-  onNext?: () => void;
+  onNext?: (experienceId?: string) => void;
   onSubmit?: (data: Experience) => Promise<void>;
   isNew?: boolean;
   buttonLabel?: string;
@@ -32,7 +33,7 @@ const StepOne: React.FC<StepOneProps> = ({
   const searchParams = useSearchParams();
 
   // Zustand store
-  const { experienceData, setExperienceData, setIds, isLoading, setLoading } = useExperienceStore();
+  const { experienceData, setExperienceData, setIds, isLoading, setLoading, clearExperienceData, resetAll, fetchExperienceData } = useExperienceStore();
   const { createExperience } = useExperienceOperations();
 
   // Local state
@@ -45,26 +46,32 @@ const StepOne: React.FC<StepOneProps> = ({
     ? (Array.isArray(params.id) ? params.id[0] : params.id)
     : null;
   
-  // Determine if this is new experience - FIXED: Use prop if provided, otherwise derive from ID
-  const isNew = isNewProp || !experienceId || experienceId === 'new';
+  // Check if new=true is in search params
+  const isNewParam = searchParams.get('new') === 'true';
+  
+  // Determine if this is new experience - FIXED: Prioritize valid experience ID over action
+  // If we have a valid experience ID (not 'new' or empty), it's an existing experience
+  const isNew = (!experienceId || experienceId === 'new' || isNewParam) && isNewProp;
   
   console.log('StepOne debug:', { 
     experienceId, 
     isNew, 
+    isNewParam,
+    isNewProp,
     isInitialized,
     hasStoreData: !!experienceData?.experienceId 
   });
 
   // Helper to map API/state data to form data
   const mapToFormData = useCallback((exp: any): Experience => {
-    console.log("mapToFormData: exp.features", exp.features);
+    //console.log("mapToFormData: exp.features", exp.features);
 
     let images: UploadedImage[] = [];
     const imageUrls = exp.product_image_url || exp.product?.product_image_url;
     if (Array.isArray(imageUrls)) {
-      images = imageUrls.map((url: string, index: number) => ({
+      images = imageUrls.map((url: unknown, index: number) => ({
         id: `img-${index}-${Date.now()}`,
-        url: url,
+        url: typeof url === 'string' ? url : '',
         file: undefined,
       }));
     } else if (typeof imageUrls === "string") {
@@ -105,7 +112,7 @@ const StepOne: React.FC<StepOneProps> = ({
       featuresObj = { ...featuresObj, ...exp.product.features };
     }
 
-    console.log("mapToFormData: mapped featuresObj", featuresObj);
+    //console.log("mapToFormData: mapped featuresObj", featuresObj);
 
     return {
       experienceId: exp.id || exp.experienceId || null,
@@ -125,45 +132,61 @@ const StepOne: React.FC<StepOneProps> = ({
     };
   }, []);
 
-  // SINGLE INITIALIZATION EFFECT - FIXED: Much simpler and more reliable
+  // Clean URL by removing new=true parameter
+  const cleanUrl = useCallback(() => {
+    const paramsObj = new URLSearchParams(searchParams.toString());
+    if (paramsObj.has("new")) {
+      paramsObj.delete("new");
+      const newUrl = `${window.location.pathname}${paramsObj.toString() ? `?${paramsObj.toString()}` : ""}`;
+      router.replace(newUrl);
+    }
+  }, [searchParams, router]);
+
+  // IMMEDIATE EFFECT: Handle new=true parameter detection and store reset
+  useEffect(() => {
+    if (isNewParam) {
+      //console.log('Detected new=true parameter - immediately resetting store and cleaning URL');
+      // Immediately reset the store when new=true is detected
+      clearExperienceData();
+      // Clean the URL immediately
+      cleanUrl();
+    }
+  }, [isNewParam, clearExperienceData, cleanUrl]);
+
+  // SINGLE INITIALIZATION EFFECT - FIXED: Handle new=true parameter and existing experience data
   useEffect(() => {
     // Skip if already initialized
     if (isInitialized) {
-      console.log('Already initialized, skipping');
+      //console.log('Already initialized, skipping');
       return;
     }
 
     const initializeForm = async () => {
-      console.log("Initializing form:", { isNew, experienceId });
+      //console.log("Initializing form:", { isNew, experienceId, isNewParam });
 
       if (isNew) {
-        // For new experiences, set empty data but preserve any existing state
-        const currentData = experienceData as Experience;
-        const shouldReset = !currentData?.experienceId || 
-                           currentData.experienceId === 'new' || 
-                           JSON.stringify(currentData) === JSON.stringify(initialExperienceData);
+        // For new experiences (including when new=true is in URL)
+        //console.log('Setting up new experience form');
         
-        if (shouldReset) {
-          console.log('Setting new experience data');
-          setExperienceData(initialExperienceData);
-          setInitialFormData(initialExperienceData);
-        } else {
-          console.log('Preserving existing new experience data');
-          setInitialFormData(currentData);
-        }
+        // CRITICAL: Always reset to initial data for new experiences
+        // This ensures that any previous data is cleared
+        clearExperienceData(); // Reset the entire store
+        setInitialFormData(initialExperienceData);
 
-        // Clean up URL if needed
-        const paramsObj = new URLSearchParams(searchParams.toString());
-        if (paramsObj.has("new")) {
-          paramsObj.delete("new");
-          const newUrl = `${window.location.pathname}${paramsObj.toString() ? `?${paramsObj.toString()}` : ""}`;
-          router.replace(newUrl);
+        // Clean up URL immediately if new=true is present
+        if (isNewParam) {
+          //console.log('Cleaning URL - removing new=true parameter');
+          cleanUrl();
         }
       } else if (experienceId) {
         // For editing existing experiences
         console.log('Editing existing experience:', experienceId);
         
         const currentExpData = experienceData as Experience;
+        console.log('Current store data:', currentExpData);
+        console.log('Store experienceId:', currentExpData?.experienceId);
+        console.log('URL experienceId:', experienceId);
+        console.log('IDs match:', currentExpData?.experienceId === experienceId);
         
         // If store data matches the experience we're editing, use it
         if (currentExpData?.experienceId === experienceId) {
@@ -172,9 +195,29 @@ const StepOne: React.FC<StepOneProps> = ({
           setInitialFormData(mapped);
           // Don't reset experienceData here - preserve the current state
         } else {
-          // TODO: Fetch experience data if not in store
+          // Fetch experience data if not in store
           console.log('Need to fetch experience data for:', experienceId);
-          // You would add your data fetching logic here
+          console.log('Store has different experience ID or no data');
+          
+          // Fetch the experience data from the backend
+          const fetchData = async () => {
+            try {
+              const fetchedData = await fetchExperienceData(experienceId);
+              if (fetchedData) {
+                console.log('Fetched experience data:', fetchedData);
+                const mapped = mapToFormData(fetchedData);
+                setInitialFormData(mapped);
+              } else {
+                console.log('Failed to fetch experience data, using initial data');
+                setInitialFormData(initialExperienceData);
+              }
+            } catch (error) {
+              console.error('Error fetching experience data:', error);
+              setInitialFormData(initialExperienceData);
+            }
+          };
+          
+          fetchData();
         }
       }
 
@@ -182,7 +225,7 @@ const StepOne: React.FC<StepOneProps> = ({
     };
 
     initializeForm();
-  }, [isNew, experienceId, isInitialized]); // Only depend on these
+  }, [isNew, experienceId, isNewParam, isInitialized, cleanUrl, mapToFormData, clearExperienceData]);
 
   // Separate effect for handling store persistence
   useEffect(() => {
@@ -191,10 +234,25 @@ const StepOne: React.FC<StepOneProps> = ({
     // When editing and we have valid data, ensure it's persisted
     if (!isNew && experienceId && experienceData?.experienceId === experienceId) {
       console.log('Ensuring edit data is persisted');
+      console.log('Store data:', experienceData);
       const mapped = mapToFormData(experienceData);
       setInitialFormData(mapped);
+    } else {
+      console.log('Not persisting store data:', {
+        isInitialized,
+        isNew,
+        experienceId,
+        storeExperienceId: experienceData?.experienceId,
+        idsMatch: experienceData?.experienceId === experienceId
+      });
     }
   }, [isInitialized, isNew, experienceId, experienceData, mapToFormData]);
+
+  // Check if any images are currently uploading
+  const hasUploadingImages = (): boolean => {
+    const images = (experienceData as Experience)?.product_image_url || [];
+    return images.some((img: UploadedImage) => img.uploading === true);
+  };
 
   const validateForm = (): boolean => {
     const validationErrors = validateStepOne(experienceData);
@@ -219,7 +277,9 @@ const StepOne: React.FC<StepOneProps> = ({
   };
 
   const handleNext = async () => {
-    if (!validateForm()) {
+    // Check if images are currently uploading
+    if (hasUploadingImages()) {
+      showToast.error("Please wait for images to finish uploading before proceeding.");
       return;
     }
 
@@ -233,15 +293,33 @@ const StepOne: React.FC<StepOneProps> = ({
 
     console.log("checking experience data:", currentExpData);
     console.log("initial form data:", initialFormData);
+    console.log("experienceId from URL:", experienceId);
 
     // Check if form is unchanged using the utility function
     const unchanged = isExperienceDataEqual(initialFormData, currentExpData);
+    console.log("Form unchanged:", unchanged);
+    console.log("Current experience ID:", currentExpData?.experienceId);
+    console.log("URL experience ID:", experienceId);
 
-    if (unchanged && currentExpData?.experienceId) {
+    // Use URL experience ID if store doesn't have it (for existing experiences)
+    const expIdToUse = currentExpData?.experienceId || experienceId;
+
+    if (unchanged && expIdToUse) {
       // No changes, just navigate - FIXED: Use Next.js navigation
+      console.log("No changes detected, navigating without API call");
       const action = params?.action || "edit";
-      router.push(`/dashboard/experience/${action}/${currentExpData.experienceId}?step=customise-features`);
-      if (onNext) onNext();
+      if (onNext) {
+        onNext(expIdToUse);
+      } else {
+        router.push(`/dashboard/experience/${action}/${expIdToUse}?step=customise-features`);
+      }
+      return;
+    } else {
+      console.log("Form has changes or no experience ID, proceeding with API call");
+    }
+
+    // Only validate form if we're proceeding with API call
+    if (!validateForm()) {
       return;
     }
 
@@ -270,7 +348,7 @@ const StepOne: React.FC<StepOneProps> = ({
         estimated_usage_duration_days: currentExpData.estimatedDurationDays ?? 30,
       };
 
-      console.log("Prepared product data for submission:", product);
+      //console.log("Prepared product data for submission:", product);
 
       const payload: any = { product };
       // If we have an experience id, include it for update
@@ -279,9 +357,19 @@ const StepOne: React.FC<StepOneProps> = ({
       }
 
       const res = await createExperience(payload, currentExpData);
-      console.log("CreateExperience response:", res);
+     
 
-      if (res?.data) {
+      if (res && typeof res === 'object' && 'data' in res) {
+        const responseData = (res as any).data;
+   
+        
+        // Check if the response has the expected structure
+        if (!responseData.id) {
+         // console.error("Response data missing ID:", responseData);
+          showToast.error("Failed to create experience - invalid response structure");
+          return;
+        }
+        
         // Map backend features to FeatureSettings object
         const defaultFeatures = {
           tutorialsRoutines: false,
@@ -294,8 +382,8 @@ const StepOne: React.FC<StepOneProps> = ({
           productUsage: false,
         };
         let featuresObj = { ...defaultFeatures };
-        if (Array.isArray(res.data.features)) {
-          res.data.features.forEach((f: any) => {
+        if (Array.isArray(responseData.features)) {
+          responseData.features.forEach((f: any) => {
             if (
               f.feature_name &&
               typeof f.is_enabled === "boolean" &&
@@ -309,24 +397,42 @@ const StepOne: React.FC<StepOneProps> = ({
         // Update experienceData in store with mapped features
         const updatedData = { 
           ...currentExpData, 
-          experienceId: res.data.id,
+          experienceId: responseData.id,
           features: featuresObj 
         };
         setExperienceData(updatedData);
-        setIds(res.data.id || null, res.data.productId || null);
-        console.log("Created experience ID:", res.data.id);
+        setIds(responseData.id || null, responseData.productId || null);
+        console.log("Created experience ID:", responseData.id);
         
         // Update initial form data to prevent future unnecessary saves
         setInitialFormData(updatedData);
 
         // Navigate to step 2 with experience id - FIXED: Use Next.js navigation
-        const action = params?.action || "edit";
-        router.push(`/dashboard/experience/${action}/${res.data.id}?step=customise-features`);
-        if (onNext) onNext();
+        if (responseData.id) {
+          const action = params?.action || "edit";
+          const targetUrl = `/dashboard/experience/${action}/${responseData.id}?step=customise-features`;
+         
+          
+          // Navigate to step 2 with experience id
+         // console.log("About to navigate with experience ID:", responseData.id);
+          
+          // Call onNext with the experience ID if provided (for [action]/page.tsx)
+          // Otherwise, use router.push for [action]/[id]/page.tsx
+          if (onNext) {
+            // Pass the experience ID to onNext
+            onNext(responseData.id);
+          } else {
+            // If onNext is not provided, navigate manually
+            router.push(targetUrl);
+          }
+        } else {
+         // console.error("No experience ID in response data:", responseData);
+          showToast.error("Failed to create experience - no ID returned");
+        }
       }
     } catch (err) {
       // Error handling is done in the createExperience function
-      console.error("Error creating experience:", err);
+     // console.error("Error creating experience:", err);
     } finally {
       setLoading(false);
     }
@@ -336,14 +442,17 @@ const StepOne: React.FC<StepOneProps> = ({
   const hasChanges = hasFormChanges(initialFormData, experienceData);
   const canSkipApiCall = !hasChanges && (experienceData as Experience)?.experienceId;
   const showSavingOverlay = (isLoading || isSubmitting) && !canSkipApiCall;
+  const isUploadingImages = hasUploadingImages();
 
-  console.log("StepOne render:", {
+ /*  console.log("StepOne render:", {
     isInitialized,
     hasChanges,
     canSkipApiCall,
     showSavingOverlay,
     experienceId: (experienceData as Experience)?.experienceId,
-  });
+    isNewParam,
+    isUploadingImages,
+  }); */
 
   // Show loading state until initialized
   if (!isInitialized) {
@@ -358,22 +467,23 @@ const StepOne: React.FC<StepOneProps> = ({
   }
 
   return (
-    <div className="relative mx-auto mb-32 h-screen py-4 ">
+    <div className="relative mx-auto mb-32 md:px-8 h-screen py-4 ">
       <ScrollToTop />
       {showSavingOverlay && <SavingOverlay visible={true} message="Saving your progress..." />}
 
       <div className="mx-auto">
         <div className="rounded-2xl border-gray-200 bg-white px-4 shadow-sm sm:border sm:px-6">
           {/* Debug info - remove in production */}
-          {process.env.NODE_ENV === 'development' && (
+       {/*    {process.env.NODE_ENV === 'development' && (
             <div className="mb-4 p-3 bg-gray-100 rounded-lg text-sm">
               <div>Initialized: {isInitialized ? 'Yes' : 'No'}</div>
               <div>Has changes: {hasChanges ? 'Yes' : 'No'}</div>
               <div>Experience ID: {(experienceData as Experience)?.experienceId || 'None'}</div>
               <div>Mode: {isNew ? 'New' : 'Edit'}</div>
+              <div>New Param: {isNewParam ? 'Yes' : 'No'}</div>
             </div>
           )}
-
+ */}
           {/* Product Form Section */}
           <div className="mb-8">
             <div className="mb-6">
@@ -400,10 +510,10 @@ const StepOne: React.FC<StepOneProps> = ({
         <div className="float-right mt-12 mr-8 flex flex-col justify-end gap-3 pt-6 pb-32 sm:flex-row sm:gap-4">
           <button
             onClick={handleNext}
-            disabled={isLoading || isSubmitting}
+            disabled={isLoading || isSubmitting || isUploadingImages}
             className="order-1 w-fit rounded-xl bg-purple-800 px-8 py-3.5 font-medium text-white transition-colors duration-200 hover:bg-purple-700 disabled:bg-gray-400 sm:order-2 sm:w-auto"
           >
-            {isLoading || isSubmitting ? "Saving..." : buttonLabel}
+            {isLoading || isSubmitting ? "Saving..." : isUploadingImages ? "Uploading..." : buttonLabel}
           </button>
         </div>
       </div>

@@ -3,13 +3,12 @@ import { persist } from 'zustand/middleware';
 import type { Experience, FeatureSettings } from '@/types/productExperience';
 import type { Brand } from '@/types/brand';
 
-
 interface ExperienceState {
   brand: Brand | null;
   setBrand: (brand: Brand | null) => void;
   // Unified Experience Data
   experienceData: Experience;
-  setExperienceData: (data: Partial<Experience>, slug?: string) => void;
+  setExperienceData: (data: Partial<Experience>, experienceId?: string) => void;
   clearExperienceData: () => void;
 
   // Features by Experience ID
@@ -32,19 +31,26 @@ interface ExperienceState {
   isLoading: boolean;
   setLoading: (loading: boolean) => void;
 
+  // Fetch experience data from backend
+  fetchExperienceData: (experienceId: string) => Promise<Experience | null>;
+  
+  // Get experience data by ID from localStorage
+  getExperienceDataById: (experienceId: string) => Experience | null;
+  
   // Reset everything
   resetAll: () => void;
 }
-// Utility to store/fetch experience data by slug in localStorage
-function setExperienceDataBySlug(slug: string, data: Experience) {
-  if (typeof window !== 'undefined' && slug) {
-    localStorage.setItem(`experience:${slug}`, JSON.stringify(data));
+
+// Utility to store/fetch experience data by ID in localStorage
+function setExperienceDataById(experienceId: string, data: Experience) {
+  if (typeof window !== 'undefined' && experienceId) {
+    localStorage.setItem(`experience:${experienceId}`, JSON.stringify(data));
   }
 }
 
-export function getExperienceDataBySlug(slug: string): Experience | null {
-  if (typeof window !== 'undefined' && slug) {
-    const raw = localStorage.getItem(`experience:${slug}`);
+export function getExperienceDataById(experienceId: string): Experience | null {
+  if (typeof window !== 'undefined' && experienceId) {
+    const raw = localStorage.getItem(`experience:${experienceId}`);
     if (raw) {
       try {
         return JSON.parse(raw) as Experience;
@@ -53,7 +59,6 @@ export function getExperienceDataBySlug(slug: string): Experience | null {
   }
   return null;
 }
-
 
 export const initialExperienceData: Experience = {
   experienceId: '',
@@ -80,7 +85,6 @@ export const initialExperienceData: Experience = {
   },
 };
 
-
 import { experienceService } from '@/services/brands/experienceService';
 
 export const useExperienceStore = create<ExperienceState>()(
@@ -97,11 +101,11 @@ export const useExperienceStore = create<ExperienceState>()(
       experienceUrl: null,
 
       // Actions
-      setExperienceData: (data, slug) => {
+      setExperienceData: (data, experienceId) => {
         set((state) => {
           const merged = { ...state.experienceData, ...data };
-          // Store in localStorage by slug if provided
-          if (slug) setExperienceDataBySlug(slug, merged);
+          // Store in localStorage by experienceId if provided
+          if (experienceId) setExperienceDataById(experienceId, merged);
           return { experienceData: merged };
         });
       },
@@ -130,21 +134,113 @@ export const useExperienceStore = create<ExperienceState>()(
         }
       },
 
+      // Get experience data by ID from localStorage
+      getExperienceDataById: (experienceId: string): Experience | null => {
+        return getExperienceDataById(experienceId);
+      },
+
+      // Fetch experience data from backend
+      fetchExperienceData: async (experienceId: string): Promise<Experience | null> => {
+        if (!experienceId) return null;
+        
+        set({ isLoading: true });
+        try {
+          const response = await experienceService.getExperienceById(experienceId);
+          
+          if (response?.data) {
+            const experience = response.data;
+            
+            // Map backend data to Experience type
+            const mappedExperience: Experience = {
+              experienceId: experience.id || experience.experienceId || '',
+              name: experience.name || experience.product?.name || '',
+              category: experience.category || experience.product?.category || '',
+              tagline: experience.tagline || experience.product?.tagline || '',
+              skin_type: experience.skin_type || experience.product?.skin_type || '',
+              description: experience.description || experience.product?.description || '',
+              storeLink: experience.store_link || experience.product?.store_link || '',
+              originalPrice: experience.original_price ?? experience.product?.original_price ?? null,
+              discountedPrice: experience.discounted_price ?? experience.product?.discounted_price ?? null,
+              estimatedDurationDays: experience.estimated_usage_duration_days ?? experience.product?.estimated_usage_duration_days ?? 30,
+              netContent: experience.net_content ?? experience.product?.net_content ?? 0,
+              images: Array.isArray(experience.product_image_url) 
+                ? experience.product_image_url.map((url: string, index: number) => ({
+                    id: `img-${index}-${Date.now()}`,
+                    url: url,
+                    file: undefined,
+                  }))
+                : experience.product_image_url 
+                  ? [{
+                      id: `img-0-${Date.now()}`,
+                      url: experience.product_image_url,
+                      file: undefined,
+                    }]
+                  : [],
+              features: {
+                tutorialsRoutines: false,
+                ingredientList: false,
+                loyaltyPoints: false,
+                skinRecommendations: false,
+                chatbot: false,
+                feedbackForm: true,
+                customerService: false,
+                productUsage: false,
+                ...(Array.isArray(experience.features) 
+                  ? experience.features.reduce((acc: any, feature: any) => {
+                      if (feature.feature_name && typeof feature.is_enabled === 'boolean') {
+                        acc[feature.feature_name] = feature.is_enabled;
+                      }
+                      return acc;
+                    }, {})
+                  : experience.features)
+              }
+            };
+
+            // Update the store with fetched data and store in localStorage
+            set({ 
+              experienceData: mappedExperience,
+              experienceId: experience.id || null,
+              productId: experience.productId || experience.product?.id || null
+            });
+
+            // Also store in localStorage by ID
+            setExperienceDataById(experienceId, mappedExperience);
+
+            return mappedExperience;
+          }
+          return null;
+        } catch (error) {
+          console.error('Error fetching experience data:', error);
+          return null;
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+
       setLoading: (loading) => set({ isLoading: loading }),
 
-      setFeaturesForExperience: (_experienceId, features) => {
-        // Always update the features field in the main experienceData object
+      setFeaturesForExperience: (experienceId, features) => {
+        // Update the features field in the main experienceData object
         set((state) => ({
           experienceData: {
             ...state.experienceData,
             features: { ...features },
           },
         }));
+        
+        // Also store features separately by experience ID
+        set((state) => ({
+          featuresByExperienceId: {
+            ...state.featuresByExperienceId,
+            [experienceId]: features,
+          },
+        }));
       },
 
-      getFeaturesForExperience: (_experienceId) => {
-        // Always return the features field from the main experienceData object
-        return get().experienceData.features;
+      getFeaturesForExperience: (experienceId) => {
+        // First try to get from featuresByExperienceId, fallback to main experienceData
+        const state = get();
+        return state.featuresByExperienceId[experienceId] || state.experienceData.features;
       },
 
       resetAll: () => set({

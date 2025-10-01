@@ -15,37 +15,37 @@ export const isExperienceDataEqual = (
   
   // Compare simple primitive fields
   const simpleFields: (keyof Experience)[] = [
-    'productName', 'category', 'tagline', 'skinType', 'description', 
+    'name', 'category', 'tagline', 'skinType', 'description', 
     'storeLink', 'estimatedDurationDays', 'netContent'
   ];
   
   for (const field of simpleFields) {
     if (a[field] !== b[field]) {
-      console.log(`[compare] Field ${field} changed:`, a[field], '→', b[field]);
+      //console.log(`[compare] Field ${field} changed:`, a[field], '→', b[field]);
       return false;
     }
   }
   
   // Compare price fields (handle null/undefined)
   if (a.originalPrice !== b.originalPrice) {
-    console.log('[compare] originalPrice changed:', a.originalPrice, '→', b.originalPrice);
+   // console.log('[compare] originalPrice changed:', a.originalPrice, '→', b.originalPrice);
     return false;
   }
   
   if (a.discountedPrice !== b.discountedPrice) {
-    console.log('[compare] discountedPrice changed:', a.discountedPrice, '→', b.discountedPrice);
+    //console.log('[compare] discountedPrice changed:', a.discountedPrice, '→', b.discountedPrice);
     return false;
   }
   
   // Compare experienceId (handle undefined)
   if (a.experienceId !== b.experienceId) {
-    console.log('[compare] experienceId changed:', a.experienceId, '→', b.experienceId);
+    //console.log('[compare] experienceId changed:', a.experienceId, '→', b.experienceId);
     return false;
   }
   
-  // Compare images array
-  if (!areImagesEqual(a.images, b.images)) {
-    console.log('[compare] images changed');
+  // Compare images array (product_image_url)
+  if (!areImagesEqual(a.product_image_url || [], b.product_image_url || [])) {
+    //console.log('[compare] images changed');
     return false;
   }
   
@@ -57,7 +57,7 @@ export const isExperienceDataEqual = (
  */
 export const areImagesEqual = (a: UploadedImage[], b: UploadedImage[]): boolean => {
   if (a.length !== b.length) {
-    console.log('[compare] image count changed:', a.length, '→', b.length);
+    //console.log('[compare] image count changed:', a.length, '→', b.length);
     return false;
   }
   
@@ -66,8 +66,8 @@ export const areImagesEqual = (a: UploadedImage[], b: UploadedImage[]): boolean 
     const imgB = b[i];
     
     // Compare by URL only (ignore file objects and other metadata)
-    if (imgA.url !== imgB.url) {
-      console.log('[compare] image URL changed at index', i, ':', imgA.url, '→', imgB.url);
+    if (imgA?.url !== imgB?.url) {
+      //console.log('[compare] image URL changed at index', i, ':', imgA?.url, '→', imgB?.url);
       return false;
     }
   }

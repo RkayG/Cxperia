@@ -119,7 +119,8 @@ const MediaUpload: React.FC<MediaUploadProps> = ({ images, onImagesUpdate, error
     <div>
       <div className="mb-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-2">Media Upload</h2>
-        <p className="text-gray-600 text-sm">Upload high-quality images of your product. A maximum of 5 images are allowed.</p>
+        <p className="text-gray-600 text-sm">Upload high-quality images of your product. A maximum of 10 images are allowed.</p>
+       
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
@@ -129,9 +130,11 @@ const MediaUpload: React.FC<MediaUploadProps> = ({ images, onImagesUpdate, error
             data-key="images"
             className={`
               relative border-2 border-dashed rounded-2xl p-6 sm:p-8 text-center transition-all duration-300
-              ${dragActive 
-                ? 'border-purple-400 bg-purple-50' 
-                : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'
+              ${images.some(img => img.uploading) 
+                ? 'border-blue-400 bg-blue-50' 
+                : dragActive 
+                  ? 'border-purple-400 bg-purple-50' 
+                  : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'
               }
               ${errors?.images ? ' border-red-600 bg-red-50' : ''}
             `}
@@ -147,12 +150,25 @@ const MediaUpload: React.FC<MediaUploadProps> = ({ images, onImagesUpdate, error
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             />
             
-            <PictureInPictureIcon className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Click to upload or drag and drop</h3>
-            <p className="text-sm text-gray-600 mb-4">PNG, JPG up to 10MB each</p>
-            <button type="button" className="inline-flex items-center px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors duration-200 font-medium">
-              <PictureInPictureIcon className="w-4 h-4 mr-2" />Browse Files
-            </button>
+            <PictureInPictureIcon className={`mx-auto h-12 w-12 mb-4 ${images.some(img => img.uploading) ? 'text-blue-400' : 'text-gray-400'}`} />
+            {images.some(img => img.uploading) ? (
+              <>
+                <h3 className="text-lg font-medium text-blue-700 mb-2">Uploading images...</h3>
+                <p className="text-sm text-blue-600 mb-4">Please wait for uploads to complete</p>
+                <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-700 rounded-lg font-medium">
+                  <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-blue-600 mr-2"></div>
+                  Uploading...
+                </div>
+              </>
+            ) : (
+              <>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Click to upload or drag and drop</h3>
+                <p className="text-sm text-gray-600 mb-4">PNG, JPG up to 10MB each</p>
+                <button type="button" className="inline-flex items-center px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors duration-200 font-medium">
+                  <PictureInPictureIcon className="w-4 h-4 mr-2" />Browse Files
+                </button>
+              </>
+            )}
           </div>
 
           {images.length > 0 && (

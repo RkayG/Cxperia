@@ -5,7 +5,7 @@ import { showToast } from '@/lib/toast';
 import type { Experience } from '@/types/productExperience';
 
 export const useExperienceOperations = () => {
-  console.log('[useExperienceOperations] loaded');
+  //console.log('[useExperienceOperations] loaded');
   const { mutateAsync: createExperienceMutation } = useCreateExperience();
   const { setExperienceData, setIds, setLoading } = useExperienceStore();
 
@@ -13,11 +13,16 @@ export const useExperienceOperations = () => {
     setLoading(true);
     try {
       const result = await createExperienceMutation(data);
-      
+     // console.log("Mutation result:", result);
+     // console.log("Mutation result type:", typeof result);
+     // console.log("Mutation result keys:", Object.keys(result || {}));
+     
       if (result && result.data) {
         const expId = result.data.id;
         const prodId = result.data.productId;
         const product = result.data.product || result.data;
+       // console.log("Extracted expId:", expId);
+        //console.log("Extracted prodId:", prodId);
         
         // Map response to step one data format
         const mappedData: Partial<Experience> = {
@@ -52,6 +57,7 @@ export const useExperienceOperations = () => {
         setExperienceData(mappedData);
         setIds(expId, prodId);
         
+        //console.log("Returning result:", result);
         return result;
       }
       
