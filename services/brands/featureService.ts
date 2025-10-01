@@ -151,8 +151,30 @@ export async function updateTutorial(tutorialId: string, data: any) {
 
 // Delete a tutorial by id
 export async function deleteTutorial(tutorialId: string) {
+  console.log('Attempting to delete tutorial with ID:', tutorialId);
+  console.log('API endpoint:', endpoints.TUTORIAL.DELETE(tutorialId));
+  
   const res = await fetch(endpoints.TUTORIAL.DELETE(tutorialId), {
     method: 'DELETE',
+  });
+  
+  console.log('Delete response status:', res.status);
+  console.log('Delete response:', res);
+  
+  const result = await res.json();
+  console.log('Delete result:', result);
+  
+  return result;
+}
+
+// Unpublish a tutorial by id
+export async function unpublishTutorial(tutorialId: string) {
+  const res = await fetch(endpoints.TUTORIAL.UPDATE(tutorialId), {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ is_published: false }),
   });
   return res.json();
 }

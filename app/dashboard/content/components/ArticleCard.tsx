@@ -2,7 +2,7 @@ import { Eye } from 'lucide-react';
 import React from 'react';
 
 interface Article {
-  id: number;
+  id: string | number;
   image: string;
   title: string;
   status: string;
@@ -14,7 +14,7 @@ interface Article {
 interface ArticleCardProps {
   article: Article;
   isSelected: boolean;
-  onSelect: (id: number, isSelected: boolean) => void;
+  onSelect: (id: string | number, isSelected: boolean) => void;
 }
 
 const ArticleCard: React.FC<ArticleCardProps> = ({ article, isSelected, onSelect }) => {

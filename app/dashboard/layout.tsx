@@ -18,7 +18,7 @@ const navigationItems: SidebarItem[] = [
   },
   {
     type: 'label',
-    name: 'Management',
+    name: 'Manage',
   },
   {
     name: "Products",
@@ -45,11 +45,11 @@ const navigationItems: SidebarItem[] = [
     icon: "Locate",
     type: "item",
   },
-  {
+  /* {
     type: 'label',
     name: 'Monetization',
-  },
-  {
+  }, */
+  /* {
     name: "Revenue",
     href: "/revenue",
     icon: "BarChart4",
@@ -76,7 +76,7 @@ const navigationItems: SidebarItem[] = [
     href: "/configuration",
     icon: "Settings2",
     type: "item",
-  },
+  }, */
 ];
 
 export default async function DashboardLayout({ children }: DashboardLayoutProps) {
@@ -95,7 +95,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
       }
       baseBreadcrumb={[{
         title: brandName,
-        href: "/dashboard",
+        href: "/dashboard/home",
       }]}
     >
       {children}

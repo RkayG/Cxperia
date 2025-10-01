@@ -87,9 +87,21 @@ export function useDeleteTutorial(experienceId?: string) {
   return useMutation({
     mutationFn: (tutorialId: string) => api.deleteTutorial(tutorialId),
     onSuccess: (_data, _variables) => {
+      // Always invalidate the main tutorials query
+      queryClient.invalidateQueries({ queryKey: ['tutorials'] });
       if (experienceId) {
         queryClient.invalidateQueries({ queryKey: ['tutorials', experienceId] });
       }
+    },
+  });
+}
+
+export function useUnpublishTutorial() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (tutorialId: string) => api.unpublishTutorial(tutorialId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tutorials'] });
     },
   });
 }

@@ -1,6 +1,11 @@
 import { Search, ChevronDown } from 'lucide-react';
 import React from 'react';
-import DropdownSelect from '@/components/DropdownSelect';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 
 interface ContentDashboardFilterProps {
@@ -82,39 +87,56 @@ const ContentDashboardFilter: React.FC<ContentDashboardFilterProps> = ({
           <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
         </div>
 
-        {/* Type Dropdown (reused) */}
+        {/* Type Dropdown */}
         <div className="relative w-full sm:w-40">
-          <DropdownSelect
-            value={selectedType}
-            onChange={setSelectedType}
-            options={types}
-            placeholder="All Types"
-            searchPlaceholder="Search types..."
-          />
+          <DropdownMenu>
+            <DropdownMenuTrigger className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-purple-500 focus:border-purple-500 text-sm text-left flex items-center justify-between bg-white hover:bg-gray-50 transition-colors">
+              <span className={selectedType ? 'text-gray-900' : 'text-gray-500'}>
+                {selectedType || 'All Types'}
+              </span>
+              <ChevronDown size={16} className="text-gray-400" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-full min-w-[160px]">
+              {types.map((type) => (
+                <DropdownMenuItem
+                  key={type}
+                  onClick={() => setSelectedType(type)}
+                  className="cursor-pointer"
+                >
+                  {type}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
-        {/* Category Dropdown (reused) */}
+        {/* Category Dropdown */}
         <div className="relative w-full sm:w-48">
-          <DropdownSelect
-            value={selectedCategory}
-            onChange={setSelectedCategory}
-            options={["All Categories", ...categories]}
-            placeholder="All Categories"
-            searchPlaceholder="Search categories..."
-          />
+          <DropdownMenu>
+            <DropdownMenuTrigger className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-purple-500 focus:border-purple-500 text-sm text-left flex items-center justify-between bg-white hover:bg-gray-50 transition-colors">
+              <span className={selectedCategory ? 'text-gray-900' : 'text-gray-500'}>
+                {selectedCategory || 'All Categories'}
+              </span>
+              <ChevronDown size={16} className="text-gray-400" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-full min-w-[192px]">
+              {["All Categories", ...categories].map((category) => (
+                <DropdownMenuItem
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className="cursor-pointer"
+                >
+                  {category}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
       {/* Article Count and Sort */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-sm text-gray-600 mt-4 sm:mt-0">
         <span>Showing {count} contents</span>
-        <div className="flex items-center gap-2 mt-2 sm:mt-0">
-          <span>Sort by</span>
-          <select className="appearance-none bg-transparent border-b border-gray-400 py-1 pr-6 focus:outline-none focus:border-purple-500">
-            <option>LATEST DATE</option>
-            <option>MOST VIEWS</option>
-          </select>
-          <ChevronDown size={16} className="text-gray-500 pointer-events-none -ml-5" />
-        </div>
+        
       </div>
     </div>
   );

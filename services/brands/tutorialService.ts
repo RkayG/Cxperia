@@ -36,6 +36,17 @@ export async function deleteTutorial(tutorialId: string) {
   });
   return res.json();
 }
+
+export async function unpublishTutorial(tutorialId: string) {
+  const res = await fetch(endpoints.TUTORIAL.UPDATE(tutorialId), {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ is_published: false }),
+  });
+  return res.json();
+}
 export async function getTutorialIdsLinkedToExperience(experienceId: string) {
   const res = await fetch(endpoints.TUTORIAL.LINK(experienceId));
   return res.json();
