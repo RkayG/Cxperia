@@ -1,26 +1,33 @@
 import { useCallback } from 'react';
 import { useExperienceStore } from '@/store/brands/useExperienceStore';
-import { useCreateExperience } from './useExperienceApi';
+import { useCreateExperience, useUpdateExperience } from './useExperienceApi';
 import { showToast } from '@/lib/toast';
 import type { Experience } from '@/types/productExperience';
 
 export const useExperienceOperations = () => {
   //console.log('[useExperienceOperations] loaded');
   const { mutateAsync: createExperienceMutation } = useCreateExperience();
+  const { mutateAsync: updateExperienceMutation } = useUpdateExperience();
   const { setExperienceData, setIds, setLoading } = useExperienceStore();
 
   const createExperience = useCallback(async (data: any, stepOneData: Experience) => {
     setLoading(true);
     try {
-      const result = await createExperienceMutation(data);
+      // Check if we're updating an existing experience
+      const result = data.experience_id 
+        ? await updateExperienceMutation({ id: data.experience_id, data: data })
+        : await createExperienceMutation(data);
+      
+      console.log('Operation result:', result);
      // console.log("Mutation result:", result);
      // console.log("Mutation result type:", typeof result);
      // console.log("Mutation result keys:", Object.keys(result || {}));
      
-      if (result && result.data) {
-        const expId = result.data.id;
-        const prodId = result.data.productId;
-        const product = result.data.product || result.data;
+      if (result && typeof result === 'object' && 'data' in result) {
+        const responseData = (result as any).data;
+        const expId = responseData.id;
+        const prodId = responseData.productId;
+        const product = responseData.product || responseData;
        // console.log("Extracted expId:", expId);
         //console.log("Extracted prodId:", prodId);
         
@@ -68,7 +75,7 @@ export const useExperienceOperations = () => {
     } finally {
       setLoading(false);
     }
-  }, [createExperienceMutation, setExperienceData, setIds, setLoading]);
+  }, [createExperienceMutation, updateExperienceMutation, setExperienceData, setIds, setLoading]);
 
   return { createExperience };
 };
