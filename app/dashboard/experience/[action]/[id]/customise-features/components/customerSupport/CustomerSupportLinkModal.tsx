@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { useAddCustomerSupportLinks, useCustomerSupportLinksByBrand } from '@/hooks/brands/useFeatureApi';
-import { X, MessageCircle, Phone, Mail, HelpCircle, Facebook, Instagram, Twitter, Youtube, Video } from "lucide-react";
+import { X, MessageCircle, Phone, Mail, HelpCircle, Facebook, Instagram, Twitter, Youtube, Video, Loader2 } from "lucide-react";
 import { validateField } from "./ValidationUtils";
 import type { CustomerSupportLinksData, CustomerSupportLinksModalProps } from "@/types/customerServiceTypes";
 import IntegrationSettings from "./IntegrationSettings";
+import { showToast } from "@/utils/toast";
+import { Skeleton } from "@/components/ui/skeleton";
 // If you have a TikTok icon, import it, else use Video as fallback
 // TikTok icon not available in lucide-react; use Video as fallback
 
@@ -54,6 +56,7 @@ const CustomerSupportLinksModal: React.FC<CustomerSupportLinksModalProps & { onA
 
   // Validation state
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [saving, setSaving] = useState(false);
 
   // Validate all fields on change using ValidationUtils
   const handleValidatedChange = (id: keyof CustomerSupportLinksData, value: string, type: string) => {
@@ -91,6 +94,33 @@ const CustomerSupportLinksModal: React.FC<CustomerSupportLinksModalProps & { onA
 
   const [activeTab, setActiveTab] = useState('support');
 
+  // Skeleton component for form fields
+  const FormSkeleton = () => (
+    <div className="space-y-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 md:gap-6">
+        {[...Array(3)].map((_, i) => (
+          <div key={i} className="bg-white rounded-xl p-6 border border-purple-100">
+            <Skeleton className="h-4 w-24 mb-2" />
+            <Skeleton className="h-12 w-full" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const SocialFormSkeleton = () => (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 md:gap-6">
+        {[...Array(5)].map((_, i) => (
+          <div key={i} className="bg-white rounded-xl p-6 border border-purple-100">
+            <Skeleton className="h-4 w-28 mb-2" />
+            <Skeleton className="h-12 w-full" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
   const handleChange = (id: keyof CustomerSupportLinksData, value: string | boolean) => {
     setFormData((prev) => ({
       ...prev,
@@ -115,15 +145,20 @@ const CustomerSupportLinksModal: React.FC<CustomerSupportLinksModalProps & { onA
     ].filter(l => l.value && l.value.trim()).map(l => ({ type: l.type, value: l.value?.trim() }));
    
     if (links.length === 0) {
-      alert('Please provide at least one support link.');
+      showToast.error('Please provide at least one support link.');
       return;
     }
+
+    setSaving(true);
     try {
       await addLinksMutation.mutateAsync(links);
       onSave(formData);
+      showToast.success("Support links saved successfully! 🎉");
       onClose();
     } catch (err) {
-      alert('Failed to save support links.');
+      showToast.error('Failed to save support links. Please try again.');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -272,64 +307,70 @@ const CustomerSupportLinksModal: React.FC<CustomerSupportLinksModalProps & { onA
           {/* Content Area */}
           <div className="flex-1 ">
             <div className="md:p-8">
-              {activeTab === 'support' && (
-                <div className="space-y-8">
-                  {/* Support Links Grid */}
-                  <div className="grid grid-cols-1 lg:grid-cols-3 md:gap-6 ">
-                    {supportFields.map((field) => {
-                      const value = formData[field.id as keyof CustomerSupportLinksData] as string;
-                      const error = fieldErrors[field.id] || '';
-                      return (
-                        <div key={field.id} className="bg-white rounded-xl p-6 border border-purple-100 hover:border-purple-200 transition-colors">
-                          <label htmlFor={field.id} className="block text-left text-purple-800 text-sm font-medium mb-2">
-                            {field.label}
-                          </label>
-                          <input
-                            type={field.type}
-                            id={field.id}
-                            value={value}
-                            onChange={e => handleValidatedChange(field.id, e.target.value, field.type)}
-                            placeholder={field.placeholder}
-                            className={`w-full px-4 py-3 border-1 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 border-purple-900 ${value ? 'bg-[#ede8f3]' : ''} ${error ? 'border-red-600 bg-red-50' : ''}`}
-                          />
-                          {error && <p className="text-xs text-red-600 mt-2">{error}</p>}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
+              {isBrandLinksLoading ? (
+                activeTab === 'support' ? <FormSkeleton /> : <SocialFormSkeleton />
+              ) : (
+                <>
+                  {activeTab === 'support' && (
+                    <div className="space-y-8">
+                      {/* Support Links Grid */}
+                      <div className="grid grid-cols-1 lg:grid-cols-3 md:gap-6 ">
+                        {supportFields.map((field) => {
+                          const value = formData[field.id as keyof CustomerSupportLinksData] as string;
+                          const error = fieldErrors[field.id] || '';
+                          return (
+                            <div key={field.id} className="bg-white rounded-xl p-6 border border-purple-100 hover:border-purple-200 transition-colors">
+                              <label htmlFor={field.id} className="block text-left text-purple-800 text-sm font-medium mb-2">
+                                {field.label}
+                              </label>
+                              <input
+                                type={field.type}
+                                id={field.id}
+                                value={value}
+                                onChange={e => handleValidatedChange(field.id, e.target.value, field.type)}
+                                placeholder={field.placeholder}
+                                className={`w-full px-4 py-3 border-1 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 border-purple-900 ${value ? 'bg-[#ede8f3]' : ''} ${error ? 'border-red-600 bg-red-50' : ''}`}
+                              />
+                              {error && <p className="text-xs text-red-600 mt-2">{error}</p>}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
 
-              {activeTab === 'social' && (
-                <div className="space-y-6">
-                 {/*  <div className="text-center md:mb-8">
-                    <h3 className="text-xl mt-4 font-semibold text-gray-900 mb-2">Social Media Profiles</h3>
-                    <p className="text-gray-600 mx-2">Connect your social media accounts to provide additional support channels</p>
-                  </div> */}
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-3 md:gap-6">
-                    {socialFields.map((field) => {
-                      const value = formData[field.id] as string;
-                      const error = fieldErrors[field.id] || '';
-                      return (
-                        <div key={field.id} className="bg-white rounded-xl p-6 border border-purple-100 hover:border-purple-200 transition-colors">
-                          <label htmlFor={field.id} className="block text-left text-purple-800 text-sm font-medium mb-2">
-                            {field.label}
-                          </label>
-                          <input
-                            type={field.type}
-                            id={field.id}
-                            value={value}
-                            onChange={e => handleValidatedChange(field.id, e.target.value, field.type)}
-                            placeholder={field.placeholder}
-                            className={`w-full px-4 py-3 border-1 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 border-purple-900 ${value ? 'bg-[#ede8f3]' : ''} ${error ? 'border-red-600 bg-red-50' : ''}`}
-                          />
-                          {error && <p className="text-xs text-red-600 mt-2">{error}</p>}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
+                  {activeTab === 'social' && (
+                    <div className="space-y-6">
+                     {/*  <div className="text-center md:mb-8">
+                        <h3 className="text-xl mt-4 font-semibold text-gray-900 mb-2">Social Media Profiles</h3>
+                        <p className="text-gray-600 mx-2">Connect your social media accounts to provide additional support channels</p>
+                      </div> */}
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-3 md:gap-6">
+                        {socialFields.map((field) => {
+                          const value = formData[field.id] as string;
+                          const error = fieldErrors[field.id] || '';
+                          return (
+                            <div key={field.id} className="bg-white rounded-xl p-6 border border-purple-100 hover:border-purple-200 transition-colors">
+                              <label htmlFor={field.id} className="block text-left text-purple-800 text-sm font-medium mb-2">
+                                {field.label}
+                              </label>
+                              <input
+                                type={field.type}
+                                id={field.id}
+                                value={value}
+                                onChange={e => handleValidatedChange(field.id, e.target.value, field.type)}
+                                placeholder={field.placeholder}
+                                className={`w-full px-4 py-3 border-1 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 border-purple-900 ${value ? 'bg-[#ede8f3]' : ''} ${error ? 'border-red-600 bg-red-50' : ''}`}
+                              />
+                              {error && <p className="text-xs text-red-600 mt-2">{error}</p>}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>
@@ -344,15 +385,24 @@ const CustomerSupportLinksModal: React.FC<CustomerSupportLinksModalProps & { onA
             <div className="flex gap-6">
               <button
                 onClick={onClose}
-                className="px-6 py-2 bg-gray-50 text-gray-700 font-medium rounded-xl hover:bg-gray-200 hover:scale-105 transition-all duration-200"
+                disabled={saving}
+                className="px-6 py-2 bg-gray-50 text-gray-700 font-medium rounded-xl hover:bg-gray-200 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition-all duration-200"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSave}
-                className="px-6 py-2 bg-purple-800 text-white font-medium rounded-xl hover:from-purple-700 hover:to-indigo-700 hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
+                disabled={saving}
+                className="px-6 py-2 bg-purple-800 text-white font-medium rounded-xl hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
               >
-                Save
+                {saving ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  "Save"
+                )}
               </button>
             </div>
           </div>

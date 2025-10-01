@@ -1,12 +1,22 @@
-import React, { useState } from 'react';
-import { Search } from 'lucide-react';
+import React, { useState, useMemo, useCallback } from 'react';
+import { Search, Loader2 } from 'lucide-react';
 import type { QuickAddIngredientsProps } from '@/types/ingredientTypes';
 import { useInciIngredientSearch } from '@/hooks/brands/useFeatureApi';
-
 
 const QuickAddIngredients: React.FC<QuickAddIngredientsProps> = ({ onAddIngredient }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const { data: ingredients = [], isLoading: loading, error } = useInciIngredientSearch(searchTerm);
+
+  // Memoize filtered ingredients for better performance
+  const filteredIngredients = useMemo(() => {
+    if (!searchTerm) return [];
+    return ingredients.slice(0, 50); // Limit to first 50 results for better performance
+  }, [ingredients, searchTerm]);
+
+  const handleAddIngredient = useCallback((ingredient: any) => {
+    onAddIngredient(ingredient);
+    setSearchTerm('');
+  }, [onAddIngredient]);
 
   return (
     // 1. Outer Container: Keep sticky for search header effect.
@@ -38,40 +48,62 @@ const QuickAddIngredients: React.FC<QuickAddIngredientsProps> = ({ onAddIngredie
         <div className="relative mb-3">
           <input
             type="text"
-            placeholder="Search ingredients..."
+            placeholder="Search ingredients... (e.g., Aqua, Glycerin)"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            // 2. Search Input: Change width to w-full on mobile.
-            className="w-full px-4 py-2 pl-10 text-gray-900 border border-purple-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="w-full px-4 py-3 pl-12 text-gray-900 border border-purple-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+            autoComplete="off"
+            spellCheck="false"
           />
-          <Search size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center">
+            {loading ? (
+              <Loader2 size={20} className="text-purple-500 animate-spin" />
+            ) : (
+              <Search size={20} className="text-gray-400" />
+            )}
+          </div>
         </div>
         
         {/* Loading/Error Messages */}
-        {loading && <div className="text-gray-500 mb-2">Searching...</div>}
-        {error && <div className="text-red-500 mb-2">{error instanceof Error ? error.message : String(error)}</div>}
+        {loading && searchTerm && (
+          <div className="text-purple-600 mb-2 text-sm flex items-center gap-2">
+            <Loader2 size={16} className="animate-spin" />
+            Searching ingredients...
+          </div>
+        )}
+        {error && (
+          <div className="text-red-500 mb-2 text-sm">
+            {error instanceof Error ? error.message : String(error)}
+          </div>
+        )}
         
         {/* Ingredient Results Container */}
-        {/* 3. Results Container:
-             - Remove 'absolute' if you want it to flow with the document.
-             - If keeping 'absolute' (for an overlay effect), ensure w-full.
-             - We'll keep it absolute here to visually overlay the search results.
-             - Added 'max-h-60 overflow-y-auto' for scrollable results on mobile.
-        */}
-        {searchTerm && ingredients.length > 0 && (
-          <div className="absolute left-0 right-0 w-full bg-white flex flex-wrap gap-2 p-4 shadow-lg rounded-b-lg border-x border-b border-gray-300 max-h-60 overflow-y-auto">
-            {ingredients.map((ingredient: any) => (
-              <button
-                key={ingredient.inci_name || ingredient.common_name}
-                onClick={() => {
-                  onAddIngredient(ingredient);
-                  setSearchTerm('');
-                }}
-                className="px-4 py-2 bg-purple-100 text-purple-800 rounded-full text-sm font-medium hover:bg-purple-200 transition-colors duration-200 whitespace-nowrap"
-              >
-                {ingredient.inci_name || ingredient.common_name}
-              </button>
-            ))}
+        {searchTerm && filteredIngredients.length > 0 && (
+          <div className="absolute left-0 right-0 w-full bg-white shadow-lg rounded-b-lg border-x border-b border-gray-300 max-h-80 overflow-y-auto z-50">
+            <div className="p-4">
+              <div className="text-xs text-gray-500 mb-3">
+                Showing {filteredIngredients.length} of {ingredients.length} results
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {filteredIngredients.map((ingredient: any) => (
+                  <button
+                    key={`${ingredient.id || ingredient.inci_name}-${ingredient.common_name}`}
+                    onClick={() => handleAddIngredient(ingredient)}
+                    className="px-3 py-2 bg-purple-100 text-purple-800 rounded-full text-sm font-medium hover:bg-purple-200 transition-colors duration-200 whitespace-nowrap border border-purple-200 hover:border-purple-300"
+                    title={`${ingredient.inci_name}${ingredient.common_name ? ` (${ingredient.common_name})` : ''}`}
+                  >
+                    {ingredient.inci_name || ingredient.common_name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {/* No results message */}
+        {searchTerm && !loading && filteredIngredients.length === 0 && (
+          <div className="text-gray-500 mb-2 text-sm">
+            No ingredients found for "{searchTerm}". Try a different search term.
           </div>
         )}
       </div>

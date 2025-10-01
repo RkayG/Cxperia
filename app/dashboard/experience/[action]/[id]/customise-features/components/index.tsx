@@ -43,7 +43,7 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
   const router = useRouter();
 
   // Zustand store
-  const { experienceData, setExperienceData, setFeaturesForExperience, getFeaturesForExperience } = useExperienceStore();
+  const { experienceData, setExperienceData, setFeaturesForExperience, getFeaturesForExperience, isLoading, fetchExperienceData } = useExperienceStore();
 
   // Get features for current experience from store
   const currentFeatureSettings = getFeaturesForExperience(experienceId);
@@ -55,6 +55,14 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
   useEffect(() => {
     setOverviewData(experienceData);
   }, [experienceData]);
+
+  // Fetch experience data if not already loaded
+  useEffect(() => {
+    if (experienceId && (!experienceData.name || experienceData.name === '')) {
+      console.log('Fetching experience data for:', experienceId);
+      fetchExperienceData(experienceId);
+    }
+  }, [experienceId, experienceData.name, fetchExperienceData]);
 
  // Debug log removed to prevent rebuild loops
   // Fetchers
@@ -125,6 +133,10 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
     setFeatureSettings(prev => ({ ...prev, customerService: true }));
   }, [setFeatureSettings]);
 
+  const handleIngredientFeatureEnable = useCallback(() => {
+    setFeatureSettings(prev => ({ ...prev, ingredientList: true }));
+  }, [setFeatureSettings]);
+
   // Wrapper for toggles
   const handleToggle = useCallback(async (featureId: string, enabled: boolean) => {
     // Helper to ensure all keys are present and boolean
@@ -182,23 +194,26 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
     setFeaturesForExperience(experienceId, buildFeatureSettings(currentFeatureSettings || featureSettings, featureId, false));
   }, [tutorialsData, onToggleCore, openModal, experienceId, setFeaturesForExperience, currentFeatureSettings, featureSettings]);
 
-  const experienceOverview = useMemo(() => ({
-    experienceName: experienceData.name,
-    shortTagline: experienceData.tagline,
-    category: experienceData.category,
-    storeLink: experienceData.storeLink,
-    logoFile: undefined, // Map if available
-    features: {
-      tutorialsRoutines: !!(currentFeatureSettings ? currentFeatureSettings.tutorialsRoutines : featureSettings.tutorialsRoutines),
-      ingredientList: !!(currentFeatureSettings ? currentFeatureSettings.ingredientList : featureSettings.ingredientList),
-      loyaltyPoints: !!(currentFeatureSettings ? currentFeatureSettings.loyaltyPoints : featureSettings.loyaltyPoints),
-      skinRecommendations: !!(currentFeatureSettings ? currentFeatureSettings.skinRecommendations : featureSettings.skinRecommendations),
-      chatbot: !!(currentFeatureSettings ? currentFeatureSettings.chatbot : featureSettings.chatbot),
-      feedbackForm: !!(currentFeatureSettings ? currentFeatureSettings.feedbackForm : featureSettings.feedbackForm),
-      customerService: !!(currentFeatureSettings ? currentFeatureSettings.customerService : featureSettings.customerService),
-      productUsage: !!(currentFeatureSettings ? currentFeatureSettings.productUsage : featureSettings.productUsage),
-    }
-  }), [experienceData, featureSettings, currentFeatureSettings]);
+  const experienceOverview = useMemo(() => {
+    console.log('Creating experienceOverview with experienceData:', experienceData);
+    return {
+      experienceName: experienceData.name,
+      shortTagline: experienceData.tagline,
+      category: experienceData.category,
+      storeLink: experienceData.storeLink,
+      logoFile: undefined, // Map if available
+      features: {
+        tutorialsRoutines: !!(currentFeatureSettings ? currentFeatureSettings.tutorialsRoutines : featureSettings.tutorialsRoutines),
+        ingredientList: !!(currentFeatureSettings ? currentFeatureSettings.ingredientList : featureSettings.ingredientList),
+        loyaltyPoints: !!(currentFeatureSettings ? currentFeatureSettings.loyaltyPoints : featureSettings.loyaltyPoints),
+        skinRecommendations: !!(currentFeatureSettings ? currentFeatureSettings.skinRecommendations : featureSettings.skinRecommendations),
+        chatbot: !!(currentFeatureSettings ? currentFeatureSettings.chatbot : featureSettings.chatbot),
+        feedbackForm: !!(currentFeatureSettings ? currentFeatureSettings.feedbackForm : featureSettings.feedbackForm),
+        customerService: !!(currentFeatureSettings ? currentFeatureSettings.customerService : featureSettings.customerService),
+        productUsage: !!(currentFeatureSettings ? currentFeatureSettings.productUsage : featureSettings.productUsage),
+      }
+    };
+  }, [experienceData, featureSettings, currentFeatureSettings]);
   
   const selectedFeatures = useMemo(() => 
     Object.values(currentFeatureSettings || featureSettings).filter(Boolean).length, 
@@ -245,6 +260,7 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
         onUpdate={setExperienceData}
         onNext={handleNext}
         onBack={onBack}
+        isLoading={isLoading}
       />
 
       <StepTwoFeatures
@@ -271,7 +287,7 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
         experienceId={experienceId}
         isIngredientModalOpen={modals.ingredient}
         onCloseIngredient={() => closeModal("ingredient")}
-        currentProductName={experienceData.productName}
+        currentProductName={experienceData.name}
         onSaveIngredients={handleSaveIngredients}
         isDigitalInstructionsModalOpen={modals.digitalInstructions}
         onCloseDigitalInstructions={() => closeModal("digitalInstructions")}
@@ -280,6 +296,7 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
         onCloseCustomerSupport={() => closeModal("customerSupport")}
         onSaveCustomerSupport={handleSaveCustomerSupport}
         onAutoEnableCustomerService={handleAutoEnableCustomerService}
+        onIngredientFeatureEnable={handleIngredientFeatureEnable}
         onFeatureEnable={() => {
           setFeatureSettings(prev => ({ ...prev, productUsage: true }));
           setFeaturesForExperience(experienceId, {

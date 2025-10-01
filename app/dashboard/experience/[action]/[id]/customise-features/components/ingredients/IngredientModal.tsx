@@ -28,11 +28,14 @@ import {
   TestTube2Icon,
   Trash2,
   X,
+  Loader2,
 } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import IngredientSummary from "./IngredientSummary";
 import QuickAddIngredients from "./QuickAddIngredients";
 import { useAddIngredient, useDeleteIngredient } from '@/hooks/brands/useFeatureApi';
+import { showToast } from "@/utils/toast";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface IngredientModalProps {
   isOpen: boolean;
@@ -41,6 +44,7 @@ interface IngredientModalProps {
   initialIngredients?: Ingredient[];
   onSave: (productName: string, ingredients: Ingredient[]) => void;
   experienceId?: string;
+  onFeatureEnable?: () => void;
 }
 
 const IngredientModal: React.FC<IngredientModalProps> = ({
@@ -50,6 +54,7 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
   initialIngredients = [],
   onSave,
   experienceId,
+  onFeatureEnable,
 }) => {
   const [productName, _setProductName] = useState(initialProductName);
   const [ingredients, setIngredients] = useState<Ingredient[]>(initialIngredients);
@@ -61,6 +66,36 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [inlineEdit, setInlineEdit] = useState<{id: string, field: 'commonName'|'category'|'concentration'|null} | null>(null);
   const [inlineValue, setInlineValue] = useState<string>('');
+
+  // Skeleton component for ingredient table
+  const IngredientTableSkeleton = () => (
+    <div className="mt-6 bg-white text-purple-700 rounded-xl border border-gray-200 overflow-hidden">
+      <div className="p-4 border-b border-gray-200">
+        <div className="grid grid-cols-7 gap-4">
+          <Skeleton className="h-4 w-8" />
+          <Skeleton className="h-4 w-20" />
+          <Skeleton className="h-4 w-24" />
+          <Skeleton className="h-4 w-16" />
+          <Skeleton className="h-4 w-20" />
+          <Skeleton className="h-4 w-12" />
+          <Skeleton className="h-4 w-16" />
+        </div>
+      </div>
+      {[...Array(3)].map((_, i) => (
+        <div key={i} className="p-4 border-b border-gray-100 last:border-b-0">
+          <div className="grid grid-cols-7 gap-4 items-center">
+            <Skeleton className="h-4 w-4" />
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-4 w-28" />
+            <Skeleton className="h-4 w-20" />
+            <Skeleton className="h-4 w-36" />
+            <Skeleton className="h-4 w-16" />
+            <Skeleton className="h-4 w-12" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 
   useEffect(() => {
     if (fetchedIngredients && Array.isArray(fetchedIngredients.data)) {
@@ -214,6 +249,10 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
   const handleSave = async () => {
     if (ingredients.length === 0) {
       setSaving(false);
+      // Enable the feature even if no ingredients (user opened modal)
+      if (onFeatureEnable) {
+        onFeatureEnable();
+      }
       onClose();
       return;
     }
@@ -265,6 +304,11 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
           }));
           setIngredients(mapped);
           onSave(productName, mapped);
+          // Enable the feature after successful save
+          if (onFeatureEnable) {
+            onFeatureEnable();
+          }
+          showToast.success("Ingredients saved successfully! 🎉");
           setSaving(false);
           onClose();
           return;
@@ -274,6 +318,7 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
           "Bulk save failed, reverting optimistic ingredients",
           err
         );
+        showToast.error("Failed to save ingredients. Please try again.");
         setIngredients(snapshot);
         setSaving(false);
         return;
@@ -334,8 +379,9 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
 
           <div className="flex-1 overflow-y-auto lg:px-6">
             <QuickAddIngredients onAddIngredient={handleQuickAddIngredient} />
-            <div className="mt-6 bg-white text-purple-700 rounded-xl border border-gray-200 overflow-hidden">
-              <Table>
+            {fetchedIngredients ? (
+              <div className="mt-6 bg-white text-purple-700 rounded-xl border border-gray-200 overflow-hidden">
+                <Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead className="text-center w-8 text-purple-800">#</TableHead>
@@ -438,7 +484,10 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
                   )}
                 </TableBody>
               </Table>
-            </div>
+              </div>
+            ) : (
+              <IngredientTableSkeleton />
+            )}
           </div>
 
           <DrawerFooter className="flex flex-col sm:flex-row sm:justify-between sm:items-center border-t border-gray-100 bg-gray-50 rounded-b-xl lg:rounded-b-2xl gap-3 sm:gap-0">
@@ -451,16 +500,24 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 order-1 sm:order-2">
               <button
                 onClick={onClose}
-                className="px-4 sm:px-6 py-2 bg-white text-gray-700 font-medium rounded-lg sm:rounded-xl border border-gray-300 hover:bg-gray-50 transition-colors duration-200 text-sm sm:text-base"
+                disabled={saving}
+                className="px-4 sm:px-6 py-2 bg-white text-gray-700 font-medium rounded-lg sm:rounded-xl border border-gray-300 hover:bg-gray-50 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors duration-200 text-sm sm:text-base"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSave}
                 disabled={ingredients.length === 0 || saving}
-                className="px-4 sm:px-6 py-2  bg-purple-800 text-white font-medium rounded-lg sm:rounded-xl hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 text-sm sm:text-base"
+                className="px-4 sm:px-6 py-2 bg-purple-800 text-white font-medium rounded-lg sm:rounded-xl hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 text-sm sm:text-base flex items-center justify-center gap-2"
               >
-                {saving ? "Saving..." : "Save Ingredients"}
+                {saving ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  "Save"
+                )}
               </button>
             </div>
           </DrawerFooter>

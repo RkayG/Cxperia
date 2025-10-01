@@ -65,16 +65,22 @@ const StepOne: React.FC<StepOneProps> = ({
 
   // Helper to map API/state data to form data
   const mapToFormData = useCallback((exp: any): Experience => {
-    //console.log("mapToFormData: exp.features", exp.features);
-
     let images: UploadedImage[] = [];
     const imageUrls = exp.product_image_url || exp.product?.product_image_url;
+    
     if (Array.isArray(imageUrls)) {
-      images = imageUrls.map((url: unknown, index: number) => ({
-        id: `img-${index}-${Date.now()}`,
-        url: typeof url === 'string' ? url : '',
-        file: undefined,
-      }));
+      // Check if it's already UploadedImage objects or string URLs
+      if (imageUrls.length > 0 && typeof imageUrls[0] === 'object' && 'url' in imageUrls[0]) {
+        // Already UploadedImage objects, use them directly
+        images = imageUrls as UploadedImage[];
+      } else {
+        // String URLs, convert to UploadedImage objects
+        images = imageUrls.map((url: unknown, index: number) => ({
+          id: `img-${index}-${Date.now()}`,
+          url: typeof url === 'string' ? url : '',
+          file: undefined,
+        }));
+      }
     } else if (typeof imageUrls === "string") {
       images = [
         {
@@ -113,24 +119,24 @@ const StepOne: React.FC<StepOneProps> = ({
       featuresObj = { ...featuresObj, ...exp.product.features };
     }
 
-    //console.log("mapToFormData: mapped featuresObj", featuresObj);
-
-    return {
+    const mappedData = {
       experienceId: exp.id || exp.experienceId || null,
       name: exp.name || exp.product?.name || "",
       tagline: exp.tagline || exp.product?.tagline || "",
       description: exp.description || exp.product?.description || "",
       category: exp.category || exp.product?.category || "",
-      storeLink: exp.store_link || exp.product?.store_link || "",
+      storeLink: exp.storeLink || exp.store_link || exp.product?.storeLink || exp.product?.store_link || "",
       product_image_url: images,
       logo_url: exp.logo_url || exp.product?.logo_url || "",
-      netContent: exp.net_content ?? exp.product?.net_content ?? null,
-      originalPrice: exp.original_price ?? exp.product?.original_price ?? null,
-      discountedPrice: exp.discounted_price ?? exp.product?.discounted_price ?? null,
-      estimatedDurationDays: exp.estimated_usage_duration_days ?? exp.product?.estimated_usage_duration_days ?? 30,
-      skinType: exp.skin_type || exp.product?.skin_type || "",
+      netContent: exp.netContent || exp.net_content || exp.product?.netContent || exp.product?.net_content || null,
+      originalPrice: exp.originalPrice ?? exp.original_price ?? exp.product?.originalPrice ?? exp.product?.original_price ?? null,
+      discountedPrice: exp.discountedPrice ?? exp.discounted_price ?? exp.product?.discountedPrice ?? exp.product?.discounted_price ?? null,
+      estimatedDurationDays: exp.estimatedDurationDays ?? exp.estimated_usage_duration_days ?? exp.product?.estimatedDurationDays ?? exp.product?.estimated_usage_duration_days ?? 30,
+      skinType: exp.skinType || exp.skin_type || exp.product?.skinType || exp.product?.skin_type || "",
       features: featuresObj,
     };
+
+    return mappedData;
   }, []);
 
   // Clean URL by removing new=true parameter
@@ -214,7 +220,9 @@ const StepOne: React.FC<StepOneProps> = ({
               if (fetchedData) {
                 console.log('Fetched experience data:', fetchedData);
                 const mapped = mapToFormData(fetchedData);
+                console.log('Mapped data for initialFormData:', mapped);
                 setInitialFormData(mapped);
+                console.log('Set initialFormData with mapped data');
               } else {
                 console.log('Failed to fetch experience data, using initial data');
                 setInitialFormData(initialExperienceData);
@@ -235,26 +243,10 @@ const StepOne: React.FC<StepOneProps> = ({
     initializeForm();
   }, [isNew, experienceId, isNewParam, isInitialized, cleanUrl, mapToFormData, clearExperienceData]);
 
-  // Separate effect for handling store persistence
-  useEffect(() => {
-    if (!isInitialized) return;
-
-    // When editing and we have valid data, ensure it's persisted
-    if (!isNew && experienceId && experienceData?.experienceId === experienceId) {
-      console.log('Ensuring edit data is persisted');
-      console.log('Store data:', experienceData);
-      const mapped = mapToFormData(experienceData);
-      setInitialFormData(mapped);
-    } else {
-      console.log('Not persisting store data:', {
-        isInitialized,
-        isNew,
-        experienceId,
-        storeExperienceId: experienceData?.experienceId,
-        idsMatch: experienceData?.experienceId === experienceId
-      });
-    }
-  }, [isInitialized, isNew, experienceId, experienceData, mapToFormData]);
+  // Separate effect for handling store persistence - REMOVED
+  // This effect was causing the initialFormData to be updated after initialization,
+  // which was causing the comparison to fail when storeLink changed from "" to actual value
+  // The initialFormData should only be set once during initialization
 
   // Check if any images are currently uploading
   const hasUploadingImages = (): boolean => {
@@ -304,23 +296,26 @@ const StepOne: React.FC<StepOneProps> = ({
     // Only do comparison if form is initialized and we have valid initial data
     let unchanged = false;
     if (isInitialized && initialFormData && (initialFormData.experienceId || initialFormData.name || initialFormData.category)) {
+      console.log("=== COMPARISON DEBUG ===");
+      console.log("initialFormData:", initialFormData);
+      console.log("currentExpData:", currentExpData);
+      
       unchanged = isExperienceDataEqual(initialFormData, currentExpData);
       console.log("Form unchanged:", unchanged);
+      
+      // Debug: Show specific field comparisons
+      console.log("=== FIELD COMPARISON DEBUG ===");
+      console.log("name:", initialFormData?.name, "vs", currentExpData?.name, "equal:", initialFormData?.name === currentExpData?.name);
+      console.log("category:", initialFormData?.category, "vs", currentExpData?.category, "equal:", initialFormData?.category === currentExpData?.category);
+      console.log("skinType:", initialFormData?.skinType, "vs", currentExpData?.skinType, "equal:", initialFormData?.skinType === currentExpData?.skinType);
+      console.log("tagline:", initialFormData?.tagline, "vs", currentExpData?.tagline, "equal:", initialFormData?.tagline === currentExpData?.tagline);
+      console.log("description:", initialFormData?.description, "vs", currentExpData?.description, "equal:", initialFormData?.description === currentExpData?.description);
+      console.log("storeLink:", initialFormData?.storeLink, "vs", currentExpData?.storeLink, "equal:", initialFormData?.storeLink === currentExpData?.storeLink);
+      console.log("product_image_url length:", initialFormData?.product_image_url?.length, "vs", currentExpData?.product_image_url?.length);
+      console.log("experienceId:", initialFormData?.experienceId, "vs", currentExpData?.experienceId, "equal:", initialFormData?.experienceId === currentExpData?.experienceId);
     } else {
       console.log("Form not properly initialized yet, skipping comparison");
     }
-    
-    // Debug: Show specific field comparisons
-    console.log("=== FIELD COMPARISON DEBUG ===");
-    console.log("name:", initialFormData?.name, "vs", currentExpData?.name);
-    console.log("category:", initialFormData?.category, "vs", currentExpData?.category);
-    console.log("skinType:", initialFormData?.skinType, "vs", currentExpData?.skinType);
-    console.log("product_image_url length:", initialFormData?.product_image_url?.length, "vs", currentExpData?.product_image_url?.length);
-    console.log("initial images:", initialFormData?.product_image_url);
-    console.log("current images:", currentExpData?.product_image_url);
-    console.log("experienceId:", initialFormData?.experienceId, "vs", currentExpData?.experienceId);
-    console.log("Current experience ID:", currentExpData?.experienceId);
-    console.log("URL experience ID:", experienceId);
 
     // Use URL experience ID if store doesn't have it (for existing experiences)
     const expIdToUse = currentExpData?.experienceId || experienceId;
@@ -462,7 +457,7 @@ const StepOne: React.FC<StepOneProps> = ({
   // Debug info
   const hasChanges = hasFormChanges(initialFormData, experienceData);
   const canSkipApiCall = !hasChanges && (experienceData as Experience)?.experienceId;
-  const showSavingOverlay = isSubmitting && !canSkipApiCall;
+  const showSavingOverlay = (isSubmitting && !canSkipApiCall) || isLoading;
   const isUploadingImages = hasUploadingImages();
 
  /*  console.log("StepOne render:", {

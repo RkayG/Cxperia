@@ -33,6 +33,7 @@ export interface ExperienceOverviewProps {
   onUpdate: (data: Partial<ExperienceOverviewData>) => void;
   onNext: () => void;
   onBack: () => void;
+  isLoading?: boolean;
 }
 
 export interface FeatureToggleProps {

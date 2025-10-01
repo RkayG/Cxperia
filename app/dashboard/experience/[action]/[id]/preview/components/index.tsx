@@ -113,7 +113,7 @@ export default function PreviewPage() {
               )}
               {activeTab === "brand" && (
                 <div className="w-full flex flex-col items-center">
-                  <BrandColorPicker onApply={handleBrandColorApplied} />
+                  <BrandColorPicker experienceId={experienceId} onApply={handleBrandColorApplied} />
                 </div>
               )}
             </div>

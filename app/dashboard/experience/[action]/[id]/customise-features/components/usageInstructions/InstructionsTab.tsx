@@ -2,12 +2,14 @@
 import React from "react";
 import { Plus, Minus } from "lucide-react";
 import { FormData, ApplicationStep } from "@/types/usageTypes";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface InstructionsTabProps {
   formData: FormData;
   errors: any;
   updateFormData: <K extends keyof FormData>(field: K, value: FormData[K]) => void;
   setFormData: React.Dispatch<React.SetStateAction<FormData>>;
+  isLoading?: boolean;
 }
 
 const skinTypes = [
@@ -31,7 +33,77 @@ const InstructionsTab: React.FC<InstructionsTabProps> = ({
   errors,
   updateFormData,
   setFormData,
+  isLoading = false,
 }) => {
+  // Skeleton component for instructions form
+  const InstructionsSkeleton = () => (
+    <div>
+      {/* Basic Information Skeleton */}
+      <div className="mb-8">
+        <Skeleton className="h-6 w-48 mb-4" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <Skeleton className="h-4 w-32 mb-2" />
+            <Skeleton className="h-12 w-full" />
+          </div>
+          <div>
+            <Skeleton className="h-4 w-36 mb-2" />
+            <Skeleton className="h-12 w-full" />
+          </div>
+        </div>
+        
+        <div className="mt-4">
+          <Skeleton className="h-4 w-40 mb-2" />
+          <div className="grid grid-cols-3 gap-2 mb-4">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="flex items-center">
+                <Skeleton className="h-5 w-5 rounded-full mr-2" />
+                <Skeleton className="h-4 w-20" />
+              </div>
+            ))}
+          </div>
+          
+          <Skeleton className="h-4 w-32 mb-2" />
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="flex items-center">
+                <Skeleton className="h-5 w-5 rounded-full mr-2" />
+                <Skeleton className="h-4 w-24" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Usage Instructions Skeleton */}
+      <div>
+        <Skeleton className="h-6 w-40 mb-4" />
+        <div className="mb-6">
+          <Skeleton className="h-4 w-32 mb-2" />
+          <Skeleton className="h-24 w-full" />
+        </div>
+        
+        <div className="pb-32 lg:mb-12">
+          <div className="flex items-center justify-between mb-4">
+            <Skeleton className="h-4 w-48" />
+            <Skeleton className="h-10 w-24" />
+          </div>
+          {[...Array(2)].map((_, i) => (
+            <div key={i} className="mb-4 p-6 border border-purple-200 rounded-2xl bg-[#f9f7fb]">
+              <div className="flex items-center justify-between mb-2">
+                <Skeleton className="h-4 w-16" />
+                <Skeleton className="h-6 w-6" />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-12 w-full" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
   // Helper functions for Application Steps
   const addApplicationStep = () => {
     const newStep: ApplicationStep = {
@@ -95,6 +167,10 @@ const InstructionsTab: React.FC<InstructionsTabProps> = ({
     `w-5 h-5 flex items-center justify-center border-2 rounded-full transition-colors duration-200 mr-2 shadow-sm ${
       checked ? "bg-purple-700 border-purple-700" : "bg-white border-purple-300"
     }`;
+
+  if (isLoading) {
+    return <InstructionsSkeleton />;
+  }
 
   return (
     <div>

@@ -8,6 +8,7 @@ import CosmeticProductModal from './ApplicationTips'
 import ProductUsageModal from './usageModal';
 
 
+
 interface DigitalInstructionsModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -36,17 +37,8 @@ const DigitalInstructionsModal: React.FC<DigitalInstructionsModalProps> = ({
   console.log('DigitalInstructionsModal rendered with experienceId:', experienceId);
   const { data: fetchedInstructions } = useInstructions(experienceId);
   const [instructions, setInstructions] = useState<any>(initialInstructions);
-
-  useEffect(() => {
-    if (isOpen) {
-      document.body.classList.add('overflow-hidden');
-    } else {
-      document.body.classList.remove('overflow-hidden');
-    }
-    return () => {
-      document.body.classList.remove('overflow-hidden');
-    };
-  }, [isOpen]);
+  
+  
 
   useEffect(() => {
     if (fetchedInstructions) {

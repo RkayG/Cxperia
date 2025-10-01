@@ -24,7 +24,9 @@ const initialData = (
   initialInstructions: any,
   productName?: string
 ): FormData => {
-  const instructions = initialInstructions?.[0];
+  // Handle nested data structure: {data: Array(1)} or direct array
+  const instructionsArray = initialInstructions?.data || initialInstructions;
+  const instructions = instructionsArray?.[0];
   const defaultStep: ApplicationStep = {
     id: Date.now().toString(),
     step: "",
@@ -34,13 +36,51 @@ const initialData = (
   return instructions
     ? {
         ...instructions,
-        applicationSteps: instructions.applicationSteps?.length
-          ? instructions.applicationSteps
-          : [defaultStep],
-        tips: instructions.tips?.length ? instructions.tips : [""],
-        warnings: instructions.warnings?.length ? instructions.warnings : [""],
-        skinType: instructions.skinType || [],
-        usageTimeType: instructions.usageTimeType || [],
+        applicationSteps: (() => {
+          try {
+            // Parse application_steps JSON string
+            const steps = instructions.application_steps ? JSON.parse(instructions.application_steps) : [];
+            return Array.isArray(steps) && steps.length > 0 
+              ? steps.map((step: any) => ({
+                  id: step.step_number?.toString() || Date.now().toString(),
+                  step: step.step_title || "",
+                  description: step.description || "",
+                }))
+              : [defaultStep];
+          } catch (e) {
+            console.error('Error parsing application_steps:', e);
+            return [defaultStep];
+          }
+        })(),
+        tips: (() => {
+          try {
+            const tips = instructions.tips ? JSON.parse(instructions.tips) : [];
+            return Array.isArray(tips) && tips.length > 0 ? tips : [""];
+          } catch (e) {
+            return [""];
+          }
+        })(),
+        warnings: (() => {
+          try {
+            const warnings = instructions.warnings ? JSON.parse(instructions.warnings) : [];
+            return Array.isArray(warnings) && warnings.length > 0 ? warnings : [""];
+          } catch (e) {
+            return [""];
+          }
+        })(),
+        skinType: (() => {
+          try {
+            const skinType = instructions.skin_type ? JSON.parse(instructions.skin_type) : [];
+            return Array.isArray(skinType) ? skinType : [];
+          } catch (e) {
+            return [];
+          }
+        })(),
+        usageTimeType: instructions.usage_time_type || [],
+        howToUse: instructions.how_to_use || "",
+        frequency: instructions.frequency || "",
+        duration: instructions.duration || "",
+        productName: instructions.product_name || productName || "",
       }
     : {
         productName: productName || "",
@@ -65,6 +105,7 @@ const ProductUsageModal: React.FC<CosmeticProductModalProps> = ({
   onFeatureEnable,
 }) => {
   const { mutate: addInstruction, isPending: isSaving, isSuccess, isError, error } = useAddInstruction(experienceId);
+  const [isLoading, setIsLoading] = useState(!initialInstructions);
 
   const [internalOpen, setInternalOpen] = useState(true);
   const isOpen = inline ? true : internalOpen;
@@ -73,6 +114,13 @@ const ProductUsageModal: React.FC<CosmeticProductModalProps> = ({
     initialData(initialInstructions, productName)
   );
   const [errors, setErrors] = useState<any>({});
+
+  // Set loading to false when initialInstructions are available
+  useEffect(() => {
+    if (initialInstructions) {
+      setIsLoading(false);
+    }
+  }, [initialInstructions]);
 
   // Centralized form data update handler
   const updateFormData = useCallback(<K extends keyof FormData>(
@@ -160,6 +208,7 @@ const ProductUsageModal: React.FC<CosmeticProductModalProps> = ({
               updateFormData={updateFormData}
               errors={errors}
               setFormData={setFormData}
+              isLoading={isLoading}
             />
           )}
           {activeTab === "tips" && (
@@ -208,6 +257,7 @@ const ProductUsageModal: React.FC<CosmeticProductModalProps> = ({
             isSaving={isSaving}
             handlePreview={handlePreview}
             handleSave={handleSave}
+            onClose={() => setInternalOpen(false)}
           />
 
         </div>

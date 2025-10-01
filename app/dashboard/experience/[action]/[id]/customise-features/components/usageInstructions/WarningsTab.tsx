@@ -42,7 +42,7 @@ const WarningsTab: React.FC<WarningsTabProps> = ({
     const isMobile = useIsMobile();
 
   return (
-    <div className="">
+    <div className="pb-16">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-xl font-semibold text-purple-800">
           {isMobile ? "Warnings" : "Warnings & Precautions"}

@@ -6,11 +6,68 @@ import { setBrandLogo } from '@/services/brands/featureService';
 import { showToast } from '@/utils/toast';
 import { Toaster } from 'react-hot-toast';
 import { useBrandLogo } from '@/hooks/brands/useFeatureApi';
+import { Skeleton } from '@/components/ui/skeleton';
 
-const ExperienceOverviewSection: React.FC<ExperienceOverviewProps> = ({ data, onUpdate }) => {
+const ExperienceOverviewSection: React.FC<ExperienceOverviewProps> = ({ data, onUpdate, isLoading: externalLoading }) => {
+  console.log('data', data);
   // Only logo can be updated, all other fields are read-only
-  const { data: brandLogoData } = useBrandLogo();
-  console.log('brand logo', brandLogoData);
+  const { data: brandLogoData, isLoading: isBrandLogoLoading } = useBrandLogo();
+
+  // Determine if we're in a loading state
+  const isLoading = externalLoading || (!data.experienceName && !data.shortTagline && !data.category);
+
+  // Skeleton component for the overview section
+  const OverviewSkeleton = () => (
+    <div className="bg-[#ede8f3] rounded-xl border border-purple-800 p-4">
+      {/* Header Skeleton */}
+      <div className="flex items-center justify-between mb-4">
+        <Skeleton className="h-6 w-40" />
+      </div>
+
+      <div className="flex flex-col lg:flex-row gap-4">
+        {/* Compact Summary Skeleton */}
+        <div className="flex-1">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+            {/* Left Column */}
+            <div>
+              <div className="mb-2">
+                <Skeleton className="h-3 w-20 mb-1" />
+                <Skeleton className="h-4 w-28" />
+              </div>
+              <div className="mb-2">
+                <Skeleton className="h-3 w-16 mb-1" />
+                <Skeleton className="h-4 w-36" />
+              </div>
+            </div>
+
+            {/* Right Column */}
+            <div>
+              <div className="mb-2">
+                <Skeleton className="h-3 w-16 mb-1" />
+                <Skeleton className="h-4 w-20" />
+              </div>
+              <div>
+                <Skeleton className="h-3 w-12 mb-1" />
+                <Skeleton className="h-4 w-32" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Brand Logo Upload Skeleton */}
+        <div className="w-full lg:w-48 flex-shrink-0">
+          <div className="bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 p-3">
+            <div className="h-24 flex flex-col items-center justify-center text-center">
+              <Skeleton className="w-8 h-8 rounded-lg mb-1" />
+              <Skeleton className="h-3 w-24 mb-1" />
+              <Skeleton className="h-2 w-16" />
+            </div>
+          </div>
+          <Skeleton className="h-2 w-24 mx-auto mt-1" />
+        </div>
+      </div>
+    </div>
+  );
   const [editData, setEditData] = useState({
     logoFile: (brandLogoData?.data?.logo_url ?? '')
   });
@@ -86,61 +143,62 @@ const ExperienceOverviewSection: React.FC<ExperienceOverviewProps> = ({ data, on
     })();
   };
 
+  // Show skeleton while loading
+  if (isLoading) {
+    return <OverviewSkeleton />;
+  }
+
   return (
-    <div className="bg-[#ede8f3] rounded-2xl border-1 border-purple-800 p-6">
+    <div className="bg-[#ede8f3] rounded-xl border border-purple-800 p-4">
       <Toaster />
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">Experience Overview</h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-semibold text-gray-900">Experience Overview</h2>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-6">
+      <div className="flex flex-col lg:flex-row gap-4">
         {/* Compact Summary */}
         <div className="flex-1">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-md text-left">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
             {/* Experience Name & Category */}
             <div>
-              <div className="mb-3">
-                <span className="text-gray-900 font-semibold">Experience:</span>
-                  <p className={
-                    `font-medium ${data.experienceName ? 'text-gray-900' : 'text-[#ede8f3]'}`
-                  }>
-                    {data.experienceName ? data.experienceName : '...'}
-                  </p>
+              <div className="mb-2">
+                <span className="text-gray-700 font-medium text-xs uppercase tracking-wide">Experience:</span>
+                <p className={`font-medium text-sm ${data.experienceName ? 'text-gray-900' : 'text-gray-400'}`}>
+                  {data.experienceName ? data.experienceName : '...'}
+                </p>
               </div>
-              <div className="mb-3">
-                <span className="text-gray-900 font-semibold">Tagline:</span>
-                  <p
-                    className={
-                      `font-medium leading-snug max-w-[320px] truncate ${data.shortTagline ? 'text-gray-900' : 'text-[#ede8f3]'}`
-                    }
-                    title={data.shortTagline}
-                  >
-                    {data.shortTagline
-                      ? (data.shortTagline.length > 60
-                          ? data.shortTagline.slice(0, 60) + '...'
-                          : data.shortTagline)
-                      : '...'}
-                  </p>
+              <div className="mb-2">
+                <span className="text-gray-700 font-medium text-xs uppercase tracking-wide">Tagline:</span>
+                <p
+                  className={`font-medium text-sm leading-snug max-w-[280px] truncate ${data.shortTagline ? 'text-gray-900' : 'text-gray-400'}`}
+                  title={data.shortTagline}
+                >
+                  {data.shortTagline
+                    ? (data.shortTagline.length > 50
+                        ? data.shortTagline.slice(0, 50) + '...'
+                        : data.shortTagline)
+                    : '...'}
+                </p>
               </div>
             </div>
 
             {/* Category & Store URL */}
             <div>
-              <div className='mb-3'>
-                <span className="text-gray-900 font-semibold min-h-32px">Category:</span>
-                <p className="font-medium text-gray-900">{data.category || ''}</p>
+              <div className="mb-2">
+                <span className="text-gray-700 font-medium text-xs uppercase tracking-wide">Category:</span>
+                <p className="font-medium text-sm text-gray-900">{data.category || ''}</p>
               </div>
               <div>
-                <span className="text-gray-900 font-semibold min-h-32px">Store:</span>
+                <span className="text-gray-700 font-medium text-xs uppercase tracking-wide">Store:</span>
                 <p> 
                   <a 
                     href={data.storeLink || ''} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="font-medium text-purple-800 hover:text-purple-700 inline-flex items-center gap-1 group"
+                    className="font-medium text-purple-800 hover:text-purple-700 inline-flex items-center gap-1 group text-sm"
                   >
-                    <span className="truncate max-w-[200px]">{data.storeLink || ''}</span>
+                    <span className="truncate max-w-[180px]">{data.storeLink || ''}</span>
                     <ExternalLink className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200 flex-shrink-0" />
                   </a>
                 </p>
@@ -149,15 +207,15 @@ const ExperienceOverviewSection: React.FC<ExperienceOverviewProps> = ({ data, on
           </div>
         </div>
 
-        {/* Brand Logo Upload - Prominent */}
-        <div className="w-full lg:w-64 flex-shrink-0">
-          <div className="bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 p-4 relative">
+        {/* Brand Logo Upload - Compact */}
+        <div className="w-full lg:w-48 flex-shrink-0">
+          <div className="bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 p-3 relative">
             {/* Uploading Overlay */}
             {isUploading && (
-              <div className="absolute inset-0 bg-white/80 rounded-xl flex flex-col items-center justify-center z-10">
-                <Loader2 className="w-8 h-8 text-purple-600 animate-spin mb-2" />
-                <p className="text-sm font-medium text-gray-700">Uploading...</p>
-                <p className="text-xs text-gray-500 mt-1">Please wait</p>
+              <div className="absolute inset-0 bg-white/80 rounded-lg flex flex-col items-center justify-center z-10">
+                <Loader2 className="w-6 h-6 text-purple-600 animate-spin mb-1" />
+                <p className="text-xs font-medium text-gray-700">Uploading...</p>
+                <p className="text-xs text-gray-500">Please wait</p>
               </div>
             )}
             
@@ -181,28 +239,28 @@ const ExperienceOverviewSection: React.FC<ExperienceOverviewProps> = ({ data, on
                             : brandLogoData?.data?.logo_url || '')
                     }
                     alt="Logo preview"
-                    className="w-full h-32 object-contain rounded-lg bg-white p-2"
+                    className="w-full h-24 object-contain rounded-lg bg-white p-1"
                   />
                   {!isUploading && (
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 rounded-lg transition-all duration-200 flex items-center justify-center opacity-0 group-hover:opacity-100">
-                      <span className="bg-white rounded-lg px-3 py-1.5 text-sm font-medium text-gray-900 shadow-sm">
-                        Change Logo
+                      <span className="bg-white rounded px-2 py-1 text-xs font-medium text-gray-900 shadow-sm">
+                        Change
                       </span>
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="h-32 flex flex-col items-center justify-center text-center group-hover:border-purple-400 group-hover:bg-purple-50/50 rounded-lg transition-all duration-200">
-                  <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center mb-2 group-hover:bg-purple-100 transition-colors duration-200">
-                    <PictureInPicture className="w-5 h-5 text-gray-400 group-hover:text-purple-500" />
+                <div className="h-24 flex flex-col items-center justify-center text-center group-hover:border-purple-400 group-hover:bg-purple-50/50 rounded-lg transition-all duration-200">
+                  <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center mb-1 group-hover:bg-purple-100 transition-colors duration-200">
+                    <PictureInPicture className="w-4 h-4 text-gray-400 group-hover:text-purple-500" />
                   </div>
-                  <p className="text-sm font-medium text-gray-700 mb-1">Upload Brand Logo</p>
-                  <p className="text-xs text-gray-500">PNG, JPG up to 5MB</p>
+                  <p className="text-xs font-medium text-gray-700 mb-1">Upload Logo</p>
+                  <p className="text-xs text-gray-500">PNG, JPG</p>
                 </div>
               )}
             </label>
           </div>
-          <p className="text-xs text-gray-500 text-center mt-2">Recommended: 400x400px</p>
+          <p className="text-xs text-gray-500 text-center mt-1">400x400px</p>
         </div>
       </div>
     </div>

@@ -68,14 +68,35 @@ export async function deleteIngredient(experienceId: string, ingredientId: strin
   return res.json();
 }
 
-// Ingredient search for INCI ingredients
-export async function searchInciIngredients(searchTerm: string, limit: number = 10) {
-  const params = new URLSearchParams({ search: searchTerm, limit: String(limit) });
-  const res = await fetch(`${API_BASE}/inci-ingredients?${params.toString()}`);
+// Ingredient search for INCI ingredients with caching
+const searchCache = new Map<string, { data: any[], timestamp: number }>();
+const SEARCH_CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
+
+export async function searchInciIngredients(searchTerm: string, limit: number = 20) {
+  // Check cache first
+  const cacheKey = `${searchTerm}-${limit}`;
+  const cached = searchCache.get(cacheKey);
+  if (cached && (Date.now() - cached.timestamp) < SEARCH_CACHE_DURATION) {
+    return cached.data;
+  }
+
+  const params = new URLSearchParams({ 
+    search: searchTerm, 
+    limit: String(limit),
+    // Add cache-busting only for development
+    ...(process.env.NODE_ENV === 'development' && { _t: Date.now().toString() })
+  });
+  
+  const res = await fetch(`${API_BASE}/inci-ingredients?${params.toString()}`, {
+    headers: {
+      'Cache-Control': 'max-age=3600', // 1 hour cache
+    }
+  });
+  
   if (!res.ok) throw new Error('Failed to fetch ingredients');
   const data = await res.json();
-  console.log('Fetched INCI ingredients:', data);
-  return Array.isArray(data.ingredients)
+  
+  const result = Array.isArray(data.ingredients)
     ? data.ingredients.map((ing: any) => ({
         id: ing.id || null,
         inci_name: ing.inci_name || '',
@@ -85,6 +106,14 @@ export async function searchInciIngredients(searchTerm: string, limit: number = 
         is_allergen: ing.is_allergen || false,
       }))
     : [];
+
+  // Cache the results
+  searchCache.set(cacheKey, {
+    data: result,
+    timestamp: Date.now()
+  });
+
+  return result;
 }
 
 // TUTORIALS

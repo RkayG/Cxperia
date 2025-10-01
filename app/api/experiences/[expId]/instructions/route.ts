@@ -7,7 +7,7 @@ export async function GET(req: NextRequest, { params }: { params: { expId: strin
 	const supabase = await createClient();
 	const user = await getCurrentUser();
 	const experience_id = params.expId;
-	console.log('Fetching instructions for experience_id:', experience_id);
+	//console.log('Fetching instructions for experience_id:', experience_id);
 	const brand_id = user?.brand_id;
 	if (!experience_id) {
 		return NextResponse.json({ error: 'Missing experience_id in query' }, { status: 400 });
@@ -21,7 +21,7 @@ export async function GET(req: NextRequest, { params }: { params: { expId: strin
 		.eq('experience_id', experience_id)
 		.eq('brand_id', brand_id);
 
-	console.log('Instructions fetch result:', { data, error });
+	//console.log('Instructions fetch result:', { data, error });
 	if (error) {
 		return NextResponse.json({ error: 'Failed to fetch instructions', details: error.message }, { status: 500 });
 	}
@@ -80,7 +80,7 @@ export async function POST(req: NextRequest, { params }: { params: { expId: stri
 		.select()
 		.single();
 	if (error) {
-		console.log('Error inserting instruction:', error);
+		//console.log('Error inserting instruction:', error);
 		return NextResponse.json({ error: 'Failed to create instruction', details: error.message }, { status: 500 });
 	}
 	return NextResponse.json({ data });

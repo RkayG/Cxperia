@@ -9,7 +9,7 @@ const BASE_GLASS_STYLE = {
   backdropFilter: 'blur(10px)',
   boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.20)', // Subtle shadow for depth
   minWidth: '300px',
-  color: 'rgba(139, 92, 246, 0.5)', // Very light purple/white text
+  color: '#fff', // Very light purple/white text
 };
 
 export const showToast = {

@@ -117,7 +117,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { expId:
         tagline: product.tagline ? String(product.tagline).slice(0, 80) : '',
         description: product.description || '',
         category: product.category,
-        skin_type: product.skinType || '',
+        skin_type: product.skin_type || '',
         store_link: product.store_link,
         product_image_url: mergedProductImages.length > 0 ? mergedProductImages : undefined,
         logo_url: product.logo_url || logo_url || null,

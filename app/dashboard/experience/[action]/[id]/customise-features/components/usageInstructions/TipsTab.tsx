@@ -35,7 +35,7 @@ const TipsTab: React.FC<TipsTabProps> = ({ formData, errors, setFormData }) => {
     }`;
 
   return (
-    <div className="bg-gray-50">
+    <div className="bg-gray-50 pb-16">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-xl font-semibold text-purple-800">
           Application Tips

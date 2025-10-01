@@ -24,6 +24,7 @@ interface StepTwoModalsProps {
   onSaveCustomerSupport: (data: CustomerSupportLinksData) => void;
   onAutoEnableCustomerService?: () => void;
   onFeatureEnable?: () => void;
+  onIngredientFeatureEnable?: () => void;
 }
 
 
@@ -44,6 +45,7 @@ const StepTwoModals: React.FC<StepTwoModalsProps> = ({
   onSaveCustomerSupport,
   onAutoEnableCustomerService,
   onFeatureEnable,
+  onIngredientFeatureEnable,
 }) => {
   console.log('Rendering StepTwoModals with experienceId:', experienceId);
     // Memoize customerSupportLinks to prevent unnecessary remounts
@@ -58,6 +60,7 @@ const StepTwoModals: React.FC<StepTwoModalsProps> = ({
         initialIngredients={ingredients}
         onSave={onSaveIngredients}
         experienceId={experienceId || ''}
+        onFeatureEnable={onIngredientFeatureEnable}
       />
       <DigitalInstructionsModal
         isOpen={isDigitalInstructionsModalOpen}
