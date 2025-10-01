@@ -33,7 +33,7 @@ export const useExperienceOperations = () => {
         
         // Map response to step one data format
         const mappedData: Partial<Experience> = {
-          productName: product?.name || stepOneData.productName,
+          name: product?.name || stepOneData.name,
           tagline: product?.tagline || stepOneData.tagline,
           skinType: product?.skin_type || stepOneData.skinType || '',
           description: product?.description || stepOneData.description || '',

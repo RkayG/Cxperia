@@ -144,6 +144,8 @@ export function useCustomerSupportLinksByBrand() {
   return useQuery({
     queryKey: ['customerSupportLinks'],
     queryFn: () => api.getCustomerSupportLinksByBrand(),
+    staleTime: 1000 * 60 * 60, // 1 hour
+    refetchOnWindowFocus: false,
     //enabled: !!brandId,
   });
 }
@@ -181,6 +183,8 @@ export function useInciIngredientSearch(searchTerm: string, limit: number = 10) 
   return useQuery({
     queryKey: ['inciIngredients', searchTerm, limit],
     queryFn: () => searchInciIngredients(searchTerm, limit),
+    staleTime: 1000 * 60 * 600, // 10 hours
+    refetchOnWindowFocus: false,
     enabled: !!searchTerm,
   });
 }
@@ -190,5 +194,7 @@ export function useBrandLogo() {
   return useQuery({
     queryKey: ['brandLogo'],
     queryFn: () => api.getBrandLogo(),
+    staleTime: 1000 * 60 * 600, // 10 hours
+    refetchOnWindowFocus: false,
   });
 }

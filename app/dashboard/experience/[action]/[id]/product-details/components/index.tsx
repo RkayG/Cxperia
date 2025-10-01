@@ -195,6 +195,13 @@ const StepOne: React.FC<StepOneProps> = ({
           setInitialFormData(mapped);
           // Don't reset experienceData here - preserve the current state
         } else {
+          // Clear store data if we're switching to a different experience
+          if (currentExpData?.experienceId && currentExpData.experienceId !== experienceId) {
+            console.log('Clearing store data for different experience');
+            clearExperienceData();
+            setLoading(false); // Ensure loading state is reset
+          }
+          
           // Fetch experience data if not in store
           console.log('Need to fetch experience data for:', experienceId);
           console.log('Store has different experience ID or no data');
@@ -213,7 +220,7 @@ const StepOne: React.FC<StepOneProps> = ({
               }
             } catch (error) {
               console.error('Error fetching experience data:', error);
-              setInitialFormData(initialExperienceData);
+          setInitialFormData(initialExperienceData);
             }
           };
           
@@ -291,11 +298,7 @@ const StepOne: React.FC<StepOneProps> = ({
 
     const currentExpData = experienceData as Experience;
 
-    console.log("checking experience data:", currentExpData);
-    console.log("initial form data:", initialFormData);
-    console.log("current exp data:", currentExpData);
-    console.log("experienceId from URL:", experienceId);
-    console.log("isInitialized:", isInitialized);
+    // Debug logs removed to prevent rebuild loops
 
     // Only do comparison if form is initialized and we have valid initial data
     let unchanged = false;
@@ -426,7 +429,7 @@ const StepOne: React.FC<StepOneProps> = ({
 
         // Navigate to step 2 with experience id - FIXED: Use Next.js navigation
         if (responseData.id) {
-          const action = params?.action || "edit";
+        const action = params?.action || "edit";
           const targetUrl = `/dashboard/experience/${action}/${responseData.id}?step=customise-features`;
          
           
@@ -458,7 +461,7 @@ const StepOne: React.FC<StepOneProps> = ({
   // Debug info
   const hasChanges = hasFormChanges(initialFormData, experienceData);
   const canSkipApiCall = !hasChanges && (experienceData as Experience)?.experienceId;
-  const showSavingOverlay = (isLoading || isSubmitting) && !canSkipApiCall;
+  const showSavingOverlay = isSubmitting && !canSkipApiCall;
   const isUploadingImages = hasUploadingImages();
 
  /*  console.log("StepOne render:", {

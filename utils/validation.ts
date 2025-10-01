@@ -13,7 +13,7 @@ export const validateStoreLink = (value: string): string | null => {
 import type { Experience } from '../types/productExperience';
 
 export interface ValidationErrors {
-  productName?: string;
+  name?: string;
   category?: string;
   skinType?: string;
   tagline?: string;
@@ -25,7 +25,7 @@ export interface ValidationErrors {
 
 export const validateStepOne = (data: Experience): ValidationErrors => {
   const errors: ValidationErrors = {};
-  if (!data.productName?.trim()) errors.productName = 'Product name is required.';
+  if (!data.name?.trim()) errors.name = 'Product name is required.';
   if (!data.category?.trim()) errors.category = 'Category is required.';
   if (!data.tagline?.trim()) errors.tagline = 'Tagline is required.';
   if (!data.description?.trim()) errors.description = 'Description is required.';

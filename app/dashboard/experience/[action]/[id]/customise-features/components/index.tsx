@@ -11,7 +11,7 @@ import StepTwoFeatures from "./StepTwoFeatures";
 import StepTwoModals from "./StepTwoModals";
 import { useExperienceStore } from "@/store/brands/useExperienceStore";
 import { useFeatureToggles } from "@/hooks/brands/useFeatureToggle";
-import { useProducts } from "@/hooks/brands/useProductApi";
+//import { useProducts } from "@/hooks/brands/useProductApi";
 import { useTutorials } from "@/hooks/brands/useFeatureApi";
 import type { FeatureSettings } from "@/types/productExperience";
 import { showToast } from "@/utils/toast";
@@ -56,9 +56,9 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
     setOverviewData(experienceData);
   }, [experienceData]);
 
-
+ // Debug log removed to prevent rebuild loops
   // Fetchers
-  const { data: productsData = [] } = useProducts();
+ // const { data: productsData = [] } = useProducts();
   const { data: tutorialsData = [] } = useTutorials();
 
   // Central feature hook (fallback to old logic if no store features)
@@ -155,7 +155,7 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
     if (enabled) {
       const configNeeded = ["ingredientList", "productUsage", "customerService"];
 
-      if (featureId === "skinRecommendations") {
+     /*  if (featureId === "skinRecommendations") {
         if (!Array.isArray(productsData) || productsData.length <= 1) {
           openModal("emptyCatalog");
           return;
@@ -164,7 +164,7 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
         await onToggleCore(featureId, true);
         setFeaturesForExperience(experienceId, buildFeatureSettings(currentFeatureSettings || featureSettings, featureId, true));
         return;
-      }
+      } */
 
       if (configNeeded.includes(featureId)) {
         if (featureId === "ingredientList") openModal("ingredient");
@@ -180,10 +180,10 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
 
     await onToggleCore(featureId, false);
     setFeaturesForExperience(experienceId, buildFeatureSettings(currentFeatureSettings || featureSettings, featureId, false));
-  }, [tutorialsData, productsData, onToggleCore, openModal, experienceId, setFeaturesForExperience, currentFeatureSettings, featureSettings]);
+  }, [tutorialsData, onToggleCore, openModal, experienceId, setFeaturesForExperience, currentFeatureSettings, featureSettings]);
 
   const experienceOverview = useMemo(() => ({
-    experienceName: experienceData.productName,
+    experienceName: experienceData.name,
     shortTagline: experienceData.tagline,
     category: experienceData.category,
     storeLink: experienceData.storeLink,
