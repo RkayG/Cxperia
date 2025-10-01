@@ -74,10 +74,7 @@ export async function getExperienceById(id: string, brandId?: string) {
     .select(`
       *,
       products (*),
-      digital_instructions (*),
-      ingredients (*),
-      experience_features (*),
-      tutorials (*)
+      experience_features (*)
     `)
     .eq('id', id);
 

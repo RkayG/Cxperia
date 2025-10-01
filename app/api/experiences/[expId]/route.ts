@@ -15,7 +15,30 @@ export async function GET(request: NextRequest, { params }: { params: { expId: s
       return NextResponse.json({ error: 'Experience not found' }, { status: 404 });
     }
 
-    return NextResponse.json({ success: true, data: experience });
+    // Always return experience with joined product and features (if available)
+    let features = [];
+    try {
+      const { supabase } = await import('@/lib/supabase');
+      const { data: featuresData } = await supabase
+        .from('experience_features')
+        .select('*')
+        .eq('experience_id', experience.id);
+      if (featuresData) features = featuresData;
+    } catch (e) {
+      console.warn('Failed to fetch experience features', e);
+    }
+
+    // Transform the response to use 'product' instead of 'products' for consistency
+    const transformedExperience = {
+      ...experience,
+      product: experience.products, // Rename products to product
+      features: features
+    };
+    
+    // Remove the original 'products' field to avoid confusion
+    delete transformedExperience.products;
+
+    return NextResponse.json({ success: true, data: transformedExperience });
 
   } catch (error) {
     console.error('Get experience error:', error);
@@ -53,20 +76,35 @@ export async function PATCH(request: NextRequest, { params }: { params: { expId:
     }
     const mergedProductImages = [].concat(productImagesFromBody || []).filter(Boolean);
 
-    // If product_id is present, update product with new images/logo if provided
-    if (finalProductId) {
+    // If product_id is present, update product with new data if provided
+    if (finalProductId && product && typeof product === 'object') {
       const updates: any = {};
+      
+      // Update product fields
+      if (product.name !== undefined) updates.name = product.name;
+      if (product.tagline !== undefined) updates.tagline = product.tagline ? String(product.tagline).slice(0, 80) : '';
+      if (product.description !== undefined) updates.description = product.description || '';
+      if (product.category !== undefined) updates.category = product.category;
+      if (product.skinType !== undefined) updates.skin_type = product.skinType || '';
+      if (product.store_link !== undefined) updates.store_link = product.store_link;
+      if (product.net_content !== undefined) updates.net_content = product.net_content || null;
+      if (product.estimated_usage_duration_days !== undefined) updates.estimated_usage_duration_days = product.estimated_usage_duration_days || 30;
+      if (product.original_price !== undefined) updates.original_price = product.original_price || null;
+      if (product.discounted_price !== undefined) updates.discounted_price = product.discounted_price || null;
+      
+      // Update images and logo
       if (mergedProductImages.length > 0) {
         updates.product_image_url = mergedProductImages;
       }
       if (logo_url) {
         updates.logo_url = logo_url;
       }
+      
       if (Object.keys(updates).length > 0) {
         try {
           await updateProduct(finalProductId, updates);
         } catch (e) {
-          console.warn('Failed to update existing product images/logo', e);
+          console.warn('Failed to update existing product', e);
         }
       }
     }

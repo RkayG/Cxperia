@@ -7,7 +7,7 @@ export interface CreateExperienceData {
   product?: Product;
   experience_id?: string;
 }
-console.log('[experienceService] loaded');
+//console.log('[experienceService] loaded');
 export const experienceService = {
   async getAll(brandId?: string) {
     const url = brandId ? `/api/experiences?brand_id=${brandId}` : '/api/experiences';
@@ -22,12 +22,13 @@ export const experienceService = {
 
   async getById(id: string) {
     const response = await fetch(endpoints.EXPERIENCE.DETAIL(id));
-    
+    const res = await response.json();
+    console.log('Experience data:', res);
     if (!response.ok) {
       throw new Error('Failed to fetch experience');
     }
     
-    return response.json();
+    return res;
   },
 
   async create(data: CreateExperienceData) {

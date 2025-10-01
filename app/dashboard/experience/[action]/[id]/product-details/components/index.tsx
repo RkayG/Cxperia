@@ -293,17 +293,34 @@ const StepOne: React.FC<StepOneProps> = ({
 
     console.log("checking experience data:", currentExpData);
     console.log("initial form data:", initialFormData);
+    console.log("current exp data:", currentExpData);
     console.log("experienceId from URL:", experienceId);
+    console.log("isInitialized:", isInitialized);
 
-    // Check if form is unchanged using the utility function
-    const unchanged = isExperienceDataEqual(initialFormData, currentExpData);
-    console.log("Form unchanged:", unchanged);
+    // Only do comparison if form is initialized and we have valid initial data
+    let unchanged = false;
+    if (isInitialized && initialFormData && (initialFormData.experienceId || initialFormData.name || initialFormData.category)) {
+      unchanged = isExperienceDataEqual(initialFormData, currentExpData);
+      console.log("Form unchanged:", unchanged);
+    } else {
+      console.log("Form not properly initialized yet, skipping comparison");
+    }
+    
+    // Debug: Show specific field comparisons
+    console.log("=== FIELD COMPARISON DEBUG ===");
+    console.log("name:", initialFormData?.name, "vs", currentExpData?.name);
+    console.log("category:", initialFormData?.category, "vs", currentExpData?.category);
+    console.log("skinType:", initialFormData?.skinType, "vs", currentExpData?.skinType);
+    console.log("product_image_url length:", initialFormData?.product_image_url?.length, "vs", currentExpData?.product_image_url?.length);
+    console.log("initial images:", initialFormData?.product_image_url);
+    console.log("current images:", currentExpData?.product_image_url);
+    console.log("experienceId:", initialFormData?.experienceId, "vs", currentExpData?.experienceId);
     console.log("Current experience ID:", currentExpData?.experienceId);
     console.log("URL experience ID:", experienceId);
 
     // Use URL experience ID if store doesn't have it (for existing experiences)
     const expIdToUse = currentExpData?.experienceId || experienceId;
-
+    console.log("Exp ID to use:", expIdToUse);
     if (unchanged && expIdToUse) {
       // No changes, just navigate - FIXED: Use Next.js navigation
       console.log("No changes detected, navigating without API call");

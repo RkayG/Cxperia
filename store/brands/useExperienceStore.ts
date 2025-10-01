@@ -65,13 +65,13 @@ export const initialExperienceData: Experience = {
   name: '',
   category: '',
   tagline: '',
-  skin_type: '',
+  skinType: '',
   description: '',
   storeLink: '',
   originalPrice: null,
   discountedPrice: null,
   estimatedDurationDays: 30,
-  images: [],
+  product_image_url: [],
   netContent: 0,
   features: {
     tutorialsRoutines: false,
@@ -145,7 +145,7 @@ export const useExperienceStore = create<ExperienceState>()(
         
         set({ isLoading: true });
         try {
-          const response = await experienceService.getExperienceById(experienceId);
+          const response = await experienceService.getById(experienceId);
           
           if (response?.data) {
             const experience = response.data;
@@ -156,23 +156,23 @@ export const useExperienceStore = create<ExperienceState>()(
               name: experience.name || experience.product?.name || '',
               category: experience.category || experience.product?.category || '',
               tagline: experience.tagline || experience.product?.tagline || '',
-              skin_type: experience.skin_type || experience.product?.skin_type || '',
+              skinType: experience.skin_type || experience.product?.skin_type || '',
               description: experience.description || experience.product?.description || '',
               storeLink: experience.store_link || experience.product?.store_link || '',
               originalPrice: experience.original_price ?? experience.product?.original_price ?? null,
               discountedPrice: experience.discounted_price ?? experience.product?.discounted_price ?? null,
               estimatedDurationDays: experience.estimated_usage_duration_days ?? experience.product?.estimated_usage_duration_days ?? 30,
               netContent: experience.net_content ?? experience.product?.net_content ?? 0,
-              images: Array.isArray(experience.product_image_url) 
-                ? experience.product_image_url.map((url: string, index: number) => ({
+              product_image_url: Array.isArray(experience.product?.product_image_url) 
+                ? experience.product.product_image_url.map((url: string, index: number) => ({
                     id: `img-${index}-${Date.now()}`,
                     url: url,
                     file: undefined,
                   }))
-                : experience.product_image_url 
+                : experience.product?.product_image_url 
                   ? [{
                       id: `img-0-${Date.now()}`,
-                      url: experience.product_image_url,
+                      url: experience.product.product_image_url,
                       file: undefined,
                     }]
                   : [],
@@ -254,8 +254,16 @@ export const useExperienceStore = create<ExperienceState>()(
     }),
     {
       name: 'experience-storage',
-      // Save all state to local storage
-      partialize: (state) => ({ ...state }),
+      // Save all state to local storage except loading states
+      partialize: (state) => ({
+        experienceData: state.experienceData,
+        brand: state.brand,
+        experienceId: state.experienceId,
+        productId: state.productId,
+        featuresByExperienceId: state.featuresByExperienceId,
+        experienceUrl: state.experienceUrl,
+        // Exclude isLoading from persistence
+      }),
     }
   )
 );

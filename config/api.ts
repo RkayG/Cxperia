@@ -35,10 +35,11 @@ const config = {
     },
 
     PRODUCT: {
-      LIST: "/products",
-      DETAIL: (id: string | number) => `/products/${id}`,
-      CREATE: "/products",
-      UPDATE: (id: string | number) => `/products/${id}`,
+      LIST: "/api/products",
+      DETAIL: (id: string) => `/api/products/${id}`,
+      CREATE: "/api/products",
+      UPDATE: (id: string) => `/api/products/${id}`,
+      DELETE: (id: string) => `/api/products/${id}`,
     },
 
     TUTORIAL: {

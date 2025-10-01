@@ -1,11 +1,11 @@
 // src/services/productService.ts
 // Service for Product API calls
 import { getAuthHeaders } from '@/utils/getAuthHeaders';
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:4000/api';
-
+import config from '@/config/api';
+const endpoint = config.endpoints
 // Create Product
 export async function createProduct(data: any) {
-	const res = await fetch(`${API_BASE}/products`, {
+	const res = await fetch(endpoint.PRODUCT.CREATE, {
 		method: 'POST',
 		headers: getAuthHeaders(),
 		body: JSON.stringify(data),
@@ -15,13 +15,13 @@ export async function createProduct(data: any) {
 
 // Get all Products (optionally by brand)
 export async function getProducts() {
-	const res = await fetch(`${API_BASE}/products`, { headers: getAuthHeaders() });
+	const res = await fetch(endpoint.PRODUCT.LIST, { headers: getAuthHeaders() });
 	return res.json();
 }
 
 // Get Product by ID
 export async function getProductById(id: string | undefined) {
-	const res = await fetch(`${API_BASE}/products/${id}`, {
+	const res = await fetch(endpoint.PRODUCT.DETAIL(id), {
 		headers: getAuthHeaders(),
 	});
 	return res.json();
@@ -29,7 +29,7 @@ export async function getProductById(id: string | undefined) {
 
 // Update Product
 export async function updateProduct(id: string | undefined, data: any) {
-	const res = await fetch(`${API_BASE}/products/${id}`, {
+	const res = await fetch(endpoint.PRODUCT.UPDATE(id), {
 		method: 'PUT',
 		headers: getAuthHeaders(),
 		body: JSON.stringify(data),
@@ -39,7 +39,7 @@ export async function updateProduct(id: string | undefined, data: any) {
 
 // Delete Product
 export async function deleteProduct(id: string | undefined) {
-	const res = await fetch(`${API_BASE}/products/${id}`, {
+	const res = await fetch(endpoint.PRODUCT.DELETE(id), {
 		method: 'DELETE',
 		headers: getAuthHeaders(),
 	});
