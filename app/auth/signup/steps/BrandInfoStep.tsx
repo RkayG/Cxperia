@@ -1,7 +1,7 @@
 'use client';
 
-import { SignupData } from '../page';
 import InputField from '@/components/input-field';
+import { SignupData } from '../page';
 
 interface BrandInfoStepProps {
   data: SignupData;

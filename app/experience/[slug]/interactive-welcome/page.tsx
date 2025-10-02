@@ -1,7 +1,7 @@
 'use client';
-import React, { useState, useEffect, useRef } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useEffect, useRef, useState } from "react";
 import { usePublicExpStore } from '@/store/public/usePublicExpStore';
 
 type WelcomeStep = 

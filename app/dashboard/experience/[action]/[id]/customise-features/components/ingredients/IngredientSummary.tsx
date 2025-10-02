@@ -1,6 +1,6 @@
+import { AlertTriangle } from 'lucide-react'; 
 import React from 'react';
 import type { IngredientSummaryProps } from '@/types/ingredientTypes';
-import { AlertTriangle } from 'lucide-react'; 
 
 const IngredientSummary: React.FC<IngredientSummaryProps> = ({
   totalIngredients,

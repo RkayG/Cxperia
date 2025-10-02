@@ -1,5 +1,5 @@
+import { ChevronDown, ChevronRight, Edit3, Plus, Search, Trash2 } from "lucide-react"
 import React from "react"
-import { Plus, Search, ChevronDown, ChevronRight, Edit3, Trash2 } from "lucide-react"
 
 interface FAQItem {
   id: string

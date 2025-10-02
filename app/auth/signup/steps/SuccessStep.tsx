@@ -1,8 +1,8 @@
 // app/auth/signup/steps/SuccessStep.tsx
 'use client';
 
-import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { SignupData } from '../page';
 
 interface SuccessStepProps {

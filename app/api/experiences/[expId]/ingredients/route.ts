@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/server"
 import { getCurrentUser } from "@/lib/auth/getCurrentUser"
+import { createClient } from "@/lib/supabase/server"
 
 // Helper function to normalize ingredient data based on the original controller's logic
 function normalizeIngredient(item: any, experienceMap: Record<string, { brand_id: string }>) {

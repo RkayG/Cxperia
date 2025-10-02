@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from '@/lib/supabase/server';
 import { generateQrCode } from "@/lib/qrService"; 
+import { createClient } from '@/lib/supabase/server';
 
 // Use a fallback domain if environment variable is not set
 const PUBLIC_EXPERIENCE_DOMAIN = process.env.PUBLIC_EXPERIENCE_DOMAIN || "https://cxperiahq.com";

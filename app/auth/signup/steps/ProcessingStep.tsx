@@ -1,10 +1,10 @@
 // app/auth/signup/steps/ProcessingStep.tsx
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
-import { SignupData } from '../page';
+import { useEffect, useRef, useState } from 'react';
 import { completeSignup } from '@/lib/auth-signup';
 import CodeVerificationStep from './CodeVerificationStep';
+import { SignupData } from '../page';
 
 interface ProcessingStepProps {
   data: SignupData;

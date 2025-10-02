@@ -1,4 +1,4 @@
-import { Bot, MessageCircle, Palette, QrCode, BarChart3, Users, Clock } from "lucide-react"
+import { BarChart3, Bot, Clock, MessageCircle, Palette, QrCode, Users } from "lucide-react"
 import React from "react"
 
 interface ChatbotSidebarProps {

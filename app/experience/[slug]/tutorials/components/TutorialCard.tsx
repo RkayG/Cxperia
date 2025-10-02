@@ -1,11 +1,11 @@
 'use client'
-import React, { useState, useCallback } from 'react';
-import { getVideoType, getYouTubeEmbedUrl, getVimeoEmbedUrl, isValidVideoUrl } from './videoUtils';
+import { Clock, List, MoreVertical, Play } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { Play, Clock, List, MoreVertical } from 'lucide-react';
+import React, { useCallback, useState } from 'react';
+import { useIncrementTutorialView } from '@/hooks/public/useTutorialViews';
 import { usePublicExpStore } from '@/store/public/usePublicExpStore';
 import { getFriendlyTimeAgo } from '@/utils/friendlyTime';
-import { useIncrementTutorialView } from '@/hooks/public/useTutorialViews';
+import { getVideoType, getVimeoEmbedUrl, getYouTubeEmbedUrl, isValidVideoUrl } from './videoUtils';
 
 export interface TutorialDetail {
   id: string;

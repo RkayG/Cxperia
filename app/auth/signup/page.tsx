@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import BrandInfoStep from "./steps/BrandInfoStep";
+import Stepper, { Step } from "@/components/Stepper.jsx";
 import AccountInfoStep from "./steps/AccountInfoStep";
+import BrandInfoStep from "./steps/BrandInfoStep";
+import ConfirmPasswordStep from "./steps/ConfirmPasswordStep";
 import ProcessingStep from "./steps/ProcessingStep";
 import SuccessStep from "./steps/SuccessStep";
-import Stepper, { Step } from "@/components/Stepper.jsx";
-import ConfirmPasswordStep from "./steps/ConfirmPasswordStep";
 export interface SignupData {
   brandName: string;
   brandSlug: string;

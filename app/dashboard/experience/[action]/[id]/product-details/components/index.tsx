@@ -1,18 +1,18 @@
 'use client';
-import React, { useState, useEffect, useCallback, useRef } from "react";
-import { useRouter, useParams, useSearchParams } from "next/navigation";
-import ProductForm from "./ProductForm";
-import MediaUpload from "./MediaUpload";
-import { useExperienceStore, initialExperienceData } from "@/store/brands/useExperienceStore";
-import { useExperienceOperations } from "@/hooks/brands/useExperienceOperations";
-import { validateStepOne, scrollToError } from "@/utils/validation";
-import type { ValidationErrors } from "@/utils/validation";
-import { hasFormChanges, isExperienceDataEqual } from "@/utils/compare";
-import ScrollToTop from "@/components/ScrollToTop";
-import SavingOverlay from "@/components/SavingOverlay";
-import type { UploadedImage, Experience } from "@/types/productExperience";
-import { showToast } from "@/utils/toast";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Loading from "@/components/Loading";
+import SavingOverlay from "@/components/SavingOverlay";
+import ScrollToTop from "@/components/ScrollToTop";
+import { useExperienceOperations } from "@/hooks/brands/useExperienceOperations";
+import { initialExperienceData, useExperienceStore } from "@/store/brands/useExperienceStore";
+import type { Experience, UploadedImage } from "@/types/productExperience";
+import { hasFormChanges, isExperienceDataEqual } from "@/utils/compare";
+import { scrollToError, validateStepOne } from "@/utils/validation";
+import MediaUpload from "./MediaUpload";
+import ProductForm from "./ProductForm";
+import type { ValidationErrors } from "@/utils/validation";
+import { showToast } from "@/utils/toast";
 
 interface StepOneProps {
   onNext?: (experienceId?: string) => void;
@@ -397,7 +397,7 @@ const StepOne: React.FC<StepOneProps> = ({
           customerService: false,
           productUsage: false,
         };
-        let featuresObj = { ...defaultFeatures };
+        const featuresObj = { ...defaultFeatures };
         if (Array.isArray(responseData.features)) {
           responseData.features.forEach((f: any) => {
             if (

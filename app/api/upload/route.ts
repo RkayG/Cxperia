@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth/getCurrentUser';
-import { uploadToCloudinary, deleteFromCloudinary } from '@/lib/cloudinary';
+import { deleteFromCloudinary, uploadToCloudinary } from '@/lib/cloudinary';
 import { createUploadRecord, deleteUploadRecord } from '@/lib/db/uploads';
 
 export async function POST(request: NextRequest) {

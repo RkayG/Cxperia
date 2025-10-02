@@ -1,8 +1,8 @@
 'use client'
 import React, { useContext, useMemo } from "react"
+import CurvedBottomNav from "@/components/public/CurvedBottomNav"
 import SectionHeader from "@/components/public/ThemeAwareSectionHeader"
 import { usePublicExpStore } from "@/store/public/usePublicExpStore"
-import CurvedBottomNav from "@/components/public/CurvedBottomNav"
 import PublicLoading from '../components/PublicLoading';
 
 // Map backend type to icon, link formatter, and description

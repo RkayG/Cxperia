@@ -1,9 +1,9 @@
 // src/components/PreviewMode/MobilePreview.tsx
 
 import React from 'react';
-import type { MobilePreviewProps } from '@/types/productExperience';
-import { useExperienceStore } from '@/store/brands/useExperienceStore';
 import SparkleOverlay from '@/components/SparkleOverlay';
+import { useExperienceStore } from '@/store/brands/useExperienceStore';
+import type { MobilePreviewProps } from '@/types/productExperience';
 
 
 

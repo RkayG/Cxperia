@@ -1,28 +1,28 @@
-import React, { useState, useRef, useEffect } from "react";
-import { showToast } from "../../../utils/toast";
+import {
+  Calendar,
+  Clock,
+  Edit3,
+  Eye,
+  Minus,
+  Play,
+  Plus,
+  Save,
+  Upload,
+  Users,
+} from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { Toaster } from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router-dom";
+import ProductUsedCard from "./ProductsUsedCard";
+import { validateTutorial } from "./TutorialValidation";
 import {
   useAddTutorial,
-  useUpdateTutorial,
   useTutorial,
+  useUpdateTutorial,
 } from "../../../hooks/useFeatureApi";
-import { validateTutorial } from "./TutorialValidation";
-import DropdownSelect from "../../common/DropdownSelect";
 import { uploadFile } from "../../../services/uploadService";
-import {
-  Plus,
-  Minus,
-  Save,
-  Eye,
-  Clock,
-  Users,
-  Upload,
-  Play,
-  Edit3,
-  Calendar,
-} from "lucide-react";
-import { Toaster } from "react-hot-toast";
-import ProductUsedCard from "./ProductsUsedCard";
+import { showToast } from "../../../utils/toast";
+import DropdownSelect from "../../common/DropdownSelect";
 
 interface TutorialStep {
   id: string;

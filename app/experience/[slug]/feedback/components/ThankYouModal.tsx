@@ -1,6 +1,6 @@
-import React from 'react';
 import { CheckCircle, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import React from 'react';
 import { usePublicExpStore } from '@/store/public/usePublicExpStore';
 
 interface ThankYouModalProps {

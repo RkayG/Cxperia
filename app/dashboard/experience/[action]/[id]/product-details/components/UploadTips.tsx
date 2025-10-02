@@ -1,12 +1,12 @@
 // CreateExperience/UploadTips.tsx
-import React from "react";
 import {
-  SunIcon,
-  PaintbrushIcon,
   CameraIcon,
   LightbulbIcon,
+  PaintbrushIcon,
   PictureInPictureIcon,
+  SunIcon,
 } from "lucide-react";
+import React from "react";
 import type { UploadTipProps } from "@/types/productExperience";
 
 const UploadTip: React.FC<UploadTipProps> = ({

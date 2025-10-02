@@ -1,6 +1,6 @@
 import Image from 'next/image';
-import logo from '../../assets/logo.png'
 import React from 'react';
+import logo from '../../assets/logo.png'
 
 const NotFoundPage: React.FC = () => (
 	<div className="flex flex-col items-center justify-center min-h-screen bg-white text-center">

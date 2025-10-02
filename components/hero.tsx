@@ -1,9 +1,9 @@
 'use client';
 import React from 'react';
-import TiltedCard from './TiltedCard';
 import { Button } from '@/components/ui/button';
-import GradientText from '../components/GradientText';
 import NavMenu from './nav-menu';
+import TiltedCard from './TiltedCard';
+import GradientText from '../components/GradientText';
 
 const HeroSection = () => {
   return (

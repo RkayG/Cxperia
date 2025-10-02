@@ -1,8 +1,8 @@
 // InstructionsTab.tsx
+import { Minus, Plus } from "lucide-react";
 import React from "react";
-import { Plus, Minus } from "lucide-react";
-import { FormData, ApplicationStep } from "@/types/usageTypes";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ApplicationStep, FormData } from "@/types/usageTypes";
 
 interface InstructionsTabProps {
   formData: FormData;

@@ -1,12 +1,12 @@
 "use client";
 import {
-  Clock,
-  Users,
-  Star,
-  Play,
-  Calendar,
   ArrowLeft,
+  Calendar,
+  Clock,
+  Play,
   Share2,
+  Star,
+  Users,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ProductUsedCard from "./ProductsUsedCard";

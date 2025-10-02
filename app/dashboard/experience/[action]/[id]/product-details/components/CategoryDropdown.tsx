@@ -1,6 +1,6 @@
 // CreateExperience/DropdownSelect.tsx
-import React, { useState, useRef, useEffect } from 'react';
-import { ChevronDownIcon, SearchIcon, CheckIcon } from 'lucide-react';
+import { CheckIcon, ChevronDownIcon, SearchIcon } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface DropdownSelectProps {
   value: string;

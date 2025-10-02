@@ -1,24 +1,24 @@
 // CosmeticProductModal.tsx
-import React, { useState, useEffect, useCallback } from "react";
-import { validateUsageInstructions } from "@/utils/validateUsageInstructions";
+import React, { useCallback, useEffect, useState } from "react";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
-import { showToast } from "@/utils/toast";
 import { useAddInstruction } from "@/hooks/brands/useFeatureApi";
 import {
-  FormData,
+  ActiveTab,
   ApplicationStep,
   CosmeticProductModalProps,
-  ActiveTab,
+  FormData,
 } from "@/types/usageTypes";
+import { showToast } from "@/utils/toast";
+import { validateUsageInstructions } from "@/utils/validateUsageInstructions";
 
 // Import new modular components
 import InstructionsTab from "./InstructionsTab";
+import MobileTabNav from "./MobileTabNav";
+import ModalFooter from "./ModalFooter";
+import ModalHeader from "./ModalHeader";
+import Sidebar from "./Sidebar";
 import TipsTab from "./TipsTab";
 import WarningsTab from "./WarningsTab";
-import ModalHeader from "./ModalHeader";
-import ModalFooter from "./ModalFooter";
-import Sidebar from "./Sidebar";
-import MobileTabNav from "./MobileTabNav";
 
 const initialData = (
   initialInstructions: any,

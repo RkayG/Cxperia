@@ -1,4 +1,4 @@
-import { X, ArrowRight, Sparkles, Plus } from "lucide-react";
+import { ArrowRight, Plus, Sparkles, X } from "lucide-react";
 import React, { useEffect } from "react";
 
 interface EmptyCatalogModalProps {

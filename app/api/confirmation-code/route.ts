@@ -1,6 +1,6 @@
 // lib/auth-signup.ts
-import { supabase } from '@/lib/supabase';
 import { SignupData } from '@/app/auth/signup/page';
+import { supabase } from '@/lib/supabase';
 
 export async function completeSignup(data: SignupData) {
   try {

@@ -1,11 +1,11 @@
 // src/pages/ProductDashboard.tsx
 'use client';
-import React, { useEffect } from 'react';
+import { Camera, Clock, Play } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 import { useExperiences } from '@/hooks/brands/useExperienceApi';
-import { Camera, Play, Clock } from 'lucide-react';
-import ProductPerformanceOverview from './components/ProductPerformanceOverview';
 import ProductListings from './components/ProductListings';
+import ProductPerformanceOverview from './components/ProductPerformanceOverview';
 import type { PerformanceMetric, Product } from './components/productTypes';
 
 const ProductDashboard: React.FC = () => {

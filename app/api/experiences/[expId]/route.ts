@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth/getCurrentUser';
-import { updateExperience, getExperienceById } from '@/lib/db/experiences';
+import { getExperienceById, updateExperience } from '@/lib/db/experiences';
 import { updateProduct } from '@/lib/db/products';
 
 export async function GET(request: NextRequest, { params }: { params: { expId: string } }) {
@@ -59,7 +59,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { expId:
     const body = await request.json() as any;
     console.log('Update experience request body:', body);
     const { product_id, product, experience_id } = body;
-    let logo_url = body.logo_url || (product && product.logo_url) || null;
+    const logo_url = body.logo_url || (product && product.logo_url) || null;
     let finalProductId = product_id || null;
 
     // Normalize product images from both product.product_image_url and root product_image_url

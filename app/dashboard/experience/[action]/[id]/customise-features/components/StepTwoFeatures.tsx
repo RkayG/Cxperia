@@ -1,6 +1,6 @@
 import React from 'react';
-import FeatureToggle from './FeatureToggle';
 import type { Feature, FeatureSettings } from '@/types/productExperience';
+import FeatureToggle from './FeatureToggle';
 
 interface StepTwoFeaturesProps {
   features?: Feature[];

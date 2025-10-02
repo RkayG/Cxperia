@@ -1,10 +1,10 @@
 // src/components/HeaderBold.tsx
 'use client';
-import React, { useState, useEffect, useRef } from "react";
-import UnpackingLoader  from '@/components/UnpackingLoader';
 import Image from 'next/image';
-import { usePublicExpStore } from '@/store/public/usePublicExpStore';
+import React, { useEffect, useRef, useState } from "react";
 import FeatureSlider from "@/components/public/FeatureSlider";
+import UnpackingLoader  from '@/components/UnpackingLoader';
+import { usePublicExpStore } from '@/store/public/usePublicExpStore';
 
 const YouHaveScanned: React.FC = () => {
   const contentRef = useRef<HTMLDivElement>(null);

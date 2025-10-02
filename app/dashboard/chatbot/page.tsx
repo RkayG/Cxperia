@@ -1,39 +1,39 @@
 "use client"
+import { C } from "@upstash/redis/zmscore-DWj9Vh1g"
 import {
+  BarChart3,
   Bot,
-  Plus,
+  ChevronDown,
+  ChevronRight,
+  Clock,
+  Download,
   Edit3,
-  Trash2,
-  Save,
   Eye,
   MessageCircle,
   Palette,
+  Plus,
   QrCode,
-  BarChart3,
-  Users,
-  Clock,
-  ChevronDown,
-  ChevronRight,
+  Save,
   Search,
-  Download,
+  Trash2,
+  Users,
 } from "lucide-react"
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import {
-  chatbotService,
-  type FAQItem,
-  type Experience,
-  type ChatbotConfig,
-  type Product,
   type Brand,
+  type ChatbotConfig,
+  chatbotService,
+  type Experience,
+  type FAQItem,
+  type Product,
 } from "@/lib/chatbotService"
-import ChatbotQRIntegration from "./components/ChatbotQRIntegration"
-import { C } from "@upstash/redis/zmscore-DWj9Vh1g"
 import ChatbotAnalytics from "./components/ChatbotAnalytics"
 import ChatbotAppearance from "./components/ChatbotAppearance"
-import ChatbotHeader from "./components/ChatbotHeader"
-import ChatbotSidebar from "./components/ChatbotSidebar"
 import ChatbotFAQManager from "./components/ChatbotFAQManager"
+import ChatbotHeader from "./components/ChatbotHeader"
+import ChatbotQRIntegration from "./components/ChatbotQRIntegration"
 import ChatbotSettings from "./components/ChatbotSettings"
+import ChatbotSidebar from "./components/ChatbotSidebar"
 
 interface FAQ {
   id: string

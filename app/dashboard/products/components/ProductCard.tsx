@@ -1,8 +1,8 @@
 // src/components/ProductDashboard/ProductCard.tsx
 
-import React from 'react';
-import { Pencil, MoreHorizontal, Eye, Trash2, QrCode, Download } from 'lucide-react';
 import jsPDF from 'jspdf';
+import { Download, Eye, MoreHorizontal, Pencil, QrCode, Trash2 } from 'lucide-react';
+import React from 'react';
 // DownloadOptions inline for QR popover
 const DownloadOptions: React.FC<{ qrCodeImageUrl?: string; productName?: string }> = ({ qrCodeImageUrl, productName }) => {
   const formats = ['PNG', 'PDF'];
@@ -38,20 +38,20 @@ const DownloadOptions: React.FC<{ qrCodeImageUrl?: string; productName?: string 
     </div>
   );
 };
-import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuSub,
-  DropdownMenuSubTrigger,
   DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useRouter } from 'next/navigation';
-import type { ProductCardProps } from './productTypes';
 import { useDeleteExperience } from '@/hooks/brands/useExperienceApi';
+import type { ProductCardProps } from './productTypes';
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const router = useRouter();

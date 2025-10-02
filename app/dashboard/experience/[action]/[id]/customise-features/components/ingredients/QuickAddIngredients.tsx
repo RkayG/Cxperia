@@ -1,7 +1,7 @@
-import React, { useState, useMemo, useCallback } from 'react';
-import { Search, Loader2 } from 'lucide-react';
-import type { QuickAddIngredientsProps } from '@/types/ingredientTypes';
+import { Loader2, Search } from 'lucide-react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useInciIngredientSearch } from '@/hooks/brands/useFeatureApi';
+import type { QuickAddIngredientsProps } from '@/types/ingredientTypes';
 
 const QuickAddIngredients: React.FC<QuickAddIngredientsProps> = ({ onAddIngredient }) => {
   const [searchTerm, setSearchTerm] = useState('');

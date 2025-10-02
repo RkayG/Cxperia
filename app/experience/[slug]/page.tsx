@@ -1,9 +1,9 @@
 'use client';
-import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from 'next/navigation';
+import React, { useEffect, useRef, useState } from "react";
 import { usePublicExpStore } from '@/store/public/usePublicExpStore';
-import WelcomeFlow from './components/WelcomeFlow';
 import PublicLoading from "./components/PublicLoading";
+import WelcomeFlow from './components/WelcomeFlow';
 
 const InteractiveWelcome = () => {
   const router = useRouter();

@@ -5,7 +5,7 @@ import type { PerformanceMetricCardProps } from './productTypes';
 
 const PerformanceMetricCard: React.FC<PerformanceMetricCardProps> = ({ metric }) => {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between h-full">
+    <div className="bg-white p-6 rounded-lg  border border-gray-300 flex flex-col justify-between h-full">
       <div className="flex items-center justify-between mb-4">
         {/* {metric.icon && (
           <div className="bg-blue-100 p-2 rounded-full">
@@ -15,7 +15,6 @@ const PerformanceMetricCard: React.FC<PerformanceMetricCardProps> = ({ metric })
         <h3 className=" text-md sm:text-lg font-semibold text-left text-black tracking-wide">
           {metric.title}
         </h3>
-        <Info size={16} className="text-gray-400 hover:text-gray-600 transition-colors" />
       </div>
       <div className="flex flex-col">
         <p className="text-3xl text-left font-bold text-gray-900 leading-none">

@@ -1,16 +1,16 @@
 // src/components/ProductDashboard/FilterBar.tsx
+import { Plus } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 //import UnfinishedWorkModal from '../../../components/UnfinishedWorkModal';
-import { Plus } from 'lucide-react';
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { FilterBarProps } from './productTypes';
-import { useRouter } from 'next/navigation';
 
 interface FilterBarPropsWithLoading extends FilterBarProps {
   isLoading?: boolean;
@@ -102,7 +102,7 @@ const FilterBar: React.FC<FilterBarPropsWithLoading> = ({ onFilterChange, onSort
       {/* Add New Product Button */}
       <button
         onClick={handleAddNewProduct}
-        className="w-full sm:w-auto flex items-center justify-center px-6 py-2 bg-purple-800 text-white font-medium rounded-xl hover:bg-purple-700 transition-colors duration-200 shadow-md"
+        className="md:w-fit   w-full  justify-self-right sm:w-auto flex items-center md:justify-center px-6 py-2 bg-purple-800 text-white font-medium rounded-xl hover:bg-purple-700 transition-colors duration-200 shadow-md"
       >
         <Plus size={20} className="mr-2" />
         Add New

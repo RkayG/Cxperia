@@ -1,6 +1,6 @@
+import { notFound } from 'next/navigation';
 import JsonViewer from '@/components/JsonViewer';
 import { supabase } from '@/lib/supabase';
-import { notFound } from 'next/navigation';
 
 interface BrandPageProps {
 	params: { id: string };

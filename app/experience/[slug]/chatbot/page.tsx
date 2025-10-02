@@ -1,7 +1,7 @@
 // app/public/experience/[slug]/chatbot/page.tsx
 'use client';
-import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { chatbotService } from '@/lib/chatbotService';
 
 interface ChatMessage {

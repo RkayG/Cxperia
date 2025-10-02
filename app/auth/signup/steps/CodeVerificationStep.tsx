@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { supabase } from '@/lib/supabase';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
+import { supabase } from '@/lib/supabase';
 
 interface CodeVerificationStepProps {
   email: string;

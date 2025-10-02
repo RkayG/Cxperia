@@ -1,5 +1,5 @@
 'use client';
-import { usePathname, useSearchParams, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 
 const RoutePersistence = () => {
@@ -30,7 +30,7 @@ const RoutePersistence = () => {
       }
     }
     // Only run on first mount
-    // eslint-disable-next-line
+     
   }, []);
 
   return null;

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/server"
 import { getCurrentUser } from "@/lib/auth/getCurrentUser"
+import { createClient } from "@/lib/supabase/server"
 
 const ALLOWED_FEATURES = [
   'tutorialsRoutines',

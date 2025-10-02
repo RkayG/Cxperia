@@ -1,15 +1,15 @@
 // src/components/ProductDashboard/FilterBar.tsx
+import { Plus } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 //import UnfinishedWorkModal from '../../../components/UnfinishedWorkModal';
-import { Plus } from 'lucide-react';
+import type { FilterBarProps } from './productTypes';
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuTrigger,
 } from '../../../components/ui/dropdown-menu';
-import type { FilterBarProps } from './productTypes';
-import { useRouter } from 'next/navigation';
 
 const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSortChange }) => {
   // State for dropdowns

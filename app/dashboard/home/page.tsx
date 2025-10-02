@@ -3,18 +3,18 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { FaSearch } from "react-icons/fa";
-import { useExperiences } from "@/hooks/brands/useExperienceApi";
-import { Skeleton } from "@/components/ui/skeleton";
-import ProjectCard from "./components/ProjectCard";
-import { useRecentTutorials } from "@/hooks/brands/useFeatureApi";
+import recentBanner2 from '@/assets/images/recent-banner2.png'
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselPrevious,
   CarouselNext,
+  CarouselPrevious,
 } from "@/components/ui/carousel";
-import recentBanner2 from '@/assets/images/recent-banner2.png'
+import { Skeleton } from "@/components/ui/skeleton";
+import { useExperiences } from "@/hooks/brands/useExperienceApi";
+import { useRecentTutorials } from "@/hooks/brands/useFeatureApi";
+import ProjectCard from "./components/ProjectCard";
 
 
 export default function RecentPage() {

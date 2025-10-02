@@ -1,17 +1,17 @@
 import {
-  Clock,
-  Users,
-  Star,
-  Play,
   Calendar,
+  Clock,
+  Play,
+  Star,
   Tag,
+  Users,
 } from "lucide-react";
-import { usePublicExpStore } from "@/store/public/usePublicExpStore";
-import { useExperienceTutorials } from "@/hooks/public/useTutorials";
+import Image from "next/image";
 import { useParams, usePathname } from "next/navigation";
 import { useRouter } from "next/router";
+import { useExperienceTutorials } from "@/hooks/public/useTutorials";
+import { usePublicExpStore } from "@/store/public/usePublicExpStore";
 import { getFriendlyTimeAgo } from "@/utils/friendlyTime";
-import Image from "next/image";
 
 interface TutorialStep {
   id?: string | number;

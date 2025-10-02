@@ -1,9 +1,9 @@
 // app/dashboard/layout.tsx (Server Component)
 import Image from "next/image";
-import logo from '../../assets/logo.png'
+import MobileBottomNav from "@/components/MobileBottomNavbar";
 import SidebarLayout, { SidebarItem } from "@/components/sidebar-layout";
 import { getCurrentUserBrand } from '@/lib/data/brands';
-import MobileBottomNav from "@/components/MobileBottomNavbar";
+import logo from '../../assets/logo.png'
 
 interface DashboardLayoutProps {
   children: React.ReactNode;

@@ -1,6 +1,6 @@
 import React from 'react';
-import MessageListItem from './MessageListItem';
 import type { MessageListProps } from './inboxTypes';
+import MessageListItem from './MessageListItem';
 
 const MessageList: React.FC<MessageListProps> = ({ messages, onSelectMessage }) => {
   return (

@@ -1,21 +1,21 @@
 "use client";
 import { Sparkles } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FaBoxOpen } from "react-icons/fa";
-import { useParams, useRouter } from "next/navigation";
 import EmptyCatalogModal from "@/components/EmptyCatalogModal";
-import ExperienceOverviewSection from "./ExperienceOverviewSection";
 import ScrollToTop from "@/components/ScrollToTop";
+import { useTutorials } from "@/hooks/brands/useFeatureApi";
+import { useFeatureToggles } from "@/hooks/brands/useFeatureToggle";
+import { useExperienceStore } from "@/store/brands/useExperienceStore";
+import type { FeatureSettings } from "@/types/productExperience";
+import { validateFeatures } from "@/utils/featureValidation";
+import { showToast } from "@/utils/toast";
+import ExperienceOverviewSection from "./ExperienceOverviewSection";
 import StepTwoActions from "./StepTwoActions";
 import StepTwoFeatures from "./StepTwoFeatures";
 import StepTwoModals from "./StepTwoModals";
-import { useExperienceStore } from "@/store/brands/useExperienceStore";
-import { useFeatureToggles } from "@/hooks/brands/useFeatureToggle";
 //import { useProducts } from "@/hooks/brands/useProductApi";
-import { useTutorials } from "@/hooks/brands/useFeatureApi";
-import type { FeatureSettings } from "@/types/productExperience";
-import { showToast } from "@/utils/toast";
-import { validateFeatures } from "@/utils/featureValidation";
 
 interface CustomiseFeaturesStepProps {
   onNext: () => void;

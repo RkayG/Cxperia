@@ -1,29 +1,29 @@
-import React, { useState, useRef, useEffect } from "react";
-import { showToast } from "@/lib/toast";
-import { useLocation, useNavigate } from "react-router-dom";
 import {
-  useAddTutorial,
-  useUpdateTutorial,
-  useTutorial,
-} from "@/hooks/brands/useFeatureApi";
-import { validateTutorial } from "./TutorialValidation";
+  Calendar,
+  Clock,
+  Edit3,
+  Eye,
+  Minus,
+  Play,
+  Plus,
+  Save,
+  Upload,
+  Users,
+} from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { Toaster } from "react-hot-toast";
+import { useLocation, useNavigate } from "react-router-dom";
 import DropdownSelect from "@/components/DropdownSelect";
-import { uploadFile } from "@/services/brands/uploadService";
 import ResponseModal from "@/components/ResponseModal";
 import {
-  Plus,
-  Minus,
-  Save,
-  Eye,
-  Clock,
-  Users,
-  Upload,
-  Play,
-  Edit3,
-  Calendar,
-} from "lucide-react";
-import { Toaster } from "react-hot-toast";
+  useAddTutorial,
+  useTutorial,
+  useUpdateTutorial,
+} from "@/hooks/brands/useFeatureApi";
+import { showToast } from "@/lib/toast";
+import { uploadFile } from "@/services/brands/uploadService";
 import ProductUsedCard from "./ProductsUsedCard";
+import { validateTutorial } from "./TutorialValidation";
 
 interface TutorialStep {
   id: string;

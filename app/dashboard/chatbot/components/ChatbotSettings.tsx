@@ -1,5 +1,5 @@
+import { Clock, Users } from "lucide-react"
 import React from "react"
-import { Users, Clock } from "lucide-react"
 
 interface ChatbotSettingsProps {
   chatbotConfig: any

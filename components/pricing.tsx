@@ -1,4 +1,5 @@
 import { Check } from "lucide-react";
+import Link from "next/link";
 import React from "react";
 import {  buttonVariants } from "@/components/ui/button";
 import {
@@ -9,7 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Link from "next/link";
 
 export function PricingCard() {
   // Static tier data

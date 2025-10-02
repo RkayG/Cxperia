@@ -1,32 +1,32 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
-import { showToast } from "@/utils/toast";
-import { usePathname, useRouter, useSearchParams, useParams } from "next/navigation";
+import {
+  Calendar,
+  Clock,
+  Edit3,
+  Eye,
+  Minus,
+  Play,
+  Plus,
+  Save,
+  Upload,
+  Users,
+} from "lucide-react";
+import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect, useRef, useState } from "react";
+import { Toaster } from "react-hot-toast";
+import DropdownSelect from "@/components/DropdownSelect";
+import ResponseModal from "@/components/ResponseModal";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   useAddTutorial,
-  useUpdateTutorial,
   useTutorial,
+  useUpdateTutorial,
 } from "@/hooks/brands/useFeatureApi";
-import { validateTutorial } from "./TutorialValidation";
-import DropdownSelect from "@/components/DropdownSelect";
 import { uploadFile } from "@/services/brands/uploadService";
-import ResponseModal from "@/components/ResponseModal";
-import {
-  Plus,
-  Minus,
-  Save,
-  Eye,
-  Clock,
-  Users,
-  Upload,
-  Play,
-  Edit3,
-  Calendar,
-} from "lucide-react";
-import { Toaster } from "react-hot-toast";
+import { showToast } from "@/utils/toast";
 import ProductUsedCard from "./ProductsUsedCard";
 import TutorialPreviewPage from "./TutorialPreview";
-import { Skeleton } from "@/components/ui/skeleton";
+import { validateTutorial } from "./TutorialValidation";
 
 interface TutorialStep {
   id: string;

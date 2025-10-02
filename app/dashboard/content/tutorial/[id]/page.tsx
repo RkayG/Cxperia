@@ -1,6 +1,6 @@
 "use client";
-import React from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
+import React from 'react';
 import TutorialCreator from '../page';
 
 const TutorialEditPage: React.FC = () => {

@@ -1,9 +1,9 @@
 // src/components/ProductDashboard/ProductListings.tsx
-import React, { useState, useMemo } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
-import ProductCard from "./ProductCard";
+import React, { useMemo, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 import FilterBar from "./FilterBar";
+import ProductCard from "./ProductCard";
 import type { Product, ProductListingsProps } from "./productTypes";
 
 interface ProductListingsPropsWithEdit extends ProductListingsProps {

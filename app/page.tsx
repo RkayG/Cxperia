@@ -1,11 +1,11 @@
 
-import PostPurchaseSection from '@/components/post-purchase';
-import QRCodeSection from '@/components/qr-code-section';
-import GainFeedbackSection from '@/components/gain-feedback';
 import DesignedForSection from '@/components/designed-for';
-import { PricingCard } from '@/components/pricing';
 import { Footer } from '@/components/footer';
+import GainFeedbackSection from '@/components/gain-feedback';
 import HeroSection from '@/components/hero';
+import PostPurchaseSection from '@/components/post-purchase';
+import { PricingCard } from '@/components/pricing';
+import QRCodeSection from '@/components/qr-code-section';
 
 export default async function IndexPage() {
 

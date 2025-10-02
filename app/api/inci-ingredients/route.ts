@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
 import { getCurrentUser } from '@/lib/auth/getCurrentUser';
+import { createClient } from '@/lib/supabase/server';
 
 // Cache for ingredient data (in-memory cache)
 const ingredientCache = new Map<string, { data: any[], timestamp: number }>();

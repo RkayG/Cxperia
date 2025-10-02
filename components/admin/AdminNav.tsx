@@ -1,10 +1,10 @@
 // components/admin/AdminNav.tsx
 'use client';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
-import Image from 'next/image';
 import logo from '@/assets/logo.png';
+import { supabase } from '@/lib/supabase';
 
 interface AdminNavProps {
   user: any;

@@ -1,11 +1,11 @@
 'use client'
+import { ArrowRight, Sparkles, Star } from "lucide-react";
 import React, { useState } from "react";
-import { Sparkles, Star, ArrowRight } from "lucide-react";
 import Modal from "@/components/Modal";
-import SectionHeader from "@/components/public/ThemeAwareSectionHeader";
-import { usePublicExpStore } from "@/store/public/usePublicExpStore";
-import { useExperienceProducts } from "@/hooks/public/useProducts";
 import CurvedBottomNav from "@/components/public/CurvedBottomNav";
+import SectionHeader from "@/components/public/ThemeAwareSectionHeader";
+import { useExperienceProducts } from "@/hooks/public/useProducts";
+import { usePublicExpStore } from "@/store/public/usePublicExpStore";
 
 // Types
 interface Product {

@@ -1,9 +1,9 @@
 "use client";
-import React from "react";
 import { useParams, useRouter } from "next/navigation";
+import React from "react";
 import StepIndicator from "@/components/StepIndicator";
-import ProductDetailsStep from "./[id]/product-details/components";
 import { useIsMobile } from "@/hooks/brands/use-mobile";
+import ProductDetailsStep from "./[id]/product-details/components";
 
 // This page handles the initial step of creating a new experience,
 // before an experience ID has been generated.

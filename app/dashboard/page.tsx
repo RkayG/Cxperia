@@ -1,8 +1,8 @@
 'use client';
-import { getCurrentUserBrand, getBrandStats } from '@/lib/data/brands';
-import { supabase } from '@/lib/supabase';
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { getBrandStats, getCurrentUserBrand } from '@/lib/data/brands';
+import { supabase } from '@/lib/supabase';
 import { useExperienceStore } from '@/store/brands/useExperienceStore';
 
 interface Brand {

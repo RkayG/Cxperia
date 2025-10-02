@@ -1,7 +1,7 @@
 // src/components/Inbox/InboxHeader.tsx
 'use client';
-import React, { useState } from 'react';
 import { Search } from 'lucide-react';
+import React, { useState } from 'react';
 import DropdownSelect from '@/components/DropdownSelect';
 import type { InboxHeaderProps } from './inboxTypes';
 

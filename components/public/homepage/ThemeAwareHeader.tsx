@@ -1,7 +1,7 @@
 import React from 'react';
-import HeaderLight from './HeaderLight';
-import HeaderBold from './HeaderBold';
 import { usePublicExpStore } from '@/store/public/usePublicExpStore';
+import HeaderBold from './HeaderBold';
+import HeaderLight from './HeaderLight';
 
 const headerMap: Record<string, React.FC> = {
   light: HeaderLight,

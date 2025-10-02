@@ -1,5 +1,5 @@
-import React from "react"
 import { Bot } from "lucide-react"
+import React from "react"
 
 interface ChatbotAppearanceProps {
   chatbotConfig: {

@@ -1,10 +1,10 @@
 // src/App.tsx
 'use client';
 import React from "react";
-import ThemeAwareHeader from "@/components/public/homepage/ThemeAwareHeader";
 import FeatureGrid from "@/components/public/homepage/FeatureGrid";
-import { usePublicExpStore } from "@/store/public/usePublicExpStore";
+import ThemeAwareHeader from "@/components/public/homepage/ThemeAwareHeader";
 import YouHaveScanned from "@/components/public/YouHaveScanned";
+import { usePublicExpStore } from "@/store/public/usePublicExpStore";
 import PublicLoading from "../components/PublicLoading";
 
 interface HomePageProps {

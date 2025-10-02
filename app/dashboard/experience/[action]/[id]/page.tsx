@@ -1,13 +1,13 @@
 "use client";
-import React from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
+import React from "react";
 import StepIndicator from "@/components/StepIndicator";
 
 // Import the step components
-import ProductDetailsStep from "./product-details/components";
+import { useIsMobile } from "@/hooks/brands/use-mobile";
 import CustomiseFeaturesStep from "./customise-features/components";
 import PreviewStep from "./preview/components";
-import { useIsMobile } from "@/hooks/brands/use-mobile";
+import ProductDetailsStep from "./product-details/components";
 
 // This is the main flow controller for an experience that has an ID.
 // It reads the `step` from the URL and renders the appropriate component.

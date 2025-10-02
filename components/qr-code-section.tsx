@@ -1,7 +1,7 @@
 'use client';
-import TiltedCard from './TiltedCard';
 import React from 'react';
 import { Button } from '@/components/ui/button'; // Assuming shadcn/ui button
+import TiltedCard from './TiltedCard';
 import productBox from '../assets/images/package-with-qr.png'; 
 // Placeholder image
 const QRCodeSection = () => {

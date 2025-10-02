@@ -1,6 +1,6 @@
 import React from "react";
-import DropdownSelect from "./CategoryDropdown";
 import type { ProductFormProps } from "@/types/productExperience";
+import DropdownSelect from "./CategoryDropdown";
 
 const ProductForm: React.FC<ProductFormProps> = ({
   data,

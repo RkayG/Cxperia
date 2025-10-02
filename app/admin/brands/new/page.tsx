@@ -1,10 +1,10 @@
 // app/admin/brands/new/page.tsx
 'use client';
-import InputField from '@/components/input-field';
-import { showToast } from '@/lib/toast';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Toaster } from 'react-hot-toast';
+import InputField from '@/components/input-field';
+import { showToast } from '@/lib/toast';
 
 export default function NewBrandPage() {
   const router = useRouter();

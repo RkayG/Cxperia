@@ -1,13 +1,13 @@
 // app/experience/[slug]/layout.tsx
 'use client';
-import React, { useEffect } from 'react';
-import { usePublicExpStore } from '@/store/public/usePublicExpStore';
-import { useParams, usePathname } from 'next/navigation';
-import logo from '@/assets/logo.png';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useParams, usePathname } from 'next/navigation';
+import React, { useEffect } from 'react';
+import logo from '@/assets/logo.png';
 import { Footer } from '@/components/footer';
-import { useIncrementScanCount, shouldCountScan, markScanCounted } from '@/hooks/public/useScanTracking';
+import { markScanCounted, shouldCountScan, useIncrementScanCount } from '@/hooks/public/useScanTracking';
+import { usePublicExpStore } from '@/store/public/usePublicExpStore';
 
 export default function ExperienceSlugLayout({ children }: { children: React.ReactNode }) {
   const fetchExperience = usePublicExpStore((state) => state.fetchExperience);

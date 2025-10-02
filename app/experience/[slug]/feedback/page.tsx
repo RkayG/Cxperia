@@ -1,18 +1,18 @@
 // src/App.tsx
 'use client'
-import React, { useRef, useState } from 'react';
 import { useParams } from 'next/navigation';
+import React, { useRef, useState } from 'react';
 
 // INTERNAL IMPORTS
+import CurvedBottomNav from '@/components/public/CurvedBottomNav';
 import SectionHeader from '@/components/public/ThemeAwareSectionHeader';
-import RatingSection from './components/RatingSection';
+import { useCreatePublicFeedback } from '@/hooks/public/usePublicFeedbackApi';
+import { usePublicExpStore } from '@/store/public/usePublicExpStore';
+import { showToast } from '@/utils/toast';
 import FeedbackForm from './components/FeedbackForm';
 import ImageUpload from './components/ImageUpload';
+import RatingSection from './components/RatingSection';
 import ThankYouModal from './components/ThankYouModal';
-import { usePublicExpStore } from '@/store/public/usePublicExpStore';
-import CurvedBottomNav from '@/components/public/CurvedBottomNav';
-import { useCreatePublicFeedback } from '@/hooks/public/usePublicFeedbackApi';
-import { showToast } from '@/utils/toast';
 import PublicLoading from '../components/PublicLoading';
 
 const FeedbackPage: React.FC = () => {

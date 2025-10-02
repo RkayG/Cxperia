@@ -1,6 +1,6 @@
 // Sidebar.tsx
+import { AlertTriangle, Lightbulb, ListChecks } from "lucide-react";
 import React from "react";
-import { ListChecks, Lightbulb, AlertTriangle } from "lucide-react";
 import { ActiveTab } from "@/types/usageTypes";
 
 interface NavItem {

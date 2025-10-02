@@ -1,5 +1,5 @@
-import React from 'react';
 import { Mountain, Star } from 'lucide-react';
+import React from 'react';
 
 const RecommendedProductHero: React.FC = () => {
   return (

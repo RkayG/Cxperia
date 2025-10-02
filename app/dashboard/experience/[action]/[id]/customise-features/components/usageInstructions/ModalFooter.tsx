@@ -1,6 +1,6 @@
 // ModalFooter.tsx
-import React from "react";
 import { Eye, Loader2 } from "lucide-react";
+import React from "react";
 
 interface ModalFooterProps {
   isSaving: boolean;

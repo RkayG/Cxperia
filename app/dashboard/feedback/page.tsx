@@ -1,12 +1,12 @@
 'use client';
-import React, { useState, useMemo, useEffect } from 'react';
-import InboxHeader from './components/InboxHeader';
-import MessageList from './components/MessageList';
-import type { Message } from './components/inboxTypes';
+import { RefreshCw } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useFeedbacks } from '@/hooks/brands/useFeedbackApi';
 import { useExperienceStore } from '@/store/brands/useExperienceStore';
-import { RefreshCw } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
+import InboxHeader from './components/InboxHeader';
+import type { Message } from './components/inboxTypes';
+import MessageList from './components/MessageList';
 
 // Helper function to format time ago
 const formatTimeAgo = (dateString: string): string => {

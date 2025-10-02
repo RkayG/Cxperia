@@ -1,3 +1,11 @@
+import {
+  Edit3,
+  Loader2,
+  TestTube2Icon,
+  Trash2,
+  X,
+} from "lucide-react";
+import React, { useEffect, useState } from "react";
 import Modal from "@/components/Modal";
 import {
   Drawer,
@@ -13,6 +21,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -21,21 +30,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useIngredients } from '@/hooks/brands/useFeatureApi';
+import { useAddIngredient , useDeleteIngredient, useIngredients } from '@/hooks/brands/useFeatureApi';
 import type { Ingredient } from "@/types/ingredientTypes";
-import {
-  Edit3,
-  TestTube2Icon,
-  Trash2,
-  X,
-  Loader2,
-} from "lucide-react";
-import React, { useState, useEffect } from "react";
+import { showToast } from "@/utils/toast";
 import IngredientSummary from "./IngredientSummary";
 import QuickAddIngredients from "./QuickAddIngredients";
-import { useAddIngredient, useDeleteIngredient } from '@/hooks/brands/useFeatureApi';
-import { showToast } from "@/utils/toast";
-import { Skeleton } from "@/components/ui/skeleton";
+
 
 interface IngredientModalProps {
   isOpen: boolean;

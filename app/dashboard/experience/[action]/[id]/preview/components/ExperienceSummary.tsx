@@ -1,4 +1,4 @@
-import { ImageIcon, Package, Tag, Sparkles, CheckCircle2, Star } from 'lucide-react';
+import { CheckCircle2, ImageIcon, Package, Sparkles, Star, Tag } from 'lucide-react';
 import React from 'react';
 
 // Mock types for demonstration

@@ -1,7 +1,7 @@
 // src/components/HeaderBold.tsx
-import React, { useState, useEffect, useRef } from "react";
-import UnpackingLoader  from '@/components/UnpackingLoader';
 import Image from 'next/image';
+import React, { useEffect, useRef, useState } from "react";
+import UnpackingLoader  from '@/components/UnpackingLoader';
 import { usePublicExpStore } from '@/store/public/usePublicExpStore';
 import FeatureSlider from "./FeatureSlider";
 

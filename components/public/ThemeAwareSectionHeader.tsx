@@ -1,9 +1,9 @@
 
 
 import React from 'react';
-import SectionHeaderLight from './SectionHeaderLight';
-import SectionHeaderBold from './SectionHeaderBold';
 import { usePublicExpStore } from '@/store/public/usePublicExpStore';
+import SectionHeaderBold from './SectionHeaderBold';
+import SectionHeaderLight from './SectionHeaderLight';
 
 // Move the original SectionHeader to SectionHeaderLight for clarity
 // (the file SectionHeaderLight.tsx should be created with the original code)

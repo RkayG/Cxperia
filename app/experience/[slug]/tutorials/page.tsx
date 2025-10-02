@@ -4,12 +4,12 @@ import React, { useCallback } from "react"
 
 // INTERNAL IMPORTS
 
+import CurvedBottomNav from "@/components/public/CurvedBottomNav"
+import SectionHeader from "@/components/public/ThemeAwareSectionHeader"
 import { useExperienceTutorials } from "@/hooks/public/useTutorials"
+import { usePublicExpStore } from "@/store/public/usePublicExpStore"
 import CategoryTabs from "./components/CategoryTabs"
 import TutorialsGrid from "./components/TutorialGrid"
-import SectionHeader from "@/components/public/ThemeAwareSectionHeader"
-import { usePublicExpStore } from "@/store/public/usePublicExpStore"
-import CurvedBottomNav from "@/components/public/CurvedBottomNav"
 import PublicLoading from "../components/PublicLoading"
 
 

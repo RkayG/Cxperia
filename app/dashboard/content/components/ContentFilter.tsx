@@ -1,4 +1,4 @@
-import { Search, ChevronDown } from 'lucide-react';
+import { ChevronDown, Search } from 'lucide-react';
 import React from 'react';
 import {
   DropdownMenu,

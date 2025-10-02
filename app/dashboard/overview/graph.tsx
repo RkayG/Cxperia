@@ -1,8 +1,8 @@
 "use client"
 
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 import React from "react"
-import { useMonthlyScanAnalytics, generateMonthlyDistribution } from "@/hooks/brands/useScanAnalytics"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
+import { generateMonthlyDistribution, useMonthlyScanAnalytics } from "@/hooks/brands/useScanAnalytics"
 
 interface GraphProps {
   experienceData: any[];

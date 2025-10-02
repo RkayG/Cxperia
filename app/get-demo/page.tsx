@@ -1,13 +1,13 @@
 // app/get-demo/page.tsx
 'use client';
 
-import { useState } from 'react';
-import { buttonVariants } from "@/components/ui/button";
-import InputField from '@/components/input-field';
-import Link from 'next/link';
 import Image from 'next/image';
-import logo from '../../assets/logo.png';
+import Link from 'next/link';
+import { useState } from 'react';
 import { Footer } from '@/components/footer';
+import InputField from '@/components/input-field';
+import { buttonVariants } from "@/components/ui/button";
+import logo from '../../assets/logo.png';
 
 export default function GetDemoPage() {
   const [formData, setFormData] = useState({

@@ -3,12 +3,12 @@
 import React from 'react';
 
 // INTERNAL IMPORTS
-import SectionHeader from '@/components/public/ThemeAwareSectionHeader';
-import ProductDisplay from '../usage-instructions/components/ProductDisplay';
-import IngredientsSection from './components/IngredientSection';
-import { usePublicExpStore } from '@/store/public/usePublicExpStore';
 import CurvedBottomNav from '@/components/public/CurvedBottomNav';
+import SectionHeader from '@/components/public/ThemeAwareSectionHeader';
+import { usePublicExpStore } from '@/store/public/usePublicExpStore';
+import IngredientsSection from './components/IngredientSection';
 import PublicLoading from '../components/PublicLoading';
+import ProductDisplay from '../usage-instructions/components/ProductDisplay';
 
 const IngredientsPage: React.FC = () => {
   const { color, product, isLoading } = usePublicExpStore();

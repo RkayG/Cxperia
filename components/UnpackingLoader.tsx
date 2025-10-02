@@ -1,7 +1,7 @@
 'use client'
 import { motion } from "framer-motion";
+import { GiComb, GiLipstick, GiPerfumeBottle, GiPowder } from "react-icons/gi"; 
 import GradientText from "@/components/GradientText";
-import { GiLipstick, GiPerfumeBottle, GiComb, GiPowder } from "react-icons/gi"; 
 // Gi* are from react-icons/gi (Game Icons), but perfect for cosmetics
 
 const icons = [

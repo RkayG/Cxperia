@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth/getCurrentUser';
-import { getExperiencesByBrand, createExperience } from '@/lib/db/experiences';
+import { createExperience, getExperiencesByBrand } from '@/lib/db/experiences';
 import { createProduct } from '@/lib/db/products';
 
 export async function GET(request: NextRequest) {
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json() as any;
     console.log('Create experience request body:', body);
     const { product_id, product, experience_id } = body;
-    let logo_url = body.logo_url || (product && product.logo_url) || null;
+    const logo_url = body.logo_url || (product && product.logo_url) || null;
     let finalProductId = product_id || null;
 
     // Normalize product images from both product.product_image_url and root product_image_url

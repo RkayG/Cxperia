@@ -1,9 +1,9 @@
+import { MessageSquare } from "lucide-react"
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from "@/components/ui/avatar"
-import { MessageSquare } from "lucide-react"
 
 interface RecentSalesProps {
   feedbackData: any[];

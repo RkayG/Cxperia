@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
 import { Check, Palette, RefreshCw } from 'lucide-react';
+import React, { useState } from 'react';
 import { experienceService } from '@/services/brands/experienceService';
 
 interface ColorPickerProps {
@@ -108,7 +108,7 @@ const generateRandomColor = () => {
       try {
         await experienceService.setThemeAndColor(experienceId, selectedTheme, selectedColor);
       } catch (e) {
-        // eslint-disable-next-line no-console
+         
         console.warn('Failed to set theme and color', e);
       }
     }

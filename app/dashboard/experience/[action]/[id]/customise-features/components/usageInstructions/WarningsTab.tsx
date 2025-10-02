@@ -1,8 +1,8 @@
 // WarningsTab.tsx
+import { Minus, Plus } from "lucide-react";
 import React from "react";
-import { Plus, Minus } from "lucide-react";
-import { FormData } from "@/types/usageTypes";
 import { useIsMobile } from "@/hooks/brands/use-mobile";
+import { FormData } from "@/types/usageTypes";
 
 interface WarningsTabProps {
   formData: FormData;

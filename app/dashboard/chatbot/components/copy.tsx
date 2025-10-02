@@ -1,13 +1,13 @@
 'use client';
-import { useState, useEffect } from 'react';
-import { chatbotService, type FAQItem, type Experience, type ChatbotConfig, type Product, type Brand } from '@/lib/chatbotService';
-import ChatbotHeader from '@/app/dashboard/chatbot/components/ChatbotHeader';
-import ChatbotSidebar from '@/app/dashboard/chatbot/components/ChatbotSidebar';
-import ChatbotSettings from '@/app/dashboard/chatbot/components/ChatbotSettings';
-import ChatbotFAQManager from '@/app/dashboard/chatbot/components/ChatbotFAQManager';
-import ChatbotAppearance from '@/app/dashboard/chatbot/components/ChatbotAppearance';
-import ChatbotQRIntegration from '@/app/dashboard/chatbot/components/ChatbotQRIntegration';
+import { useEffect, useState } from 'react';
 import ChatbotAnalytics from '@/app/dashboard/chatbot/components/ChatbotAnalytics';
+import ChatbotAppearance from '@/app/dashboard/chatbot/components/ChatbotAppearance';
+import ChatbotFAQManager from '@/app/dashboard/chatbot/components/ChatbotFAQManager';
+import ChatbotHeader from '@/app/dashboard/chatbot/components/ChatbotHeader';
+import ChatbotQRIntegration from '@/app/dashboard/chatbot/components/ChatbotQRIntegration';
+import ChatbotSettings from '@/app/dashboard/chatbot/components/ChatbotSettings';
+import ChatbotSidebar from '@/app/dashboard/chatbot/components/ChatbotSidebar';
+import { type Brand, type ChatbotConfig, chatbotService, type Experience, type FAQItem, type Product } from '@/lib/chatbotService';
 
 interface FAQ {
   id: string;

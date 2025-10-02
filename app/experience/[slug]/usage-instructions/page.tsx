@@ -3,11 +3,11 @@
 import React from 'react';
 
 // INTERNAL IMPORTS
-import SectionHeader from '@/components/public/ThemeAwareSectionHeader';
-import ProductDisplay from './components/ProductDisplay';
-import InstructionsSection from './components/InstructionsSection';
-import { usePublicExpStore } from '@/store/public/usePublicExpStore';
 import CurvedBottomNav from '@/components/public/CurvedBottomNav';
+import SectionHeader from '@/components/public/ThemeAwareSectionHeader';
+import { usePublicExpStore } from '@/store/public/usePublicExpStore';
+import InstructionsSection from './components/InstructionsSection';
+import ProductDisplay from './components/ProductDisplay';
 
 const DigitalInstructionsPage: React.FC = () => {
   const color = usePublicExpStore((state) => state.color);

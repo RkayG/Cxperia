@@ -1,6 +1,6 @@
 'use client';
-import { ChevronDownIcon, SearchIcon, CheckIcon } from 'lucide-react';
-import React, { useState, useRef, useEffect } from 'react';
+import { CheckIcon, ChevronDownIcon, SearchIcon } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface DropdownSelectProps {
   value: string;
@@ -60,10 +60,10 @@ const DropdownSelect: React.FC<DropdownSelectProps> = ({
       const maxWidth = 400; // optional: set a max width for dropdown
       const margin = 12;
       let left = rect.left;
-      let top = rect.bottom + window.scrollY;
+      const top = rect.bottom + window.scrollY;
       // Calculate available space to the right
-      let availableWidth = window.innerWidth - left - margin;
-      let width = Math.max(minWidth, Math.min(rect.width, availableWidth, maxWidth));
+      const availableWidth = window.innerWidth - left - margin;
+      const width = Math.max(minWidth, Math.min(rect.width, availableWidth, maxWidth));
       // If dropdown would overflow right, shift left
       if (left + width > window.innerWidth - margin) {
         left = window.innerWidth - width - margin;

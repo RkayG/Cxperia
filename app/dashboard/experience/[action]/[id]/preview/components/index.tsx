@@ -1,13 +1,13 @@
 "use client";
 import { ChevronLeft } from "lucide-react";
-import React, { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useParams } from "next/navigation";
+import { useParams , useRouter } from "next/navigation";
+import React, { useEffect, useRef, useState } from "react";
+
+import ScrollToTop from "@/components/ScrollToTop";
+import BrandColorPicker from "./BrandColorPicker";
+import DownloadOptions from "./DownloadOptions";
 import MobilePreview from "./MobilePreview";
 import QrCodeGenerator from "./QrCodeGenerator";
-import DownloadOptions from "./DownloadOptions";
-import BrandColorPicker from "./BrandColorPicker";
-import ScrollToTop from "@/components/ScrollToTop";
 
 export default function PreviewPage() {
   const [qrCodeImageUrl, setQrCodeImageUrl] = useState<string | undefined>(undefined);

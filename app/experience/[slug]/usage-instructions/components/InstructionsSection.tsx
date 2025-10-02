@@ -1,5 +1,5 @@
 // src/components/InstructionsSection.tsx
-import { Sun, Droplet, AlertCircle, Lightbulb } from "lucide-react";
+import { AlertCircle, Droplet, Lightbulb, Sun } from "lucide-react";
 import { usePublicExpStore } from "@/store/public/usePublicExpStore";
 
 interface ApplicationStep {

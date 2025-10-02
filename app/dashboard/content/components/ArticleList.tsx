@@ -1,6 +1,6 @@
 import React from 'react';
-import ArticleCard from './ArticleCard';
 import { Skeleton } from '@/components/ui/skeleton';
+import ArticleCard from './ArticleCard';
 
 interface Article {
   id: string | number;

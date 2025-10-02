@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { SignupData } from '../page';
 import InputField from '@/components/input-field';
+import { SignupData } from '../page';
 
 interface AccountInfoStepProps {
   data: SignupData;

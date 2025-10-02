@@ -1,12 +1,12 @@
+import { ExternalLink, Loader2, PictureInPicture } from 'lucide-react';
 import React, { useState } from 'react';
-import { PictureInPicture, ExternalLink, Loader2 } from 'lucide-react';
-import type { ExperienceOverviewProps } from '@/types/productExperience';
-import { uploadFile } from '@/services/brands/uploadService';
-import { setBrandLogo } from '@/services/brands/featureService';
-import { showToast } from '@/utils/toast';
 import { Toaster } from 'react-hot-toast';
-import { useBrandLogo } from '@/hooks/brands/useFeatureApi';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useBrandLogo } from '@/hooks/brands/useFeatureApi';
+import { setBrandLogo } from '@/services/brands/featureService';
+import { uploadFile } from '@/services/brands/uploadService';
+import type { ExperienceOverviewProps } from '@/types/productExperience';
+import { showToast } from '@/utils/toast';
 
 const ExperienceOverviewSection: React.FC<ExperienceOverviewProps> = ({ data, onUpdate, isLoading: externalLoading }) => {
   console.log('data', data);

@@ -1,9 +1,9 @@
 // src/components/ProductDashboard/ProductListings.tsx
-import React, { useState, useMemo } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
-import ProductCard from "./ProductCard";
+import React, { useMemo, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 import FilterBar from "./FilterBar";
+import ProductCard from "./ProductCard";
 import type { Product, ProductListingsProps } from "./productTypes";
 
 interface ProductListingsPropsWithEdit extends ProductListingsProps {
@@ -75,9 +75,9 @@ const ProductListings: React.FC<ProductListingsPropsWithEdit> = ({
   }, [products, filter, sort]);
 
   return (
-    <div className="max-w-sm -mt-12 mx-auto sm:max-w-full ">
+    <div className="max-w-sm -mt-12 mx-auto flex flex-col md:block sm:max-w-full ">
       <h2 className="text-xl sm:text-2xl text-center font-semibold text-gray-900 mb-6">
-        Your Product Listings
+        Your Product Experiences
       </h2>
       
       {/* Show skeleton for category bar when loading */}
@@ -92,7 +92,7 @@ const ProductListings: React.FC<ProductListingsPropsWithEdit> = ({
         /* Horizontal category bar */
         categories.length > 0 && (
           <div
-            className="w-full mb-6 flex items-center bg-gray-200 justify-start overflow-x-auto hide-scrollbar"
+            className="w-full mb-6 flex items-center  justify-start overflow-x-auto hide-scrollbar"
             style={{
               padding: "0.5rem 1rem",
               minHeight: "3.5rem",
@@ -101,10 +101,9 @@ const ProductListings: React.FC<ProductListingsPropsWithEdit> = ({
             <button
               className={`px-5 py-2 rounded-sm text-sm font-semibold whitespace-nowrap transition-colors duration-150 mr-2 ${
                 filter === ""
-                  ? "bg-white/70 text-purple-700 shadow font-bold"
-                  : "bg-transparent text-blue-800 hover:bg-white/0"
+                  ? "border-b-2 border-purple-700 text-purple-700 font-bold"
+                  : "bg-transparent text-blue-800 hover:bg-white/0 border-b-2 border-transparent "
               }`}
-              style={{ border: "none" }}
               onClick={() => setFilter("")}
             >
               All
@@ -114,10 +113,10 @@ const ProductListings: React.FC<ProductListingsPropsWithEdit> = ({
                 key={cat}
                 className={`px-5 py-2 rounded-sm text-sm font-semibold whitespace-nowrap transition-colors duration-150 mr-2 ${
                   filter === cat
-                    ? "bg-white/70 text-purple-700 shadow font-bold"
-                    : "bg-transparent text-blue-800  hover:bg-white/60"
+                    ? "border-b-2 border-purple-700 text-purple-700  font-bold"
+                    : "bg-transparent text-blue-800  hover:bg-white/60 border-b-2 border-transparent"
                 }`}
-                style={{ border: "none" }}
+                
                 onClick={() => setFilter(cat)}
               >
                 {cat}
@@ -134,7 +133,7 @@ const ProductListings: React.FC<ProductListingsPropsWithEdit> = ({
           onAddNewProduct={handleAddNewProduct}
           isLoading={isLoading}
         />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6">
           {isLoading
             ? Array.from({ length: LOADING_SKELETON_COUNT }).map((_, i) => (
                 <div key={i} className="bg-white rounded-xl shadow-sm p-4 flex flex-col">

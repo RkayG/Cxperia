@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { validateUsageInstructions } from "@/utils/validateUsageInstructions";
-import { Drawer, DrawerContent } from "@/components/ui/drawer";
-import { showToast } from "@/utils/toast";
-import { useAddInstruction } from "@/hooks/brands/useFeatureApi";
 import {
-  X,
-  Plus,
-  Minus,
-  Eye,
-  ListChecks,
-  Lightbulb,
   AlertTriangle,
+  Eye,
+  Lightbulb,
+  ListChecks,
+  Minus,
+  Plus,
+  X,
 } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { useIsMobile } from "@/hooks/brands/use-mobile";
+import { useAddInstruction } from "@/hooks/brands/useFeatureApi";
+import { showToast } from "@/utils/toast";
+import { validateUsageInstructions } from "@/utils/validateUsageInstructions";
 interface ApplicationStep {
   id: string;
   step: string;

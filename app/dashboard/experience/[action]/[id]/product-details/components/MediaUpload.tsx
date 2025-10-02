@@ -1,12 +1,12 @@
 import { PictureInPictureIcon } from 'lucide-react';
-import React, { useCallback, useState } from 'react';
 import Image from 'next/image';
-import type { MediaUploadProps, UploadedImage } from '@/types/productExperience';
-import UploadTips from './UploadTips';
+import React, { useCallback, useState } from 'react';
 import demo3Image from '@/assets/images/demo3.jpg';
 import demo4Image from '@/assets/images/demo4.png';
 import demo6Image from '@/assets/images/demo6.png';
 import { useUpload } from '@/hooks/brands/use-uploads';
+import type { MediaUploadProps, UploadedImage } from '@/types/productExperience';
+import UploadTips from './UploadTips';
 
 const MediaUpload: React.FC<MediaUploadProps> = ({ images, onImagesUpdate, errors }) => {
 

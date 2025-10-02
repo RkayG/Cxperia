@@ -1,6 +1,6 @@
 // TipsTab.tsx
+import { Minus, Plus } from "lucide-react";
 import React from "react";
-import { Plus, Minus } from "lucide-react";
 import { FormData } from "@/types/usageTypes";
 
 interface TipsTabProps {

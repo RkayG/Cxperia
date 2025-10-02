@@ -1,10 +1,10 @@
 import React, {useMemo } from 'react';
-import IngredientModal from './ingredients/IngredientModal';
-import DigitalInstructionsModal from './usageInstructions/DigitalInstructionsModal';
-import CustomerSupportLinksModal from './customerSupport/CustomerSupportLinkModal';
 import type { CustomerSupportLinksData } from '@/types/customerServiceTypes';
 import type { Ingredient } from '@/types/ingredientTypes';
 import type { Instruction } from '@/types/instructionTypes'
+import CustomerSupportLinksModal from './customerSupport/CustomerSupportLinkModal';
+import IngredientModal from './ingredients/IngredientModal';
+import DigitalInstructionsModal from './usageInstructions/DigitalInstructionsModal';
 
 
 interface StepTwoModalsProps {

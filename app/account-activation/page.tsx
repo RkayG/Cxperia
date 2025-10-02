@@ -1,11 +1,11 @@
 // app/auth/activate/page.tsx
 'use client';
-import { supabase } from '@/lib/supabase';
-import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useState, useEffect } from 'react';
-import InputField from '@/components/input-field';
-import logo from '@/assets/logo.png';
 import Image from 'next/image';
+import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import logo from '@/assets/logo.png';
+import InputField from '@/components/input-field';
+import { supabase } from '@/lib/supabase';
 
 export default function ActivateAccount() {
   const [password, setPassword] = useState('');

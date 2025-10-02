@@ -1,13 +1,13 @@
 import {
-  Clock,
-  Users,
-  Star,
-  Play,
-  Calendar,
   ArrowLeft,
+  Calendar,
+  Clock,
+  Play,
   Share2,
+  Star,
+  Users,
 } from "lucide-react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ProductUsedCard from "./ProductsUsedCard";
 
 

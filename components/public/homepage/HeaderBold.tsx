@@ -1,7 +1,7 @@
 'use client';
 import { ChevronLeft, ChevronRight, ShoppingCart } from "lucide-react";
 import Image from 'next/image';
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { usePublicExpStore } from "@/store/public/usePublicExpStore";
 
 const HeaderBold: React.FC = () => {

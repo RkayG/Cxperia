@@ -1,7 +1,7 @@
 // src/components/IngredientsSection.tsx
 
-import React, { use, useState } from "react";
 import { AlertCircle, Info } from "lucide-react";
+import React, { use, useState } from "react";
 import { usePublicExpStore } from "@/store/public/usePublicExpStore";
 
 interface Ingredient {

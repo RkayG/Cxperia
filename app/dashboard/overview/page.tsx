@@ -1,5 +1,7 @@
 "use client";
 
+import { Activity, Eye, MessageSquare, Package } from 'lucide-react';
+import React from 'react';
 import { RecentSales } from "@/app/dashboard/overview/recent-sales";
 import {
   Card,
@@ -8,11 +10,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Graph } from "./graph";
 import { useExperiences } from '@/hooks/brands/useExperienceApi';
 import { useFeedbacks } from '@/hooks/brands/useFeedbackApi';
-import { Activity, Eye, MessageSquare, Package } from 'lucide-react';
-import React from 'react';
+import { Graph } from "./graph";
 
 export default function DashboardPage() {
   // Fetch experiences and feedbacks

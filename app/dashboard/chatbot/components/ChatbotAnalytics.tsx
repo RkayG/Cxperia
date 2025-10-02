@@ -1,4 +1,4 @@
-import { Download, MessageCircle, BarChart3, Clock } from "lucide-react"
+import { BarChart3, Clock, Download, MessageCircle } from "lucide-react"
 import React from "react"
 
 const ChatbotAnalytics = () => {

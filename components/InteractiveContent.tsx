@@ -1,9 +1,9 @@
 // src/components/InteractiveContent.tsx
 'use client';
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { usePublicExpStore } from '@/store/public/usePublicExpStore';
+import { AnimatePresence, motion } from "framer-motion";
 import Link from 'next/link';
+import React, { useEffect, useState } from "react";
+import { usePublicExpStore } from '@/store/public/usePublicExpStore';
 
 type ContentSection = 'overview' | 'navigation';
 

@@ -1,17 +1,17 @@
 'use client';
 import { useRouter } from "next/navigation";
 import { FaPlus } from "react-icons/fa";
-import { MdOutlinePlaylistAdd, MdQrCode, MdPending } from "react-icons/md";
+import { MdOutlinePlaylistAdd, MdPending, MdQrCode } from "react-icons/md";
 import {
   getVideoType,
-  getYouTubeEmbedUrl,
   getVimeoEmbedUrl,
+  getYouTubeEmbedUrl,
 } from "@/components/TutorialsAndRoutines/videoUtils";
 import {
   Card,
-  CardHeader,
   CardContent,
   CardFooter,
+  CardHeader,
 } from "@/components/ui/card";
 
 // A card component for displaying product or tutorial projects

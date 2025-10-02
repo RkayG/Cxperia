@@ -1,11 +1,11 @@
 // src/components/TutorialsGrid.tsx
 import React from 'react';
-import TutorialCard from './TutorialCard';
 
 import { useExperienceTutorials } from '@/hooks/public/useTutorials';
-import { isValidVideoUrl, getVideoType, getYouTubeEmbedUrl, getVimeoEmbedUrl } from './videoUtils';
 import { usePublicExpStore } from '@/store/public/usePublicExpStore';
+import TutorialCard from './TutorialCard';
 import TutorialGridSkeleton from './TutorialSkeleton';
+import { getVideoType, getVimeoEmbedUrl, getYouTubeEmbedUrl, isValidVideoUrl } from './videoUtils';
   
 interface TutorialsGridProps {
   tutorials?: any[];

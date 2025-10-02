@@ -1,8 +1,8 @@
 'use client';
+import { Image as ImageIcon, Star } from 'lucide-react';
 import React, { useState } from 'react';
-import { Star, Image as ImageIcon } from 'lucide-react';
-import type { MessageListItemProps } from './inboxTypes';
 import FeedbackImageModal from './FeedbackImageModal';
+import type { MessageListItemProps } from './inboxTypes';
 
 const MessageListItem: React.FC<MessageListItemProps> = ({ message: feedback, onSelectMessage }) => {
   const [showImages, setShowImages] = useState(false);
