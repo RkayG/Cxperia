@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { usePublicExpStore } from '@/store/public/usePublicExpStore';
 
 interface RatingSectionProps {
-  onRatingSelected?: () => void;
+  onRatingSelected?: (rating: number) => void;
+  selectedRating?: number | null;
 }
 
-const RatingSection: React.FC<RatingSectionProps> = ({ onRatingSelected }) => {
-  const [selectedRating, setSelectedRating] = useState<number | null>(null);
+const RatingSection: React.FC<RatingSectionProps> = ({ onRatingSelected, selectedRating: propSelectedRating }) => {
   const [hoveredRating, setHoveredRating] = useState<number | null>(null);
+  const selectedRating = propSelectedRating;
   const { color, product } = usePublicExpStore();
   // Rating data with emojis and descriptive text
   const ratings = [
@@ -68,8 +69,7 @@ const RatingSection: React.FC<RatingSectionProps> = ({ onRatingSelected }) => {
                     : 'hover:scale-105 hover:shadow-lg'
                   }`}
                 onClick={() => {
-                  setSelectedRating(ratingNumber);
-                  if (onRatingSelected) onRatingSelected();
+                  if (onRatingSelected) onRatingSelected(ratingNumber);
                 }}
                 onMouseEnter={() => setHoveredRating(ratingNumber)}
                 onMouseLeave={() => setHoveredRating(null)}
