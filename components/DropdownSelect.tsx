@@ -1,3 +1,4 @@
+'use client';
 import { ChevronDownIcon, SearchIcon, CheckIcon } from 'lucide-react';
 import React, { useState, useRef, useEffect } from 'react';
 
