@@ -1,62 +1,58 @@
 "use client"
 
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
+import React from "react"
+import { useMonthlyScanAnalytics, generateMonthlyDistribution } from "@/hooks/brands/useScanAnalytics"
 
-const data = [
-  {
-    name: "Jan",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Feb",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Mar",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Apr",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "May",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Jun",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Jul",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Aug",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Sep",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Oct",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Nov",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Dec",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-]
+interface GraphProps {
+  experienceData: any[];
+}
 
-export function Graph() {
+export function Graph({ experienceData }: GraphProps) {
+  // Fetch real monthly scan data
+  const { data: scanAnalytics, isLoading, error } = useMonthlyScanAnalytics(12);
+
+  // Generate monthly data based on real scan events or fallback to distribution
+  const monthlyData = React.useMemo(() => {
+    // If we have real scan analytics data, use it
+    if (scanAnalytics?.data && scanAnalytics.data.length > 0) {
+      return scanAnalytics.data.map(item => ({
+        name: item.name,
+        total: item.total,
+        unique: item.unique,
+        returning: item.returning,
+      }));
+    }
+
+    // Fallback: distribute total scans across months with realistic patterns
+    const totalScans = experienceData.reduce((sum, exp) => sum + (exp.total_scan_count || exp.scan_count || 0), 0);
+    
+    if (totalScans === 0) {
+      // Return empty data for all months
+      const months = [
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+      ];
+      return months.map(month => ({ 
+        name: month, 
+        total: 0, 
+        unique: 0, 
+        returning: 0 
+      }));
+    }
+
+    // Use the utility function to generate realistic distribution
+    const distributedData = generateMonthlyDistribution(totalScans, 12);
+    return distributedData.map(item => ({
+      name: item.name,
+      total: item.total,
+      unique: item.unique,
+      returning: item.returning,
+    }));
+  }, [scanAnalytics, experienceData]);
   return (
     <ResponsiveContainer width="100%" height={350}>
-      <BarChart data={data}>
+      <BarChart data={monthlyData}>
         <XAxis
           dataKey="name"
           stroke="#888888"
@@ -69,13 +65,21 @@ export function Graph() {
           fontSize={12}
           tickLine={false}
           axisLine={false}
-          tickFormatter={(value) => `$${value}`}
+          tickFormatter={(value) => `${value}`}
         />
         <Bar
-          dataKey="total"
-          fill="currentColor"
+          dataKey="unique"
+          stackId="scans"
+          fill="#8b5cf6"
+          radius={[0, 0, 0, 0]}
+          name="Unique Scans"
+        />
+        <Bar
+          dataKey="returning"
+          stackId="scans"
+          fill="#a78bfa"
           radius={[4, 4, 0, 0]}
-          className="fill-primary"
+          name="Returning Scans"
         />
       </BarChart>
     </ResponsiveContainer>
