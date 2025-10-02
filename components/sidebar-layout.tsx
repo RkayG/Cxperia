@@ -4,9 +4,11 @@ import { cn } from "@/lib/utils";
 import { 
   BadgePercent, 
   BarChart4, 
+  Book,
   Columns3, 
   Globe, 
   Locate, 
+  MessageCircle,
   Settings2, 
   ShoppingBag, 
   ShoppingCart, 
@@ -15,7 +17,7 @@ import {
   Menu 
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import {
   Breadcrumb,
@@ -40,6 +42,8 @@ const iconMap: Record<string, LucideIcon> = {
   ShoppingCart,
   BadgePercent,
   Settings2,
+  Book,
+  MessageCircle,
 };
 
 function useSegment(basePath: string) {
@@ -153,29 +157,97 @@ export type HeaderBreadcrumbItem = { title: string; href: string };
 
 function HeaderBreadcrumb(props: { items: SidebarItem[], baseBreadcrumb?: HeaderBreadcrumbItem[], basePath: string }) {
   const segment = useSegment(props.basePath);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const item = props.items.find((item) => item.type === 'item' && item.href === segment);
   const title: string | undefined = (item as any)?.name;
   // Get brand from store
   const brand = require('@/store/brands/useExperienceStore').useExperienceStore((state: any) => state.brand);
 
+  // Get brand name with proper validation
+  const brandName = brand?.name?.trim();
+  const hasValidBrand = brandName && brandName.length > 0;
+
+  // Custom route handling for specific paths
+  const getCustomBreadcrumb = () => {
+    const mode = searchParams.get('mode');
+
+    // Handle experience routes
+    if (pathname.includes('/dashboard/experience/create')) {
+      return {
+        items: [
+          { title: 'Create Experience', href: '/dashboard/experience/create' }
+        ]
+      };
+    }
+    
+    if (pathname.includes('/dashboard/experience/edit')) {
+      return {
+        items: [
+          { title: 'Edit Experience', href: '/dashboard/experience/edit' }
+        ]
+      };
+    }
+    
+    if (pathname.includes('/dashboard/experience/preview')) {
+      return {
+        items: [
+          { title: 'Preview Experience', href: '/dashboard/experience/preview' }
+        ]
+      };
+    }
+
+    // Handle tutorial routes
+    if (pathname.includes('/dashboard/content/tutorial')) {
+      const tutorialItems = [
+        { title: 'Content', href: '/dashboard/content' }
+      ];
+      
+      if (mode === 'create') {
+        tutorialItems.push({ title: 'Create Tutorial', href: '/dashboard/content/tutorial?mode=create' });
+      } else if (mode === 'edit') {
+        tutorialItems.push({ title: 'Edit Tutorial', href: '/dashboard/content/tutorial?mode=edit' });
+      } else {
+        tutorialItems.push({ title: 'Tutorial', href: '/dashboard/content/tutorial' });
+      }
+      
+      return { items: tutorialItems };
+    }
+
+    return null;
+  };
+
+  const customBreadcrumb = getCustomBreadcrumb();
+
   return (
     <Breadcrumb>
       <BreadcrumbList>
-        <BreadcrumbItem>
-          <BreadcrumbLink href="/dashboard/home">{brand?.name || 'Brand'}</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        {props.baseBreadcrumb?.map((item, index) => (
+        {hasValidBrand && (
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/dashboard/home">{brandName}</BreadcrumbLink>
+          </BreadcrumbItem>
+        )}
+        
+        {/* Render custom breadcrumb items if available */}
+        {customBreadcrumb?.items.map((item, index) => (
           <>
+            {hasValidBrand && index === 0 && <BreadcrumbSeparator />}
             <BreadcrumbItem key={index}>
               <BreadcrumbLink href={item.href}>{item.title}</BreadcrumbLink>
             </BreadcrumbItem>
-            <BreadcrumbSeparator key={`separator-${index}`} />
+            {index < customBreadcrumb.items.length - 1 && <BreadcrumbSeparator key={`separator-${index}`} />}
           </>
         ))}
-        <BreadcrumbItem>
-          <BreadcrumbPage>{title}</BreadcrumbPage>
-        </BreadcrumbItem>
+        
+        {/* Fallback to default title if no custom breadcrumb */}
+        {!customBreadcrumb && (
+          <>
+            {hasValidBrand && <BreadcrumbSeparator />}
+            <BreadcrumbItem>
+              <BreadcrumbPage>{title}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </>
+        )}
       </BreadcrumbList>
     </Breadcrumb>
   );
