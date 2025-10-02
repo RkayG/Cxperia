@@ -71,25 +71,32 @@ const ProductDashboard: React.FC = () => {
 
   // Map experiences to Product[] shape expected by ProductListings
   const products: Product[] = React.useMemo(() => {
-    return experienceArr.map((exp: any) => ({
-      id: exp.experience_id,
-      image: exp.product_image_url ? exp.product_image_url[0] || '/src/assets/images/demo6.png' : '/src/assets/images/demo6.png',
-      name: exp.name || exp.title || 'Untitled Product',
-      category: exp.category || 'Uncategorized',
-      experience: exp.name + ' experience' || exp.experience_name || '',
-      qrCodeStatus: exp.qr_code_url ? 'Generated' : 'Pending',
-      addedDate: exp.created_at ? new Date(exp.created_at).toISOString().slice(0, 10) : '',
-      // Attach full experience data for navigation
-      _fullExp: exp,
-    }));
+    return experienceArr.map((exp: any) => {
+      // Get product data from the nested products object
+      const product = exp.products || {};
+      
+      return {
+        id: exp.id, // Use exp.id instead of exp.experience_id
+        image: product.product_image_url && product.product_image_url[0] 
+          ? product.product_image_url[0] 
+          : '/src/assets/images/demo6.png',
+        name: product.name || 'Untitled Product',
+        category: product.category || 'Uncategorized',
+        experience: product.name ? `${product.name} experience` : 'Untitled experience',
+        qrCodeStatus: exp.qr_code_url ? 'Generated' : 'Pending',
+        addedDate: exp.created_at ? new Date(exp.created_at).toISOString().slice(0, 10) : '',
+        // Attach full experience data for navigation
+        _fullExp: exp,
+      };
+    });
   }, [experienceArr]);
 
   // Navigation handler to experience edit page with prefill data
   const router = useRouter();
   const handleEditExperience = (exp: any) => {
-    router.push(`/dashboard/experience/edit/${exp.experience_id}?step=product-details`, {
-      state: { experienceData: exp } // Pass full experience data via state
-    });
+    // Store experience data in localStorage for the edit page to access
+    localStorage.setItem('experienceData', JSON.stringify(exp));
+    router.push(`/dashboard/experience/edit/${exp.id}?step=product-details`);
   };
 
   return (

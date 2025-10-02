@@ -484,7 +484,7 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
     <div className="min-h-screen bg-gray-50">
       <Toaster />
       {/* Header Skeleton */}
-      <div className="lg:bg-white px-6 sticky top-0 z-10  border-b">
+      <div className=" px-6 sticky top-0 z-10  ">
         <div className="sm:max-w-7xl max-w-sm mx-auto px-4 md:px-6 py-4">
           <div className="flex items-center justify-between">
             <Skeleton className="h-8 w-64" />
@@ -586,7 +586,7 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
     <div className="min-h-screen bg-gray-50">
       <Toaster />
       {/* Header */}
-      <div className="lg:bg-white px-6 sticky top-0 z-10 lg:shadow-sm border-b">
+      <div className=" px-6 sticky top-0 z-10">
         <div className="sm:max-w-7xl max-w-sm mx-auto px-4 md:px-6 py-4">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-semibold text-gray-900">
@@ -603,15 +603,24 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
               </button>
               <button
                 onClick={handleSave}
-                className="flex items-center px-4 py-2 bg-purple-800 text-white rounded-xl hover:bg-purple-700 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                className="flex items-center px-4 py-2 bg-purple-800 text-white rounded-xl hover:bg-purple-700 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                 disabled={
                   isFetchingTutorial ||
                   addTutorialMutation.status === "pending" ||
                   updateTutorialMutation.status === "pending"
                 }
               >
-                <Save className="w-4 h-4 mr-2" />
-                {tutorialId ? "Update Tutorial" : "Publish Tutorial"}
+                {(addTutorialMutation.status === "pending" || updateTutorialMutation.status === "pending") ? (
+                  <>
+                    <div className="w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    {tutorialId ? "Updating..." : "Publishing..."}
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4 mr-2" />
+                    {tutorialId ? "Update Tutorial" : "Publish Tutorial"}
+                  </>
+                )}
               </button>
               </div>
             </div>
@@ -1379,10 +1388,24 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
           </button>
           <button
             onClick={handleSave}
-            className="flex-1 flex items-center justify-center px-2 md:px-4 py-2 bg-purple-800 text-white rounded-md"
+            className="flex-1 flex items-center justify-center px-2 md:px-4 py-2 bg-purple-800 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={
+              isFetchingTutorial ||
+              addTutorialMutation.status === "pending" ||
+              updateTutorialMutation.status === "pending"
+            }
           >
-            <Save className="w-4 h-4 mr-2" />
-            Publish
+            {(addTutorialMutation.status === "pending" || updateTutorialMutation.status === "pending") ? (
+              <>
+                <div className="w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                {tutorialId ? "Updating..." : "Publishing..."}
+              </>
+            ) : (
+              <>
+                <Save className="w-4 h-4 mr-2" />
+                {tutorialId ? "Update" : "Publish"}
+              </>
+            )}
           </button>
         </div>
       </div>
