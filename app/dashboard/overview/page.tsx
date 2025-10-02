@@ -22,28 +22,28 @@ export default function DashboardPage() {
   // Process experiences data
   const experienceArr: any[] = React.useMemo(() => {
     if (!experiencesRaw) return [];
-    if (experiencesRaw.error || (experiencesRaw.data && !Array.isArray(experiencesRaw.data))) {
+    if ((experiencesRaw as any).error || ((experiencesRaw as any).data && !Array.isArray((experiencesRaw as any).data))) {
       return [];
     }
     if (Array.isArray(experiencesRaw)) return experiencesRaw;
-    if (Array.isArray(experiencesRaw.data)) return experiencesRaw.data;
+    if (Array.isArray((experiencesRaw as any).data)) return (experiencesRaw as any).data;
     return [];
   }, [experiencesRaw]);
 
   // Process feedbacks data
   const feedbackArr: any[] = React.useMemo(() => {
     if (!feedbacksRaw) return [];
-    if (feedbacksRaw.error || (feedbacksRaw.data && !Array.isArray(feedbacksRaw.data))) {
+    if ((feedbacksRaw as any).error || ((feedbacksRaw as any).data && !Array.isArray((feedbacksRaw as any).data))) {
       return [];
     }
     if (Array.isArray(feedbacksRaw)) return feedbacksRaw;
-    if (Array.isArray(feedbacksRaw.data)) return feedbacksRaw.data;
+    if (Array.isArray((feedbacksRaw as any).data)) return (feedbacksRaw as any).data;
     return [];
   }, [feedbacksRaw]);
 
   // Calculate metrics
   const totalExperiences = experienceArr.length;
-  const activeExperiences = experienceArr.filter(exp => exp.is_published).length;
+  const activeExperiences = experienceArr.filter((exp: any) => exp.is_published).length;
   const totalScans = experienceArr.reduce((sum, exp) => sum + (exp.scan_count || 0), 0);
   const totalFeedbacks = feedbackArr.length;
 

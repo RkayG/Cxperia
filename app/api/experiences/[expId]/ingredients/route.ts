@@ -47,12 +47,13 @@ const keyMap: Record<string, string> = {
 }
 
 // Add ingredient(s)
-export async function POST(req: NextRequest, { params }: { params: { expId: string } }) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ expId: string }> }) {
+  const { expId } = await params;
   const supabase = await createClient()
   const user = await getCurrentUser()
-  const experience_id = params.expId
+  const experience_id = expId
   const session_brand_id = user?.brand_id
-  const body: any = await req.json()
+  const body: any = await req.json() as any
 
   // 1. Initial validation
   if (!session_brand_id) {
@@ -130,10 +131,11 @@ export async function POST(req: NextRequest, { params }: { params: { expId: stri
 }
 
 // Get all ingredients for an experience
-export async function GET(req: NextRequest, { params }: { params: { expId: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ expId: string }> }) {
+  const { expId } = await params;
   const supabase = await createClient()
   const user = await getCurrentUser()
-  const experience_id = params.expId
+  const experience_id = expId
   const brand_id = user?.brand_id
 
   if (!experience_id) {
@@ -164,7 +166,7 @@ export async function PATCH(req: NextRequest) {
   const supabase = await createClient()
   const user = await getCurrentUser()
   const brand_id = user?.brand_id
-  const body: any = await req.json()
+  const body: any = await req.json() as any
   const { id } = body // Get ID from the body (as the original controller used req.params, but this is simpler for Supabase)
   const fields = body // Fields remain in body
 
@@ -219,7 +221,7 @@ export async function DELETE(req: NextRequest) {
   const supabase = await createClient()
   const user = await getCurrentUser()
   const brand_id = user?.brand_id
-  const body: any = await req.json()
+  const body: any = await req.json() as any
   const { id } = body
 
   if (!id) {

@@ -7,7 +7,7 @@ import ProductCard from "./ProductCard";
 import type { Product, ProductListingsProps } from "./productTypes";
 
 interface ProductListingsPropsWithEdit extends ProductListingsProps {
-  onEditExperience?: (exp: any) => void;
+  onEditExperience?: (_exp: any) => void;
   isLoading?: boolean;
 }
 

@@ -3,14 +3,15 @@ import { getCurrentUser } from '@/lib/auth/getCurrentUser';
 import { getExperienceById, updateExperience } from '@/lib/db/experiences';
 import { updateProduct } from '@/lib/db/products';
 
-export async function GET(request: NextRequest, { params }: { params: { expId: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ expId: string }> }) {
   try {
+    const { expId } = await params;
     const user = await getCurrentUser();
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const experience = await getExperienceById(params.expId);
+    const experience = await getExperienceById(expId);
     if (!experience) {
       return NextResponse.json({ error: 'Experience not found' }, { status: 404 });
     }
@@ -49,8 +50,9 @@ export async function GET(request: NextRequest, { params }: { params: { expId: s
   }
 }
 
-export async function PATCH(request: NextRequest, { params }: { params: { expId: string } }) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ expId: string }> }) {
   try {
+    const { expId } = await params;
     const user = await getCurrentUser();
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -154,7 +156,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { expId:
       experienceUpdates.product_id = finalProductId;
     }
 
-    const experience = await updateExperience(params.expId, experienceUpdates);
+    const experience = await updateExperience(expId, experienceUpdates);
 
     // Always return experience with joined product and features (if available)
     let features = [];
@@ -181,15 +183,16 @@ export async function PATCH(request: NextRequest, { params }: { params: { expId:
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { expId: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ expId: string }> }) {
   try {
+    const { expId } = await params;
     const user = await getCurrentUser();
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const { deleteExperience } = await import('@/lib/db/experiences');
-    await deleteExperience(params.expId);
+    await deleteExperience(expId);
 
     return NextResponse.json({ success: true, message: 'Experience deleted successfully' });
 

@@ -2,11 +2,8 @@ import { revalidatePath } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth/getCurrentUser';
 
-export async function POST(
-  req: NextRequest,
-  { params }: { params: { slug: string } }
-) {
-  const slug = params.slug;
+export async function POST(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
 
   try {
     const user = await getCurrentUser();

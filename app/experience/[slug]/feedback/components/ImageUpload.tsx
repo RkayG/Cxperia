@@ -26,14 +26,14 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ images = [], onImagesChange }
         
         // Add the uploaded image URL to the images array
         if (onImagesChange) {
-          onImagesChange([...images, result.data.url]);
+          onImagesChange([...images, (result as any).data.url]);
         }
         
-        showToast('Image uploaded successfully!', 'success');
+        showToast.success('Image uploaded successfully!');
       } catch (error) {
         console.error('Upload error:', error);
         const errorMessage = error instanceof Error ? error.message : 'Failed to upload image';
-        showToast(errorMessage, 'error');
+        showToast.error(errorMessage);
       } finally {
         // Remove from uploading set
         setUploadingFiles(prev => {

@@ -2,12 +2,12 @@
 'use client';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import logo from '@/assets/logo.png';
 import InputField from '@/components/input-field';
 import { supabase } from '@/lib/supabase';
 
-export default function ActivateAccount() {
+function ActivateAccountContent() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -263,5 +263,20 @@ export default function ActivateAccount() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ActivateAccount() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-pink-100">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    }>
+      <ActivateAccountContent />
+    </Suspense>
   );
 }

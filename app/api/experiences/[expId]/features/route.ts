@@ -29,10 +29,11 @@ async function authorizeExperienceAccess(supabase: any, experience_id: string, b
 
 // --- GET /api/experiences/[id]/features (Get all enabled features for an experience) ---
 // Mapped from: static async getFeaturesByExperience(req, res)
-export async function GET(req: NextRequest, { params }: { params: { expId: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ expId: string }> }) {
+  const { expId } = await params;
   const supabase = await createClient()
   const user = await getCurrentUser()
-  const experience_id = params.expId
+  const experience_id = expId
   const brand_id = user?.brand_id
 
   if (!experience_id) {
@@ -67,12 +68,13 @@ export async function GET(req: NextRequest, { params }: { params: { expId: strin
 
 // --- POST /api/experiences/[id]/features (Add or Update feature) ---
 // Mapped from: static async addFeature(req, res) - Implements upsert logic
-export async function POST(req: NextRequest, { params }: { params: { expId: string } }) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ expId: string }> }) {
+  const { expId } = await params;
   const supabase = await createClient()
   const user = await getCurrentUser()
-  const experience_id = params.expId
+  const experience_id = expId
   const brand_id = user?.brand_id
-  const { feature_name, is_enabled } = await req.json()
+  const { feature_name, is_enabled } = await req.json() as any
 
   if (!experience_id) {
     return NextResponse.json({ success: false, message: 'experience_id is required in URL params' }, { status: 400 })

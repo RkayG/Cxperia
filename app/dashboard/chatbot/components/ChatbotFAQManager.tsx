@@ -1,14 +1,6 @@
 import { ChevronDown, ChevronRight, Edit3, Plus, Search, Trash2 } from "lucide-react"
 import React from "react"
-
-interface FAQItem {
-  id: string
-  question: string
-  answer: string
-  category_id?: string
-  product_id?: string | null
-  priority: number
-}
+import { type FAQItem } from '@/lib/chatbotService'
 
 interface ChatbotFAQManagerProps {
   faqs: FAQItem[]

@@ -249,7 +249,7 @@ const InstructionsTab: React.FC<InstructionsTabProps> = ({
           </label>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
             {usageTimeOptions.map((option) => {
-              const checked = formData.usageTimeType?.includes(option);
+              const checked = formData.usageTimeType?.includes(option) || false;
               return (
                 <label key={option} className="flex items-center cursor-pointer select-none">
                   <span className={checkboxIndicator(checked)} style={{ minWidth: 20 }}>

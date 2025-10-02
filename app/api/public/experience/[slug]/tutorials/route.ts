@@ -6,9 +6,9 @@ const CACHE_TTL_SECONDS = 604800; // 7 days
 
 // --- GET /api/public/experience/[slug]/tutorials ---
 // Mapped from: async function getPublicTutorials(req, res)
-export async function GET(req: NextRequest, { params }: { params: { slug: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const supabase = await createClient();
-  const slug = params.slug;
 
   // Security Check: Validate Secret Key
   const secret = req.headers.get('x-public-secret') || req.nextUrl.searchParams.get('secret');

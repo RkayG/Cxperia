@@ -37,7 +37,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     });
 
     if (response.ok) {
-      const result = await response.json();
+      const result = await response.json() as { brandId: string };
 
       showToast.success(`Brand created successfully! Invitation sent to ${formData.contact_email}`);
       router.push(`/admin/brands/${result.brandId}`);

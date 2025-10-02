@@ -22,22 +22,21 @@ const ProductDashboard: React.FC = () => {
       localStorage.removeItem('experienceId');
     }
     // Only run on mount or when pathname.search changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname.search]);
 
   // Calculate metrics based on experiences
   const experienceArr: any[] = React.useMemo(() => {
     if (!experiencesRaw) return [];
-    if (experiencesRaw.error || (experiencesRaw.data && !Array.isArray(experiencesRaw.data))) {
+    if ((experiencesRaw as any).error || ((experiencesRaw as any).data && !Array.isArray((experiencesRaw as any).data))) {
       return [];
     }
     if (Array.isArray(experiencesRaw)) return experiencesRaw;
-    if (Array.isArray(experiencesRaw.data)) return experiencesRaw.data;
+    if (Array.isArray((experiencesRaw as any).data)) return (experiencesRaw as any).data;
     return [];
   }, [experiencesRaw]);
 
-  const activeQrCount = experienceArr.filter(exp => exp.qr_code_url).length;
-  const pendingQrCount = experienceArr.filter(exp => !exp.qr_code_url).length;
+  const activeQrCount = experienceArr.filter((exp: any) => exp.qr_code_url).length;
+  const pendingQrCount = experienceArr.filter((exp: any) => !exp.qr_code_url).length;
 
   const performanceMetrics: PerformanceMetric[] = [
     {

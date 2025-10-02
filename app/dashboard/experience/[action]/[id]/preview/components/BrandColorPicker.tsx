@@ -94,7 +94,7 @@ const generateRandomColor = () => {
     '#9932CC', // Dark Orchid
     '#A52A2A', // Brown
   ];
-  const randomColor = colors[Math.floor(Math.random() * colors.length)];
+  const randomColor = colors[Math.floor(Math.random() * colors.length)] || '#8B5CF6';
   setCustomColor(randomColor);
   setSelectedColor(randomColor);
 };

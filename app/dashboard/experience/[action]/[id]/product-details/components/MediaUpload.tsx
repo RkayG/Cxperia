@@ -64,6 +64,7 @@ const MediaUpload: React.FC<MediaUploadProps> = ({ images, onImagesUpdate, error
 
       for (let i = 0; i < newImages.length; i++) {
         const img = newImages[i];
+        if (!img) continue; // Skip undefined images
         try {
           const res: any = await upload(img.file!, 'experience_images');
           let url = '';
@@ -72,12 +73,18 @@ const MediaUpload: React.FC<MediaUploadProps> = ({ images, onImagesUpdate, error
           else if (res?.data?.url) url = res.data.url;
           else if (res?.data?.secure_url) url = res.data.secure_url;
           // Update image with url
-          updated[images.length + i].url = url;
-          updated[images.length + i].uploading = false;
-          updated[images.length + i].file = undefined;
+          const targetIndex = images.length + i;
+          if (updated[targetIndex]) {
+            updated[targetIndex].url = url;
+            updated[targetIndex].uploading = false;
+            updated[targetIndex].file = undefined;
+          }
         } catch (e: any) {
-          updated[images.length + i].uploading = false;
-          updated[images.length + i].uploadError = e?.message || 'Upload failed';
+          const targetIndex = images.length + i;
+          if (updated[targetIndex]) {
+            updated[targetIndex].uploading = false;
+            updated[targetIndex].uploadError = e?.message || 'Upload failed';
+          }
         }
         onImagesUpdate([...updated]);
       }

@@ -3,8 +3,8 @@ import { useRouter } from "next/navigation";
 import React, { useMemo, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import FilterBar from "./FilterBar";
-import ProductCard from "./ProductCard";
 import type { Product, ProductListingsProps } from "./productTypes";
+import ProductCard from "../../dashboard/products/components/ProductCard";
 
 interface ProductListingsPropsWithEdit extends ProductListingsProps {
   onEditExperience?: (exp: any) => void;

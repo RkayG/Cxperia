@@ -1,5 +1,5 @@
 // src/components/ProductDashboard/PerformanceMetricCard.tsx
-import { Info } from 'lucide-react';
+// import { Info } from 'lucide-react';
 import React from 'react';
 import type { PerformanceMetricCardProps } from './productTypes';
 

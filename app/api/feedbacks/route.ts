@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
 // POST /api/feedbacks - Create new feedback (public endpoint)
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = await request.json() as any;
     const { 
       experience_id, 
       customer_name, 

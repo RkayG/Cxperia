@@ -4,11 +4,11 @@ import { createClient } from '@/lib/supabase/server';
 // POST /api/public/experience/[slug]/feedback - Create feedback for public users
 export async function POST(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const { slug } = params;
-    const body = await request.json();
+    const { slug } = await params;
+    const body: any = await request.json();
     
     const { 
       customer_name, 
@@ -105,10 +105,10 @@ export async function POST(
 // GET /api/public/experience/[slug]/feedback - Get public feedback stats (optional)
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const { slug } = params;
+    const { slug } = await params;
     
     if (!slug) {
       return NextResponse.json({ error: 'Slug is required' }, { status: 400 });

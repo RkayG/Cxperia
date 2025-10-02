@@ -15,8 +15,8 @@ export function Graph({ experienceData }: GraphProps) {
   // Generate monthly data based on real scan events or fallback to distribution
   const monthlyData = React.useMemo(() => {
     // If we have real scan analytics data, use it
-    if (scanAnalytics?.data && scanAnalytics.data.length > 0) {
-      return scanAnalytics.data.map(item => ({
+    if (scanAnalytics?.data && (scanAnalytics.data as any).length > 0) {
+      return scanAnalytics.data.map((item: any) => ({
         name: item.name,
         total: item.total,
         unique: item.unique,
@@ -25,7 +25,7 @@ export function Graph({ experienceData }: GraphProps) {
     }
 
     // Fallback: distribute total scans across months with realistic patterns
-    const totalScans = experienceData.reduce((sum, exp) => sum + (exp.total_scan_count || exp.scan_count || 0), 0);
+    const totalScans = experienceData.reduce((sum: any, exp: any) => sum + (exp.total_scan_count || exp.scan_count || 0), 0);
     
     if (totalScans === 0) {
       // Return empty data for all months
@@ -33,7 +33,7 @@ export function Graph({ experienceData }: GraphProps) {
         "Jan", "Feb", "Mar", "Apr", "May", "Jun",
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
       ];
-      return months.map(month => ({ 
+      return months.map((month: any) => ({ 
         name: month, 
         total: 0, 
         unique: 0, 
@@ -43,7 +43,7 @@ export function Graph({ experienceData }: GraphProps) {
 
     // Use the utility function to generate realistic distribution
     const distributedData = generateMonthlyDistribution(totalScans, 12);
-    return distributedData.map(item => ({
+    return distributedData.map((item: any) => ({
       name: item.name,
       total: item.total,
       unique: item.unique,
@@ -65,7 +65,7 @@ export function Graph({ experienceData }: GraphProps) {
           fontSize={12}
           tickLine={false}
           axisLine={false}
-          tickFormatter={(value) => `${value}`}
+          tickFormatter={(value: any) => `${value}`}
         />
         <Bar
           dataKey="unique"

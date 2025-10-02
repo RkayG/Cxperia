@@ -9,15 +9,6 @@ import ChatbotSettings from '@/app/dashboard/chatbot/components/ChatbotSettings'
 import ChatbotSidebar from '@/app/dashboard/chatbot/components/ChatbotSidebar';
 import { type Brand, type ChatbotConfig, chatbotService, type Experience, type FAQItem, type Product } from '@/lib/chatbotService';
 
-interface FAQ {
-  id: string;
-  question: string;
-  answer: string;
-  category: string;
-  priority: number;
-  product_id?: string;
-}
-
 interface DashboardProps {
   brandId: string;
 }
@@ -190,13 +181,33 @@ const ChatbotDashboard = ({ brandId }: DashboardProps) => {
             <ChatbotSettings chatbotConfig={chatbotConfig} setChatbotConfig={setChatbotConfig} />
           )}
           {activeTab === 'faqs' && (
-            <ChatbotFAQManager />
+            <ChatbotFAQManager 
+              faqs={faqs}
+              filteredFAQs={filteredFAQs}
+              categories={categories}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              addNewFAQ={addNewFAQ}
+              expandedFAQ={expandedFAQ}
+              setExpandedFAQ={setExpandedFAQ}
+              isEditingFAQ={isEditingFAQ}
+              setIsEditingFAQ={setIsEditingFAQ}
+              updateFAQ={updateFAQ}
+              deleteFAQ={deleteFAQ}
+            />
           )}
           {activeTab === 'appearance' && (
-            <ChatbotAppearance />
+            <ChatbotAppearance 
+              chatbotConfig={chatbotConfig}
+              setChatbotConfig={setChatbotConfig}
+            />
           )}
           {activeTab === 'qr' && (
-            <ChatbotQRIntegration />
+            <ChatbotQRIntegration 
+              chatbotConfig={chatbotConfig}
+            />
           )}
           {activeTab === 'analytics' && (
             <ChatbotAnalytics />

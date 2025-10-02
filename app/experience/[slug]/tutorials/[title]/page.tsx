@@ -1,3 +1,4 @@
+'use client';
 import {
   Calendar,
   Clock,
@@ -7,8 +8,7 @@ import {
   Users,
 } from "lucide-react";
 import Image from "next/image";
-import { useParams, usePathname } from "next/navigation";
-import { useRouter } from "next/router";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { useExperienceTutorials } from "@/hooks/public/useTutorials";
 import { usePublicExpStore } from "@/store/public/usePublicExpStore";
 import { getFriendlyTimeAgo } from "@/utils/friendlyTime";
@@ -56,7 +56,7 @@ interface TutorialDetail {
 const TutorialDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const location = usePathname();
-  const router = useRouter();
+  const _router = useRouter();
   const { color, slug, brandLogo, brandName } = usePublicExpStore();
   let tutorial: TutorialDetail | undefined = location.state?.tutorial;
   const title = tutorial?.title || "";

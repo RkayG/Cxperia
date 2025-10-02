@@ -1,5 +1,5 @@
 import ProductUsedCard from './ProductsUsedCard';
-import type { Tutorial } from './tutorialTypes';
+import type { Tutorial } from './page';
 export const ProductsTabContent: React.FC<{ tutorial: Tutorial }> = ({  tutorial }) => (
 
 

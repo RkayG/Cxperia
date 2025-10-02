@@ -12,7 +12,7 @@ import {
   Users,
 } from "lucide-react";
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import DropdownSelect from "@/components/DropdownSelect";
 import ResponseModal from "@/components/ResponseModal";
@@ -49,7 +49,7 @@ interface Product {
   amount?: string;
 }
 
-interface Tutorial {
+export interface Tutorial {
   id: string;
   title: string;
   description: string;
@@ -65,15 +65,9 @@ interface Tutorial {
   videoThumbnail?: string;
 }
 
-interface TutorialCreatorProps {
-  mode?: "edit" | "create";
-}
-
 const TUTORIAL_DRAFT_KEY = "tutorial_draft";
 
-const TutorialCreator: React.FC<TutorialCreatorProps> = ({
-  mode = "create",
-}) => {
+const TutorialCreatorContent: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
     "overview" | "steps" | "products" | "preview"
   >("overview");
@@ -88,6 +82,9 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
   const searchParams = useSearchParams();
   const params = useParams();
   const router = useRouter();
+  
+  // Determine mode from search params
+  const mode = searchParams.get('mode') === 'edit' ? 'edit' : 'create';
   
   // Detect if navigation originated from TutorialSelectionModal
   // In Next.js, we can't access location.state directly, so we'll use URL params instead
@@ -1440,6 +1437,21 @@ const TutorialCreator: React.FC<TutorialCreatorProps> = ({
         </div>
       )}
     </div>
+  );
+};
+
+const TutorialCreator: React.FC = () => {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading tutorial creator...</p>
+        </div>
+      </div>
+    }>
+      <TutorialCreatorContent />
+    </Suspense>
   );
 };
 

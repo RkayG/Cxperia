@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
       const targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
       const monthName = months[targetDate.getMonth()];
       
-      const existingData = chartData.find(item => 
+      const existingData = chartData.find((item: any) => 
         item.name === monthName && 
         item.fullDate.includes(targetDate.getFullYear().toString())
       );
@@ -74,10 +74,10 @@ export async function GET(request: NextRequest) {
       success: true,
       data: filledData,
       metadata: {
-        totalScans: filledData.reduce((sum, item) => sum + item.total, 0),
-        uniqueScans: filledData.reduce((sum, item) => sum + item.unique, 0),
-        returningScans: filledData.reduce((sum, item) => sum + item.returning, 0),
-        totalExperiences: Math.max(...filledData.map(item => item.experiences), 0),
+        totalScans: filledData.reduce((sum: any, item: any) => sum + item.total, 0),
+        uniqueScans: filledData.reduce((sum: any, item: any) => sum + item.unique, 0),
+        returningScans: filledData.reduce((sum: any, item: any) => sum + item.returning, 0),
+        totalExperiences: Math.max(...filledData.map((item: any) => item.experiences), 0),
         monthsIncluded: monthsBack
       }
     });
@@ -94,7 +94,7 @@ export async function GET(request: NextRequest) {
 // Alternative endpoint for public access (by brand slug or experience slug)
 /* export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = await request.json() as any;
     const { brandId, experienceId, months = 12 } = body;
 
     if (!brandId && !experienceId) {
@@ -134,6 +134,7 @@ export async function GET(request: NextRequest) {
     const monthlyGroups: { [key: string]: number } = {};
     
     scanEvents.forEach((event: any) => {
+      const date = new Date(event.scanned_at);
       const date = new Date(event.scanned_at);
       const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
       monthlyGroups[monthKey] = (monthlyGroups[monthKey] || 0) + 1;

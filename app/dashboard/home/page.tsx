@@ -25,16 +25,16 @@ export default function RecentPage() {
   // Get brand from store
   const brand = require('@/store/brands/useExperienceStore').useExperienceStore((state: any) => state.brand);
   // Normalize experiences array
-  const experiences = Array.isArray(data?.data)
-    ? data.data
+  const experiences = Array.isArray((data as any)?.data)
+    ? (data as any).data
     : Array.isArray(data)
     ? data
     : [];
   // Fetch recent tutorials (must be inside the component)
   const { data: tutorialsData, isLoading: isLoadingTutorials } = useRecentTutorials();
   console.log("Fetched recent tutorials data:", tutorialsData);
-  const tutorials = Array.isArray(tutorialsData?.data)
-    ? tutorialsData.data
+  const tutorials = Array.isArray((tutorialsData as any)?.data)
+    ? (tutorialsData as any).data
     : Array.isArray(tutorialsData)
     ? tutorialsData
     : [];

@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
   const supabase = await createClient()
   const user = await getCurrentUser()
   const brand_id = user?.brand_id
-  const body: TutorialBody = await req.json()
+  const body = await req.json() as TutorialBody
 
   if (!brand_id) {
     return NextResponse.json({ success: false, message: 'brand_id is required (from user context)' }, { status: 400 })
@@ -113,7 +113,7 @@ export async function GET(req: NextRequest) {
 
   try {
     // 1. Check for Super Admin access (get all)
-    if (allowAll && user?.role === 'super_admin') {
+    if (allowAll && (user as any)?.role === 'super_admin') {
       // Allow all tutorials
     }
     // 2. Check for Recent Tutorials logic (last 30 days)

@@ -18,12 +18,13 @@ async function authorizeFeatureAccess(supabase: any, feature_id: string, brand_i
 
 // --- PATCH /api/experiences/[id]/features/[id] (Update feature) ---
 // Mapped from: static async updateFeature(req, res)
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const supabase = await createClient()
   const user = await getCurrentUser()
-  const feature_id = params.id
+  const feature_id = id
   const brand_id = user?.brand_id
-  const body = await req.json()
+  const body = await req.json() as any
 
   if (!feature_id) {
     return NextResponse.json({ success: false, message: 'Feature id is required in URL params' }, { status: 400 })
@@ -68,10 +69,11 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 
 // --- DELETE /api/experiences/[id]/features/[id] (Delete feature) ---
 // Mapped from: static async deleteFeature(req, res)
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const supabase = await createClient()
   const user = await getCurrentUser()
-  const feature_id = params.id
+  const feature_id = id
   const brand_id = user?.brand_id
 
   if (!feature_id) {
@@ -104,10 +106,11 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
 }
 
 // --- GET /api/experiences/[id]/features/[id] (Get a single feature by id) ---
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const supabase = await createClient()
   const user = await getCurrentUser()
-  const feature_id = params.id
+  const feature_id = id
   const brand_id = user?.brand_id
   
   if (!feature_id) return NextResponse.json({ success: false, message: 'id is required' }, { status: 400 })

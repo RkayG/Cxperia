@@ -3,10 +3,11 @@ import { getCurrentUser } from '@/lib/auth/getCurrentUser';
 import { createClient } from '@/lib/supabase/server';
 
 // Get all instructions for an experience
-export async function GET(req: NextRequest, { params }: { params: { expId: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ expId: string }> }) {
+	const { expId } = await params;
 	const supabase = await createClient();
 	const user = await getCurrentUser();
-	const experience_id = params.expId;
+	const experience_id = expId;
 	//console.log('Fetching instructions for experience_id:', experience_id);
 	const brand_id = user?.brand_id;
 	if (!experience_id) {
@@ -29,12 +30,13 @@ export async function GET(req: NextRequest, { params }: { params: { expId: strin
 }
 
 // Create or overwrite instruction for an experience
-export async function POST(req: NextRequest, { params }: { params: { expId: string } }) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ expId: string }> }) {
+	const { expId } = await params;
 	const supabase = await createClient();
 	const user = await getCurrentUser();
-	const experience_id = params.expId;
+	const experience_id = expId;
 	const brand_id = user?.brand_id;
-	const body = await req.json();
+	const body = await req.json() as any;
 
 	// Validate required fields
 	const missingFields = [];

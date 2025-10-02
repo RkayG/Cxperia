@@ -25,7 +25,7 @@ export function useCreatePublicFeedback(slug: string) {
   
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to submit feedback');
+          throw new Error((errorData as any).error || 'Failed to submit feedback');
         }
   
         return await response.json();
@@ -48,7 +48,7 @@ export function useCreatePublicFeedback(slug: string) {
   
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to upload image');
+          throw new Error((errorData as any).error || 'Failed to upload image');
         }
   
         return await response.json();

@@ -56,9 +56,9 @@ function prepareUpdateFields(body: any) {
 
 // --- GET /api/tutorials/[id] (Get a single tutorial by id) ---
 // Mapped from: static async getTutorialById(req, res)
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const supabase = await createClient()
-  const { id } = params // The tutorial ID
+  const { id } = await params // The tutorial ID
 
   if (!id) return NextResponse.json({ success: false, message: 'id is required' }, { status: 400 })
 
@@ -88,11 +88,11 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 
 // --- PATCH /api/tutorials/[id] (Update tutorial) ---
 // Mapped from: static async updateTutorial(req, res)
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const supabase = await createClient()
   const user = await getCurrentUser()
   const brand_id = user?.brand_id
-  const { id } = params
+  const { id } = await params
   const body = await req.json()
 
   if (!id) return NextResponse.json({ success: false, message: 'id is required' }, { status: 400 })
@@ -131,11 +131,11 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 
 // --- DELETE /api/tutorials/[id] (Delete tutorial) ---
 // Mapped from: static async deleteTutorial(req, res)
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const supabase = await createClient()
   const user = await getCurrentUser()
   const brand_id = user?.brand_id
-  const { id } = params
+  const { id } = await  params
 
   if (!id) return NextResponse.json({ success: false, message: 'id is required' }, { status: 400 })
   if (!brand_id) return NextResponse.json({ success: false, message: 'brand_id is required' }, { status: 403 })

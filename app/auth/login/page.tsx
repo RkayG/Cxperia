@@ -1,13 +1,13 @@
 'use client';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import logo from '@/assets/logo.png';
 import InputField from '@/components/input-field';
 import { createClient } from '@/lib/supabase/client'; 
 import { showToast } from '@/lib/toast';
 
-export default function AuthPage() {
+function AuthPageContent() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -169,7 +169,7 @@ export default function AuthPage() {
 
       if (storedTokens) {
         // Using magic link flow
-        const { access_token, refresh_token } = JSON.parse(storedTokens);
+        const { access_token, refresh_token } = JSON.parse(storedTokens) as { access_token: string; refresh_token: string };
         console.log('Using stored tokens for activation');
 
         // Set session first
@@ -476,5 +476,20 @@ export default function AuthPage() {
         </form>
       </div>
     </div>
+  );
+}
+
+export default function AuthPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-pink-100">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    }>
+      <AuthPageContent />
+    </Suspense>
   );
 }

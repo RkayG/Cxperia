@@ -17,12 +17,13 @@ async function authorizeFeatureAccess(supabase: any, feature_id: string, brand_i
 
 // --- PATCH /api/features/[id]/status (Set feature status) ---
 // Mapped from: static async setFeatureStatus(req, res)
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const supabase = await createClient()
   const user = await getCurrentUser()
-  const feature_id = params.id
+  const feature_id = id
   const brand_id = user?.brand_id
-  const { status } = await req.json()
+  const { status } = await req.json() as any  
 
   if (!feature_id) {
     return NextResponse.json({ success: false, message: 'Feature id is required in URL params' }, { status: 400 })

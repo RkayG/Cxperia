@@ -1,20 +1,14 @@
 "use client";
-import { useParams, useSearchParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import React from 'react';
 import TutorialCreator from '../page';
 
 const TutorialEditPage: React.FC = () => {
   const params = useParams();
-  const searchParams = useSearchParams();
+  const _tutorialId = params.id as string;
   
-  // Extract the tutorial ID from the URL params
-  const tutorialId = params.id as string;
-  
-  // Get mode from search params (should be 'edit' for this route)
-  const mode = searchParams.get('mode') || 'edit';
-  
-  // Pass the tutorialId and mode to the TutorialCreator component
-  return <TutorialCreator mode={mode as "edit" | "create"} />;
+  // The TutorialCreator component handles mode detection internally via useSearchParams
+  return <TutorialCreator />;
 };
 
 export default TutorialEditPage;

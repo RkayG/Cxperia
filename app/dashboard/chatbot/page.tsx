@@ -27,6 +27,8 @@ import {
   type FAQItem,
   type Product,
 } from "@/lib/chatbotService"
+import { useAuth } from "@/hooks/brands/use-auth"
+import { supabase } from "@/lib/supabase"
 import ChatbotAnalytics from "./components/ChatbotAnalytics"
 import ChatbotAppearance from "./components/ChatbotAppearance"
 import ChatbotFAQManager from "./components/ChatbotFAQManager"
@@ -44,21 +46,19 @@ interface FAQ {
   product_id?: string
 }
 
-interface DashboardProps {
-  brandId: string
-}
-
-const ChatbotDashboard = ({ brandId }: DashboardProps) => {
+const ChatbotDashboard = () => {
+  const { user } = useAuth()
   const [activeTab, setActiveTab] = useState("chatbot")
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [searchTerm, setSearchTerm] = useState("")
   const [isEditingFAQ, setIsEditingFAQ] = useState(false)
   const [expandedFAQ, setExpandedFAQ] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [brandId, setBrandId] = useState<string>("")
 
   const [chatbotConfig, setChatbotConfig] = useState<ChatbotConfig>({
     id: "",
-    brand_id: brandId,
+    brand_id: "",
     name: "Beauty Assistant",
     greeting: "Hi! I'm here to help with your beauty questions. How can I assist you today?",
     fallback_message:
@@ -84,8 +84,39 @@ const ChatbotDashboard = ({ brandId }: DashboardProps) => {
     "Application Tips",
   ]
 
+  // Fetch user's brand_id from profile
   useEffect(() => {
-    loadDashboardData()
+    const fetchBrandId = async () => {
+      if (user?.id) {
+        try {
+          const { data: profile, error } = await supabase
+            .from('profiles')
+            .select('brand_id')
+            .eq('id', user.id)
+            .single()
+          
+          if (error) {
+            console.error('Failed to fetch profile:', error)
+            return
+          }
+          
+          if (profile?.brand_id) {
+            setBrandId(profile.brand_id)
+            setChatbotConfig(prev => ({ ...prev, brand_id: profile.brand_id }))
+          }
+        } catch (error) {
+          console.error('Failed to fetch brand_id:', error)
+        }
+      }
+    }
+    
+    fetchBrandId()
+  }, [user])
+
+  useEffect(() => {
+    if (brandId) {
+      loadDashboardData()
+    }
   }, [brandId])
 
   const loadDashboardData = async () => {
@@ -257,7 +288,6 @@ const ChatbotDashboard = ({ brandId }: DashboardProps) => {
               isEditingFAQ={isEditingFAQ}
               setIsEditingFAQ={setIsEditingFAQ}
               updateFAQ={updateFAQ}
-              saveFAQ={saveFAQ}
               deleteFAQ={deleteFAQ}
             />
           )}

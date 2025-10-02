@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { cn } from "@/lib/utils";
 import {
   Breadcrumb,
@@ -270,7 +270,9 @@ export default function SidebarLayout(props: {
       <div className="flex flex-col flex-grow w-0">
         <div className="h-14 border-b z-50 flex items-center justify-between sticky top-0 bg-white dark:bg-black z-10 px-4 md:px-6">
           <div className="hidden lg:flex">
-            <HeaderBreadcrumb baseBreadcrumb={props.baseBreadcrumb} basePath={props.basePath} items={props.items} />
+            <Suspense fallback={<div className="h-6 w-32 bg-gray-200 animate-pulse rounded"></div>}>
+              <HeaderBreadcrumb baseBreadcrumb={props.baseBreadcrumb} basePath={props.basePath} items={props.items} />
+            </Suspense>
           </div>
 
           <div className="flex items-center lg:hidden">
@@ -292,7 +294,9 @@ export default function SidebarLayout(props: {
             </Sheet>
 
             <div className="ml-4 flex lg:hidden">
-              <HeaderBreadcrumb baseBreadcrumb={props.baseBreadcrumb} basePath={props.basePath} items={props.items} />
+              <Suspense fallback={<div className="h-6 w-32 bg-gray-200 animate-pulse rounded"></div>}>
+                <HeaderBreadcrumb baseBreadcrumb={props.baseBreadcrumb} basePath={props.basePath} items={props.items} />
+              </Suspense>
             </div>
           </div>
 

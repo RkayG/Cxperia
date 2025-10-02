@@ -67,10 +67,10 @@ const CustomerSupportLinksModal: React.FC<CustomerSupportLinksModalProps & { onA
 
   // Prefill formData when brandLinksData is loaded
   useEffect(() => {
-    if (brandLinksData && Array.isArray(brandLinksData.data)) {
+    if (brandLinksData && Array.isArray(brandLinksData)) {
       // Map backend links to form fields
       const mapped: Partial<CustomerSupportLinksData> = {};
-      brandLinksData.data.forEach((link: any) => {
+      brandLinksData.forEach((link: any) => {
         switch (link.type) {
           case 'whatsapp': mapped.whatsAppNumber = link.value; break;
           case 'email': mapped.supportEmail = link.value; break;

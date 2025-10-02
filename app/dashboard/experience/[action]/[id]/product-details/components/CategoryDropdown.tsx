@@ -67,7 +67,7 @@ const DropdownSelect: React.FC<DropdownSelectProps> = ({
       setIsOpen(false);
       setSearchTerm('');
     } else if (event.key === 'Enter') {
-      if (filteredOptions.length === 1) {
+      if (filteredOptions.length === 1 && filteredOptions[0]) {
         handleSelect(filteredOptions[0]);
       }
     }

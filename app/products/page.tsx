@@ -22,7 +22,6 @@ const ProductDashboard: React.FC = () => {
       localStorage.removeItem('experienceId');
     }
     // Only run on mount or when pathname.search changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname.search]);
 
   // Calculate metrics based on experiences

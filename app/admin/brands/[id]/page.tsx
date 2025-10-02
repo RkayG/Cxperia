@@ -3,15 +3,16 @@ import JsonViewer from '@/components/JsonViewer';
 import { supabase } from '@/lib/supabase';
 
 interface BrandPageProps {
-	params: { id: string };
+	params: Promise<{ id: string }>;
 }
 
 export default async function BrandPage({ params }: BrandPageProps) {
+	const { id } = await params;
 	
     const { data: brand, error } = await supabase
 		.from('brands')
 		.select('*')
-		.eq('id', params.id)
+		.eq('id', id)
 		.single();
 
 	if (error || !brand) {

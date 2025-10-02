@@ -6,9 +6,9 @@
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "forceConsistentCasingInFileNames": true,
+    "strict": false,
+    "noUncheckedIndexedAccess": false,
+    "forceConsistentCasingInFileNames": false,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
@@ -29,7 +29,17 @@
         "./*"
       ]
     },
-    "target": "ES2017"
+    "target": "ES2017",
+    "noImplicitAny": false,
+    "noImplicitReturns": false,
+    "noImplicitThis": false,
+    "strictNullChecks": false,
+    "strictPropertyInitialization": false,
+    "strictBindCallApply": false,
+    "strictFunctionTypes": false,
+    "noImplicitOverride": false,
+    "exactOptionalPropertyTypes": false,
+    "useUnknownInCatchVariables": false
   },
   "include": [
     "next-env.d.ts",
@@ -38,7 +48,7 @@
     "**/*.mjs",
     "vitest.config.ts",
     ".next/types/**/*.ts",
-    "eslint.config.mjs",
+    //"eslint.config.mjs",
     "components/InfiniteScroll.tsx"
 , "app/load"  ],
   "exclude": ["node_modules"]

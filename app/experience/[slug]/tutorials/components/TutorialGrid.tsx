@@ -62,8 +62,8 @@ const TutorialsGrid: React.FC<TutorialsGridProps> = ({ tutorials: propTutorials 
     tutorials = propTutorials;
   } else {
     if (isLoading) return <TutorialGridSkeleton />;
-    if (error) return <div className="text-red-600">Error loading tutorials.</div>;
-    tutorials = Array.isArray(tutorialsData?.tutorials) ? tutorialsData.tutorials : [];
+    if (error) return < div className="text-red-600">Error loading tutorials.</div>;
+    tutorials = Array.isArray((tutorialsData as any).tutorials) ? (tutorialsData as any).tutorials : [];
   }
   console.log('Tutorials to display:', tutorials);
   return (

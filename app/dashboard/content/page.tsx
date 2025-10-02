@@ -1,5 +1,5 @@
 "use client";
-import { Book, Plus, Sparkles } from 'lucide-react';
+import { Book, Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import Modal from '@/components/Modal';
@@ -49,11 +49,11 @@ const ContentDashboardPage: React.FC = () => {
   const articles = React.useMemo(() => {
     let arr: any[] = [];
     if (!tutorialsRaw) return arr;
-    if (tutorialsRaw.error || (tutorialsRaw.data && !Array.isArray(tutorialsRaw.data))) {
+    if ((tutorialsRaw as any).error || ((tutorialsRaw as any).data && !Array.isArray((tutorialsRaw as any).data))) {
       return arr;
     }
     if (Array.isArray(tutorialsRaw)) arr = tutorialsRaw;
-    else if (Array.isArray(tutorialsRaw.data)) arr = tutorialsRaw.data;
+    else if (Array.isArray((tutorialsRaw as any).data)) arr = (tutorialsRaw as any).data;
     
     console.log('Raw tutorials data:', tutorialsRaw);
     console.log('Processed tutorials array:', arr);
@@ -237,7 +237,7 @@ const ContentDashboardPage: React.FC = () => {
           <ActionBar 
             selectedCount={selectedArticles.size} 
             selectedArticleStatus={selectedArticles.size === 1 ? 
-              filteredArticles.find(article => selectedArticles.has(article.id))?.status : 
+              filteredArticles.find((article: any) => selectedArticles.has(article.id))?.status : 
               undefined
             }
             onEdit={handleEdit}

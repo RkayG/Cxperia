@@ -4,16 +4,17 @@ import { getOrSetExperienceUrl } from '@/lib/db/experiences';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { expId: string } }
+  { params }: { params: Promise<{ expId: string }> }
 ) {
-  console.log('Received GET request for experience URL with ID:', params.expId);
+  const { expId } = await params;
+  console.log('Received GET request for experience URL with ID:', expId);
   try {
     const user = await getCurrentUser();
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const experienceUrl = await getOrSetExperienceUrl(params.expId);
+    const experienceUrl = await getOrSetExperienceUrl(expId);
     return NextResponse.json({ success: true, experience_url: experienceUrl });
 
   } catch (error) {

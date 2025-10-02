@@ -1,5 +1,5 @@
 'use client'
-import React, { useContext, useMemo } from "react"
+import React, {  useMemo } from "react"
 import CurvedBottomNav from "@/components/public/CurvedBottomNav"
 import SectionHeader from "@/components/public/ThemeAwareSectionHeader"
 import { usePublicExpStore } from "@/store/public/usePublicExpStore"

@@ -1,6 +1,6 @@
 "use client";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import React from "react";
+import React, { Suspense } from "react";
 import StepIndicator from "@/components/StepIndicator";
 
 // Import the step components
@@ -11,7 +11,7 @@ import ProductDetailsStep from "./product-details/components";
 
 // This is the main flow controller for an experience that has an ID.
 // It reads the `step` from the URL and renders the appropriate component.
-const ExperienceFlowPage: React.FC = () => {
+const ExperienceFlowPageContent: React.FC = () => {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
@@ -66,14 +66,29 @@ const ExperienceFlowPage: React.FC = () => {
         <div className="md:p-8">
           {CurrentStepComponent && (
             <CurrentStepComponent
-              onNext={() => navigateToStep(steps[currentStepIndex + 1]?.key)}
-              onBack={() => navigateToStep(steps[currentStepIndex - 1]?.key)}
+			onNext={() => navigateToStep(steps[currentStepIndex + 1]?.key || '')}
+			onBack={() => navigateToStep(steps[currentStepIndex - 1]?.key || '')}
               isNew={action !== 'edit'}
             />
           )}
         </div>
       </div>
     </div>
+  );
+};
+
+const ExperienceFlowPage: React.FC = () => {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading experience...</p>
+        </div>
+      </div>
+    }>
+      <ExperienceFlowPageContent />
+    </Suspense>
   );
 };
 

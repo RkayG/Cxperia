@@ -39,8 +39,7 @@ export default function ExperienceSlugLayout({ children }: { children: React.Rea
       console.log("Fetching experience for slug:", slug);
       fetchExperience(slug);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slug, fetchExperience]);
+       }, [slug, fetchExperience]);
 
   // Track scan count when experience is successfully loaded
   useEffect(() => {

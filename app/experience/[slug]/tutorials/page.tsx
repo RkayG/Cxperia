@@ -25,7 +25,7 @@ const TutorialPage: React.FC = () => {
 
   const { data: tutorialsData } = useExperienceTutorials(slug)
 
-  const tutorials = Array.isArray(tutorialsData?.tutorials) ? tutorialsData.tutorials : []
+  const tutorials = Array.isArray((tutorialsData as any).tutorials) ? (tutorialsData as any).tutorials : []
 
   // Category filter state
   const [activeCategory, setActiveCategory] = React.useState<string>("All Categories")

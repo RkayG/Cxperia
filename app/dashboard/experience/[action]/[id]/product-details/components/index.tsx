@@ -8,11 +8,11 @@ import { useExperienceOperations } from "@/hooks/brands/useExperienceOperations"
 import { initialExperienceData, useExperienceStore } from "@/store/brands/useExperienceStore";
 import type { Experience, UploadedImage } from "@/types/productExperience";
 import { hasFormChanges, isExperienceDataEqual } from "@/utils/compare";
+import { showToast } from "@/utils/toast";
 import { scrollToError, validateStepOne } from "@/utils/validation";
+import type { ValidationErrors } from "@/utils/validation";
 import MediaUpload from "./MediaUpload";
 import ProductForm from "./ProductForm";
-import type { ValidationErrors } from "@/utils/validation";
-import { showToast } from "@/utils/toast";
 
 interface StepOneProps {
   onNext?: (experienceId?: string) => void;
@@ -70,7 +70,7 @@ const StepOne: React.FC<StepOneProps> = ({
     
     if (Array.isArray(imageUrls)) {
       // Check if it's already UploadedImage objects or string URLs
-      if (imageUrls.length > 0 && typeof imageUrls[0] === 'object' && 'url' in imageUrls[0]) {
+      if (imageUrls && imageUrls.length > 0 && imageUrls[0] && typeof imageUrls[0] === 'object' && 'url' in imageUrls[0]) {
         // Already UploadedImage objects, use them directly
         images = imageUrls as UploadedImage[];
       } else {

@@ -7,14 +7,7 @@ import YouHaveScanned from "@/components/public/YouHaveScanned";
 import { usePublicExpStore } from "@/store/public/usePublicExpStore";
 import PublicLoading from "../components/PublicLoading";
 
-interface HomePageProps {
-  color?: string | null;
-}
-
-
-
-
-const HomePage: React.FC<HomePageProps> = () => {
+const HomePage: React.FC = () => {
 
   const { color, isLoading } = usePublicExpStore();
   // Removed slug/fetch logic, now handled in InteractiveWelcome

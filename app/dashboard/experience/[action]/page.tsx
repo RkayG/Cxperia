@@ -21,7 +21,11 @@ const CreateExperiencePage: React.FC = () => {
 
   // This handler is called after the first step is successfully completed.
   // It receives the new experience ID and navigates to the next step.
-  const handleFirstStepComplete = (newExperienceId: string) => {
+  const handleFirstStepComplete = (newExperienceId?: string) => {
+    if (!newExperienceId) {
+      console.error('No experience ID provided');
+      return;
+    }
     router.push(`/dashboard/experience/${action}/${newExperienceId}?step=customise-features`);
   };
 

@@ -2,12 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 
 // POST /api/public/tutorials/[id]/view - Increment view count for a tutorial
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) { 
   try {
-    const { id: tutorialId } = params;
+    const { id: tutorialId } = await params;
 
     if (!tutorialId) {
       return NextResponse.json({ error: 'Tutorial ID is required' }, { status: 400 });
@@ -19,7 +16,7 @@ export async function POST(
     const { data: tutorial, error } = await supabase
       .from('tutorials')
       .update({ 
-        views: supabase.raw('views + 1'),
+        views: supabase.rpc('increment_views', { tutorial_id: tutorialId }),
         updated_at: new Date().toISOString()
       })
       .eq('id', tutorialId)
@@ -74,12 +71,9 @@ export async function POST(
 }
 
 // GET /api/public/tutorials/[id]/view - Get current view count (optional)
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id: tutorialId } = params;
+    const { id: tutorialId } = await params;
 
     if (!tutorialId) {
       return NextResponse.json({ error: 'Tutorial ID is required' }, { status: 400 });
@@ -119,3 +113,4 @@ export async function GET(
     );
   }
 }
+  

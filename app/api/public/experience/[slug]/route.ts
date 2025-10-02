@@ -5,9 +5,9 @@ const PUBLIC_EXPERIENCE_SECRET = process.env.NEXT_PUBLIC_EXPERIENCE_SECRET || 'y
 const CACHE_TTL_SECONDS = 604800; // 7 days
 
 // --- GET /api/public/experience/[slug] ---
-export async function GET(req: NextRequest, { params }: { params: { slug: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const supabase = await createClient();
-  const slug = params.slug;
 
   if (!slug) {
     return NextResponse.json({ success: false, message: 'Missing slug parameter' }, { status: 400 });
@@ -92,4 +92,4 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
 }
 
 // Optional: Set revalidation time for Next.js data cache
-export const revalidate = CACHE_TTL_SECONDS;
+export const revalidate = 3600; // 1 hour in seconds

@@ -7,9 +7,10 @@ const PUBLIC_EXPERIENCE_DOMAIN = process.env.PUBLIC_EXPERIENCE_DOMAIN || "https:
 
 // --- GET /api/experience/[expId]/qr (Fetch existing QR code) ---
 // Mapped from: static async fetchQrCode(req, res)
-export async function GET(req: NextRequest, { params }: { params: { expId: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ expId: string }> }) {
+  const { expId } = await params;
   const supabase = await createClient();
-  const experienceId = params.expId;
+  const experienceId = expId;
 
   if (!experienceId) {
     return NextResponse.json({ error: "Missing experienceId parameter" }, { status: 400 });
@@ -45,9 +46,10 @@ export async function GET(req: NextRequest, { params }: { params: { expId: strin
 
 // --- POST /api/experience/[expId]/qr (Generate and store QR code) ---
 // Mapped from: static async getQrCode(req, res) - handles generation and upsert/publish
-export async function POST(req: NextRequest, { params }: { params: { expId: string } }) {
-  const supabase = createClient();
-  const experienceId = params.expId;
+export async function POST(req: NextRequest, { params }: { params: Promise<{ expId: string }> }) {
+  const { expId } = await params;
+  const supabase = await createClient();
+  const experienceId = expId;
   
   if (!experienceId) {
     return NextResponse.json({ error: "Missing experienceId parameter" }, { status: 400 });
@@ -58,7 +60,7 @@ export async function POST(req: NextRequest, { params }: { params: { expId: stri
   let rawText: string | undefined = undefined;
   
   try {
-    const body = await req.json();
+    const body = await req.json() as any;
     rawText = body.text || req.nextUrl.searchParams.get('text') || undefined;
   } catch (e) {
     rawText = req.nextUrl.searchParams.get('text') || undefined;
@@ -87,7 +89,7 @@ export async function POST(req: NextRequest, { params }: { params: { expId: stri
     }
 
     const { public_slug, qr_code_url: existingQr, experience_url: existingUrl } = expResult;
-    productName = expResult.product?.name || null;
+    productName = expResult.product?.[0]?.name || null;
 
     // A. Check for existing QR code (Short-circuit return)
     if (existingQr && existingUrl) {

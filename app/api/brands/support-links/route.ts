@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
   if (!user?.brand_id) {
     return NextResponse.json({ success: false, message: 'No brandId found in user context' }, { status: 400 });
   }
-  let links = await req.json();
+  let links = await req.json() as any[];
   if (!Array.isArray(links)) links = [links];
   if (links.length === 0) {
     return NextResponse.json({ success: false, message: 'No links provided' }, { status: 400 });

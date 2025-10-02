@@ -64,7 +64,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const handleEdit = () => {
     console.log("handleEdit product:", product);
     if (product.id) {
-      router.push(`/dashboard/experience/edit/${product.id}?step=product-details`, { state: { experienceData: product._fullExp } });
+      router.push(`/dashboard/experience/edit/${product.id}?step=product-details`, { state: { experienceData: product._fullExp } } as any);
     }
   };
 

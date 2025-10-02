@@ -69,14 +69,14 @@ const ExperienceOverviewSection: React.FC<ExperienceOverviewProps> = ({ data, on
     </div>
   );
   const [editData, setEditData] = useState({
-    logoFile: (brandLogoData?.data?.logo_url ?? '')
+    logoFile: ((brandLogoData as any)?.data?.logo_url ?? '')
   });
 
   // Sync editData with data when not editing and data changes
   React.useEffect(() => {
     setEditData(prev => ({
       ...prev,
-      logoFile: (brandLogoData?.data?.logo_url ?? '')
+      logoFile: ((brandLogoData as any)?.data?.logo_url ?? '')
     }));
   }, [data.logoFile, brandLogoData]);
 
@@ -112,12 +112,12 @@ const ExperienceOverviewSection: React.FC<ExperienceOverviewProps> = ({ data, on
           try {
             const resp = await setBrandLogo(url);
             console.debug('[ExperienceOverview] setBrandLogo response:', resp);
-            if (resp && resp.success && resp.data && resp.data.logo_url) {
+            if (resp && (resp as any).success && (resp as any).data && ((resp as any).data as any).logo_url) {
               // Use the returned logo_url from backend if available
-              setEditData(prev => ({ ...prev, logoFile: resp.data.logo_url }));
-              onUpdate({ logoFile: resp.data.logo_url });
+              setEditData(prev => ({ ...prev, logoFile: (resp as any).data.logo_url }));
+              onUpdate({ logoFile: (resp as any).data.logo_url });
               showToast.success('Brand logo updated');
-            } else if (resp && resp.success) {
+            } else if (resp && (resp as any).success) {
               showToast.success('Brand logo updated');
             } else {
               showToast.error('Failed to persist brand logo');
@@ -228,7 +228,7 @@ const ExperienceOverviewSection: React.FC<ExperienceOverviewProps> = ({ data, on
                 disabled={isUploading}
               />
               
-              {(editData.logoFile || brandLogoData?.data?.logo_url) ? (
+              {(editData.logoFile || (brandLogoData as any)?.data?.logo_url) ? (
                 <div className="relative">
                   <img
                     src={
@@ -236,7 +236,7 @@ const ExperienceOverviewSection: React.FC<ExperienceOverviewProps> = ({ data, on
                         ? editData.logoFile
                         : (editData.logoFile instanceof File
                             ? URL.createObjectURL(editData.logoFile)
-                            : brandLogoData?.data?.logo_url || '')
+                            : (brandLogoData as any) ?.data?.logo_url || '')
                     }
                     alt="Logo preview"
                     className="w-full h-24 object-contain rounded-lg bg-white p-1"
