@@ -17,7 +17,8 @@ CREATE INDEX IF NOT EXISTS idx_scan_events_scanned_at ON scan_events (scanned_at
 CREATE INDEX IF NOT EXISTS idx_scan_events_session_id ON scan_events (session_id);
 
 -- Composite index for monthly aggregation queries
-CREATE INDEX IF NOT EXISTS idx_scan_events_brand_month ON scan_events (brand_id, date_trunc('month', scanned_at));
+-- Note: We'll create a separate index for brand_id and scanned_at instead of using date_trunc
+CREATE INDEX IF NOT EXISTS idx_scan_events_brand_month ON scan_events (brand_id, scanned_at);
 
 -- Enable Row Level Security
 ALTER TABLE scan_events ENABLE ROW LEVEL SECURITY;
