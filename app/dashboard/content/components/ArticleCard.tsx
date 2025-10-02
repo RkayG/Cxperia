@@ -66,7 +66,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, isSelected, onSelect
 
       {/* Desktop Layout - Horizontal card */}
       <div className={`hidden sm:flex items-center w-full max-w-full mx-auto gap-4 p-3 transition-all duration-50
-        ${isSelected ? 'bg-purple-50 border-2 rounded-xl border-purple-800 shadow-md' : 'border border-gray-200 bg-white rounded-xl shadow-md hover:shadow-sm'}`}
+        ${isSelected ? 'bg-purple-50 border-2 rounded-xl border-purple-800 shadow-md' : 'border border-gray-200 bg-white rounded-xl'}`}
         onClick={() => onSelect(article.id, !isSelected)}
       >
         {/* Checkbox */}
