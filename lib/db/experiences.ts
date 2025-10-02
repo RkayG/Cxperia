@@ -252,7 +252,7 @@ export async function getOrSetExperienceUrl(id: string) {
   }
 
   // Generate experience URL
-  const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+  const baseUrl = process.env.NEXT_PLATFORM_URL || 'http://localhost:3000';
   const public_slug = experience.public_slug || await generateUniqueSlug();
   
   const experience_url = `${baseUrl}/experience/${public_slug}`;
