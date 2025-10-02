@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from 'next/navigation';
 import { usePublicExpStore } from '@/store/public/usePublicExpStore';
 import WelcomeFlow from './components/WelcomeFlow';
+import PublicLoading from "./components/PublicLoading";
 
 const InteractiveWelcome = () => {
   const router = useRouter();
@@ -78,7 +79,9 @@ const InteractiveWelcome = () => {
       router.push(route);
     }
   };
-
+  if (isLoading) {
+    return <PublicLoading />;
+  }     
   // Show loading while checking customer status or loading experience
   if (!customerCheckComplete || !experience) {
     return (

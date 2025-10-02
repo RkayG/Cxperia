@@ -8,10 +8,15 @@ import ProductDisplay from '../usage-instructions/components/ProductDisplay';
 import IngredientsSection from './components/IngredientSection';
 import { usePublicExpStore } from '@/store/public/usePublicExpStore';
 import CurvedBottomNav from '@/components/public/CurvedBottomNav';
+import PublicLoading from '../components/PublicLoading';
 
 const IngredientsPage: React.FC = () => {
-  const { color, product } = usePublicExpStore();
+  const { color, product, isLoading } = usePublicExpStore();
   
+
+  if (isLoading) {
+    return <PublicLoading />;
+  }
 
   return (
     <div className="min-h-screen bg-neutral-100 font-sans flex justify-center"  style={{ backgroundColor: color }}>

@@ -7,6 +7,7 @@ import logo from '@/assets/logo.png';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Footer } from '@/components/footer';
+import { useIncrementScanCount, shouldCountScan, markScanCounted } from '@/hooks/public/useScanTracking';
 
 export default function ExperienceSlugLayout({ children }: { children: React.ReactNode }) {
   const fetchExperience = usePublicExpStore((state) => state.fetchExperience);
@@ -15,6 +16,7 @@ export default function ExperienceSlugLayout({ children }: { children: React.Rea
   const experience = usePublicExpStore((state) => state.experience);
   const params = useParams();
   const pathname = usePathname();
+  const incrementScanMutation = useIncrementScanCount();
   // Try to extract slug robustly for both /experience/[slug] and /experience/[slug]/subpage
   let slug = '';
   if (typeof params?.slug === 'string') {
@@ -36,6 +38,29 @@ export default function ExperienceSlugLayout({ children }: { children: React.Rea
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug, fetchExperience]);
+
+  // Track scan count when experience is successfully loaded
+  useEffect(() => {
+    if (slug && experience && !isLoading && !error) {
+      // Only count scan if it should be counted for this session
+      if (shouldCountScan(slug)) {
+        console.log("📊 Tracking scan for experience:", slug);
+        
+        incrementScanMutation.mutateAsync(slug)
+          .then(() => {
+            // Mark scan as counted for this session
+            markScanCounted(slug);
+            console.log("✅ Scan count incremented successfully");
+          })
+          .catch((error) => {
+            console.warn("⚠️ Failed to track scan:", error);
+            // Don't block the user experience if scan tracking fails
+          });
+      } else {
+        console.log("⏭️ Scan already counted for this session, skipping");
+      }
+    }
+  }, [slug, experience, isLoading, error, incrementScanMutation]);
 
   if (!slug) {
     return (

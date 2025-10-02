@@ -1,6 +1,6 @@
 // src/App.tsx
 'use client'
-import React from "react"
+import React, { useCallback } from "react"
 
 // INTERNAL IMPORTS
 
@@ -10,11 +10,18 @@ import TutorialsGrid from "./components/TutorialGrid"
 import SectionHeader from "@/components/public/ThemeAwareSectionHeader"
 import { usePublicExpStore } from "@/store/public/usePublicExpStore"
 import CurvedBottomNav from "@/components/public/CurvedBottomNav"
+import PublicLoading from "../components/PublicLoading"
 
 
 const TutorialPage: React.FC = () => {
-  const contextColor = usePublicExpStore((state) => state.color)
-  const slug = usePublicExpStore((state) => state.slug)
+  // Use stable selectors to prevent infinite re-renders
+  const colorSelector = useCallback((state: any) => state.color, []);
+  const isLoadingSelector = useCallback((state: any) => state.isLoading, []);
+  const slugSelector = useCallback((state: any) => state.slug, []);
+  
+  const color = usePublicExpStore(colorSelector);
+  const isLoading = usePublicExpStore(isLoadingSelector);
+  const slug = usePublicExpStore(slugSelector);
 
   const { data: tutorialsData } = useExperienceTutorials(slug)
 
@@ -32,9 +39,13 @@ const TutorialPage: React.FC = () => {
     activeCategory && activeCategory !== "All Categories"
       ? tutorials.filter((t: any) => t.category === activeCategory)
       : tutorials
+      
+  if (isLoading) {
+    return <PublicLoading />;
+  }
 
   return (
-    <div className="flex min-h-screen justify-center bg-gray-100 font-sans" style={{ backgroundColor: contextColor }}>
+      <div className="flex min-h-screen justify-center bg-gray-100 font-sans" style={{ backgroundColor: color }}>
       <div className="mx-auto w-full max-w-xl overflow-hidden bg-gray-50 shadow-lg">
         <SectionHeader
           title="Tutorials & Routines"

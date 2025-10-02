@@ -5,6 +5,7 @@ import ThemeAwareHeader from "@/components/public/homepage/ThemeAwareHeader";
 import FeatureGrid from "@/components/public/homepage/FeatureGrid";
 import { usePublicExpStore } from "@/store/public/usePublicExpStore";
 import YouHaveScanned from "@/components/public/YouHaveScanned";
+import PublicLoading from "../components/PublicLoading";
 
 interface HomePageProps {
   color?: string | null;
@@ -15,13 +16,13 @@ interface HomePageProps {
 
 const HomePage: React.FC<HomePageProps> = () => {
 
-  const { color } = usePublicExpStore();
+  const { color, isLoading } = usePublicExpStore();
   // Removed slug/fetch logic, now handled in InteractiveWelcome
   const [hasScanned, setHasScanned] = React.useState<boolean | null>(null);
 
-/*   if (isLoading || hasScanned === null) {
-    return <UnpackingLoader />;
-  } */
+   if (isLoading) {
+    return <PublicLoading />;
+  } 
 
 /*   if (!hasScanned) {
     return <YouHaveScanned />;
