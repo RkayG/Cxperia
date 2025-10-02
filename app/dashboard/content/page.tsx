@@ -24,6 +24,9 @@ const ContentDashboardPage: React.FC = () => {
 
   // Delete confirmation modal state
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  
+  // Unpublish confirmation modal state
+  const [showUnpublishModal, setShowUnpublishModal] = useState(false);
 
   // Fetch tutorials using the useTutorials hook
   const { data: tutorialsRaw, isLoading: isLoadingTutorials } = useTutorials();
@@ -104,10 +107,14 @@ const ContentDashboardPage: React.FC = () => {
     }
   };
 
-  // Handler for unpublish action
-  const handleUnpublish = async () => {
+  // Handler for unpublish action - shows confirmation modal
+  const handleUnpublish = () => {
     if (selectedArticles.size === 0) return;
-    
+    setShowUnpublishModal(true);
+  };
+
+  // Handler for confirmed unpublish
+  const handleConfirmUnpublish = async () => {
     const selectedIds = Array.from(selectedArticles);
     const count = selectedIds.length;
     
@@ -122,9 +129,20 @@ const ContentDashboardPage: React.FC = () => {
       
       showToast.success(`${count} tutorial${count > 1 ? 's' : ''} unpublished successfully!`);
       setSelectedArticles(new Set()); // Clear selection
+      setShowUnpublishModal(false); // Close modal
     } catch (error: any) {
       showToast.error(error?.message || 'Failed to unpublish tutorials');
     }
+  };
+
+  // Handler for canceling unpublish
+  const handleCancelUnpublish = () => {
+    setShowUnpublishModal(false);
+  };
+
+  // Handler for dismissing action bar
+  const handleDismissActionBar = () => {
+    setSelectedArticles(new Set());
   };
 
   // Handler for delete action - shows confirmation modal
@@ -218,9 +236,14 @@ const ContentDashboardPage: React.FC = () => {
           <div className="md:pr-12">
           <ActionBar 
             selectedCount={selectedArticles.size} 
+            selectedArticleStatus={selectedArticles.size === 1 ? 
+              filteredArticles.find(article => selectedArticles.has(article.id))?.status : 
+              undefined
+            }
             onEdit={handleEdit}
             onUnpublish={handleUnpublish}
             onDelete={handleDelete}
+            onDismiss={handleDismissActionBar}
           />
           </div>
         )}
@@ -236,6 +259,18 @@ const ContentDashboardPage: React.FC = () => {
         color="red"
         onConfirm={handleConfirmDelete}
         onCancel={handleCancelDelete}
+      />
+
+      {/* Unpublish Confirmation Modal */}
+      <Modal
+        open={showUnpublishModal}
+        title="Unpublish Tutorials"
+        description={`Are you sure you want to unpublish ${selectedArticles.size} tutorial${selectedArticles.size > 1 ? 's' : ''}? They will be moved to drafts.`}
+        confirmText="Unpublish"
+        cancelText="Cancel"
+        color="orange"
+        onConfirm={handleConfirmUnpublish}
+        onCancel={handleCancelUnpublish}
       />
     </div>
   );

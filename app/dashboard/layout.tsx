@@ -13,7 +13,7 @@ const navigationItems: SidebarItem[] = [
   {
     name: "Overview",
     href: "/overview",
-    icon: "Globe", // String instead of component
+    icon: "BarChart4", // Dashboard/analytics icon
     type: "item",
   },
   {
@@ -29,20 +29,20 @@ const navigationItems: SidebarItem[] = [
   {
     name: "Content",
     href: "/content",
-    icon: "Users",
+    icon: "Book", // Content/writing icon
     type: "item",
   },
 
   {
     name: "Feedback",
     href: "/feedback",
-    icon: "Columns3",
+    icon: "Users", // Feedback from users
     type: "item",
   },
   {
     name: "Chatbot",
     href: "/chatbot",
-    icon: "Locate",
+    icon: "MessageCircle", // Chat/message icon
     type: "item",
   },
   /* {
@@ -82,7 +82,6 @@ const navigationItems: SidebarItem[] = [
 export default async function DashboardLayout({ children }: DashboardLayoutProps) {
   const brand = await getCurrentUserBrand();
   console.log("Current Brand in Layout:", brand);
-  const brandName = brand?.name || "Your Brand";
 
   return (
     <SidebarLayout
@@ -93,10 +92,6 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
           <Image src={logo} alt="Logo" className="h-10 w-24" />
         </div>
       }
-      baseBreadcrumb={[{
-        title: brandName,
-        href: "/dashboard/home",
-      }]}
     >
       {children}
       <MobileBottomNav />
