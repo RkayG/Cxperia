@@ -45,7 +45,7 @@ const MobileBottomNav: React.FC = () => {
 
   const isMobile = useIsMobile();
   // Only show on mobile devices
-  if (isMobile) {
+  if (!isMobile) {
     return null;
   }
 
