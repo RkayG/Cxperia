@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-} from '../../../components/ui/dropdown-menu';
+} from '@/components/ui/dropdown-menu';
 import type { FilterBarProps } from './productTypes';
 import { useRouter } from 'next/navigation';
 
@@ -85,7 +85,7 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSortChange }) =
         className="w-full sm:w-auto flex items-center justify-center px-6 py-2 bg-purple-800 text-white font-medium rounded-xl hover:bg-purple-700 transition-colors duration-200 shadow-md"
       >
         <Plus size={20} className="mr-2" />
-        Add New Product
+        Add New
       </button>
       
     </div>

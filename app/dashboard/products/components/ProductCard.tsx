@@ -49,10 +49,9 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
 } from '@/components/ui/dropdown-menu';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import type { ProductCardProps } from './productTypes';
 import { useDeleteExperience } from '@/hooks/brands/useExperienceApi';
-import { useRouter } from 'next/dist/client/components/navigation';
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const router = useRouter();
@@ -63,8 +62,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       : 'bg-gray-100 text-gray-600';
 
   const handleEdit = () => {
+    console.log("handleEdit product:", product);
     if (product.id) {
-      router.push(`/dashboard/experience/edit/${product.id}?step=product-details`, { state: { experience: product._fullExp } });
+      router.push(`/dashboard/experience/edit/${product.id}?step=product-details`, { state: { experienceData: product._fullExp } });
     }
   };
 
@@ -136,9 +136,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       </div>
       <h3 className="text-base font-semibold text-gray-900 mb-1 line-clamp-1 truncate">{product.name}</h3>
       <p className="text-sm text-gray-600 mb-2 line-clamp-1">{product.category}</p>
-      <div className="flex items-center text-xs text-gray-500 mb-3">
+      {/* <div className="flex items-center text-xs text-gray-500 mb-3">
         Experience: <span className="font-medium text-gray-700 ml-1 line-clamp-1">{product.experience}</span>
-      </div>
+      </div> */}
       <div className="flex items-center justify-between text-xs mb-4">
         <span className={`px-2 py-1 rounded-full ${qrCodeStatusColor} font-medium`}>
           QR Code Status: {product.qrCodeStatus}
