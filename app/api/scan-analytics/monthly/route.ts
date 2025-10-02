@@ -92,7 +92,7 @@ export async function GET(request: NextRequest) {
 }
 
 // Alternative endpoint for public access (by brand slug or experience slug)
-export async function POST(request: NextRequest) {
+/* export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { brandId, experienceId, months = 12 } = body;
@@ -176,3 +176,4 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+ */

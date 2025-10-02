@@ -8,10 +8,15 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
+import { Skeleton } from '@/components/ui/skeleton';
 import type { FilterBarProps } from './productTypes';
 import { useRouter } from 'next/navigation';
 
-const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSortChange }) => {
+interface FilterBarPropsWithLoading extends FilterBarProps {
+  isLoading?: boolean;
+}
+
+const FilterBar: React.FC<FilterBarPropsWithLoading> = ({ onFilterChange, onSortChange, isLoading = false }) => {
   // State for dropdowns
   const [selectedFilter, setSelectedFilter] = useState('');
   const [selectedSort, setSelectedSort] = useState('');
@@ -25,6 +30,21 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSortChange }) =
     router.push('/dashboard/experience/create?step=product-details&new=true');
   };
 
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+        <div className="flex flex-row gap-3">
+          {/* Filter skeleton */}
+          <Skeleton className="w-48 h-10 rounded-xl" />
+          {/* Sort skeleton */}
+          <Skeleton className="w-48 h-10 rounded-xl" />
+        </div>
+        {/* Add button skeleton */}
+        <Skeleton className="w-full sm:w-32 h-10 rounded-xl" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">

@@ -8,19 +8,19 @@ import type { Product, ProductListingsProps } from "./productTypes";
 
 interface ProductListingsPropsWithEdit extends ProductListingsProps {
   onEditExperience?: (exp: any) => void;
+  isLoading?: boolean;
 }
 
-
-// Simulate loading state for demonstration. Replace with real loading logic if using data fetching.
+// Skeleton count for loading state
 const LOADING_SKELETON_COUNT = 6;
 
 const ProductListings: React.FC<ProductListingsPropsWithEdit> = ({
   products: initialProducts,
+  isLoading = false,
 }) => {
   const [filter, setFilter] = useState("");
   const [sort, setSort] = useState("");
   const [products, _setProducts] = useState<Product[]>(initialProducts); // Internal state for products
-  const [loading, _setLoading] = useState(false); // Replace with real loading state if using data fetching
   const router = useRouter();
 
   const handleAddNewProduct = () => {
@@ -79,58 +79,87 @@ const ProductListings: React.FC<ProductListingsPropsWithEdit> = ({
       <h2 className="text-xl sm:text-2xl text-center font-semibold text-gray-900 mb-6">
         Your Product Listings
       </h2>
-      {/* Horizontal category bar */}
-      {categories.length > 0 && (
-        <div
-          className="w-full mb-6 flex items-center bg-gray-200 justify-start overflow-x-auto hide-scrollbar"
-          style={{
-            padding: "0.5rem 1rem",
-            minHeight: "3.5rem",
-          }}
-        >
-          <button
-            className={`px-5 py-2 rounded-sm text-sm font-semibold whitespace-nowrap transition-colors duration-150 mr-2 ${
-              filter === ""
-                ? "bg-white/70 text-purple-700 shadow font-bold"
-                : "bg-transparent text-blue-800 hover:bg-white/0"
-            }`}
-            style={{ border: "none" }}
-            onClick={() => setFilter("")}
+      
+      {/* Show skeleton for category bar when loading */}
+      {isLoading ? (
+        <div className="w-full mb-6 flex items-center bg-gray-200 justify-start overflow-x-auto hide-scrollbar" style={{ padding: "0.5rem 1rem", minHeight: "3.5rem" }}>
+          <Skeleton className="h-8 w-16 mr-2" />
+          <Skeleton className="h-8 w-20 mr-2" />
+          <Skeleton className="h-8 w-18 mr-2" />
+          <Skeleton className="h-8 w-24 mr-2" />
+        </div>
+      ) : (
+        /* Horizontal category bar */
+        categories.length > 0 && (
+          <div
+            className="w-full mb-6 flex items-center bg-gray-200 justify-start overflow-x-auto hide-scrollbar"
+            style={{
+              padding: "0.5rem 1rem",
+              minHeight: "3.5rem",
+            }}
           >
-            All
-          </button>
-          {categories.map((cat) => (
             <button
-              key={cat}
               className={`px-5 py-2 rounded-sm text-sm font-semibold whitespace-nowrap transition-colors duration-150 mr-2 ${
-                filter === cat
+                filter === ""
                   ? "bg-white/70 text-purple-700 shadow font-bold"
-                  : "bg-transparent text-blue-800  hover:bg-white/60"
+                  : "bg-transparent text-blue-800 hover:bg-white/0"
               }`}
               style={{ border: "none" }}
-              onClick={() => setFilter(cat)}
+              onClick={() => setFilter("")}
             >
-              {cat}
+              All
             </button>
-          ))}
-        </div>
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                className={`px-5 py-2 rounded-sm text-sm font-semibold whitespace-nowrap transition-colors duration-150 mr-2 ${
+                  filter === cat
+                    ? "bg-white/70 text-purple-700 shadow font-bold"
+                    : "bg-transparent text-blue-800  hover:bg-white/60"
+                }`}
+                style={{ border: "none" }}
+                onClick={() => setFilter(cat)}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        )
       )}
+      
       <div className=" sm:max-w-full mx-auto">
         <FilterBar
           onFilterChange={setFilter}
           onSortChange={setSort}
           onAddNewProduct={handleAddNewProduct}
+          isLoading={isLoading}
         />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6">
-          {loading
+          {isLoading
             ? Array.from({ length: LOADING_SKELETON_COUNT }).map((_, i) => (
-                <div key={i} className="relative">
-                  <Skeleton className="h-72 w-full mb-2" />
+                <div key={i} className="bg-white rounded-xl shadow-sm p-4 flex flex-col">
+                  {/* Image skeleton */}
+                  <Skeleton className="w-full h-40 mb-4 rounded-lg" />
+                  
+                  {/* Title skeleton */}
                   <Skeleton className="h-5 w-3/4 mb-1" />
-                  <Skeleton className="h-4 w-1/2 mb-1" />
-                  <Skeleton className="h-4 w-1/3 mb-2" />
+                  
+                  {/* Category skeleton */}
                   <Skeleton className="h-4 w-1/2 mb-2" />
-                  <Skeleton className="h-8 w-full" />
+                  
+                  {/* Status badge skeleton */}
+                  <div className="flex items-center justify-between text-xs mb-4">
+                    <Skeleton className="h-6 w-32 rounded-full" />
+                  </div>
+                  
+                  {/* Date skeleton */}
+                  <Skeleton className="h-3 w-24 mb-4" />
+                  
+                  {/* Action buttons skeleton */}
+                  <div className="flex justify-between items-center border-t border-gray-100 pt-3">
+                    <Skeleton className="h-8 w-16" />
+                    <Skeleton className="h-8 w-8 rounded" />
+                  </div>
                 </div>
               ))
             : filteredAndSortedProducts.map((product) => (
@@ -140,7 +169,7 @@ const ProductListings: React.FC<ProductListingsPropsWithEdit> = ({
               ))}
         </div>
       </div>
-      {!loading && filteredAndSortedProducts.length === 0 && (
+      {!isLoading && filteredAndSortedProducts.length === 0 && (
         <p className="text-center text-gray-500 py-10">
           No products found.
         </p>

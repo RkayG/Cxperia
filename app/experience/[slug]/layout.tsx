@@ -17,6 +17,9 @@ export default function ExperienceSlugLayout({ children }: { children: React.Rea
   const params = useParams();
   const pathname = usePathname();
   const incrementScanMutation = useIncrementScanCount();
+  
+  // Add a ref to track if scan has been attempted for this experience
+  const scanAttemptedRef = React.useRef<string | null>(null);
   // Try to extract slug robustly for both /experience/[slug] and /experience/[slug]/subpage
   let slug = '';
   if (typeof params?.slug === 'string') {
@@ -42,9 +45,20 @@ export default function ExperienceSlugLayout({ children }: { children: React.Rea
   // Track scan count when experience is successfully loaded
   useEffect(() => {
     if (slug && experience && !isLoading && !error) {
+      // Prevent multiple scan attempts for the same experience
+      const experienceKey = `${slug}_${experience.data?.id}`;
+      
+      if (scanAttemptedRef.current === experienceKey) {
+        console.log("⏭️ Scan already attempted for this experience, skipping");
+        return;
+      }
+      
       // Only count scan if it should be counted for this session
       if (shouldCountScan(slug)) {
         console.log("📊 Tracking scan for experience:", slug);
+        
+        // Mark as attempted immediately to prevent duplicates
+        scanAttemptedRef.current = experienceKey;
         
         incrementScanMutation.mutateAsync(slug)
           .then(() => {
@@ -54,13 +68,17 @@ export default function ExperienceSlugLayout({ children }: { children: React.Rea
           })
           .catch((error) => {
             console.warn("⚠️ Failed to track scan:", error);
-            // Don't block the user experience if scan tracking fails
+            // Reset the attempt flag on error so it can be retried
+            scanAttemptedRef.current = null;
           });
       } else {
         console.log("⏭️ Scan already counted for this session, skipping");
+        scanAttemptedRef.current = experienceKey; // Still mark as attempted
       }
     }
-  }, [slug, experience, isLoading, error, incrementScanMutation]);
+    // CRITICAL: Remove incrementScanMutation from dependencies to prevent infinite loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slug, experience, isLoading, error]);
 
   if (!slug) {
     return (

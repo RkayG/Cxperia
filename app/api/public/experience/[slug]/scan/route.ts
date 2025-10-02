@@ -78,17 +78,27 @@ export async function POST(
       // Don't fail the request if scan event insertion fails
     }
 
+    // Get current counts first, then increment
+    const { data: currentExp } = await supabase
+      .from('experiences')
+      .select('total_scan_count, unique_scan_count, scan_count')
+      .eq('id', experience.id)
+      .single();
+
+    // Calculate new counts
+    const newTotalCount = (currentExp?.total_scan_count || 0) + 1;
+    const newUniqueCount = isUniqueScan 
+      ? (currentExp?.unique_scan_count || 0) + 1 
+      : (currentExp?.unique_scan_count || 0);
+    const newScanCount = (currentExp?.scan_count || 0) + 1;
+
     // Update the aggregate scan counts (both total and unique)
     const updateData: any = {
-      total_scan_count: supabase.raw('total_scan_count + 1'),
-      scan_count: supabase.raw('scan_count + 1'), // Keep legacy field for backward compatibility
+      total_scan_count: newTotalCount,
+      unique_scan_count: newUniqueCount,
+      scan_count: newScanCount, // Keep legacy field for backward compatibility
       updated_at: new Date().toISOString()
     };
-
-    // Only increment unique scan count for first-time visitors
-    if (isUniqueScan) {
-      updateData.unique_scan_count = supabase.raw('unique_scan_count + 1');
-    }
 
     const { data: updatedExperience, error } = await supabase
       .from('experiences')

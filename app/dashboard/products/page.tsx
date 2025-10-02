@@ -101,15 +101,15 @@ const ProductDashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen mx-auto pb-32 bg-gray-50 sm:pb-32 sm:p-6 lg:p-8">
-      <ProductPerformanceOverview metrics={performanceMetrics} />
-      {isLoadingExperiences ? (
-        <div className="text-center text-gray-500 py-8">Loading products...</div>
-      ) : (
-        <ProductListings
-          products={products}
-          onEditExperience={handleEditExperience}
-        />
-      )}
+      <ProductPerformanceOverview 
+        metrics={performanceMetrics} 
+        isLoading={isLoadingExperiences} 
+      />
+      <ProductListings
+        products={products}
+        onEditExperience={handleEditExperience}
+        isLoading={isLoadingExperiences}
+      />
     </div>
   );
 };
