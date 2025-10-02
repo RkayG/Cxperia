@@ -75,6 +75,10 @@ const config = {
       DISABLE: (experienceId: string, featureId: string) => `/api/experiences/${experienceId}/features/${featureId}`,
     },
 
+    FEEDBACK: {
+      CREATE: "/api/feedbacks",
+    },
+
     BRAND: {
       LOGO: "/api/brands/logo",
       SUPPORT_LINKS: "/api/brands/support-links",
@@ -96,6 +100,14 @@ const config = {
 
       TUTORIAL: {
         LIST: (slug: string) => `/public/experience/${slug}/tutorials`,
+      },
+
+      FEEDBACK: {
+        CREATE: (slug: string) => `/api/public/experience/${slug}/feedback`,
+      },
+
+      UPLOAD: {
+        IMAGE: "/api/public/upload",
       },
     },
   },
