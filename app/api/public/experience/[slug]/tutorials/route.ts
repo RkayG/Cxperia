@@ -37,7 +37,8 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
     const { data: tutorials, error: tutorialsError } = await supabase
       .from('tutorials')
       .select('*')
-      .eq('brand_id', brand_id);
+      .eq('brand_id', brand_id)
+      .eq('is_published', true);
     
     if (tutorialsError) throw tutorialsError;
 
