@@ -104,7 +104,7 @@ const CategoryTabs: React.FC<CategoryTabsProps> = ({
                 }
               >
                 {activeCategory === category && (
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent to-white/10 rounded-lg" />
+                  <div className="absolute  bg-gradient-to-r from-transparent to-white/10 rounded-lg" />
                 )}
                 
                 <div className="relative z-10 flex items-center justify-center gap-2">

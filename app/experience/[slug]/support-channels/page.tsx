@@ -3,6 +3,7 @@ import React, { useContext, useMemo } from "react"
 import SectionHeader from "@/components/public/ThemeAwareSectionHeader"
 import { usePublicExpStore } from "@/store/public/usePublicExpStore"
 import CurvedBottomNav from "@/components/public/CurvedBottomNav"
+import PublicLoading from '../components/PublicLoading';
 
 // Map backend type to icon, link formatter, and description
 const SUPPORT_TYPE_MAP: Record<string, { icon: string; getLink: (v: string) => string; description: string }> = {
@@ -45,7 +46,7 @@ const SUPPORT_TYPE_MAP: Record<string, { icon: string; getLink: (v: string) => s
 }
 
 const CustomerSupportPage: React.FC = () => {
-  const contextColor = usePublicExpStore((state) => state.color)
+  const { color, isLoading } = usePublicExpStore();
   const customer_support_links_simple = usePublicExpStore((state) => state.customer_support_links_simple)
   // Get support links from backend, fallback to empty array
   type SupportLink = { type: string; value: string }
@@ -67,8 +68,12 @@ const CustomerSupportPage: React.FC = () => {
       .filter(Boolean) as SupportOption[]
   }, [supportLinks])
 
+  if (isLoading) {
+    return <PublicLoading />;
+  }
+
   return (
-    <div className="flex min-h-screen justify-center bg-gray-50 font-sans" style={{ backgroundColor: contextColor }}>
+    <div className="flex min-h-screen justify-center bg-gray-50 font-sans" style={{ backgroundColor: color }}>
       <div className="w-full max-w-xl bg-gray-50">
         <SectionHeader title="We’re Here to Help" subtitle="Choose your preferred way to connect" />
 
@@ -83,7 +88,7 @@ const CustomerSupportPage: React.FC = () => {
               target="_blank"
               rel="noopener noreferrer"
               className="mx-auto flex max-w-xs border  items-center gap-4 rounded-2xl bg-gray-200 p-4 text-center shadow-md transition-all duration-200 hover:scale-[1.02] hover:shadow-lg sm:max-w-md md:max-w-lg"
-                style={{ borderBottom: `4px solid ${contextColor}` }}
+                  style={{ borderBottom: `4px solid ${color}` }}
             >
               <img src={option.icon} alt={option.type} className="h-10 w-10 object-contain" />
               <div>

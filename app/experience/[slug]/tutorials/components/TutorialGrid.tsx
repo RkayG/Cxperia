@@ -5,7 +5,8 @@ import TutorialCard from './TutorialCard';
 import { useExperienceTutorials } from '@/hooks/public/useTutorials';
 import { isValidVideoUrl, getVideoType, getYouTubeEmbedUrl, getVimeoEmbedUrl } from './videoUtils';
 import { usePublicExpStore } from '@/store/public/usePublicExpStore';
-
+import TutorialGridSkeleton from './TutorialSkeleton';
+  
 interface TutorialsGridProps {
   tutorials?: any[];
 }
@@ -60,7 +61,7 @@ const TutorialsGrid: React.FC<TutorialsGridProps> = ({ tutorials: propTutorials 
   if (propTutorials) {
     tutorials = propTutorials;
   } else {
-    if (isLoading) return <div>Loading tutorials...</div>;
+    if (isLoading) return <TutorialGridSkeleton />;
     if (error) return <div className="text-red-600">Error loading tutorials.</div>;
     tutorials = Array.isArray(tutorialsData?.tutorials) ? tutorialsData.tutorials : [];
   }

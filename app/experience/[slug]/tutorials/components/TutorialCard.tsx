@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+'use client'
+import React, { useState, useCallback } from 'react';
 import { getVideoType, getYouTubeEmbedUrl, getVimeoEmbedUrl, isValidVideoUrl } from './videoUtils';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { Play, Clock, List, MoreVertical } from 'lucide-react';
 import { usePublicExpStore } from '@/store/public/usePublicExpStore';
 import { getFriendlyTimeAgo } from '@/utils/friendlyTime';
+import { useIncrementTutorialView } from '@/hooks/public/useTutorialViews';
 
 export interface TutorialDetail {
   id: string;
@@ -47,20 +49,32 @@ const TutorialCard: React.FC<TutorialCardProps> = ({ tutorial, brandLogo, brandN
   const [isHovered, setIsHovered] = useState(false);
   const [mediaLoaded, setMediaLoaded] = useState(false);
 
-  const color = usePublicExpStore((state) => state.color);
   const router = useRouter();
-
-
-  const { slug } = usePublicExpStore((state) => ({ slug: state.slug }));
+  const incrementViewMutation = useIncrementTutorialView();
+  
+  // Use stable selectors to prevent infinite re-renders
+  const colorSelector = useCallback((state: any) => state.color, []);
+  const slugSelector = useCallback((state: any) => state.slug, []);
+  
+  const color = usePublicExpStore(colorSelector);
+  const slug = usePublicExpStore(slugSelector);
   const slugify = (str: string) =>
     str
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-') // replace non-alphanumeric with -
       .replace(/^-+|-+$/g, '');    // trim leading/trailing -
 
-  const handleCardClick = () => {
+  const handleCardClick = async () => {
+    try {
+      // Increment view count before navigation
+      await incrementViewMutation.mutateAsync(id);
+    } catch (error) {
+      // Don't block navigation if view tracking fails
+      console.warn('Failed to track view:', error);
+    }
+    
+    // Navigate to tutorial detail page
     const tutorialSlug = slugify(title || '');
-    // Pass id and slug in the URL
     router.push(`/experience/${slug}/tutorials/${tutorialSlug}-${id}`);
   };
 
@@ -161,14 +175,35 @@ const TutorialCard: React.FC<TutorialCardProps> = ({ tutorial, brandLogo, brandN
           <List size={10} />
           <span>
             {(() => {
-              if (Array.isArray(steps)) {
-                const num = steps.length;
-                return num === 1 ? '1 step' : `${num} steps`;
+              try {
+                // If steps is already an array
+                if (Array.isArray(steps)) {
+                  const num = steps.length;
+                  return num === 1 ? '1 step' : `${num} steps`;
+                }
+                
+                // If steps is a JSON string, parse it
+                if (typeof steps === 'string' && steps.trim().startsWith('[')) {
+                  const parsedSteps = JSON.parse(steps);
+                  if (Array.isArray(parsedSteps)) {
+                    const num = parsedSteps.length;
+                    return num === 1 ? '1 step' : `${num} steps`;
+                  }
+                }
+                
+                // If steps is a string with number (legacy format)
+                if (typeof steps === 'string') {
+                  const num = Number(steps.split(' ')[0]);
+                  if (num === 1) return '1 step';
+                  if (num > 1) return `${num} steps`;
+                }
+                
+                // Fallback
+                return '0 steps';
+              } catch (error) {
+                console.warn('Error parsing steps:', error);
+                return '0 steps';
               }
-              const num = Number((steps as string)?.split(' ')[0]);
-              if (num === 1) return '1 step';
-              if (num > 1) return `${num} steps`;
-              return steps;
             })()}
           </span>
         </div>
