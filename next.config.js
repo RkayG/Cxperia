@@ -19,6 +19,10 @@ module.exports = {
   experimental: {
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
   },
+  // Enable Turbopack (now stable)
+  turbopack: {
+    // Turbopack configuration options can be added here
+  },
   // Disable SSR for better performance
   trailingSlash: false,
   // Optimize bundle

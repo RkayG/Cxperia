@@ -10,13 +10,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useExperiences } from '@/hooks/brands/useExperienceApi';
+import { useOptimizedExperiences } from '@/hooks/brands/useOptimizedQueries';
 import { useFeedbacks } from '@/hooks/brands/useFeedbackApi';
 import { Graph } from "./graph";
 
 export default function DashboardPage() {
-  // Fetch experiences and feedbacks
-  const { data: experiencesRaw, isLoading: isLoadingExperiences } = useExperiences();
+  // Get brand from store for conditional fetching
+  const brand = require('@/store/brands/useExperienceStore').useExperienceStore((state: any) => state.brand);
+  
+  // Fetch experiences and feedbacks with proper caching
+  const { data: experiencesRaw, isLoading: isLoadingExperiences } = useOptimizedExperiences(
+    brand?.id,
+    { enabled: !!brand?.id }
+  );
   const { data: feedbacksRaw, isLoading: isLoadingFeedbacks } = useFeedbacks();
 
   // Process experiences data

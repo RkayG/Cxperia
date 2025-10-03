@@ -3,14 +3,20 @@
 import { Camera, Clock, Play } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
-import { useExperiences } from '@/hooks/brands/useExperienceApi';
+import { useOptimizedExperiences } from '@/hooks/brands/useOptimizedQueries';
 import ProductListings from './components/ProductListings';
 import ProductPerformanceOverview from './components/ProductPerformanceOverview';
 import type { PerformanceMetric, Product } from './components/productTypes';
 
 const ProductDashboard: React.FC = () => {
-  // Fetch experiences as products
-  const { data: experiencesRaw, isLoading: isLoadingExperiences } = useExperiences();
+  // Get brand from store for conditional fetching
+  const brand = require('@/store/brands/useExperienceStore').useExperienceStore((state: any) => state.brand);
+  
+  // Fetch experiences as products with proper caching
+  const { data: experiencesRaw, isLoading: isLoadingExperiences } = useOptimizedExperiences(
+    brand?.id,
+    { enabled: !!brand?.id }
+  );
   const pathname = usePathname();
   // Remove context usage; use localStorage directly or zustand if needed
  //console.log('Experiences fetched:', experiencesRaw);

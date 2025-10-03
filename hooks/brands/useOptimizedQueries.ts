@@ -24,13 +24,14 @@ const QUERY_CONFIGS = {
 };
 
 // Optimized experiences query
-export function useOptimizedExperiences(brand_id?: string) {
+export function useOptimizedExperiences(brand_id?: string, options?: { enabled?: boolean }) {
   return useQuery({
     queryKey: brand_id ? ['experiences', brand_id] : ['experiences'],
     queryFn: () => experienceService.getAll(brand_id),
     ...QUERY_CONFIGS.longLived,
     // Only refetch if data is older than staleTime
     refetchOnMount: false,
+    enabled: options?.enabled !== false && !!brand_id,
   });
 }
 

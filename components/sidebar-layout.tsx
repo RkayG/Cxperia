@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
+import React, { Suspense, useState } from "react";
 import { cn } from "@/lib/utils";
 import PlatformFeedbackModal from "./ui/platform-feedback-modal";
 import {
@@ -243,13 +243,13 @@ function HeaderBreadcrumb(props: { items: SidebarItem[], baseBreadcrumb?: Header
         
         {/* Render custom breadcrumb items if available */}
         {customBreadcrumb?.items.map((item, index) => (
-          <>
+          <React.Fragment key={index}>
             {hasValidBrand && index === 0 && <BreadcrumbSeparator />}
-            <BreadcrumbItem key={index}>
+            <BreadcrumbItem>
               <BreadcrumbLink href={item.href}>{item.title}</BreadcrumbLink>
             </BreadcrumbItem>
-            {index < customBreadcrumb.items.length - 1 && <BreadcrumbSeparator key={`separator-${index}`} />}
-          </>
+            {index < customBreadcrumb.items.length - 1 && <BreadcrumbSeparator />}
+          </React.Fragment>
         ))}
         
         {/* Fallback to default title if no custom breadcrumb */}

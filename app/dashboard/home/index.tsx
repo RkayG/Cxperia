@@ -12,7 +12,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useExperiences } from "@/hooks/brands/useExperienceApi";
+import { useOptimizedExperiences, useOptimizedRecentExperiences } from "@/hooks/brands/useOptimizedQueries";
 import { useRecentTutorials } from "@/hooks/brands/useFeatureApi";
 import { getBrandStats, getCurrentUserBrand } from '@/lib/data/brands';
 import { supabase } from '@/lib/supabase';
@@ -34,7 +34,6 @@ interface Stats {
 
 
 export default function HomePage() {
-  const { data, isLoading: isLoadingExperiences } = useExperiences();
   const router = useRouter();
   // Banner image loading state (must be top-level for hooks)
   const [bannerLoaded, setBannerLoaded] = React.useState(false);
@@ -47,15 +46,24 @@ export default function HomePage() {
   
   // Get brand from store
   const storeBrand = require('@/store/brands/useExperienceStore').useExperienceStore((state: any) => state.brand);
+  
+  // Conditional data fetching - only fetch when brand is available and not loading
+  const { data, isLoading: isLoadingExperiences } = useOptimizedExperiences(
+    brand?.id, 
+    { enabled: !!brand?.id && !loading }
+  );
+  const { data: tutorialsData, isLoading: isLoadingTutorials } = useRecentTutorials({ 
+    enabled: !loading 
+  });
+  
   // Normalize experiences array
   const experiences = Array.isArray((data as any)?.data)
     ? (data as any).data
     : Array.isArray(data)
     ? data
     : [];
-  // Fetch recent tutorials (must be inside the component)
-  const { data: tutorialsData, isLoading: isLoadingTutorials } = useRecentTutorials();
-  //console.log("Fetched recent tutorials data:", tutorialsData);
+  
+  // Normalize tutorials array
   const tutorials = Array.isArray((tutorialsData as any)?.data)
     ? (tutorialsData as any).data
     : Array.isArray(tutorialsData)
