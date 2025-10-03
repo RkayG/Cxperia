@@ -16,9 +16,9 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({ currentStep, steps }) => 
           <React.Fragment key={step.number}>
             <div
               className={`
-                relative flex items-center justify-center py-2 px-3 sm:px-6
-                text-xs sm:text-sm md:text-base font-medium whitespace-normal text-center
-                flex-1
+                relative flex items-center justify-center py-2 px-2 sm:px-6
+                text-xs sm:text-sm md:text-base font-medium whitespace-nowrap text-center
+                min-w-0 sm:flex-1
                 ${isCompleted
                   ? 'bg-purple-300 text-purple-900'
                   : isActive

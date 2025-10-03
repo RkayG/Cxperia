@@ -2,7 +2,6 @@
 import Image from "next/image";
 import MobileBottomNav from "@/components/MobileBottomNavbar";
 import SidebarLayout, { SidebarItem } from "@/components/sidebar-layout";
-import { getCurrentUserBrand } from '@/lib/data/brands';
 import logo from '../../assets/logo.png'
 
 interface DashboardLayoutProps {
@@ -14,6 +13,12 @@ const navigationItems: SidebarItem[] = [
     name: "Overview",
     href: "/overview",
     icon: "BarChart4", // Dashboard/analytics icon
+    type: "item",
+  },
+  {
+    name: "Home",
+    href: "/",
+    icon: "HomeIcon",
     type: "item",
   },
   {
@@ -39,13 +44,13 @@ const navigationItems: SidebarItem[] = [
     icon: "Users", // Feedback from users
     type: "item",
   },
-  {
+  /*{
     name: "Chatbot",
     href: "/chatbot",
     icon: "MessageCircle", // Chat/message icon
     type: "item",
   },
-  /* {
+   {
     type: 'label',
     name: 'Monetization',
   }, */
@@ -80,8 +85,6 @@ const navigationItems: SidebarItem[] = [
 ];
 
 export default async function DashboardLayout({ children }: DashboardLayoutProps) {
-  const brand = await getCurrentUserBrand();
-  console.log("Current Brand in Layout:", brand);
 
   return (
     <SidebarLayout

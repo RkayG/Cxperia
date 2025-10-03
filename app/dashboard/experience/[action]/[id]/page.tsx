@@ -4,7 +4,6 @@ import React, { Suspense } from "react";
 import StepIndicator from "@/components/StepIndicator";
 
 // Import the step components
-import { useIsMobile } from "@/hooks/brands/use-mobile";
 import CustomiseFeaturesStep from "./customise-features/components";
 import PreviewStep from "./preview/components";
 import ProductDetailsStep from "./product-details/components";
@@ -26,11 +25,10 @@ const ExperienceFlowPageContent: React.FC = () => {
     router.push(`/dashboard/experience/${action}/${experienceId}?step=${stepKey}`);
   };
 
-  // Step configuration
-   const isMobile = useIsMobile();
+  // Step configuration - use consistent labels to prevent hydration mismatch
    const steps = [
-     { key: "product-details",  label: isMobile ? "Product" : "Product Details" , component: ProductDetailsStep},
-     { key: "customise-features", label: isMobile ? "Features" : "Customize Features" , component: CustomiseFeaturesStep },
+     { key: "product-details",  label: "Product Details" , component: ProductDetailsStep},
+     { key: "customise-features", label: "Customize Features" , component: CustomiseFeaturesStep },
      { key: "preview", label: "Preview", component: PreviewStep },
    ];
 

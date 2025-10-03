@@ -75,7 +75,7 @@ const ProductListings: React.FC<ProductListingsPropsWithEdit> = ({
   }, [products, filter, sort]);
 
   return (
-    <div className="max-w-sm -mt-12 mx-auto flex flex-col md:block sm:max-w-full ">
+    <div className="w-full px-4 sm:px-0 -mt-12">
       <h2 className="text-xl sm:text-2xl text-center font-semibold text-gray-900 mb-6">
         Your Product Experiences
       </h2>
@@ -126,14 +126,14 @@ const ProductListings: React.FC<ProductListingsPropsWithEdit> = ({
         )
       )}
       
-      <div className=" sm:max-w-full mx-auto">
+      <div className="w-full">
         <FilterBar
           onFilterChange={setFilter}
           onSortChange={setSort}
           onAddNewProduct={handleAddNewProduct}
           isLoading={isLoading}
         />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
           {isLoading
             ? Array.from({ length: LOADING_SKELETON_COUNT }).map((_, i) => (
                 <div key={i} className="bg-white rounded-xl shadow-sm p-4 flex flex-col">

@@ -1,8 +1,8 @@
 'use client';
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React from "react";
-import { FaSearch } from "react-icons/fa";
+import React, { useEffect, useState } from "react";
+import { FaPlus, FaSearch } from "react-icons/fa";
 import recentBanner2 from '@/assets/images/recent-banner2.png'
 import {
   Carousel,
@@ -14,16 +14,39 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { useExperiences } from "@/hooks/brands/useExperienceApi";
 import { useRecentTutorials } from "@/hooks/brands/useFeatureApi";
+import { getBrandStats, getCurrentUserBrand } from '@/lib/data/brands';
+import { supabase } from '@/lib/supabase';
+import { useExperienceStore } from '@/store/brands/useExperienceStore';
+import Loading from '@/components/Loading';
 import ProjectCard from "./components/ProjectCard";
 
+interface Brand {
+  id: string;
+  name: string;
+}
 
-export default function RecentPage() {
+interface Stats {
+  totalProducts: number;
+  publishedExperiences: number;
+  draftExperiences: number;
+  todayScans: number;
+}
+
+
+export default function HomePage() {
   const { data, isLoading: isLoadingExperiences } = useExperiences();
   const router = useRouter();
   // Banner image loading state (must be top-level for hooks)
   const [bannerLoaded, setBannerLoaded] = React.useState(false);
+  
+  // Dashboard state
+  const [user, setUser] = useState<any>(null);
+  const { brand, setBrand } = useExperienceStore();
+  const [stats, setStats] = useState<Stats | null>(null);
+  const [loading, setLoading] = useState(true);
+  
   // Get brand from store
-  const brand = require('@/store/brands/useExperienceStore').useExperienceStore((state: any) => state.brand);
+  const storeBrand = require('@/store/brands/useExperienceStore').useExperienceStore((state: any) => state.brand);
   // Normalize experiences array
   const experiences = Array.isArray((data as any)?.data)
     ? (data as any).data
@@ -32,7 +55,7 @@ export default function RecentPage() {
     : [];
   // Fetch recent tutorials (must be inside the component)
   const { data: tutorialsData, isLoading: isLoadingTutorials } = useRecentTutorials();
-  console.log("Fetched recent tutorials data:", tutorialsData);
+  //console.log("Fetched recent tutorials data:", tutorialsData);
   const tutorials = Array.isArray((tutorialsData as any)?.data)
     ? (tutorialsData as any).data
     : Array.isArray(tutorialsData)
@@ -41,6 +64,50 @@ export default function RecentPage() {
 
   // Search state
   const [searchQuery, setSearchQuery] = React.useState("");
+
+  // Dashboard initialization
+  useEffect(() => {
+    const initializeDashboard = async () => {
+      try {
+        // Get current user
+        const { data: { user: currentUser } } = await supabase.auth.getUser();
+        setUser(currentUser);
+
+        if (!currentUser) {
+          router.push('/auth/login');
+          return;
+        }
+
+        // Check email confirmation
+        if (currentUser && !currentUser.email_confirmed_at) {
+          // User is logged in but email not verified - they can stay on dashboard
+          // but you might want to show a warning
+          //console.log('Email not verified yet');
+        }
+
+        // Get brand data
+        const brandData = await getCurrentUserBrand();
+        //console.log("Current Brand in DashboardPage:", brandData);  
+        if (!brandData) {
+          //console.log('No brand found, redirecting to setup');
+          router.push('/auth/signup');
+          return;
+        }
+        setBrand(brandData);
+
+        // Get stats
+        const statsData = await getBrandStats(brandData.id);
+        setStats(statsData);
+
+      } catch (error) {
+        //console.error('Dashboard initialization error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    initializeDashboard();
+  }, [router, setBrand]);
 
   // Filtered results
   const filteredExperiences = searchQuery.trim()
@@ -58,8 +125,24 @@ export default function RecentPage() {
 
 
   // Debug logs for filtered results
-  console.log('filteredExperiences:', filteredExperiences);
-  console.log('filteredTutorials:', filteredTutorials);
+  //  console.log('filteredExperiences:', filteredExperiences);
+  //console.log('filteredTutorials:', filteredTutorials);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loading />
+      </div>
+    );
+  }
+
+  if (!brand) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loading />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -83,13 +166,106 @@ export default function RecentPage() {
         <h1
           className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-700 text-transparent bg-clip-text mb-2 mt-6"
         >
-          Hello, {brand?.name || ''}
+          Hello, {brand?.name || storeBrand?.name || ''}
         </h1>
         <p className="text-gray-700 mb-6 max-w-sm md:max-w-xl">
-          View your latest product experiences and tutorials.
+          Welcome to your dashboard.
         </p>
       </div>
     </div>
+
+    {/* Dashboard Stats Section */}
+    <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <div className="px-4 py-6 sm:px-0">
+        {/* Welcome Header */}
+        <div className="mb-8 ">
+          <h1 className="text-3xl font-bold text-gray-900 md:hidden">Welcome, {brand.name}</h1>
+          <p className="text-gray-600 mt-2">
+            Here's what's happening with your brand today.
+          </p>
+        </div>
+        
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="bg-white overflow-hidden border rounded-lg">
+            <div className="px-4 py-5 sm:p-6">
+              <dt className="text-sm font-medium text-gray-500 truncate">Total Products</dt>
+              <dd className="mt-1 text-3xl font-semibold text-gray-900">{stats?.totalProducts || 0}</dd>
+            </div>
+          </div>
+          <div className="bg-white overflow-hidden border rounded-lg">
+            <div className="px-4 py-5 sm:p-6">
+              <dt className="text-sm font-medium text-gray-500 truncate">Active Experiences</dt>
+              <dd className="mt-1 text-3xl font-semibold text-green-600">{stats?.publishedExperiences || 0}</dd>
+            </div>
+          </div>
+          <div className="bg-white overflow-hidden border rounded-lg">
+            <div className="px-4 py-5 sm:p-6">
+              <dt className="text-sm font-medium text-gray-500 truncate">Draft Experiences</dt>
+              <dd className="mt-1 text-3xl font-semibold text-yellow-600">{stats?.draftExperiences || 0}</dd>
+            </div>
+          </div>
+          <div className="bg-white overflow-hidden border rounded-lg">
+            <div className="px-4 py-5 sm:p-6">
+              <dt className="text-sm font-medium text-gray-500 truncate">QR Scans Today</dt>
+              <dd className="mt-1 text-3xl font-semibold text-blue-600">{stats?.todayScans || 0}</dd>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="bg-white border rounded-lg mb-8">
+          <div className="px-4 py-5 sm:p-6">
+            <h2 className="text-lg font-medium text-gray-900 mb-4">Quick Actions</h2>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <a 
+                href="/dashboard/products"
+                className="group p-4 border rounded-lg hover:border-purple-500 hover:bg-purple-50 transition-all duration-200"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center group-hover:bg-purple-200 transition-colors">
+                    <span className="text-purple-600">📦</span>
+                  </div>
+                  <div className="ml-4">
+                    <h3 className="text-sm font-medium text-gray-900">Manage Products</h3>
+                    <p className="text-sm text-gray-500">Add and edit your products</p>
+                  </div>
+                </div>
+              </a>
+              <a 
+                href="/dashboard/experience/create?step=product-details&new=true"
+                className="group p-4 border rounded-lg hover:border-green-500 hover:bg-green-50 transition-all duration-200"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">
+                    <FaPlus />
+                  </div>
+                  <div className="ml-4">
+                    <h3 className="text-sm font-medium text-gray-900">Create Experiences</h3>
+                    <p className="text-sm text-gray-500">Build digital experiences</p>
+                  </div>
+                </div>
+              </a>
+              <a 
+                href="/dashboard/content"
+                className="group p-4 border rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all duration-200"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                    <span className="text-blue-600">📚</span>
+                  </div>
+                  <div className="ml-4">
+                    <h3 className="text-sm font-medium text-gray-900">Create Tutorials</h3>
+                    <p className="text-sm text-gray-500">Build and manage your tutorials</p>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div className="mb-24 min-h-screen">
 
       <div className="w-full max-w-xs mb-12 mt-12 md:mt-auto mx-auto md:max-w-xl relative">
@@ -99,7 +275,7 @@ export default function RecentPage() {
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
           // No searchActive needed
-          className="w-full px-4 md:px-6 py-2 md:py-3 pr-10 md:pr-12 rounded-full border border-gray-300 md:border-gray-600 text-gray-900 shadow-sm md:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-500"
+          className="w-full px-4 md:px-6 py-2 md:py-3 pr-10 md:pr-12 rounded-full border border-gray-300 md:border-gray-400 text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
         />
         <button
           className="absolute right-2 top-1/2 -translate-y-1/2 p-2 lg:bg-purple-500 lg:text-white text-gray-700 rounded-full hover:bg-purple-600 transition-colors"
@@ -110,11 +286,11 @@ export default function RecentPage() {
       </div>
 
       {/* Recent Experiences Carousel (shadcn) */}
-      <div className="mx-auto px-4 max-w-screen-lg recent-carousel-section">
+      <div className="mx-auto px-4 max-w-7xl recent-carousel-section">
         <div className="flex items-center px-2 justify-between mb-4">
           <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Recent Experiences</h2>
         </div>
-        <Carousel className="relative  max-w-screen-lg ">
+        <Carousel className="relative  max-w-7xl ">
           <CarouselContent className="flex gap-2 pb-4">
             {isLoadingExperiences ? (
               Array.from({ length: 4 }).map((_, i) => (
@@ -173,7 +349,7 @@ export default function RecentPage() {
         <div className="flex items-center px-2 justify-between mb-4">
           <h2 className="ml-1 text-lg sm:text-xl font-semibold text-gray-800">Recent Tutorials</h2>
         </div>
-        <Carousel className="relative max-w-screen-lg ">
+        <Carousel className="relative max-w-7xl ">
           <CarouselContent className="flex gap-2 pb-4">
             {isLoadingTutorials ? (
               Array.from({ length: 4 }).map((_, i) => (

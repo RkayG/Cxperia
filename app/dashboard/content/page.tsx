@@ -9,7 +9,7 @@ import { showToast } from '@/utils/toast';
 import ActionBar from './components/ActionBar';
 import ArticleList from './components/ArticleList';
 import ArticleFilter from './components/ContentFilter';
-import Header from './components/Header';
+import ContentDashboardHeader from './components/Header';
 
 const ContentDashboardPage: React.FC = () => {
 
@@ -186,10 +186,10 @@ const ContentDashboardPage: React.FC = () => {
   return (
     <div className="font-sans bg-gray-50 relative h-screen flex justify-center p-0 ">
       <div className="w-full overflow-hidden flex flex-col">
-        <Header />
+        <ContentDashboardHeader />
         <ScrollArea className="flex-1 overflow-y-auto">
-          {/* Add top padding to prevent content from being hidden behind the fixed header and filter */}
-          <div className='w-full '>
+          {/* Add top padding to prevent content from being hidden behind the fixed header */}
+          <div className='w-full pt-20'>
             <ArticleFilter
               activeTab={activeTab}
               setActiveTab={setActiveTab}

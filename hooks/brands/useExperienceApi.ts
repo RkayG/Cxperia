@@ -30,7 +30,6 @@ export function useExperience(id: string) {
 
 // Create Experience
 export function useCreateExperience() {
-  console.log('[useCreateExperience] loaded');
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: any) => experienceService.create(data),

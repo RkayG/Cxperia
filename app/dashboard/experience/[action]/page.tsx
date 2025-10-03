@@ -39,7 +39,7 @@ const CreateExperiencePage: React.FC = () => {
               Create New Product Experience
             </h1>
           </div>
-          <p className="text-gray-600 text-left text-sm sm:text-base leading-relaxed">
+          <p className="text-gray-600 -mt-2 text-left text-sm sm:text-base leading-relaxed">
             Design a tailored post-purchase journey for your product, from detailed info to engaging interactions.
           </p>
           {/* Step Indicator - always on step 1 here */}

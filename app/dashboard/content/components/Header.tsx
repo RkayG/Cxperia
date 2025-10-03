@@ -1,3 +1,4 @@
+import { Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useIsMobile } from '@/hooks/brands/use-mobile';
@@ -10,23 +11,20 @@ const ContentDashboardHeader: React.FC = () => {
   };
   const isMobile = useIsMobile();
   return (
-    <>
-      <header className="relative lg:top-0 left-0 w-full z-30 flex items-center bg-gray-50 justify-between p-4 sm:p-6  h-20" >
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Content</h1>
-        <button
-          className="flex items-center px-4 py-2 bg-purple-800 text-white rounded-lg  hover:bg-purple-700 transition-colors text-sm sm:text-base"
-          onClick={handleNewContent}
-        >
-          {/* Placeholder for Plus icon if not using LucideReact in this component */}
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
-            <path d="M12 5v14M5 12h14"/>
-          </svg>
-          {isMobile ? 'New' : 'New Content'}
-        </button>
-      </header>
-
-    
-    </>
+    <header className="fixed top-0 left-0 right-0 z-40 bg-gray-50 border-b border-gray-200">
+      <div className="px-4 sm:px-6 py-4">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Content</h1>
+          <button
+            className="flex items-center text-purple-700 hover:text-purple-800 font-medium text-sm transition-colors duration-200"
+            onClick={handleNewContent}
+          >
+            <Plus size={16} className="mr-1" />
+            {isMobile ? 'New' : 'New Content'}
+          </button>
+        </div>
+      </div>
+    </header>
   );
 };
 

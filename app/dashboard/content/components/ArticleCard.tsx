@@ -21,7 +21,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, isSelected, onSelect
   return (
     <>
       {/* Mobile Layout - Card with prominent image */}
-      <div className={`sm:hidden w-full max-w-xs mx-auto transition-all duration-50
+      <div className={`sm:hidden w-full transition-all duration-50
         ${isSelected ? 'bg-purple-50 border-2 rounded-xl border-purple-800 shadow-md' : 'border border-gray-200 bg-white rounded-xl shadow-md hover:shadow-sm'}`}
         onClick={() => onSelect(article.id, !isSelected)}
       >
@@ -65,7 +65,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, isSelected, onSelect
       </div>
 
       {/* Desktop Layout - Horizontal card */}
-      <div className={`hidden sm:flex items-center w-full max-w-full mx-auto gap-4 p-3 transition-all duration-50
+      <div className={`hidden sm:flex items-center w-full gap-4 p-3 transition-all duration-50
         ${isSelected ? 'bg-purple-50 border-2 rounded-xl border-purple-800 shadow-md' : 'border border-gray-200 bg-white rounded-xl'}`}
         onClick={() => onSelect(article.id, !isSelected)}
       >

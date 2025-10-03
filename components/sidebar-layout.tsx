@@ -13,7 +13,8 @@ import {
   Settings2, 
   ShoppingBag,
   ShoppingCart,
-  Users 
+  Users,
+  HomeIcon
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -44,6 +45,7 @@ const iconMap: Record<string, LucideIcon> = {
   Settings2,
   Book,
   MessageCircle,
+  HomeIcon,
 };
 
 function useSegment(basePath: string) {

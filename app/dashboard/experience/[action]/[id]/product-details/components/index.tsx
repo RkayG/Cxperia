@@ -26,7 +26,7 @@ const StepOne: React.FC<StepOneProps> = ({
   onNext,
   onSubmit,
   isNew: isNewProp = false,
-  buttonLabel = "Next",
+  buttonLabel = "Customise Features",
   isSubmitting = false,
 }) => {
   const router = useRouter();
@@ -54,14 +54,14 @@ const StepOne: React.FC<StepOneProps> = ({
   // If we have a valid experience ID (not 'new' or empty), it's an existing experience
   const isNew = (!experienceId || experienceId === 'new' || isNewParam) && isNewProp;
   
-  console.log('StepOne debug:', { 
+/*   console.log('StepOne debug:', { 
     experienceId, 
     isNew, 
     isNewParam,
     isNewProp,
     isInitialized,
     hasStoreData: !!experienceData?.experienceId 
-  });
+  }); */
 
   // Helper to map API/state data to form data
   const mapToFormData = useCallback((exp: any): Experience => {
@@ -187,49 +187,44 @@ const StepOne: React.FC<StepOneProps> = ({
         }
       } else if (experienceId) {
         // For editing existing experiences
-        console.log('Editing existing experience:', experienceId);
+       // console.log('Editing existing experience:', experienceId);
         
         const currentExpData = experienceData as Experience;
-        console.log('Current store data:', currentExpData);
+      /*   console.log('Current store data:', currentExpData);
         console.log('Store experienceId:', currentExpData?.experienceId);
         console.log('URL experienceId:', experienceId);
         console.log('IDs match:', currentExpData?.experienceId === experienceId);
-        
+         */
         // If store data matches the experience we're editing, use it
         if (currentExpData?.experienceId === experienceId) {
-          console.log('Using existing store data for editing');
+          //console.log('Using existing store data for editing');
           const mapped = mapToFormData(currentExpData);
           setInitialFormData(mapped);
           // Don't reset experienceData here - preserve the current state
         } else {
           // Clear store data if we're switching to a different experience
           if (currentExpData?.experienceId && currentExpData.experienceId !== experienceId) {
-            console.log('Clearing store data for different experience');
+            //console.log('Clearing store data for different experience');
             clearExperienceData();
             setLoading(false); // Ensure loading state is reset
           }
           
           // Fetch experience data if not in store
-          console.log('Need to fetch experience data for:', experienceId);
-          console.log('Store has different experience ID or no data');
+    
           
           // Fetch the experience data from the backend
           const fetchData = async () => {
             try {
               const fetchedData = await fetchExperienceData(experienceId);
               if (fetchedData) {
-                console.log('Fetched experience data:', fetchedData);
                 const mapped = mapToFormData(fetchedData);
-                console.log('Mapped data for initialFormData:', mapped);
                 setInitialFormData(mapped);
-                console.log('Set initialFormData with mapped data');
               } else {
-                console.log('Failed to fetch experience data, using initial data');
                 setInitialFormData(initialExperienceData);
               }
             } catch (error) {
-              console.error('Error fetching experience data:', error);
-          setInitialFormData(initialExperienceData);
+              //console.error('Error fetching experience data:', error);
+            setInitialFormData(initialExperienceData);
             }
           };
           
@@ -295,34 +290,13 @@ const StepOne: React.FC<StepOneProps> = ({
 
     // Only do comparison if form is initialized and we have valid initial data
     let unchanged = false;
-    if (isInitialized && initialFormData && (initialFormData.experienceId || initialFormData.name || initialFormData.category)) {
-      console.log("=== COMPARISON DEBUG ===");
-      console.log("initialFormData:", initialFormData);
-      console.log("currentExpData:", currentExpData);
-      
-      unchanged = isExperienceDataEqual(initialFormData, currentExpData);
-      console.log("Form unchanged:", unchanged);
-      
-      // Debug: Show specific field comparisons
-      console.log("=== FIELD COMPARISON DEBUG ===");
-      console.log("name:", initialFormData?.name, "vs", currentExpData?.name, "equal:", initialFormData?.name === currentExpData?.name);
-      console.log("category:", initialFormData?.category, "vs", currentExpData?.category, "equal:", initialFormData?.category === currentExpData?.category);
-      console.log("skinType:", initialFormData?.skinType, "vs", currentExpData?.skinType, "equal:", initialFormData?.skinType === currentExpData?.skinType);
-      console.log("tagline:", initialFormData?.tagline, "vs", currentExpData?.tagline, "equal:", initialFormData?.tagline === currentExpData?.tagline);
-      console.log("description:", initialFormData?.description, "vs", currentExpData?.description, "equal:", initialFormData?.description === currentExpData?.description);
-      console.log("storeLink:", initialFormData?.storeLink, "vs", currentExpData?.storeLink, "equal:", initialFormData?.storeLink === currentExpData?.storeLink);
-      console.log("product_image_url length:", initialFormData?.product_image_url?.length, "vs", currentExpData?.product_image_url?.length);
-      console.log("experienceId:", initialFormData?.experienceId, "vs", currentExpData?.experienceId, "equal:", initialFormData?.experienceId === currentExpData?.experienceId);
-    } else {
-      console.log("Form not properly initialized yet, skipping comparison");
-    }
+ 
 
     // Use URL experience ID if store doesn't have it (for existing experiences)
     const expIdToUse = currentExpData?.experienceId || experienceId;
-    console.log("Exp ID to use:", expIdToUse);
+   // console.log("Exp ID to use:", expIdToUse);
     if (unchanged && expIdToUse) {
       // No changes, just navigate - FIXED: Use Next.js navigation
-      console.log("No changes detected, navigating without API call");
       const action = params?.action || "edit";
       if (onNext) {
         onNext(expIdToUse);
@@ -331,7 +305,7 @@ const StepOne: React.FC<StepOneProps> = ({
       }
       return;
     } else {
-      console.log("Form has changes or no experience ID, proceeding with API call");
+      //console.log("Form has changes or no experience ID, proceeding with API call");
     }
 
     // Only validate form if we're proceeding with API call
@@ -418,7 +392,6 @@ const StepOne: React.FC<StepOneProps> = ({
         };
         setExperienceData(updatedData);
         setIds(responseData.id || null, responseData.productId || null);
-        console.log("Created experience ID:", responseData.id);
         
         // Update initial form data to prevent future unnecessary saves
         setInitialFormData(updatedData);
@@ -480,7 +453,7 @@ const StepOne: React.FC<StepOneProps> = ({
   }
 
   return (
-    <div className="relative mx-auto mb-32 md:px-8 h-screen py-4 ">
+    <div className="relative mx-auto mb-32 px-1.5 md:px-8 h-screen py-4 ">
       <ScrollToTop />
       {showSavingOverlay && <SavingOverlay visible={true} message="Saving your progress..." />}
 
@@ -500,10 +473,7 @@ const StepOne: React.FC<StepOneProps> = ({
           {/* Product Form Section */}
           <div className="mb-8">
             <div className="mb-6">
-              <h2 className="mb-2 text-2xl font-semibold text-gray-900 md:mt-4">Describe your product</h2>
-              <p className="text-md text-gray-600">
-                Provide essential details about your product, including its name and a comprehensive description.
-              </p>
+              <h2 className=" text-2xl font-semibold text-gray-900 md:mt-4">Describe your product</h2>
             </div>
 
             <ProductForm data={experienceData as Experience} onUpdate={handleFormUpdate} errors={errors} />
@@ -524,7 +494,7 @@ const StepOne: React.FC<StepOneProps> = ({
           <button
             onClick={handleNext}
             disabled={isLoading || isSubmitting || isUploadingImages}
-            className="order-1 w-fit rounded-xl bg-purple-800 px-8 py-3.5 font-medium text-white transition-colors duration-200 hover:bg-purple-700 disabled:bg-gray-400 sm:order-2 sm:w-auto"
+            className="order-1 w-fit rounded-xl bg-purple-800 px-8 lg:py-3.5 py-3 font-medium text-white transition-colors duration-200 hover:bg-purple-700 disabled:bg-gray-400 sm:order-2 sm:w-auto"
           >
             {isLoading || isSubmitting ? "Saving..." : isUploadingImages ? "Uploading..." : buttonLabel}
           </button>

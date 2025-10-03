@@ -21,35 +21,35 @@ export const isExperienceDataEqual = (
   
   for (const field of simpleFields) {
     if (a[field] !== b[field]) {
-      console.log(`[compare] Field ${field} changed: "${a[field]}" → "${b[field]}"`);
+     // console.log(`[compare] Field ${field} changed: "${a[field]}" → "${b[field]}"`);
       return false;
     }
   }
   
   // Compare price fields (handle null/undefined)
   if (a.originalPrice !== b.originalPrice) {
-    console.log(`[compare] Field originalPrice changed: ${a.originalPrice} → ${b.originalPrice}`);
+   // console.log(`[compare] Field originalPrice changed: ${a.originalPrice} → ${b.originalPrice}`);
     return false;
   }
   
   if (a.discountedPrice !== b.discountedPrice) {
-    console.log(`[compare] Field discountedPrice changed: ${a.discountedPrice} → ${b.discountedPrice}`);
+   // console.log(`[compare] Field discountedPrice changed: ${a.discountedPrice} → ${b.discountedPrice}`);
     return false;
   }
   
   // Compare experienceId (handle undefined)
   if (a.experienceId !== b.experienceId) {
-    console.log(`[compare] Field experienceId changed: "${a.experienceId}" → "${b.experienceId}"`);
+   // console.log(`[compare] Field experienceId changed: "${a.experienceId}" → "${b.experienceId}"`);
     return false;
   }
   
   // Compare images array (product_image_url)
   if (!areImagesEqual(a.product_image_url || [], b.product_image_url || [])) {
-    console.log(`[compare] Images changed`);
+   // console.log(`[compare] Images changed`);
     return false;
   }
   
-  console.log(`[compare] All fields match`);
+  //console.log(`[compare] All fields match`);
   return true;
 };
 

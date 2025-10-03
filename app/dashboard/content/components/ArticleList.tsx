@@ -22,7 +22,7 @@ interface ArticleListProps {
 const ArticleList: React.FC<ArticleListProps> = ({ articles, selectedArticles, onSelectArticle, isLoading = false }) => {
   // Skeleton component for loading state
   const ArticleSkeleton = () => (
-    <div className="flex items-center max-w-xs sm:max-w-full gap-4 p-3">
+    <div className="flex items-center w-full gap-4 p-3">
       {/* Checkbox skeleton */}
       <Skeleton className="h-5 w-5 rounded" />
       

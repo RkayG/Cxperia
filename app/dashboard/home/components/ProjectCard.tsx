@@ -13,6 +13,7 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
+import Image from "next/image";
 
 // A card component for displaying product or tutorial projects
 const ProjectCard = ({
@@ -46,7 +47,7 @@ const ProjectCard = ({
 
   // Reduced dimensions for compact sizing
   const CARD_WIDTH = 240;
-  const IMAGE_HEIGHT = 110;
+  const IMAGE_HEIGHT = 150;
   const CARD_HEIGHT = 200;
 
   return (
@@ -121,7 +122,7 @@ const ProjectCard = ({
                   }
                   // fallback to image if not a recognized video url
                   return (
-                    <img
+                    <Image
                       className="w-full h-full object-cover"
                       src={src}
                       alt={title}
@@ -132,7 +133,7 @@ const ProjectCard = ({
                   );
                 }
                 return (
-                  <img
+                  <Image
                     className="w-full h-full object-cover"
                     src={imageUrl}
                     alt={title}

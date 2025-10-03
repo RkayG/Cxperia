@@ -96,7 +96,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   };
 
   return (
-    <div className="bg-white rounded-xl max-w-xs shadow-sm p-4 flex flex-col">
+    <div className="bg-white rounded-xl w-full shadow-sm p-4 flex flex-col">
       <div className="relative w-full h-40 mb-4 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
         <img
           src={product.image}
