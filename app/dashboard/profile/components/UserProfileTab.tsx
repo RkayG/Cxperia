@@ -1,0 +1,355 @@
+'use client';
+import { useState, useEffect } from 'react';
+import { User, Upload, Save, Mail, Shield, Calendar } from 'lucide-react';
+
+interface UserProfileData {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  avatar_url: string;
+  role: 'brand_admin' | 'brand_user' | 'viewer';
+  status: 'active' | 'inactive' | 'pending';
+  created_at: string;
+  updated_at: string;
+}
+
+const UserProfileTab: React.FC = () => {
+  const [profileData, setProfileData] = useState<UserProfileData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState<Partial<UserProfileData>>({});
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string>('');
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
+  const fetchUserProfile = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch('/api/profile/user');
+      const result = await response.json();
+      
+      if (result.success) {
+        setProfileData(result.data);
+        setFormData(result.data);
+      } else {
+        console.error('Error fetching user profile:', result.error);
+      }
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleInputChange = (field: keyof UserProfileData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setAvatarFile(file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setAvatarPreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      setIsSaving(true);
+      
+      // Upload avatar if changed
+      let avatarUrl = formData.avatar_url;
+      if (avatarFile) {
+        const uploadFormData = new FormData();
+        uploadFormData.append('file', avatarFile);
+        uploadFormData.append('type', 'avatar');
+        
+        const uploadResponse = await fetch('/api/profile/upload', {
+          method: 'POST',
+          body: uploadFormData,
+        });
+        
+        const uploadResult = await uploadResponse.json();
+        if (uploadResult.success) {
+          avatarUrl = uploadResult.data.url;
+        }
+      }
+
+      // Update user profile
+      const response = await fetch('/api/profile/user', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          avatar_url: avatarUrl,
+        }),
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        setProfileData(result.data);
+        setIsEditing(false);
+        setAvatarFile(null);
+        setAvatarPreview('');
+      } else {
+        console.error('Error saving user profile:', result.error);
+      }
+    } catch (error) {
+      console.error('Error saving user profile:', error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
+          <div className="flex items-center gap-6">
+            <div className="w-24 h-24 bg-gray-200 rounded-full"></div>
+            <div className="space-y-2">
+              <div className="h-4 bg-gray-200 rounded w-32"></div>
+              <div className="h-4 bg-gray-200 rounded w-48"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-semibold text-gray-900 flex items-center gap-3">
+            <User className="text-purple-600" />
+            User Profile
+          </h2>
+          <p className="text-gray-600 mt-1">
+            Manage your personal information and preferences
+          </p>
+        </div>
+        <div className="flex gap-3">
+          {isEditing ? (
+            <>
+              <button
+                onClick={() => setIsEditing(false)}
+                className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSave}
+                disabled={isSaving}
+                className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 transition-colors"
+              >
+                <Save size={16} />
+                {isSaving ? 'Saving...' : 'Save Changes'}
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+            >
+              Edit Profile
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Avatar Section */}
+      <div className="bg-gray-50 rounded-lg p-6">
+        <h3 className="text-lg font-medium text-gray-900 mb-4">Profile Picture</h3>
+        <div className="flex items-center gap-6">
+          <div className="relative">
+            {avatarPreview || profileData?.avatar_url ? (
+              <img
+                src={avatarPreview || profileData?.avatar_url}
+                alt="Profile picture"
+                className="w-24 h-24 object-cover rounded-full border-4 border-white shadow-lg"
+              />
+            ) : (
+              <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center border-4 border-white shadow-lg">
+                <User size={32} className="text-gray-400" />
+              </div>
+            )}
+          </div>
+          <div>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleAvatarChange}
+              className="hidden"
+              id="avatar-upload"
+              disabled={!isEditing}
+            />
+            <label
+              htmlFor="avatar-upload"
+              className={`flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg cursor-pointer transition-colors ${
+                isEditing
+                  ? 'hover:bg-gray-50 hover:border-gray-400'
+                  : 'opacity-50 cursor-not-allowed'
+              }`}
+            >
+              <Upload size={16} />
+              {avatarFile ? 'Change Photo' : 'Upload Photo'}
+            </label>
+            <p className="text-sm text-gray-500 mt-1">
+              Recommended: 200x200px, PNG or JPG
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Personal Information */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            First Name *
+          </label>
+          <input
+            type="text"
+            value={formData.first_name || ''}
+            onChange={(e) => handleInputChange('first_name', e.target.value)}
+            disabled={!isEditing}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 disabled:bg-gray-50"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Last Name *
+          </label>
+          <input
+            type="text"
+            value={formData.last_name || ''}
+            onChange={(e) => handleInputChange('last_name', e.target.value)}
+            disabled={!isEditing}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 disabled:bg-gray-50"
+          />
+        </div>
+
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Email Address
+          </label>
+          <div className="relative">
+            <Mail size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <input
+              type="email"
+              value={formData.email || ''}
+              disabled
+              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
+            />
+          </div>
+          <p className="text-sm text-gray-500 mt-1">
+            Email cannot be changed. Contact support if you need to update your email.
+          </p>
+        </div>
+      </div>
+
+      {/* Account Information */}
+      <div className="border-t border-gray-200 pt-6">
+        <h3 className="text-lg font-medium text-gray-900 mb-4">Account Information</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Role
+            </label>
+            <div className="flex items-center gap-2">
+              <Shield size={16} className="text-gray-400" />
+              <span className="px-3 py-2 bg-blue-100 text-blue-800 rounded-lg font-medium capitalize">
+                {formData.role?.replace('_', ' ')}
+              </span>
+            </div>
+            <p className="text-sm text-gray-500 mt-1">
+              Your role determines what actions you can perform
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Status
+            </label>
+            <span className={`px-3 py-2 rounded-lg font-medium capitalize ${
+              formData.status === 'active' 
+                ? 'bg-green-100 text-green-800'
+                : formData.status === 'pending'
+                ? 'bg-yellow-100 text-yellow-800'
+                : 'bg-red-100 text-red-800'
+            }`}>
+              {formData.status}
+            </span>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Member Since
+            </label>
+            <div className="flex items-center gap-2">
+              <Calendar size={16} className="text-gray-400" />
+              <span className="text-gray-700">
+                {profileData?.created_at ? new Date(profileData.created_at).toLocaleDateString() : 'N/A'}
+              </span>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Last Updated
+            </label>
+            <div className="flex items-center gap-2">
+              <Calendar size={16} className="text-gray-400" />
+              <span className="text-gray-700">
+                {profileData?.updated_at ? new Date(profileData.updated_at).toLocaleDateString() : 'N/A'}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Security Section */}
+      <div className="border-t border-gray-200 pt-6">
+        <h3 className="text-lg font-medium text-gray-900 mb-4">Security</h3>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div>
+              <h4 className="font-medium text-gray-900">Password</h4>
+              <p className="text-sm text-gray-600">Last changed 30 days ago</p>
+            </div>
+            <button className="px-4 py-2 text-purple-600 hover:text-purple-700 font-medium">
+              Change Password
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div>
+              <h4 className="font-medium text-gray-900">Two-Factor Authentication</h4>
+              <p className="text-sm text-gray-600">Add an extra layer of security</p>
+            </div>
+            <button className="px-4 py-2 text-purple-600 hover:text-purple-700 font-medium">
+              Enable 2FA
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default UserProfileTab;

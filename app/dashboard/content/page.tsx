@@ -3,7 +3,6 @@ import { Book, Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import Modal from '@/components/Modal';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { useDeleteTutorial, useTutorials, useUnpublishTutorial } from '@/hooks/brands/useFeatureApi';
 import { showToast } from '@/utils/toast';
 import ActionBar from './components/ActionBar';
@@ -184,67 +183,62 @@ const ContentDashboardPage: React.FC = () => {
   };
 
   return (
-    <div className="font-sans bg-gray-50 relative h-screen flex justify-center p-0 ">
-      <div className="w-full overflow-hidden flex flex-col">
+    <div className="font-sans min-h-screen">
+      <div className="w-full">
         <ContentDashboardHeader />
-        <ScrollArea className="flex-1 overflow-y-auto">
-          {/* Add top padding to prevent content from being hidden behind the fixed header */}
-          <div className='w-full pt-20'>
-            <ArticleFilter
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-              selectedType={selectedType}
-              setSelectedType={setSelectedType}
-              selectedCategory={selectedCategory}
-              setSelectedCategory={setSelectedCategory}
-              search={search}
-              setSearch={setSearch}
-              count={filteredArticles.length}
-            />
-            {isLoadingTutorials ? (
-              <ArticleList 
-                articles={[]} 
-                selectedArticles={selectedArticles} 
-                onSelectArticle={handleSelectArticle}
-                isLoading={true}
-              />
-            ) : filteredArticles.length === 0 ? (
-              <div className="flex flex-col items-center bg-gray-50 justify-center pb-24">
-                <Book className="w-12 h-12  text-yellow-400 mb-6" />
-                <h2 className="text-lg md:text-2xl font-bold text-gray-700 mb-2">Nothing to see here yet</h2>
-                <p className="text-gray-500 mb-6">Create your first tutorial to get started.</p>
-                <button
-                  onClick={() => router.push('/dashboard/content/tutorial?mode=create')}
-                  className="px-8 flex items-center justify-center md:py-3 py-2 bg-gray-500 text-white font-medium rounded-xl hover:bg-purple-800 transition-colors shadow-lg"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Create Tutorial
-                </button>
-              </div>
-            ) : (
-              <ArticleList 
-                articles={filteredArticles} 
-                selectedArticles={selectedArticles} 
-                onSelectArticle={handleSelectArticle}
-                isLoading={false}
-              />
-            )}
+        <ArticleFilter
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          selectedType={selectedType}
+          setSelectedType={setSelectedType}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          search={search}
+          setSearch={setSearch}
+          count={filteredArticles.length}
+        />
+        {isLoadingTutorials ? (
+          <ArticleList 
+            articles={[]} 
+            selectedArticles={selectedArticles} 
+            onSelectArticle={handleSelectArticle}
+            isLoading={true}
+          />
+        ) : filteredArticles.length === 0 ? (
+          <div className="flex flex-col items-center bg-gray-50 justify-center py-24">
+            <Book className="w-12 h-12 text-yellow-400 mb-6" />
+            <h2 className="text-lg md:text-2xl font-bold text-gray-700 mb-2">Nothing to see here yet</h2>
+            <p className="text-gray-500 mb-6">Create your first tutorial to get started.</p>
+            <button
+              onClick={() => router.push('/dashboard/content/tutorial?mode=create')}
+              className="px-8 flex items-center justify-center md:py-3 py-2 bg-gray-500 text-white font-medium rounded-xl hover:bg-purple-800 transition-colors shadow-lg"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Create Tutorial
+            </button>
           </div>
-        </ScrollArea>
+        ) : (
+          <ArticleList 
+            articles={filteredArticles} 
+            selectedArticles={selectedArticles} 
+            onSelectArticle={handleSelectArticle}
+            isLoading={false}
+          />
+        )}
 
         {selectedArticles.size > 0 && (
           <div className="md:pr-12">
-          <ActionBar 
-            selectedCount={selectedArticles.size} 
-            selectedArticleStatus={selectedArticles.size === 1 ? 
-              filteredArticles.find((article: any) => selectedArticles.has(article.id))?.status : 
-              undefined
-            }
-            onEdit={handleEdit}
-            onUnpublish={handleUnpublish}
-            onDelete={handleDelete}
-            onDismiss={handleDismissActionBar}
-          />
+            <ActionBar 
+              selectedCount={selectedArticles.size} 
+              selectedArticleStatus={selectedArticles.size === 1 ? 
+                filteredArticles.find((article: any) => selectedArticles.has(article.id))?.status : 
+                undefined
+              }
+              onEdit={handleEdit}
+              onUnpublish={handleUnpublish}
+              onDelete={handleDelete}
+              onDismiss={handleDismissActionBar}
+            />
           </div>
         )}
       </div>

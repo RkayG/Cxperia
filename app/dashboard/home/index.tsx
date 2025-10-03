@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { FaPlus, FaSearch } from "react-icons/fa";
-import recentBanner2 from '@/assets/images/recent-banner2.png'
+import recentBanner2 from '../../../assets/images/recent-banner2.png'
 import {
   Carousel,
   CarouselContent,
@@ -128,13 +128,6 @@ export default function HomePage() {
   //  console.log('filteredExperiences:', filteredExperiences);
   //console.log('filteredTutorials:', filteredTutorials);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loading />
-      </div>
-    );
-  }
 
   if (!brand) {
     return (
@@ -286,15 +279,15 @@ export default function HomePage() {
       </div>
 
       {/* Recent Experiences Carousel (shadcn) */}
-      <div className="mx-auto px-4 max-w-7xl recent-carousel-section">
+      <div className="w-full px-4">
         <div className="flex items-center px-2 justify-between mb-4">
           <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Recent Experiences</h2>
         </div>
-        <Carousel className="relative  max-w-7xl ">
-          <CarouselContent className="flex gap-2 pb-4">
+        <Carousel className="w-full">
+          <CarouselContent className="flex gap-4 pb-4 -ml-4">
             {isLoadingExperiences ? (
               Array.from({ length: 4 }).map((_, i) => (
-                <CarouselItem key={i} style={{ minWidth: 260, maxWidth: 260 }}>
+                <CarouselItem key={i} className="pl-4 basis-[260px]">
                   <div className="flex flex-col gap-2">
                     <Skeleton className="h-40 w-full mb-2" />
                     <Skeleton className="h-5 w-3/4 mb-1" />
@@ -305,7 +298,7 @@ export default function HomePage() {
               ))
             ) : (
               <>
-                <CarouselItem style={{ minWidth: 260, maxWidth: 260 }}>
+                <CarouselItem className="pl-4 basis-[260px]">
                   <ProjectCard type="product experience" isCreateCard />
                 </CarouselItem>
                 {filteredExperiences.map((exp: any) => {
@@ -316,7 +309,7 @@ export default function HomePage() {
                     imageUrl = exp.logo_url || undefined;
                   }
                   return (
-                    <CarouselItem key={String(exp.id)} style={{ minWidth: 260, maxWidth: 260 }}>
+                    <CarouselItem key={String(exp.id)} className="pl-4 basis-[260px]">
                       <ProjectCard
                         id={exp.id}
                         type="product experience"
@@ -345,15 +338,15 @@ export default function HomePage() {
       </div>
 
       {/* Recent Tutorials Carousel (shadcn) */}
-      <div className="mx-auto px-4 max-w-screen-lg  mt-12 recent-carousel-section">
+      <div className="w-full px-4 mt-12">
         <div className="flex items-center px-2 justify-between mb-4">
           <h2 className="ml-1 text-lg sm:text-xl font-semibold text-gray-800">Recent Tutorials</h2>
         </div>
-        <Carousel className="relative max-w-7xl ">
-          <CarouselContent className="flex gap-2 pb-4">
+        <Carousel className="w-full">
+          <CarouselContent className="flex gap-4 pb-4 -ml-4">
             {isLoadingTutorials ? (
               Array.from({ length: 4 }).map((_, i) => (
-                <CarouselItem key={i} style={{ minWidth: 260, maxWidth: 260 }}>
+                <CarouselItem key={i} className="pl-4 basis-[260px]">
                   <div className="flex flex-col gap-2">
                     <Skeleton className="h-40 w-full mb-2" />
                     <Skeleton className="h-5 w-3/4 mb-1" />
@@ -364,7 +357,7 @@ export default function HomePage() {
               ))
             ) : (
               <>
-                <CarouselItem style={{ minWidth: 260, maxWidth: 260 }}>
+                <CarouselItem className="pl-4 basis-[260px]">
                   <ProjectCard type="tutorial" isCreateCard />
                 </CarouselItem>
                 {filteredTutorials.map((tut: any) => {
@@ -373,7 +366,7 @@ export default function HomePage() {
                     imageUrl = tut.featured_image || tut.imageUrl || undefined;
                   }
                   return (
-                    <CarouselItem key={String(tut.id)} style={{ minWidth: 260, maxWidth: 260 }}>
+                    <CarouselItem key={String(tut.id)} className="pl-4 basis-[260px]">
                       <ProjectCard
                         id={tut.id}
                         type="tutorial"
@@ -418,18 +411,6 @@ export default function HomePage() {
 
   
       <style>{`
-        .recent-carousel-section {
-          max-width: 100vw;
-          width: 100vw;
-          overflow: hidden;
-        }
-      
-        @media (min-width: 1024px) {
-          .recent-carousel-section {
-            max-width: calc(100vw - 16rem);
-            width: calc(100vw - 16rem);
-          }
-        }
         .hide-scrollbar {
           scrollbar-width: none; /* Firefox */
           -ms-overflow-style: none; /* IE 10+ */

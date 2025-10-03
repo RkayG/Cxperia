@@ -4,9 +4,10 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useFeedbacks } from '@/hooks/brands/useFeedbackApi';
 import { useExperienceStore } from '@/store/brands/useExperienceStore';
-import InboxHeader from './components/InboxHeader';
+import ProfessionalInboxHeader from './components/ProfessionalInboxHeader';
 import type { Message } from './components/inboxTypes';
 import MessageList from './components/MessageList';
+import { useIsMobile }   from '@/hooks/brands/use-mobile';
 
 // Helper function to format time ago
 const formatTimeAgo = (dateString: string): string => {
@@ -24,7 +25,7 @@ const formatTimeAgo = (dateString: string): string => {
 const InboxPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [readMessages, setReadMessages] = useState<Set<string>>(new Set());
-  
+  const isMobile = useIsMobile();
   // Get brand from store
   const brand = useExperienceStore((state) => state.brand);
   const brandId = brand?.id;
@@ -118,6 +119,7 @@ const InboxPage: React.FC = () => {
     let filters: any = {};
     try {
       filters = JSON.parse(searchQuery);
+      console.log('Applied filters:', filters); // Debug log
     } catch {
       // If not JSON, treat as simple text search
       const lowerCaseQuery = searchQuery.toLowerCase();
@@ -145,8 +147,16 @@ const InboxPage: React.FC = () => {
       
       // Rating filter
       if (rating) {
-        const ratingLabels = ['Poor', 'Fair', 'Good', 'Great', 'Excellent'];
-        const expectedRating = ratingLabels.indexOf(rating) + 1;
+        let expectedRating;
+        if (rating.match(/^\d+$/)) {
+          // If rating is a number (e.g., "1", "2", "3")
+          expectedRating = parseInt(rating);
+        } else {
+          // If rating is a label (e.g., "Poor", "Fair")
+          const ratingLabels = ['Poor', 'Fair', 'Good', 'Great', 'Excellent'];
+          expectedRating = ratingLabels.indexOf(rating) + 1;
+        }
+        console.log(`Rating filter: looking for ${expectedRating}, message has ${message.rating}`); // Debug log
         if (message.rating !== expectedRating) return false;
       }
       
@@ -162,9 +172,9 @@ const InboxPage: React.FC = () => {
   // Loading skeleton
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-4">
-        <h1 className="text-2xl text-left sm:text-3xl font-bold text-gray-900 mb-2">Customer Feedbacks</h1>
-        <p className="text-left text-gray-600 mb-6 max-w-2xl" style={{ fontFamily: 'Frank Ruhl Libre, serif' }}>
+      <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
+        <h2 className="text-2xl text-left  font-bold text-gray-900 mb-2 tracking-tight">Customer Feedbacks</h2>
+        <p className="text-left text-gray-600 mb-6 max-w-2xl">
           Monitor and analyze customer reviews for your cosmetic products
         </p>
         <div className="space-y-4">
@@ -190,41 +200,98 @@ const InboxPage: React.FC = () => {
   // Error state
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-4">
-        <h1 className="text-2xl text-left sm:text-3xl font-bold text-gray-900 mb-2">Customer Feedbacks</h1>
-        <div className="text-center py-8">
-          <p className="text-red-600 mb-4">Failed to load feedbacks</p>
+      <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl text-left font-bold text-gray-900 tracking-tight">Customer Feedbacks</h2>
           <button
             onClick={handleRefresh}
-            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+            className="flex items-center gap-2 px-3 py-2 text-blue-600 transition-colors hover:text-blue-700"
+            title="Retry loading feedbacks"
           >
-            Try Again
+            <RefreshCw size={16} />
+            {isMobile ? '' : 'Retry'}
           </button>
+        </div>
+        
+        {/* Professional Error State */}
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-white rounded-xl border border-red-200 shadow-sm p-8 text-center">
+            {/* Error Icon */}
+            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-6">
+              <svg className="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+            </div>
+            
+            {/* Error Message */}
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">
+              Unable to Load Customer Feedbacks
+            </h3>
+            <p className="text-gray-600 mb-6 leading-relaxed">
+              We're having trouble retrieving your customer feedback data. This could be due to a temporary network issue or server problem.
+            </p>
+            
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button
+                onClick={handleRefresh}
+                className="inline-flex items-center px-4 py-2 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 transition-colors duration-200"
+              >
+                <RefreshCw size={16} className="mr-2" />
+                Try Again
+              </button>
+              <button
+                onClick={() => window.location.reload()}
+                className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors duration-200"
+              >
+                Refresh Page
+              </button>
+            </div>
+            
+            {/* Help Text */}
+            <div className="mt-6 pt-6 border-t border-gray-200">
+              <p className="text-sm text-gray-500">
+                If the problem persists, please check your internet connection or contact support.
+              </p>
+            </div>
+          </div>
+          
+          {/* Additional Help Section */}
+          <div className="mt-8 bg-blue-50 rounded-xl border border-blue-200 p-6">
+            <h4 className="text-lg font-medium text-blue-900 mb-3">Need Help?</h4>
+            <div className="space-y-2 text-sm text-blue-800">
+              <p>• Ensure you have an active internet connection</p>
+              <p>• Try refreshing the page</p>
+              {/* <p>• Check if other parts of the dashboard are working</p>
+              
+              <p>• Contact support if the issue continues</p> */}
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-4">
-      <div className="flex items-center justify-between mb-2">
-        <h1 className="text-2xl text-left sm:text-3xl font-bold text-gray-900">Customer Feedbacks</h1>
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6 ">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl text-left  font-bold text-gray-900 tracking-tight">Customer Feedbacks</h2>
         <button
           onClick={handleRefresh}
           disabled={isLoading}
-          className="flex items-center gap-2 px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center gap-2 px-3 py-2  text-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           title="Refresh feedbacks"
         >
           <RefreshCw size={16} className={isLoading ? 'animate-spin' : ''} />
-          Refresh
+          {isMobile ? '' : 'Refresh'}
         </button>
       </div>
-      <p className="text-left text-gray-600 mb-6 max-w-2xl" style={{ fontFamily: 'Frank Ruhl Libre, serif' }}>
+      <p className="text-left text-gray-600 mb-6 max-w-2xl">
         Monitor and analyze customer reviews for your cosmetic products ({messages.length} total)
       </p>
       
-      {/* Inbox Header with Search and Filters */}
-      <InboxHeader onSearch={handleSearch} productOptions={productOptions} />
+      {/* Professional Inbox Header with Search and Filters */}
+      <ProfessionalInboxHeader onSearch={handleSearch} productOptions={productOptions} />
       <MessageList messages={filteredMessages} onSelectMessage={handleSelectMessage} />
     </div>
   );

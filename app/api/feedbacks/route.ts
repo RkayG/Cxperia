@@ -6,15 +6,8 @@ import { createClient } from '@/lib/supabase/server';
 export async function GET(request: NextRequest) {
   try {
     const user = await getCurrentUser();
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const { searchParams } = new URL(request.url);
-    const brandId = searchParams.get('brand_id') || user.brand_id;
-
-    if (!brandId) {
-      return NextResponse.json({ error: 'brand_id is required' }, { status: 400 });
+    if (!user?.brand_id) {
+      return NextResponse.json({ error: 'No brand associated with user' }, { status: 403 });
     }
 
     const supabase = await createClient();
@@ -30,7 +23,7 @@ export async function GET(request: NextRequest) {
           products(name, category)
         )
       `)
-      .eq('experiences.brand_id', brandId)
+      .eq('experiences.brand_id', user.brand_id)
       .order('created_at', { ascending: false });
 
     if (error) {

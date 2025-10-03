@@ -32,9 +32,9 @@
   animation: fade-in 0.5s ease-out;
 }
 
-/* Smooth transitions for all interactive elements */
-* {
-  transition: all 0.2s ease-in-out;
+/* Smooth transitions for interactive elements only */
+button, a, input, textarea, select, [role="button"] {
+  transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, transform 0.2s ease-in-out;
 }
 
 .bricolage-grotesque {
@@ -198,6 +198,38 @@
   body {
     @apply bg-background text-foreground;
   }
+  html {
+    scroll-behavior: smooth;
+  }
+  /* Optimize scrolling performance */
+  .scroll-smooth {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 
+
+/* SPA Optimizations */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+/* Disable SSR hydration flash */
+.no-ssr {
+  visibility: hidden;
+}
+
+.no-ssr.loaded {
+  visibility: visible;
+}

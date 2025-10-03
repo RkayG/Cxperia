@@ -14,12 +14,14 @@ import {
   ShoppingBag,
   ShoppingCart,
   Users,
-  HomeIcon
+  HomeIcon,
+  MessageSquare,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { cn } from "@/lib/utils";
+import PlatformFeedbackModal from "./ui/platform-feedback-modal";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -46,6 +48,7 @@ const iconMap: Record<string, LucideIcon> = {
   Book,
   MessageCircle,
   HomeIcon,
+  MessageSquare,
 };
 
 function useSegment(basePath: string) {
@@ -104,6 +107,7 @@ function SidebarContent(props: {
   items: SidebarItem[];
   sidebarTop?: React.ReactNode;
   basePath: string;
+  onFeedbackClick?: () => void;
 }) {
   //const path = usePathname();
   //const segment = useSegment(props.basePath);
@@ -115,13 +119,20 @@ function SidebarContent(props: {
         {props.sidebarTop}
       </div>
       {/* Add Create button here */}
-      <div className="p-4">
+      <div className="p-4 space-y-3 shrink-0">
         <Link
           href="/dashboard/experience/create?step=product-details&new=true"
           className={cn(buttonVariants({ variant: 'default' }), "w-full")}
         >
           Create
         </Link>
+        <button
+          onClick={props.onFeedbackClick}
+          className={cn(buttonVariants({ variant: 'outline' }), "w-full flex items-center gap-2")}
+        >
+          <MessageSquare size={16} />
+          Send Feedback
+        </button>
       </div>
       <div className="flex flex-grow flex-col gap-2 pt-4 overflow-y-auto">
         {props.items.map((item, index) => {
@@ -263,14 +274,20 @@ export default function SidebarLayout(props: {
   basePath: string;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
 
   return (
-    <div className="w-full flex">
-      <div className="flex-col border-r w-[240px] bg-[#ede8f3] h-screen sticky top-0 hidden lg:flex">
-        <SidebarContent items={props.items} sidebarTop={props.sidebarTop} basePath={props.basePath} />
+    <div className="w-full flex min-h-screen">
+      <div className="fixed left-0 top-0 flex-col border-r w-[240px] bg-[#ede8f3] h-screen hidden lg:flex z-30">
+        <SidebarContent 
+          items={props.items} 
+          sidebarTop={props.sidebarTop} 
+          basePath={props.basePath}
+          onFeedbackClick={() => setFeedbackModalOpen(true)}
+        />
       </div>
-      <div className="flex flex-col flex-grow w-0">
-        <div className="h-14 border-b z-50 flex items-center justify-between sticky top-0 bg-white dark:bg-black z-10 px-4 md:px-6">
+      <div className="flex flex-col flex-grow w-0 lg:ml-[240px]">
+        <div className="h-14 border-b flex items-center justify-between bg-white dark:bg-black px-4 md:px-6">
           <div className="hidden lg:flex">
             <Suspense fallback={<div className="h-6 w-32 bg-gray-200 animate-pulse rounded"></div>}>
               <HeaderBreadcrumb baseBreadcrumb={props.baseBreadcrumb} basePath={props.basePath} items={props.items} />
@@ -291,6 +308,10 @@ export default function SidebarLayout(props: {
                   items={props.items}
                   sidebarTop={props.sidebarTop}
                   basePath={props.basePath}
+                  onFeedbackClick={() => {
+                    setSidebarOpen(false);
+                    setFeedbackModalOpen(true);
+                  }}
                 />
               </SheetContent>
             </Sheet>
@@ -302,15 +323,25 @@ export default function SidebarLayout(props: {
             </div>
           </div>
 
-          {/* Remove the Create button from here */}
-          {/* <div className="items-center hidden md:flex gap-4">
-            <Link href="/dashboard/experience/create?step=product-details&new=true" className={cn(buttonVariants({ variant: 'default' }))}>
-                Create
-            </Link>
-          </div> */}
+          {/* Feedback Button - Desktop */}
+          <div className="hidden lg:flex items-center gap-4">
+            <button
+              onClick={() => setFeedbackModalOpen(true)}
+              className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <MessageSquare size={16} />
+              Send Feedback
+            </button>
+          </div>
         </div>
-        <div className="flex-grow">{props.children}</div>
+        <div className="flex-grow bg-gray-50">{props.children}</div>
       </div>
+      
+      {/* Feedback Modal */}
+      <PlatformFeedbackModal
+        isOpen={feedbackModalOpen}
+        onClose={() => setFeedbackModalOpen(false)}
+      />
     </div>
   );
 }

@@ -1,11 +1,6 @@
-import { ChevronDown, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 import React from 'react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import SimpleDropdown from '@/components/ui/simple-dropdown';
 
 
 interface ContentDashboardFilterProps {
@@ -89,47 +84,23 @@ const ContentDashboardFilter: React.FC<ContentDashboardFilterProps> = ({
 
         {/* Type Dropdown */}
         <div className="relative w-full sm:w-40">
-          <DropdownMenu>
-            <DropdownMenuTrigger className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-purple-500 focus:border-purple-500 text-sm text-left flex items-center justify-between bg-white hover:bg-gray-50 transition-colors">
-              <span className={selectedType ? 'text-gray-900' : 'text-gray-500'}>
-                {selectedType || 'All Types'}
-              </span>
-              <ChevronDown size={16} className="text-gray-400" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-full min-w-[160px]">
-              {types.map((type) => (
-                <DropdownMenuItem
-                  key={type}
-                  onClick={() => setSelectedType(type)}
-                  className="cursor-pointer"
-                >
-                  {type}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <SimpleDropdown
+            value={selectedType}
+            onChange={setSelectedType}
+            options={types}
+            placeholder="All Types"
+            className="text-sm"
+          />
         </div>
         {/* Category Dropdown */}
         <div className="relative w-full sm:w-48">
-          <DropdownMenu>
-            <DropdownMenuTrigger className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-purple-500 focus:border-purple-500 text-sm text-left flex items-center justify-between bg-white hover:bg-gray-50 transition-colors">
-              <span className={selectedCategory ? 'text-gray-900' : 'text-gray-500'}>
-                {selectedCategory || 'All Categories'}
-              </span>
-              <ChevronDown size={16} className="text-gray-400" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-full min-w-[192px]">
-              {["All Categories", ...categories].map((category) => (
-                <DropdownMenuItem
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className="cursor-pointer"
-                >
-                  {category}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <SimpleDropdown
+            value={selectedCategory}
+            onChange={setSelectedCategory}
+            options={["All Categories", ...categories]}
+            placeholder="All Categories"
+            className="text-sm"
+          />
         </div>
       </div>
 

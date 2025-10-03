@@ -133,7 +133,7 @@ const ProductListings: React.FC<ProductListingsPropsWithEdit> = ({
           onAddNewProduct={handleAddNewProduct}
           isLoading={isLoading}
         />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6">
           {isLoading
             ? Array.from({ length: LOADING_SKELETON_COUNT }).map((_, i) => (
                 <div key={i} className="bg-white rounded-xl shadow-sm p-4 flex flex-col">

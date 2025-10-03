@@ -165,6 +165,7 @@ export async function getExperiencesByBrand(brandId: string) {
     .order('created_at', { ascending: false });
 
   if (error) {
+    console.error('Failed to fetch experiences:', error);
     throw new Error(`Failed to fetch experiences: ${error.message}`);
   }
 

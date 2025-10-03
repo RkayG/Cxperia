@@ -15,4 +15,22 @@ module.exports = {
       // add other domains as needed
     ],
   },
+  // Optimize for SPA-like behavior
+  experimental: {
+    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
+  },
+  // Disable SSR for better performance
+  trailingSlash: false,
+  // Optimize bundle
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+      };
+    }
+    return config;
+  },
 };

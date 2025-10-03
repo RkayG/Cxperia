@@ -41,7 +41,13 @@ const navigationItems: SidebarItem[] = [
   {
     name: "Feedback",
     href: "/feedback",
-    icon: "Users", // Feedback from users
+    icon: "Users", // Feedback from users icon
+    type: "item",
+  },
+  {
+    name: "Profile",
+    href: "/profile",
+    icon: "Settings2", // My Profile
     type: "item",
   },
   /*{
@@ -92,7 +98,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
       basePath="/dashboard"
       sidebarTop={
         <div className="px-4 py-6">
-          <Image src={logo} alt="Logo" className="h-10 w-24" />
+          <Image src={logo} alt="Cxperia Logo" className=" h-10 w-24" />
         </div>
       }
     >

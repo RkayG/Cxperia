@@ -1,55 +1,27 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "Next.js",
   "compilerOptions": {
-    /* "target": "es5", */
+    "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": false,
-    "noUncheckedIndexedAccess": false,
-    "forceConsistentCasingInFileNames": false,
+    "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "baseUrl": ".",
-    "types": ["node", "vitest/globals", "@testing-library/jest-dom"],
     "plugins": [
       {
         "name": "next"
       }
     ],
-     "paths": {
-      "@/*": [
-        "./*"
-      ]
-    },
-    "target": "ES2017",
-    "noImplicitAny": false,
-    "noImplicitReturns": false,
-    "noImplicitThis": false,
-    "strictNullChecks": false,
-    "strictPropertyInitialization": false,
-    "strictBindCallApply": false,
-    "strictFunctionTypes": false,
-    "noImplicitOverride": false,
-    "exactOptionalPropertyTypes": false,
-    "useUnknownInCatchVariables": false
+    "paths": {
+      "@/*": ["./*"]
+    }
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    "**/*.mjs",
-    "vitest.config.ts",
-    ".next/types/**/*.ts",
-    //"eslint.config.mjs",
-    "components/InfiniteScroll.tsx"
-, "app/load"  ],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }

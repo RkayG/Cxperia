@@ -4,12 +4,7 @@ import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 //import UnfinishedWorkModal from '../../../components/UnfinishedWorkModal';
 import type { FilterBarProps } from './productTypes';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '../../../components/ui/dropdown-menu';
+import SimpleDropdown from '@/components/ui/simple-dropdown';
 
 const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSortChange }) => {
   // State for dropdowns
@@ -30,53 +25,29 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSortChange }) =
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
       <div className="flex flex-row gap-3 ">
 
-        {/* Filter Products DropdownMenu */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button className="w-48 px-2 py-2 bg-white border border-gray-300 rounded-xl text-left text-gray-700 font-medium flex items-center justify-between">
-              {selectedFilter || 'Filter Products'}
-              <svg className="ml-2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-48 z-50 bg-white border-0">
-            {filterOptions.map(option => (
-              <DropdownMenuItem
-                key={option}
-                onClick={() => {
-                  setSelectedFilter(option);
-                  onFilterChange(option === 'All' ? '' : option);
-                }}
-                className={selectedFilter === option ? 'bg-purple-100 text-purple-800' : ''}
-              >
-                {option}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {/* Filter Products Dropdown */}
+        <SimpleDropdown
+          value={selectedFilter}
+          onChange={(option) => {
+            setSelectedFilter(option);
+            onFilterChange(option === 'All' ? '' : option);
+          }}
+          options={filterOptions}
+          placeholder="Filter Products"
+          className="w-48"
+        />
 
-        {/* Sort By DropdownMenu */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button className=" sm:w-48 px-4 py-2 bg-white border border-gray-300 rounded-xl text-left text-gray-700 font-medium flex items-center justify-between">
-              {selectedSort || 'Sort By'}
-              <svg className="ml-2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-48 bg-white z-50 border-0">
-            {sortOptions.map(option => (
-              <DropdownMenuItem
-                key={option}
-                onClick={() => {
-                  setSelectedSort(option);
-                  onSortChange(option === 'Sort By' ? '' : option);
-                }}
-                className={selectedSort === option ? 'bg-purple-100 text-purple-800' : ''}
-              >
-                {option}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {/* Sort By Dropdown */}
+        <SimpleDropdown
+          value={selectedSort}
+          onChange={(option) => {
+            setSelectedSort(option);
+            onSortChange(option === 'Sort By' ? '' : option);
+          }}
+          options={sortOptions}
+          placeholder="Sort By"
+          className="sm:w-48"
+        />
       </div>
 
       {/* Add New Product Button */}
