@@ -42,17 +42,19 @@ const AccountSettingsTab: React.FC = () => {
       theme: 'system',
     },
   });
-  const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [hasFetchedSettings, setHasFetchedSettings] = useState(false);
 
+  // Only fetch settings if user explicitly requests it or on first load
   useEffect(() => {
-    fetchSettings();
-  }, []);
+    if (!hasFetchedSettings) {
+      fetchSettings();
+    }
+  }, [hasFetchedSettings]);
 
   const fetchSettings = async () => {
     try {
-      setIsLoading(true);
       const response = await fetch('/api/profile/settings');
       const result = await response.json();
       
@@ -60,11 +62,13 @@ const AccountSettingsTab: React.FC = () => {
         setSettings(result.data);
       } else {
         console.error('Error fetching settings:', result.error);
+        // Keep default settings if API fails
       }
+      setHasFetchedSettings(true);
     } catch (error) {
       console.error('Error fetching settings:', error);
-    } finally {
-      setIsLoading(false);
+      setHasFetchedSettings(true);
+      // Keep default settings if API fails
     }
   };
 
@@ -134,20 +138,7 @@ const AccountSettingsTab: React.FC = () => {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="space-y-6">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
-          <div className="space-y-4">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-16 bg-gray-200 rounded"></div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // No loading state - render with default settings immediately
 
   return (
     <div className="space-y-8">

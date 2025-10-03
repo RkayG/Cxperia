@@ -43,37 +43,42 @@ interface BrandData {
 }
 
 const BrandProfileTab: React.FC = () => {
-  const [brandData, setBrandData] = useState<BrandData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState<Partial<BrandData>>({});
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string>('');
   const { brand, setBrand } = useExperienceStore();
 
+  // Use existing brand data from store, with fallback to empty object
+  const brandData = brand || null;
+  const [formData, setFormData] = useState<Partial<BrandData>>(brandData || {});
+
+  // Update form data when brand data changes
   useEffect(() => {
-    fetchBrandData();
-  }, []);
+    if (brandData) {
+      setFormData(brandData);
+    }
+  }, [brandData]);
+
+  // Only fetch if no brand data exists
+  useEffect(() => {
+    if (!brandData) {
+      fetchBrandData();
+    }
+  }, [brandData]);
 
   const fetchBrandData = async () => {
     try {
-      setIsLoading(true);
       const response = await fetch('/api/profile/brand');
       const result = await response.json();
       
       if (result.success) {
-        setBrandData(result.data);
-        setFormData(result.data);
-        // Update store
         setBrand(result.data);
       } else {
         console.error('Error fetching brand data:', result.error);
       }
     } catch (error) {
       console.error('Error fetching brand data:', error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -145,7 +150,8 @@ const BrandProfileTab: React.FC = () => {
     }
   };
 
-  if (isLoading) {
+  // Show loading only if no brand data and we're fetching
+  if (!brandData) {
     return (
       <div className="space-y-6">
         <div className="animate-pulse">

@@ -128,7 +128,7 @@ function SidebarContent(props: {
         </Link>
         <button
           onClick={props.onFeedbackClick}
-          className={cn(buttonVariants({ variant: 'outline' }), "w-full flex items-center gap-2")}
+          className={cn(buttonVariants({ variant: 'outline' }), "lg:hidden w-full flex items-center gap-2")}
         >
           <MessageSquare size={16} />
           Send Feedback

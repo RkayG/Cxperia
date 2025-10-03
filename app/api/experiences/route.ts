@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth/getCurrentUser';
 import { createExperience, getExperiencesByBrand } from '@/lib/db/experiences';
 import { createProduct } from '@/lib/db/products';
+import { redis } from '@/lib/redis';
 
 export async function GET(request: NextRequest) {
   try {
@@ -17,8 +18,37 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'brand_id is required' }, { status: 400 });
     }
 
+    // Create cache key
+    const cacheKey = `experiences:${brandId}`;
+    
+    // Try to get from Redis cache first
+    try {
+      const cached = await redis.get(cacheKey);
+      if (cached) {
+        const response = NextResponse.json({ success: true, data: JSON.parse(cached) });
+        // Add cache headers
+        response.headers.set('Cache-Control', 'private, max-age=300, stale-while-revalidate=600');
+        response.headers.set('X-Cache', 'HIT');
+        return response;
+      }
+    } catch (redisError) {
+      console.warn('Redis cache read failed, falling back to database:', redisError);
+    }
+
+    // Cache miss - fetch from database
     const experiences = await getExperiencesByBrand(brandId);
-    return NextResponse.json({ success: true, data: experiences });
+    
+    // Cache the result in Redis (5 minutes)
+    try {
+      await redis.setex(cacheKey, 300, JSON.stringify(experiences));
+    } catch (redisError) {
+      console.warn('Redis cache write failed:', redisError);
+    }
+
+    const response = NextResponse.json({ success: true, data: experiences });
+    response.headers.set('Cache-Control', 'private, max-age=300, stale-while-revalidate=600');
+    response.headers.set('X-Cache', 'MISS');
+    return response;
 
   } catch (error) {
     console.error('Get experiences error:', error);
@@ -139,6 +169,14 @@ export async function POST(request: NextRequest) {
       console.warn('Failed to fetch experience features', e);
     }
     experience.features = features;
+
+    // Invalidate cache for this brand
+    try {
+      const cacheKey = `experiences:${user.brand_id}`;
+      await redis.del(cacheKey);
+    } catch (redisError) {
+      console.warn('Failed to invalidate experiences cache:', redisError);
+    }
 
     return NextResponse.json({ success: true, data: experience });
 

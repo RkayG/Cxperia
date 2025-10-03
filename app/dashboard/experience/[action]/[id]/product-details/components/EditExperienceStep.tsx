@@ -163,10 +163,32 @@ const EditExperienceStep: React.FC<EditExperienceStepProps> = ({
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length > 0) {
+      // Map validation field names to actual form field names
+      const fieldNameMap: Record<string, string> = {
+        name: 'productName',
+        category: 'category',
+        skinType: 'skinType',
+        tagline: 'tagline',
+        description: 'description',
+        storeLink: 'storeLink',
+        images: 'images',
+        estimatedDurationDays: 'estimatedDurationValue'
+      };
+
       const firstErrorField = Object.keys(validationErrors)[0];
-      const element = document.querySelector(`[name="${firstErrorField}"]`);
+      const actualFieldName = fieldNameMap[firstErrorField] || firstErrorField;
+      
+      // Try multiple selectors to find the element
+      let element = document.querySelector(`[name="${actualFieldName}"]`) ||
+                   document.querySelector(`[id="${actualFieldName}"]`) ||
+                   document.querySelector(`#${actualFieldName}`);
+      
       if (element) {
         element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Focus the element if it's an input
+        if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
+          element.focus();
+        }
       }
       return false;
     }

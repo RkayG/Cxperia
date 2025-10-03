@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth/getCurrentUser';
 import { supabase } from '@/lib/supabase';
+import { redis } from '@/lib/redis';
 
 export async function GET() {
   try {
@@ -9,7 +10,23 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Get brand data
+    // Create cache key
+    const cacheKey = `brand:${user.brand_id}`;
+    
+    // Try to get from Redis cache first
+    try {
+      const cached = await redis.get(cacheKey);
+      if (cached) {
+        const response = NextResponse.json({ success: true, data: JSON.parse(cached) });
+        response.headers.set('Cache-Control', 'private, max-age=600, stale-while-revalidate=1200'); // 10 min cache
+        response.headers.set('X-Cache', 'HIT');
+        return response;
+      }
+    } catch (redisError) {
+      console.warn('Redis cache read failed, falling back to database:', redisError);
+    }
+
+    // Cache miss - fetch from database
     const { data: brand, error: brandError } = await supabase
       .from('brands')
       .select('*')
@@ -21,7 +38,17 @@ export async function GET() {
       return NextResponse.json({ error: 'Failed to fetch brand data' }, { status: 500 });
     }
 
-    return NextResponse.json({ success: true, data: brand });
+    // Cache the result in Redis (10 minutes)
+    try {
+      await redis.setex(cacheKey, 600, JSON.stringify(brand));
+    } catch (redisError) {
+      console.warn('Redis cache write failed:', redisError);
+    }
+
+    const response = NextResponse.json({ success: true, data: brand });
+    response.headers.set('Cache-Control', 'private, max-age=600, stale-while-revalidate=1200');
+    response.headers.set('X-Cache', 'MISS');
+    return response;
   } catch (error) {
     console.error('Error in GET /api/profile/brand:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
@@ -85,6 +112,14 @@ export async function PUT(request: NextRequest) {
     if (updateError) {
       console.error('Error updating brand:', updateError);
       return NextResponse.json({ error: 'Failed to update brand' }, { status: 500 });
+    }
+
+    // Invalidate brand cache
+    try {
+      const cacheKey = `brand:${user.brand_id}`;
+      await redis.del(cacheKey);
+    } catch (redisError) {
+      console.warn('Failed to invalidate brand cache:', redisError);
     }
 
     return NextResponse.json({ 

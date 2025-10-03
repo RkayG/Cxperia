@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 
 // Cache for ingredient data (in-memory cache)
 const ingredientCache = new Map<string, { data: any[], timestamp: number }>();
-const CACHE_DURATION = 60 * 60 * 1000; // 1 hour for API cache
+const CACHE_DURATION = 90 * 24 * 60 * 60 * 1000; // 90 days for static INCI data
 
 export async function GET(req: NextRequest) {
   try {
@@ -33,8 +33,8 @@ export async function GET(req: NextRequest) {
         total: cached.data?.length ?? 0,
       });
       
-      // Add aggressive caching headers
-      response.headers.set('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400');
+      // Add long-term caching headers for static INCI data
+      response.headers.set('Cache-Control', 'public, max-age=7776000, immutable'); // 90 days, immutable
       response.headers.set('ETag', `"${cacheKey}-${cached.timestamp}"`);
       return response;
     }
@@ -72,8 +72,8 @@ export async function GET(req: NextRequest) {
       total: data?.length ?? 0,
     });
 
-    // Add aggressive caching headers for static ingredient data
-    response.headers.set('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400');
+    // Add long-term caching headers for static INCI data
+    response.headers.set('Cache-Control', 'public, max-age=7776000, immutable'); // 90 days, immutable
     response.headers.set('ETag', `"${cacheKey}-${Date.now()}"`);
     
     return response;

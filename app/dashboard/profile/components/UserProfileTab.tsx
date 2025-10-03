@@ -15,21 +15,50 @@ interface UserProfileData {
 }
 
 const UserProfileTab: React.FC = () => {
-  const [profileData, setProfileData] = useState<UserProfileData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState<Partial<UserProfileData>>({});
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string>('');
+  const [profileData, setProfileData] = useState<UserProfileData | null>(null);
+  const [formData, setFormData] = useState<Partial<UserProfileData>>({});
 
+  // Try to get user data from auth context first
   useEffect(() => {
-    fetchUserProfile();
+    // Check if we can get user data from auth context
+    const getUserFromAuth = async () => {
+      try {
+        const { supabase } = await import('@/lib/supabase');
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (user) {
+          const userData: UserProfileData = {
+            id: user.id,
+            first_name: user.user_metadata?.first_name || '',
+            last_name: user.user_metadata?.last_name || '',
+            email: user.email || '',
+            avatar_url: user.user_metadata?.avatar_url || '',
+            role: 'brand_admin', // Default role
+            status: user.email_confirmed_at ? 'active' : 'pending',
+            created_at: user.created_at,
+            updated_at: user.updated_at || user.created_at,
+          };
+          setProfileData(userData);
+          setFormData(userData);
+        } else {
+          // Fallback to API call if no auth user
+          fetchUserProfile();
+        }
+      } catch (error) {
+        console.error('Error getting user from auth:', error);
+        fetchUserProfile();
+      }
+    };
+
+    getUserFromAuth();
   }, []);
 
   const fetchUserProfile = async () => {
     try {
-      setIsLoading(true);
       const response = await fetch('/api/profile/user');
       const result = await response.json();
       
@@ -41,8 +70,6 @@ const UserProfileTab: React.FC = () => {
       }
     } catch (error) {
       console.error('Error fetching user profile:', error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -113,7 +140,8 @@ const UserProfileTab: React.FC = () => {
     }
   };
 
-  if (isLoading) {
+  // Show loading only if no profile data
+  if (!profileData) {
     return (
       <div className="space-y-6">
         <div className="animate-pulse">
