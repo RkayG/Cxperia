@@ -277,8 +277,8 @@ export default function SidebarLayout(props: {
   const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
 
   return (
-    <div className="w-full flex min-h-screen">
-      <div className="fixed left-0 top-0 flex-col border-r w-[240px] bg-[#ede8f3] h-screen hidden lg:flex z-30">
+    <div className="w-full flex min-h-screen" suppressHydrationWarning>
+      <div className="fixed left-0 top-0 flex-col border-r w-[240px] bg-[#ede8f3] h-screen hidden lg:flex z-30" suppressHydrationWarning>
         <SidebarContent 
           items={props.items} 
           sidebarTop={props.sidebarTop} 
@@ -286,8 +286,8 @@ export default function SidebarLayout(props: {
           onFeedbackClick={() => setFeedbackModalOpen(true)}
         />
       </div>
-      <div className="flex flex-col flex-grow w-0 lg:ml-[240px]">
-        <div className="h-14 border-b flex items-center justify-between bg-white dark:bg-black px-4 md:px-6">
+      <div className="flex flex-col flex-grow w-0 lg:ml-[240px]" suppressHydrationWarning>
+        <div className="h-14 border-b flex items-center justify-between bg-white dark:bg-black px-4 md:px-6" suppressHydrationWarning>
           <div className="hidden lg:flex">
             <Suspense fallback={<div className="h-6 w-32 bg-gray-200 animate-pulse rounded"></div>}>
               <HeaderBreadcrumb baseBreadcrumb={props.baseBreadcrumb} basePath={props.basePath} items={props.items} />
@@ -334,7 +334,7 @@ export default function SidebarLayout(props: {
             </button>
           </div>
         </div>
-        <div className="flex-grow bg-gray-50">{props.children}</div>
+        <div className="flex-grow bg-gray-50" suppressHydrationWarning>{props.children}</div>
       </div>
       
       {/* Feedback Modal */}

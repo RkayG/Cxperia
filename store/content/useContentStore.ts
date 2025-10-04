@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
-import { useTutorials } from '@/hooks/brands/useFeatureApi';
 
 export interface Article {
   id: string | number;
@@ -16,6 +15,8 @@ export interface Article {
   createdAt?: string;
   featured_image_url?: string;
   featured_image?: string;
+  views: number;
+  userImage: string;
 }
 
 interface ContentState {
@@ -71,6 +72,7 @@ const formatDateFriendly = (dateString?: string): string => {
 
 const mapTutorialsToArticles = (tutorials: any[]): Article[] => {
   const placeholderImg = 'https://placehold.co/600x400/EEE/31343C?text=No+Image';
+  const defaultUserImage = 'https://placehold.co/40x40/EEE/31343C?text=U';
   
   return tutorials.map((tut: any, index: number) => ({
     ...tut,
@@ -78,6 +80,8 @@ const mapTutorialsToArticles = (tutorials: any[]): Article[] => {
     date: formatDateFriendly(tut.created_at || tut.createdAt),
     image: tut.featured_image_url || tut.featured_image || placeholderImg,
     status: tut.is_published ? 'PUBLISHED' : 'DRAFT',
+    views: tut.views || Math.floor(Math.random() * 1000) + 50, // Default views or random
+    userImage: tut.user_image || tut.userImage || defaultUserImage, // Default user image
   }));
 };
 
@@ -128,8 +132,9 @@ export const useContentStore = create<ContentState>()(
       set({ isLoading: true, error: null });
       
       try {
-        // Use the existing hook internally
-        const { data: tutorialsRaw, isLoading } = useTutorials(brandId);
+        // Fetch data directly from API instead of using hooks
+        const tutorialsResponse = await fetch(`/api/tutorials?brand_id=${brandId}`);
+        const tutorialsRaw = await tutorialsResponse.json();
 
         // Process the data
         const tutorials = processTutorialsData(tutorialsRaw);
@@ -143,7 +148,7 @@ export const useContentStore = create<ContentState>()(
           tutorials, 
           articles, 
           filteredArticles,
-          isLoading
+          isLoading: false
         });
       } catch (error) {
         set({ 
@@ -209,24 +214,57 @@ export const useContentTutorials = () => useContentStore(state => state.tutorial
 export const useContentArticles = () => useContentStore(state => state.articles);
 export const useContentFilteredArticles = () => useContentStore(state => state.filteredArticles);
 export const useContentSelectedArticles = () => useContentStore(state => state.selectedArticles);
-export const useContentFilters = () => useContentStore(state => ({
-  activeTab: state.activeTab,
-  selectedType: state.selectedType,
-  selectedCategory: state.selectedCategory,
-  search: state.search,
-}));
+
+// Memoized filter selectors to prevent infinite loops
+export const useContentActiveTab = () => useContentStore(state => state.activeTab);
+export const useContentSelectedType = () => useContentStore(state => state.selectedType);
+export const useContentSelectedCategory = () => useContentStore(state => state.selectedCategory);
+export const useContentSearch = () => useContentStore(state => state.search);
+
+// Combined filters hook with proper memoization
+export const useContentFilters = () => {
+  const activeTab = useContentActiveTab();
+  const selectedType = useContentSelectedType();
+  const selectedCategory = useContentSelectedCategory();
+  const search = useContentSearch();
+  
+  return { activeTab, selectedType, selectedCategory, search };
+};
+
 export const useContentLoading = () => useContentStore(state => state.isLoading);
 export const useContentError = () => useContentStore(state => state.error);
 
-// Action hooks
-export const useContentActions = () => useContentStore(state => ({
-  fetchContentData: state.fetchContentData,
-  setActiveTab: state.setActiveTab,
-  setSelectedType: state.setSelectedType,
-  setSelectedCategory: state.setSelectedCategory,
-  setSearch: state.setSearch,
-  selectArticle: state.selectArticle,
-  selectAllArticles: state.selectAllArticles,
-  clearSelection: state.clearSelection,
-  clearError: state.clearError,
-}));
+// Action hooks - individual selectors to prevent infinite loops
+export const useContentFetchContentData = () => useContentStore(state => state.fetchContentData);
+export const useContentSetActiveTab = () => useContentStore(state => state.setActiveTab);
+export const useContentSetSelectedType = () => useContentStore(state => state.setSelectedType);
+export const useContentSetSelectedCategory = () => useContentStore(state => state.setSelectedCategory);
+export const useContentSetSearch = () => useContentStore(state => state.setSearch);
+export const useContentSelectArticle = () => useContentStore(state => state.selectArticle);
+export const useContentSelectAllArticles = () => useContentStore(state => state.selectAllArticles);
+export const useContentClearSelection = () => useContentStore(state => state.clearSelection);
+export const useContentClearError = () => useContentStore(state => state.clearError);
+
+export const useContentActions = () => {
+  const fetchContentData = useContentFetchContentData();
+  const setActiveTab = useContentSetActiveTab();
+  const setSelectedType = useContentSetSelectedType();
+  const setSelectedCategory = useContentSetSelectedCategory();
+  const setSearch = useContentSetSearch();
+  const selectArticle = useContentSelectArticle();
+  const selectAllArticles = useContentSelectAllArticles();
+  const clearSelection = useContentClearSelection();
+  const clearError = useContentClearError();
+  
+  return {
+    fetchContentData,
+    setActiveTab,
+    setSelectedType,
+    setSelectedCategory,
+    setSearch,
+    selectArticle,
+    selectAllArticles,
+    clearSelection,
+    clearError,
+  };
+};

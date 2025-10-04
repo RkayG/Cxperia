@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
-import { useFeedbacks } from '@/hooks/brands/useFeedbackApi';
 
 export interface Message {
   id: string;
@@ -27,6 +26,10 @@ interface FeedbackState {
   // UI State
   searchQuery: string;
   readMessages: Set<string>;
+  
+  // Computed state (cached to prevent infinite loops)
+  filteredMessages: Message[];
+  productOptions: string[];
   
   // Actions
   fetchFeedbacks: (brandId: string) => Promise<void>;
@@ -83,6 +86,45 @@ const transformFeedbackToMessage = (feedback: any, readMessages: Set<string>): M
   };
 };
 
+// Helper functions for computed state
+const computeFilteredMessages = (messages: Message[], searchQuery: string): Message[] => {
+  if (!searchQuery) return messages;
+  
+  // Parse search query if it's JSON (from filters)
+  let filters: any = {};
+  try {
+    filters = JSON.parse(searchQuery);
+  } catch {
+    // If not JSON, treat as simple text search
+    const lowerCaseQuery = searchQuery.toLowerCase();
+    return messages.filter(
+      (message) =>
+        message.subject.toLowerCase().includes(lowerCaseQuery) ||
+        message.sender.name.toLowerCase().includes(lowerCaseQuery) ||
+        message.content.toLowerCase().includes(lowerCaseQuery) ||
+        message.productName.toLowerCase().includes(lowerCaseQuery)
+    );
+  }
+
+  return messages.filter((message) => {
+    // Product filter
+    if (filters.product && filters.product !== '' && message.productName !== filters.product) {
+      return false;
+    }
+    return true;
+  });
+};
+
+const computeProductOptions = (messages: Message[]): string[] => {
+  const products = new Set(['']); // Start with empty option for "All Products"
+  messages.forEach(message => {
+    if (message.productName) {
+      products.add(message.productName);
+    }
+  });
+  return Array.from(products);
+};
+
 export const useFeedbackStore = create<FeedbackState>()(
   subscribeWithSelector((set, get) => ({
     // Initial state
@@ -91,6 +133,8 @@ export const useFeedbackStore = create<FeedbackState>()(
     error: null,
     searchQuery: '',
     readMessages: new Set<string>(),
+    filteredMessages: [],
+    productOptions: [''],
 
     // Actions
     fetchFeedbacks: async (brandId: string) => {
@@ -99,18 +143,22 @@ export const useFeedbackStore = create<FeedbackState>()(
       set({ isLoading: true, error: null });
       
       try {
-        // Use the existing hook internally
-        const { data: feedbacksData } = useFeedbacks(brandId);
+        // Fetch data directly from API instead of using hooks
+        const feedbacksResponse = await fetch(`/api/feedbacks?brand_id=${brandId}`);
+        const feedbacksData = await feedbacksResponse.json();
         
         if (feedbacksData && feedbacksData.data && Array.isArray(feedbacksData.data)) {
-          const { readMessages } = get();
+          const { readMessages, searchQuery } = get();
           const messages = feedbacksData.data.map((feedback: any) => 
             transformFeedbackToMessage(feedback, readMessages)
           );
           
-          set({ messages, isLoading: false });
+          const filteredMessages = computeFilteredMessages(messages, searchQuery);
+          const productOptions = computeProductOptions(messages);
+          
+          set({ messages, filteredMessages, productOptions, isLoading: false });
         } else {
-          set({ messages: [], isLoading: false });
+          set({ messages: [], filteredMessages: [], productOptions: [''], isLoading: false });
         }
       } catch (error) {
         set({ 
@@ -121,7 +169,9 @@ export const useFeedbackStore = create<FeedbackState>()(
     },
 
     setSearchQuery: (query: string) => {
-      set({ searchQuery: query });
+      const { messages } = get();
+      const filteredMessages = computeFilteredMessages(messages, query);
+      set({ searchQuery: query, filteredMessages });
     },
 
     markAsRead: (messageId: string) => {
@@ -149,82 +199,29 @@ export const useFeedbackError = () => useFeedbackStore(state => state.error);
 export const useFeedbackSearchQuery = () => useFeedbackStore(state => state.searchQuery);
 export const useFeedbackReadMessages = () => useFeedbackStore(state => state.readMessages);
 
-// Action hooks
-export const useFeedbackActions = () => useFeedbackStore(state => ({
-  fetchFeedbacks: state.fetchFeedbacks,
-  setSearchQuery: state.setSearchQuery,
-  markAsRead: state.markAsRead,
-  markAllAsRead: state.markAllAsRead,
-  clearError: state.clearError,
-}));
+// Action hooks - individual selectors to prevent infinite loops
+export const useFeedbackFetchFeedbacks = () => useFeedbackStore(state => state.fetchFeedbacks);
+export const useFeedbackSetSearchQuery = () => useFeedbackStore(state => state.setSearchQuery);
+export const useFeedbackMarkAsRead = () => useFeedbackStore(state => state.markAsRead);
+export const useFeedbackMarkAllAsRead = () => useFeedbackStore(state => state.markAllAsRead);
+export const useFeedbackClearError = () => useFeedbackStore(state => state.clearError);
 
-// Computed selectors
-export const useFilteredMessages = () => {
-  const messages = useFeedbackMessages();
-  const searchQuery = useFeedbackSearchQuery();
+export const useFeedbackActions = () => {
+  const fetchFeedbacks = useFeedbackFetchFeedbacks();
+  const setSearchQuery = useFeedbackSetSearchQuery();
+  const markAsRead = useFeedbackMarkAsRead();
+  const markAllAsRead = useFeedbackMarkAllAsRead();
+  const clearError = useFeedbackClearError();
   
-  return useFeedbackStore(state => {
-    if (!state.searchQuery) return state.messages;
-    
-    // Parse search query if it's JSON (from filters)
-    let filters: any = {};
-    try {
-      filters = JSON.parse(state.searchQuery);
-    } catch {
-      // If not JSON, treat as simple text search
-      const lowerCaseQuery = state.searchQuery.toLowerCase();
-      return state.messages.filter(
-        (message) =>
-          message.subject.toLowerCase().includes(lowerCaseQuery) ||
-          message.sender.name.toLowerCase().includes(lowerCaseQuery) ||
-          message.preview.toLowerCase().includes(lowerCaseQuery)
-      );
-    }
-
-    // Apply filters
-    return state.messages.filter((message) => {
-      const { searchQuery: textQuery, rating, product } = filters;
-      
-      // Text search
-      if (textQuery) {
-        const lowerCaseQuery = textQuery.toLowerCase();
-        const matchesText = 
-          message.subject.toLowerCase().includes(lowerCaseQuery) ||
-          message.sender.name.toLowerCase().includes(lowerCaseQuery) ||
-          message.preview.toLowerCase().includes(lowerCaseQuery);
-        if (!matchesText) return false;
-      }
-      
-      // Rating filter
-      if (rating) {
-        let expectedRating;
-        if (rating.match(/^\d+$/)) {
-          expectedRating = parseInt(rating);
-        } else {
-          const ratingLabels = ['Poor', 'Fair', 'Good', 'Great', 'Excellent'];
-          expectedRating = ratingLabels.indexOf(rating) + 1;
-        }
-        if (message.rating !== expectedRating) return false;
-      }
-      
-      // Product filter
-      if (product && message.productName !== product) {
-        return false;
-      }
-      
-      return true;
-    });
-  });
+  return {
+    fetchFeedbacks,
+    setSearchQuery,
+    markAsRead,
+    markAllAsRead,
+    clearError,
+  };
 };
 
-export const useProductOptions = () => {
-  return useFeedbackStore(state => {
-    const products = new Set(['']); // Start with empty option for "All Products"
-    state.messages.forEach(message => {
-      if (message.productName) {
-        products.add(message.productName);
-      }
-    });
-    return Array.from(products);
-  });
-};
+// Computed selectors - now using cached values from store
+export const useFilteredMessages = () => useFeedbackStore(state => state.filteredMessages);
+export const useProductOptions = () => useFeedbackStore(state => state.productOptions);

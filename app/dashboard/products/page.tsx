@@ -11,7 +11,7 @@ import {
 } from '@/store/products/useProductsStore';
 import ProductListings from './components/ProductListings';
 import ProductPerformanceOverview from './components/ProductPerformanceOverview';
-import type { PerformanceMetric, Product } from './components/productTypes';
+import type { PerformanceMetric } from './components/productTypes';
 
 const ProductDashboard: React.FC = () => {
   // Get brand from store
@@ -36,15 +36,6 @@ const ProductDashboard: React.FC = () => {
     }
   }, [brandId, fetchProductsData]);
 
-  // On mount, check for ref param and clear experience if needed
-  useEffect(() => {
-    const params = new URLSearchParams(pathname.search);
-    if (params.get('ref') === 'experience-complete') {
-      // Clear experienceId from localStorage directly
-      localStorage.removeItem('experienceId');
-    }
-    // Only run on mount or when pathname.search changes
-  }, [pathname.search]);
 
   // Add icons to metrics (this could be moved to store if needed)
   const metricsWithIcons: PerformanceMetric[] = performanceMetrics.map((metric, index) => {

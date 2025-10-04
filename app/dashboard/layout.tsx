@@ -97,7 +97,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
       items={navigationItems}
       basePath="/dashboard"
       sidebarTop={
-        <div className="px-4 py-6">
+        <div className="px-4 py-6" suppressHydrationWarning>
           <Image src={logo} alt="Cxperia Logo" className=" h-10 w-24" />
         </div>
       }

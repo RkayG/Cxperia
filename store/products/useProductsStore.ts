@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
-import { useOptimizedExperiences } from '@/hooks/brands/useOptimizedQueries';
 
 export interface PerformanceMetric {
   id: string;
@@ -122,11 +121,9 @@ export const useProductsStore = create<ProductsState>()(
       set({ isLoading: true, error: null });
       
       try {
-        // Use the existing hook internally
-        const { data: experiencesRaw, isLoading } = useOptimizedExperiences(
-          brandId,
-          { enabled: !!brandId }
-        );
+        // Fetch data directly from API instead of using hooks
+        const experiencesResponse = await fetch(`/api/experiences?brand_id=${brandId}`);
+        const experiencesRaw = await experiencesResponse.json();
 
         // Process the data
         const experiences = processExperiencesData(experiencesRaw);
@@ -137,7 +134,7 @@ export const useProductsStore = create<ProductsState>()(
           experiences, 
           products, 
           performanceMetrics,
-          isLoading
+          isLoading: false
         });
       } catch (error) {
         set({ 
@@ -160,8 +157,13 @@ export const useProductsMetrics = () => useProductsStore(state => state.performa
 export const useProductsLoading = () => useProductsStore(state => state.isLoading);
 export const useProductsError = () => useProductsStore(state => state.error);
 
-// Action hooks
-export const useProductsActions = () => useProductsStore(state => ({
-  fetchProductsData: state.fetchProductsData,
-  clearError: state.clearError,
-}));
+// Action hooks - individual selectors to prevent infinite loops
+export const useProductsFetchProductsData = () => useProductsStore(state => state.fetchProductsData);
+export const useProductsClearError = () => useProductsStore(state => state.clearError);
+
+export const useProductsActions = () => {
+  const fetchProductsData = useProductsFetchProductsData();
+  const clearError = useProductsClearError();
+  
+  return { fetchProductsData, clearError };
+};

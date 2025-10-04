@@ -176,28 +176,26 @@ const ContentDashboardPage: React.FC = () => {
 
       {/* Delete Confirmation Modal */}
       <Modal
-        isOpen={showDeleteModal}
-        onClose={handleCancelDelete}
+        open={showDeleteModal}
         title="Delete Tutorials"
         description={`Are you sure you want to delete ${selectedArticles.size} tutorial${selectedArticles.size > 1 ? 's' : ''}? This action cannot be undone.`}
         confirmText="Delete"
         cancelText="Cancel"
         onConfirm={handleConfirmDelete}
         onCancel={handleCancelDelete}
-        variant="danger"
+        color="red"
       />
 
       {/* Unpublish Confirmation Modal */}
       <Modal
-        isOpen={showUnpublishModal}
-        onClose={handleCancelUnpublish}
+        open={showUnpublishModal}
         title="Unpublish Tutorials"
         description={`Are you sure you want to unpublish ${selectedArticles.size} tutorial${selectedArticles.size > 1 ? 's' : ''}? They will no longer be visible to customers.`}
         confirmText="Unpublish"
         cancelText="Cancel"
         onConfirm={handleConfirmUnpublish}
         onCancel={handleCancelUnpublish}
-        variant="warning"
+        color="orange"
       />
     </div>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { Activity, Eye, MessageSquare, Package } from 'lucide-react';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { RecentSales } from "@/app/dashboard/overview/recent-sales";
 import {
   Card,
@@ -33,13 +33,17 @@ export default function OverviewPage() {
   
   // Get actions from store
   const { fetchOverviewData } = useOverviewActions();
+  
+  // Track if we've fetched data for this brand to prevent duplicate calls
+  const fetchedBrandId = useRef<string | null>(null);
 
-  // Initialize data fetching
+  // Initialize data fetching only once when brandId is available
   useEffect(() => {
-    if (brandId) {
+    if (brandId && fetchedBrandId.current !== brandId) {
+      fetchedBrandId.current = brandId;
       fetchOverviewData(brandId);
     }
-  }, [brandId, fetchOverviewData]);
+  }, [brandId]); // Only depend on brandId
 
   return (
     <>

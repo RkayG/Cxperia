@@ -1,7 +1,5 @@
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
-import { useOptimizedExperiences } from '@/hooks/brands/useOptimizedQueries';
-import { useFeedbacks } from '@/hooks/brands/useFeedbackApi';
 
 export interface OverviewMetrics {
   totalExperiences: number;
@@ -24,6 +22,7 @@ interface OverviewState {
   isLoadingExperiences: boolean;
   isLoadingFeedbacks: boolean;
   error: string | null;
+  currentBrandId: string | null;
   
   // Actions
   fetchOverviewData: (brandId: string) => Promise<void>;
@@ -93,20 +92,27 @@ export const useOverviewStore = create<OverviewState>()(
     isLoadingExperiences: false,
     isLoadingFeedbacks: false,
     error: null,
+    currentBrandId: null,
 
     // Actions
     fetchOverviewData: async (brandId: string) => {
       if (!brandId) return;
       
+      // Don't fetch if we already have data for this brand
+      const { currentBrandId } = get();
+      if (currentBrandId === brandId && !get().isLoadingExperiences && !get().isLoadingFeedbacks) {
+        return;
+      }
+      
       set({ isLoadingExperiences: true, isLoadingFeedbacks: true, error: null });
       
       try {
-        // Use the existing hooks internally
-        const { data: experiencesRaw, isLoading: isLoadingExperiences } = useOptimizedExperiences(
-          brandId,
-          { enabled: !!brandId }
-        );
-        const { data: feedbacksRaw, isLoading: isLoadingFeedbacks } = useFeedbacks(brandId);
+        // Fetch data directly from APIs instead of using hooks
+        const experiencesResponse = await fetch(`/api/experiences?brand_id=${brandId}`);
+        const feedbacksResponse = await fetch(`/api/feedbacks?brand_id=${brandId}`);
+        
+        const experiencesRaw = await experiencesResponse.json();
+        const feedbacksRaw = await feedbacksResponse.json();
 
         // Process the data
         const experiences = processExperiencesData(experiencesRaw);
@@ -119,14 +125,16 @@ export const useOverviewStore = create<OverviewState>()(
           experiences, 
           feedbacks, 
           metrics,
-          isLoadingExperiences,
-          isLoadingFeedbacks
+          isLoadingExperiences: false,
+          isLoadingFeedbacks: false,
+          currentBrandId: brandId
         });
       } catch (error) {
         set({ 
           error: error instanceof Error ? error.message : 'Failed to fetch overview data',
           isLoadingExperiences: false,
-          isLoadingFeedbacks: false
+          isLoadingFeedbacks: false,
+          currentBrandId: brandId
         });
       }
     },
@@ -141,14 +149,25 @@ export const useOverviewStore = create<OverviewState>()(
 export const useOverviewExperiences = () => useOverviewStore(state => state.experiences);
 export const useOverviewFeedbacks = () => useOverviewStore(state => state.feedbacks);
 export const useOverviewMetrics = () => useOverviewStore(state => state.metrics);
-export const useOverviewLoading = () => useOverviewStore(state => ({
-  isLoadingExperiences: state.isLoadingExperiences,
-  isLoadingFeedbacks: state.isLoadingFeedbacks,
-}));
+// Memoized loading selectors to prevent infinite loops
+export const useOverviewLoadingExperiences = () => useOverviewStore(state => state.isLoadingExperiences);
+export const useOverviewLoadingFeedbacks = () => useOverviewStore(state => state.isLoadingFeedbacks);
+
+export const useOverviewLoading = () => {
+  const isLoadingExperiences = useOverviewLoadingExperiences();
+  const isLoadingFeedbacks = useOverviewLoadingFeedbacks();
+  
+  return { isLoadingExperiences, isLoadingFeedbacks };
+};
 export const useOverviewError = () => useOverviewStore(state => state.error);
 
-// Action hooks
-export const useOverviewActions = () => useOverviewStore(state => ({
-  fetchOverviewData: state.fetchOverviewData,
-  clearError: state.clearError,
-}));
+// Action hooks - individual selectors to prevent infinite loops
+export const useOverviewFetchOverviewData = () => useOverviewStore(state => state.fetchOverviewData);
+export const useOverviewClearError = () => useOverviewStore(state => state.clearError);
+
+export const useOverviewActions = () => {
+  const fetchOverviewData = useOverviewFetchOverviewData();
+  const clearError = useOverviewClearError();
+  
+  return { fetchOverviewData, clearError };
+};
