@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useMemo } from "react";
-import CurvedBottomNav from "@/app/experience/[slug]/components/CurvedBottomNav";
 import SectionHeader from "@/app/experience/[slug]/components/ThemeAwareSectionHeader";
 
 // Map backend type to icon, link formatter, and description
@@ -103,7 +102,6 @@ const ClientSupportChannelsWrapper: React.FC<ClientSupportChannelsWrapperProps> 
           ))}
         </main>
       </div>
-      <CurvedBottomNav />
     </div>
   );
 };

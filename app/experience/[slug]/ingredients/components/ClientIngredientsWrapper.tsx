@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import CurvedBottomNav from '@/app/experience/[slug]/components/CurvedBottomNav';
 import SectionHeader from '@/app/experience/[slug]/components/ThemeAwareSectionHeader';
 import IngredientsSection from './IngredientSection';
 import ProductDisplay from '../../usage-instructions/components/ProductDisplay';
@@ -26,7 +25,6 @@ const ClientIngredientsWrapper: React.FC<ClientIngredientsWrapperProps> = ({
           <IngredientsSection />
         </main>
       </div>
-      <CurvedBottomNav />
     </div>
   );
 };

@@ -1,14 +1,14 @@
 'use client';
 
-import React, { useCallback } from "react";
+import React from "react";
 
 // INTERNAL IMPORTS
-import CurvedBottomNav from "@/app/experience/[slug]/components/CurvedBottomNav";
 import SectionHeader from "@/app/experience/[slug]/components/ThemeAwareSectionHeader";
 import { useExperienceTutorials } from "@/hooks/public/useTutorials";
 import CategoryTabs from "./CategoryTabs";
 import TutorialsGrid from "./TutorialGrid";
-import PublicLoading from "../../components/PublicLoading";
+import { Skeleton } from "@/components/ui/skeleton";
+import SectionNavigation from "../../components/SectionNavigation";
 
 interface ClientTutorialsWrapperProps {
   slug: string;
@@ -38,7 +38,7 @@ const ClientTutorialsWrapper: React.FC<ClientTutorialsWrapperProps> = ({
       : tutorials;
       
   if (isLoading) {
-    return <PublicLoading />;
+    return <Skeleton className="h-full w-full" />;
   }
 
   return (
@@ -57,7 +57,7 @@ const ClientTutorialsWrapper: React.FC<ClientTutorialsWrapperProps> = ({
           </div>
         </main>
       </div>
-      <CurvedBottomNav />
+      <SectionNavigation activeSection="tutorials" onSectionChange={() => {}} color={color} /> {/* Navigation for mobile */}
     </div>
   );
 };

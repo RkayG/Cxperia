@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import YouHaveScanned from "./YouHaveScanned";
 import FeatureGrid from "./homepage/FeatureGrid";
 import ThemeAwareHeader from "./homepage/ThemeAwareHeader";
-import CurvedBottomNav from "./CurvedBottomNav";
 import SectionHeader from "./ThemeAwareSectionHeader";
 import SectionNavigation from "./SectionNavigation";
 
@@ -17,6 +16,7 @@ import RatingSection from "../feedback/components/RatingSection";
 import FeedbackForm from "../feedback/components/FeedbackForm";
 import ImageUpload from "../feedback/components/ImageUpload";
 import ThankYouModal from "../feedback/components/ThankYouModal";
+import TutorialsSection from "./TutorialsSection";
 
 // Import hooks for feedback functionality
 import { useCreatePublicFeedback } from '@/hooks/public/usePublicFeedbackApi';
@@ -31,7 +31,7 @@ interface UnifiedExperienceWrapperProps {
   customer_support_links_simple: any[];
 }
 
-type ActiveSection = 'home' | 'ingredients' | 'feedback' | 'usage-instructions' | 'support-channels';
+type ActiveSection = 'home' | 'ingredients' | 'feedback' | 'usage-instructions' | 'support-channels' | 'tutorials';
 
 const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
   slug,
@@ -59,7 +59,7 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
   // Check URL params for section
   useEffect(() => {
     const section = searchParams.get('section') as ActiveSection;
-    if (section && ['home', 'ingredients', 'feedback', 'usage-instructions', 'support-channels'].includes(section)) {
+    if (section && ['home', 'ingredients', 'feedback', 'usage-instructions', 'support-channels', 'tutorials'].includes(section)) {
       setActiveSection(section);
     }
   }, [searchParams]);
@@ -333,23 +333,27 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
           </div>
         );
 
+      case 'tutorials':
+        return (
+          <div className="min-h-screen bg-gray-50 flex justify-center" style={{ backgroundColor: color }}>
+            <div className="max-w-xl mx-auto w-full bg-white shadow-lg overflow-hidden">
+              <SectionHeader title="Tutorials & Routines" subtitle="Learn how to get the best results from your product" />
+              <main className="p-4 space-y-6 rounded-tl-3xl">
+                <TutorialsSection slug={slug} color={color} />
+              </main>
+            </div>
+          </div>
+        );
+
       case 'home':
       default:
         return (
           <div className="min-h-screen" style={{ backgroundColor: color }}>
             <div className="max-w-xl mx-auto bg-gray-50 min-h-screen overflow-hidden">
-              <ThemeAwareHeader 
-                product={product}
-                brandLogo={brandLogo}
-                brandName={brandName}
-                color={color}
-              />
+              <ThemeAwareHeader />
               <main className="rounded-3xl bg-gray-50 space-y-4">
                 <FeatureGrid 
-                  product={product}
-                  brandLogo={brandLogo}
-                  brandName={brandName}
-                  color={color}
+                  onSectionChange={navigateToSection}
                 />
               </main>
             </div>

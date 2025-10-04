@@ -1,11 +1,13 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { GiPerfumeBottle, GiPhone, GiNotebook , GiEnvelope} from 'react-icons/gi';
+import { GiPerfumeBottle, GiPhone, GiNotebook , GiEnvelope, GiVideoCamera} from 'react-icons/gi';
+
+type ActiveSection = 'home' | 'ingredients' | 'feedback' | 'usage-instructions' | 'support-channels' | 'tutorials';
 
 interface SectionNavigationProps {
-  activeSection: string;
-  onSectionChange: (section: string) => void;
+  activeSection: ActiveSection;
+  onSectionChange: (section: ActiveSection) => void;
   color: string;
 }
 
@@ -19,6 +21,7 @@ const SectionNavigation: React.FC<SectionNavigationProps> = ({
     { id: 'home', label: 'Home', icon: '🏠' },
     { id: 'ingredients', label: 'Ingredients', icon: <GiPerfumeBottle /> },
     { id: 'usage-instructions', label: 'Instructions', icon: <GiNotebook /> },
+    { id: 'tutorials', label: 'Tutorials', icon: <GiVideoCamera /> },
     { id: 'feedback', label: 'Feedback', icon: <GiEnvelope /> },
     { id: 'support-channels', label: 'Support', icon: <GiPhone /> },
   ];
@@ -66,7 +69,7 @@ useEffect(() => {
         {sections.map((section) => (
           <button
             key={section.id}
-            onClick={() => onSectionChange(section.id as any)}
+            onClick={() => onSectionChange(section.id as ActiveSection)}
             className={`flex flex-col items-center justify-center px-3 py-2 text-xs font-medium transition-all duration-200 ${
               activeSection === section.id
                 ? 'text-white'

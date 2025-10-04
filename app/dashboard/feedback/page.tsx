@@ -42,13 +42,13 @@ const FeedbackPage: React.FC = () => {
     }
   }, [brandId, fetchFeedbacks]);
 
-  // Auto-refresh every 30 seconds
+  // Auto-refresh every 10 minutes
   useEffect(() => {
     if (!brandId) return;
     
     const interval = setInterval(() => {
       fetchFeedbacks(brandId);
-    }, 30000); // 30 seconds
+    }, 600000); // 10 minutes
 
     return () => clearInterval(interval);
   }, [brandId, fetchFeedbacks]);
@@ -114,7 +114,7 @@ const FeedbackPage: React.FC = () => {
         
         {/* Professional Error State */}
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-xl border border-red-200 shadow-sm p-8 text-center">
+          <div className="p-8 text-center">
             {/* Error Icon */}
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-6">
               <svg className="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -126,9 +126,7 @@ const FeedbackPage: React.FC = () => {
             <h3 className="text-xl font-semibold text-gray-900 mb-3">
               Unable to Load Customer Feedbacks
             </h3>
-            <p className="text-gray-600 mb-6 leading-relaxed">
-              We're having trouble retrieving your customer feedback data. This could be due to a temporary network issue or server problem.
-            </p>
+           
             
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -148,21 +146,9 @@ const FeedbackPage: React.FC = () => {
             </div>
             
             {/* Help Text */}
-            <div className="mt-6 pt-6 border-t border-gray-200">
-              <p className="text-sm text-gray-500">
-                If the problem persists, please check your internet connection or contact support.
-              </p>
-            </div>
+           
           </div>
-          
-          {/* Additional Help Section */}
-          <div className="mt-8 bg-blue-50 rounded-xl border border-blue-200 p-6">
-            <h4 className="text-lg font-medium text-blue-900 mb-3">Need Help?</h4>
-            <div className="space-y-2 text-sm text-blue-800">
-              <p>• Ensure you have an active internet connection</p>
-              <p>• Try refreshing the page</p>
-            </div>
-          </div>
+      
         </div>
       </div>
     );
