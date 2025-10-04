@@ -57,181 +57,150 @@ const ContentDashboardPage: React.FC = () => {
       fetchContentData(brandId);
     }
   }, [brandId, fetchContentData]);
-//
-//  // Handler for edit action
-//  const handleEdit = () => {
-//    if (selectedArticles.size === 1) {
-//      const id = Array.from(selectedArticles)[0];
-//      router.push(`/dashboard/content/tutorial/${id}?mode=edit`);
-//    }
-//  };
-//
-//  // Handler for unpublish action - shows confirmation modal
-//  const handleUnpublish = () => {
-//    if (selectedArticles.size === 0) return;
-//    setShowUnpublishModal(true);
-//  };
-//
-//  // Handler for confirmed unpublish
-//  const handleConfirmUnpublish = async () => {
-//    const selectedIds = Array.from(selectedArticles);
-//    const count = selectedIds.length;
-//    
-//    try {
-//      // Unpublish all selected tutorials
-//      await Promise.all(
-//        selectedIds.map(id => {
-//          const tutorialId = typeof id === 'string' ? id : id.toString();
-//          return unpublishTutorialMutation.mutateAsync(tutorialId);
-//        })
-//      );
-//      
-//      showToast.success(`${count} tutorial${count > 1 ? 's' : ''} unpublished successfully!`);
-//      setSelectedArticles(new Set()); // Clear selection
-//      setShowUnpublishModal(false); // Close modal
-//    } catch (error: any) {
-//      showToast.error(error?.message || 'Failed to unpublish tutorials');
-//    }
-//  };
-//
-//  // Handler for canceling unpublish
-//  const handleCancelUnpublish = () => {
-//    setShowUnpublishModal(false);
-//  };
-//
-//  // Handler for dismissing action bar
-//  const handleDismissActionBar = () => {
-//    setSelectedArticles(new Set());
-//  };
-//
-//  // Handler for delete action - shows confirmation modal
-//  const handleDelete = () => {
-//    if (selectedArticles.size === 0) return;
-//    setShowDeleteModal(true);
-//  };
-//
-//  // Handler for confirmed deletion
-//  const handleConfirmDelete = async () => {
-//    const selectedIds = Array.from(selectedArticles);
-//    const count = selectedIds.length;
-//    
-//    console.log('Attempting to delete tutorials with IDs:', selectedIds);
-//    
-//    try {
-//      // Delete all selected tutorials
-//      await Promise.all(
-//        selectedIds.map(async (id) => {
-//          console.log(`Deleting tutorial with ID: ${id}`);
-//          // Convert to string for API call
-//          const tutorialId = typeof id === 'string' ? id : id.toString();
-//          return deleteTutorialMutation.mutateAsync(tutorialId);
-//        })
-//      );
-//      
-//      showToast.success(`${count} tutorial${count > 1 ? 's' : ''} deleted successfully!`);
-//      setSelectedArticles(new Set()); // Clear selection
-//      setShowDeleteModal(false); // Close modal
-//    } catch (error: any) {
-//      console.error('Delete error:', error);
-//      showToast.error(error?.message || 'Failed to delete tutorials');
-//    }
-//  };
-//
-//  // Handler for canceling deletion
-//  const handleCancelDelete = () => {
-//    setShowDeleteModal(false);
-//  };
-//
-//  return (
-//    <div className="font-sans min-h-screen">
-//      <div className="w-full">
-//        <ContentDashboardHeader />
-//        <ArticleFilter
-//          activeTab={activeTab}
-//          setActiveTab={setActiveTab}
-//          selectedType={selectedType}
-//          setSelectedType={setSelectedType}
-//          selectedCategory={selectedCategory}
-//          setSelectedCategory={setSelectedCategory}
-//          search={search}
-//          setSearch={setSearch}
-//          count={filteredArticles.length}
-//        />
-//        {isLoadingTutorials ? (
-//          <ArticleList 
-//            articles={[]} 
-//            selectedArticles={selectedArticles} 
-//            onSelectArticle={handleSelectArticle}
-//            isLoading={true}
-//          />
-//        ) : filteredArticles.length === 0 ? (
-//          <div className="flex flex-col items-center bg-gray-50 justify-center py-24">
-//            <Book className="w-12 h-12 text-yellow-400 mb-6" />
-//            <h2 className="text-lg md:text-2xl font-bold text-gray-700 mb-2">Nothing to see here yet</h2>
-//            <p className="text-gray-500 mb-6">Create your first tutorial to get started.</p>
-//            <button
-//              onClick={() => router.push('/dashboard/content/tutorial?mode=create')}
-//              className="px-8 flex items-center justify-center md:py-3 py-2 bg-gray-500 text-white font-medium rounded-xl hover:bg-purple-800 transition-colors shadow-lg"
-//            >
-//              <Plus className="w-4 h-4 mr-2" />
-//              Create Tutorial
-//            </button>
-//          </div>
-//        ) : (
-//          <ArticleList 
-//            articles={filteredArticles} 
-//            selectedArticles={selectedArticles} 
-//            onSelectArticle={handleSelectArticle}
-//            isLoading={false}
-//          />
-//        )}
-//
-//        {selectedArticles.size > 0 && (
-//          <div className="md:pr-12">
-//            <ActionBar 
-//              selectedCount={selectedArticles.size} 
-//              selectedArticleStatus={selectedArticles.size === 1 ? 
-//                filteredArticles.find((article: any) => selectedArticles.has(article.id))?.status : 
-//                undefined
-//              }
-//              onEdit={handleEdit}
-//              onUnpublish={handleUnpublish}
-//              onDelete={handleDelete}
-//              onDismiss={handleDismissActionBar}
-//            />
-//          </div>
-//        )}
-//      </div>
-//
-//      {/* Delete Confirmation Modal */}
-//      <Modal
-//        open={showDeleteModal}
-//        title="Delete Tutorials"
-//        description={`Are you sure you want to delete ${selectedArticles.size} tutorial${selectedArticles.size > 1 ? 's' : ''}? This action cannot be undone.`}
-//        confirmText="Delete"
-//        cancelText="Cancel"
-//        color="red"
-//        onConfirm={handleConfirmDelete}
-//        onCancel={handleCancelDelete}
-//      />
-//
-//      {/* Unpublish Confirmation Modal */}
-//      <Modal
-//        open={showUnpublishModal}
-//        title="Unpublish Tutorials"
-//        description={`Are you sure you want to unpublish ${selectedArticles.size} tutorial${selectedArticles.size > 1 ? 's' : ''}? They will be moved to drafts.`}
-//        confirmText="Unpublish"
-//        cancelText="Cancel"
-//        color="orange"
-//        onConfirm={handleConfirmUnpublish}
-//        onCancel={handleCancelUnpublish}
-//      />
-//    </div>
-//  );
-//};
-//
-//export default ContentDashboardPage;
 
-export default function ContentPage() {
-  return <div>Content Page</div>;
-}
+  // Handler for edit action
+  const handleEdit = () => {
+    if (selectedArticles.size === 1) {
+      const id = Array.from(selectedArticles)[0];
+      router.push(`/dashboard/content/tutorial/${id}?mode=edit`);
+    }
+  };
+
+  // Handler for unpublish action - shows confirmation modal
+  const handleUnpublish = () => {
+    if (selectedArticles.size === 0) return;
+    setShowUnpublishModal(true);
+  };
+
+  // Handler for confirmed unpublish
+  const handleConfirmUnpublish = async () => {
+    const selectedIds = Array.from(selectedArticles);
+    const count = selectedIds.length;
+    
+    try {
+      // Unpublish all selected tutorials
+      await Promise.all(
+        selectedIds.map(id => {
+          const tutorialId = typeof id === 'string' ? id : id.toString();
+          return unpublishTutorialMutation.mutateAsync(tutorialId);
+        })
+      );
+      
+      showToast.success(`${count} tutorial${count > 1 ? 's' : ''} unpublished successfully!`);
+      clearSelection(); // Clear selection using store action
+      setShowUnpublishModal(false); // Close modal
+    } catch (error: any) {
+      showToast.error(error?.message || 'Failed to unpublish tutorials');
+    }
+  };
+
+  // Handler for canceling unpublish
+  const handleCancelUnpublish = () => {
+    setShowUnpublishModal(false);
+  };
+
+  // Handler for dismissing action bar
+  const handleDismissActionBar = () => {
+    clearSelection(); // Use store action
+  };
+
+  // Handler for delete action - shows confirmation modal
+  const handleDelete = () => {
+    if (selectedArticles.size === 0) return;
+    setShowDeleteModal(true);
+  };
+
+  // Handler for confirmed deletion
+  const handleConfirmDelete = async () => {
+    const selectedIds = Array.from(selectedArticles);
+    const count = selectedIds.length;
+    
+    console.log('Attempting to delete tutorials with IDs:', selectedIds);
+    
+    try {
+      // Delete all selected tutorials
+      await Promise.all(
+        selectedIds.map(async (id) => {
+          console.log(`Deleting tutorial with ID: ${id}`);
+          // Convert to string for API call
+          const tutorialId = typeof id === 'string' ? id : id.toString();
+          return deleteTutorialMutation.mutateAsync(tutorialId);
+        })
+      );
+      
+      showToast.success(`${count} tutorial${count > 1 ? 's' : ''} deleted successfully!`);
+      clearSelection(); // Clear selection using store action
+      setShowDeleteModal(false); // Close modal
+    } catch (error: any) {
+      console.error('Delete error:', error);
+      showToast.error(error?.message || 'Failed to delete tutorials');
+    }
+  };
+
+  // Handler for canceling deletion
+  const handleCancelDelete = () => {
+    setShowDeleteModal(false);
+  };
+
+  return (
+    <div className="font-sans min-h-screen">
+      <div className="w-full">
+        <ContentDashboardHeader />
+        <ArticleFilter
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          selectedType={selectedType}
+          setSelectedType={setSelectedType}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          search={search}
+          setSearch={setSearch}
+          count={filteredArticles.length}
+        />
+        {selectedArticles.size > 0 && (
+          <ActionBar
+            selectedCount={selectedArticles.size}
+            onEdit={handleEdit}
+            onUnpublish={handleUnpublish}
+            onDelete={handleDelete}
+            onDismiss={handleDismissActionBar}
+          />
+        )}
+        <ArticleList
+          articles={filteredArticles}
+          onSelectArticle={selectArticle}
+          selectedArticles={selectedArticles}
+          isLoading={isLoading}
+        />
+      </div>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={showDeleteModal}
+        onClose={handleCancelDelete}
+        title="Delete Tutorials"
+        description={`Are you sure you want to delete ${selectedArticles.size} tutorial${selectedArticles.size > 1 ? 's' : ''}? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+        variant="danger"
+      />
+
+      {/* Unpublish Confirmation Modal */}
+      <Modal
+        isOpen={showUnpublishModal}
+        onClose={handleCancelUnpublish}
+        title="Unpublish Tutorials"
+        description={`Are you sure you want to unpublish ${selectedArticles.size} tutorial${selectedArticles.size > 1 ? 's' : ''}? They will no longer be visible to customers.`}
+        confirmText="Unpublish"
+        cancelText="Cancel"
+        onConfirm={handleConfirmUnpublish}
+        onCancel={handleCancelUnpublish}
+        variant="warning"
+      />
+    </div>
+  );
+};
+
+export default ContentDashboardPage;
