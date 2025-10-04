@@ -16,6 +16,9 @@ import MessageList from './components/MessageList';
 import { useIsMobile } from '@/hooks/brands/use-mobile';
 
 const FeedbackPage: React.FC = () => {
+  // Add render tracking
+  console.log('🔄 FeedbackPage rendering', { timestamp: new Date().toISOString() });
+  
   const isMobile = useIsMobile();
   
   // Get brand from store

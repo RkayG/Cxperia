@@ -138,6 +138,8 @@ export const useFeedbackStore = create<FeedbackState>()(
 
     // Actions
     fetchFeedbacks: async (brandId: string) => {
+      console.log('📡 FeedbackStore: fetchFeedbacks called', { brandId, timestamp: new Date().toISOString() });
+      
       if (!brandId) return;
       
       set({ isLoading: true, error: null });

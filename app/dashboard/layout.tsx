@@ -2,6 +2,7 @@
 import Image from "next/image";
 import MobileBottomNav from "@/components/MobileBottomNavbar";
 import SidebarLayout, { SidebarItem } from "@/components/sidebar-layout";
+import { BrandProvider } from "@/contexts/BrandContext";
 import logo from '../../assets/logo.png'
 
 interface DashboardLayoutProps {
@@ -91,19 +92,23 @@ const navigationItems: SidebarItem[] = [
 ];
 
 export default async function DashboardLayout({ children }: DashboardLayoutProps) {
+  // Add render tracking
+  console.log('🔄 DashboardLayout rendering', { timestamp: new Date().toISOString() });
 
   return (
-    <SidebarLayout
-      items={navigationItems}
-      basePath="/dashboard"
-      sidebarTop={
-        <div className="px-4 py-6" suppressHydrationWarning>
-          <Image src={logo} alt="Cxperia Logo" className=" h-10 w-24" />
-        </div>
-      }
-    >
-      {children}
-      <MobileBottomNav />
-    </SidebarLayout>
+    <BrandProvider>
+      <SidebarLayout
+        items={navigationItems}
+        basePath="/dashboard"
+        sidebarTop={
+          <div className="px-4 py-6" suppressHydrationWarning>
+            <Image src={logo} alt="Cxperia Logo" className=" h-10 w-24" />
+          </div>
+        }
+      >
+        {children}
+        <MobileBottomNav />
+      </SidebarLayout>
+    </BrandProvider>
   );
 }

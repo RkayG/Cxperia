@@ -19,6 +19,9 @@ import ArticleFilter from './components/ContentFilter';
 import ContentDashboardHeader from './components/Header';
 
 const ContentDashboardPage: React.FC = () => {
+  // Add render tracking
+  console.log('🔄 ContentPage rendering', { timestamp: new Date().toISOString() });
+  
   // Get brand from store
   const brand = useExperienceStore((state) => state.brand);
   const brandId = brand?.id;

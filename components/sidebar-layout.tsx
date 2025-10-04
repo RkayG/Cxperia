@@ -273,6 +273,9 @@ export default function SidebarLayout(props: {
   sidebarTop?: React.ReactNode;
   basePath: string;
 }) {
+  // Add render tracking
+  console.log('🔄 SidebarLayout rendering', { timestamp: new Date().toISOString() });
+  
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
 

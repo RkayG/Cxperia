@@ -127,6 +127,8 @@ export const useContentStore = create<ContentState>()(
 
     // Actions
     fetchContentData: async (brandId: string) => {
+      console.log('📡 ContentStore: fetchContentData called', { brandId, timestamp: new Date().toISOString() });
+      
       if (!brandId) return;
       
       set({ isLoading: true, error: null });

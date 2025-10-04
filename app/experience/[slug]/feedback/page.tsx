@@ -4,8 +4,8 @@ import { useParams } from 'next/navigation';
 import React, { useRef, useState } from 'react';
 
 // INTERNAL IMPORTS
-import CurvedBottomNav from '@/components/public/CurvedBottomNav';
-import SectionHeader from '@/components/public/ThemeAwareSectionHeader';
+import CurvedBottomNav from '@/app/experience/[slug]/components/CurvedBottomNav';
+import SectionHeader from '@/app/experience/[slug]/components/ThemeAwareSectionHeader';
 import { useCreatePublicFeedback } from '@/hooks/public/usePublicFeedbackApi';
 import { usePublicExpStore } from '@/store/public/usePublicExpStore';
 import { showToast } from '@/utils/toast';

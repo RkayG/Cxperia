@@ -17,7 +17,7 @@ interface BottomNavLink {
 }
 
 const bottomNavLinks: BottomNavLink[] = [
-  { id: 1, label: "Home", icon: FaHome, path: "/dashboard/home" },
+  { id: 1, label: "Home", icon: FaHome, path: "/dashboard" },
   { id: 2, label: "Catalog", icon: FaCrown, path: "/dashboard/products" },
   { id: 3, label: "Create", icon: FaPlus, path: "/dashboard/experience/create?step=product-details&new=true" },
   { id: 4, label: "Content", icon: FaFileAlt, path: "/dashboard/content" },

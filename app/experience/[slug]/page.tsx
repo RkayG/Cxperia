@@ -1,113 +1,79 @@
+// src/App.tsx
 'use client';
-import { useRouter } from 'next/navigation';
-import React, { useEffect, useRef, useState } from "react";
-import { usePublicExpStore } from '@/store/public/usePublicExpStore';
+import React from "react";
+import FeatureGrid from "@/app/experience/[slug]/components/homepage/FeatureGrid";
+import ThemeAwareHeader from "@/app/experience/[slug]/components/homepage/ThemeAwareHeader";
+import YouHaveScanned from "@/app/experience/[slug]/components/YouHaveScanned";
+import { usePublicExpStore } from "@/store/public/usePublicExpStore";
 import PublicLoading from "./components/PublicLoading";
-import WelcomeFlow from './components/WelcomeFlow';
 
-const InteractiveWelcome = () => {
-  const router = useRouter();
-  const { experience, isLoading, brandLogo, color, brandName, product} = usePublicExpStore();
-  const [customerCheckComplete, setCustomerCheckComplete] = useState(false);
-  const [lastCheckedSlug, setLastCheckedSlug] = useState<string | null>(null);
-  const [isReturningCustomer, setIsReturningCustomer] = useState<boolean | null>(null);
+const HomePage: React.FC = () => {
+  const { color, isLoading } = usePublicExpStore();
+  const [isNewCustomer, setIsNewCustomer] = React.useState<boolean | null>(null);
 
-  // Get slug from URL
-  const slug = typeof window !== 'undefined' ? window.location.pathname.split('/').pop() : null;
-
-  // Check if this is a returning customer
-  useEffect(() => {
-    // Reset customer check if slug has changed
-    if (slug && slug !== lastCheckedSlug) {
-      console.log("🔄 Slug changed, resetting customer check");
-      setCustomerCheckComplete(false);
-      setLastCheckedSlug(slug);
-    }
-    
-    if (slug && !customerCheckComplete) {
-      console.log("🔍 Checking customer status for slug:", slug);
+  // Check if this is a new customer (first-time visitor to this specific experience)
+  React.useEffect(() => {
+    const checkNewCustomer = () => {
+      // Get the current experience slug from the URL
+      const currentPath = window.location.pathname;
+      const experienceSlug = currentPath.split('/')[2]; // Extract slug from /experience/[slug]/home
       
-      // Check if this is their first time scanning ANY product
-      const hasScannedAnyProduct = localStorage.getItem('has_scanned_any_product');
-      const hasScannedThisProduct = localStorage.getItem(`scanned_${slug}`);
+      // Check localStorage for previous visits to this specific experience
+      const visitedExperiences = JSON.parse(localStorage.getItem('visitedExperiences') || '[]') as string[];
+      const hasVisitedThisExperience = visitedExperiences.includes(experienceSlug);
+      const isNewCustomer = !hasVisitedThisExperience;
       
-      console.log("📊 Has scanned any product:", hasScannedAnyProduct);
-      console.log("📊 Has scanned this product:", hasScannedThisProduct);
-      console.log("🔄 Customer check complete:", customerCheckComplete);
+      console.log('🔍 Customer check:', { 
+        experienceSlug, 
+        visitedExperiences, 
+        hasVisitedThisExperience, 
+        isNewCustomer 
+      });
       
-      if (hasScannedThisProduct) {
-        // They've scanned this specific product before - returning customer
-        setIsReturningCustomer(true);
-        setCustomerCheckComplete(true);
-        console.log("Returning customer - scanned this product before");
-      } else if (hasScannedAnyProduct) {
-        // They've scanned other products but not this one - new to this product
-        setIsReturningCustomer(false);
-        localStorage.setItem(`scanned_${slug}`, 'true');
-        setCustomerCheckComplete(true);
-        console.log("New to this product - but has scanned other products");
-      } else {
-        // First time scanning anything - completely new customer
-        setIsReturningCustomer(false);
-        localStorage.setItem('has_scanned_any_product', 'true');
-        localStorage.setItem(`scanned_${slug}`, 'true');
-        setCustomerCheckComplete(true);
-        console.log("Completely new customer - first scan ever");
-      } 
-    } else if (!slug) {
-      console.log("❌ No slug provided, skipping customer check");
-      return;
-    } else {
-      console.log("⏭️ Customer check already complete, skipping");
-    }
-  }, [slug, customerCheckComplete, lastCheckedSlug]);
-
-  // Handle feature selection
-  const handleFeatureSelect = (featureId: string) => {
-    if (!slug) return;
-    
-    const featureRoutes: Record<string, string> = {
-      'ingredients': `/experience/${slug}/ingredients`,
-      'usage': `/experience/${slug}/usage`,
-      'tutorials': `/experience/${slug}/tutorials`,
-      'benefits': `/experience/${slug}/benefits`,
-      'chatbot': `/experience/${slug}/chatbot`
+      setIsNewCustomer(isNewCustomer);
+      
+      // Mark this experience as visited for future visits
+      if (isNewCustomer && experienceSlug) {
+        const updatedVisitedExperiences = [...visitedExperiences, experienceSlug] as string[] ;
+        localStorage.setItem('visitedExperiences', JSON.stringify(updatedVisitedExperiences));
+        console.log('✅ Marked experience as visited:', experienceSlug);
+      }
     };
 
-    const route = featureRoutes[featureId];
-    if (route) {
-      router.push(route);
-    }
-  };
+    checkNewCustomer();
+  }, []);
+
   if (isLoading) {
     return <PublicLoading />;
-  }     
-  // Show loading while checking customer status or loading experience
-  if (!customerCheckComplete || !experience) {
-    return (
-      <WelcomeFlow
-        product={null}
-        brandLogo={undefined}
-        brandName={undefined}
-        color="#6366f1"
-        isReturningCustomer={null}
-        onFeatureSelect={() => {}}
-        isLoading={true}
-      />
-    );
   }
 
+  // Show loading while determining customer status
+  if (isNewCustomer === null) {
+    return <PublicLoading />;
+  }
+
+  // Show YouHaveScanned for new customers
+  if (isNewCustomer === true) {
+    console.log('🎉 Showing YouHaveScanned for new customer');
+    return <YouHaveScanned />;
+  }
+
+  // Show regular home page for returning customers
+  if (isNewCustomer === false) {
+    console.log('🏠 Showing home page for returning customer');
+  }
   return (
-    <WelcomeFlow
-      product={product}
-      brandLogo={brandLogo}
-      brandName={brandName}
-      color={color}
-      isReturningCustomer={isReturningCustomer}
-      onFeatureSelect={handleFeatureSelect}
-      isLoading={isLoading}
-    />
+    <div className="min-h-screen " style={{ backgroundColor: color }}>
+      <div
+        className="max-w-xl mx-auto bg-gray-50  min-h-screen overflow-hidden"
+      >
+        <ThemeAwareHeader />
+        <main className="rounded-3xl bg-gray-50 space-y-4">
+          <FeatureGrid />
+        </main>
+      </div>
+    </div>
   );
 };
 
-export default InteractiveWelcome;
+export default HomePage;

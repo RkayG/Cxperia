@@ -102,7 +102,7 @@ const FeatureSlider: React.FC = () => {
         path = "skin-diagnosis";
         break;
       case "Customer Support":
-        path = "customer-support";
+        path = "support-channels";
         break;
       default:
         return;

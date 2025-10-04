@@ -2,7 +2,7 @@
 'use client';
 import Image from 'next/image';
 import React, { useEffect, useRef, useState } from "react";
-import FeatureSlider from "@/components/public/FeatureSlider";
+import FeatureSlider from "@/app/experience/[slug]/components/FeatureSlider";
 import UnpackingLoader  from '@/components/UnpackingLoader';
 import { usePublicExpStore } from '@/store/public/usePublicExpStore';
 

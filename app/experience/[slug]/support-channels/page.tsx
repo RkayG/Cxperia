@@ -1,7 +1,7 @@
 'use client'
 import React, {  useMemo } from "react"
-import CurvedBottomNav from "@/components/public/CurvedBottomNav"
-import SectionHeader from "@/components/public/ThemeAwareSectionHeader"
+import CurvedBottomNav from "@/app/experience/[slug]/components/CurvedBottomNav"
+import SectionHeader from "@/app/experience/[slug]/components/ThemeAwareSectionHeader"
 import { usePublicExpStore } from "@/store/public/usePublicExpStore"
 import PublicLoading from '../components/PublicLoading';
 

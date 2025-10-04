@@ -34,6 +34,9 @@ interface Stats {
 
 
 export default function HomePage() {
+  // Add render tracking
+  console.log('🔄 HomePage rendering', { timestamp: new Date().toISOString() });
+  
   const router = useRouter();
   // Banner image loading state (must be top-level for hooks)
   const [bannerLoaded, setBannerLoaded] = React.useState(false);

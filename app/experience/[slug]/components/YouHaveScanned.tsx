@@ -16,6 +16,15 @@ const YouHaveScanned: React.FC = () => {
   const [_ctaTextIndex, setCtaTextIndex] = useState(0);
   const [showLoader, setShowLoader] = useState(true);
 
+  // Log when YouHaveScanned is rendered
+  useEffect(() => {
+    console.log('🎉 YouHaveScanned component rendered for new customer', {
+      productName: product?.name,
+      experienceId: experience?.id,
+      timestamp: new Date().toISOString()
+    });
+  }, []);
+
   // Always show loader for at least 2.5s
   useEffect(() => {
     const timer = setTimeout(() => setShowLoader(false), 2500);

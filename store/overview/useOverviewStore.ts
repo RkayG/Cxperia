@@ -96,11 +96,14 @@ export const useOverviewStore = create<OverviewState>()(
 
     // Actions
     fetchOverviewData: async (brandId: string) => {
+      console.log('📡 OverviewStore: fetchOverviewData called', { brandId, timestamp: new Date().toISOString() });
+      
       if (!brandId) return;
       
       // Don't fetch if we already have data for this brand
       const { currentBrandId } = get();
       if (currentBrandId === brandId && !get().isLoadingExperiences && !get().isLoadingFeedbacks) {
+        console.log('⏭️ OverviewStore: Skipping fetch - already have data for brand', { brandId });
         return;
       }
       

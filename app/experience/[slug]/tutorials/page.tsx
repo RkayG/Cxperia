@@ -4,8 +4,8 @@ import React, { useCallback } from "react"
 
 // INTERNAL IMPORTS
 
-import CurvedBottomNav from "@/components/public/CurvedBottomNav"
-import SectionHeader from "@/components/public/ThemeAwareSectionHeader"
+import CurvedBottomNav from "@/app/experience/[slug]/components/CurvedBottomNav"
+import SectionHeader from "@/app/experience/[slug]/components/ThemeAwareSectionHeader"
 import { useExperienceTutorials } from "@/hooks/public/useTutorials"
 import { usePublicExpStore } from "@/store/public/usePublicExpStore"
 import CategoryTabs from "./components/CategoryTabs"
