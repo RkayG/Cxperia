@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { GiPerfumeBottle, GiPhone, GiNotebook , GiEnvelope, GiVideoCamera} from 'react-icons/gi';
+import { GiPerfumeBottle, GiPhone, GiNotebook , GiEnvelope, GiHouse} from 'react-icons/gi';
 
 type ActiveSection = 'home' | 'ingredients' | 'feedback' | 'usage-instructions' | 'support-channels' | 'tutorials';
 
@@ -18,10 +18,10 @@ const SectionNavigation: React.FC<SectionNavigationProps> = ({
   color,
 }) => {
   const sections = [
-    { id: 'home', label: 'Home', icon: '🏠' },
+    { id: 'home', label: 'Home', icon: <GiHouse /> },
     { id: 'ingredients', label: 'Ingredients', icon: <GiPerfumeBottle /> },
     { id: 'usage-instructions', label: 'Instructions', icon: <GiNotebook /> },
-    { id: 'tutorials', label: 'Tutorials', icon: <GiVideoCamera /> },
+   /*  { id: 'tutorials', label: 'Tutorials', icon: <GiVideoCamera /> }, */
     { id: 'feedback', label: 'Feedback', icon: <GiEnvelope /> },
     { id: 'support-channels', label: 'Support', icon: <GiPhone /> },
   ];
