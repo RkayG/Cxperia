@@ -1,102 +1,62 @@
-//"use client";
-//import { Book, Plus } from 'lucide-react';
-//import { useRouter } from 'next/navigation';
-//import React, { useState } from 'react';
-//import Modal from '@/components/Modal';
-//import { useDeleteTutorial, useTutorials, useUnpublishTutorial } from '@/hooks/brands/useFeatureApi';
-//import { showToast } from '@/utils/toast';
-//import ActionBar from './components/ActionBar';
-//import ArticleList from './components/ArticleList';
-//import ArticleFilter from './components/ContentFilter';
-//import ContentDashboardHeader from './components/Header';
-//
-//const ContentDashboardPage: React.FC = () => {
-//
-//  // State to track selected articles (for the action bar)
-//  const [selectedArticles, setSelectedArticles] = useState<Set<string | number>>(new Set());
-//
-//  // Filter state
-//  const [activeTab, setActiveTab] = useState('all');
-//  const [selectedType, setSelectedType] = useState('');
-//  const [selectedCategory, setSelectedCategory] = useState('');
-//  const [search, setSearch] = useState('');
-//
-//  // Delete confirmation modal state
-//  const [showDeleteModal, setShowDeleteModal] = useState(false);
-//  
-//  // Unpublish confirmation modal state
-//  const [showUnpublishModal, setShowUnpublishModal] = useState(false);
-//
-//  // Fetch tutorials using the useTutorials hook
-//  const { data: tutorialsRaw, isLoading: isLoadingTutorials } = useTutorials();
-//  
-//  // Mutation hooks for actions
-//  const deleteTutorialMutation = useDeleteTutorial();
-//  const unpublishTutorialMutation = useUnpublishTutorial();
-//  // Normalize tutorials data and map to article shape expected by ArticleList
-//  function formatDateFriendly(dateString?: string): string {
-//    if (!dateString) return '';
-//    const date = new Date(dateString);
-//    if (isNaN(date.getTime())) return '';
-//    return date.toLocaleDateString('en-US', {
-//      year: 'numeric',
-//      month: 'long',
-//      day: '2-digit',
-//    });
-//  }
-//
-//  const articles = React.useMemo(() => {
-//    let arr: any[] = [];
-//    if (!tutorialsRaw) return arr;
-//    if ((tutorialsRaw as any).error || ((tutorialsRaw as any).data && !Array.isArray((tutorialsRaw as any).data))) {
-//      return arr;
-//    }
-//    if (Array.isArray(tutorialsRaw)) arr = tutorialsRaw;
-//    else if (Array.isArray((tutorialsRaw as any).data)) arr = (tutorialsRaw as any).data;
-//    
-//    console.log('Raw tutorials data:', tutorialsRaw);
-//    console.log('Processed tutorials array:', arr);
-//    
-//    // Map to article shape expected by ArticleList
-//    const placeholderImg = 'https://placehold.co/600x400/EEE/31343C?text=No+Image';
-//    return arr.map((tut: any, index: number) => ({
-//      ...tut,
-//      id: tut.id || `tutorial-${index}`, // Ensure ID is present
-//      date: formatDateFriendly(tut.created_at || tut.createdAt),
-//      image: tut.featured_image_url || tut.featured_image || placeholderImg,
-//      status: tut.is_published ? 'PUBLISHED' : 'DRAFT',
-//    }));
-//  }, [tutorialsRaw]);
-//
-//  // Filtering logic
-//  const filteredArticles = articles.filter(article => {
-//    // Tab filter (status)
-//    if (activeTab === 'published' && String(article.status).toLowerCase() !== 'published') return false;
-//    if (activeTab === 'draft' && String(article.status).toLowerCase() !== 'draft') return false;
-//    // Type filter: Video = has featured_video_url, Article = does not have featured_video_url
-//    if (selectedType === 'Video' && !article.featured_video_url) return false;
-//    if (selectedType === 'Article' && article.featured_video_url) return false;
-//    // Category filter
-//    if (selectedCategory && selectedCategory !== 'All Categories' && article.category !== selectedCategory) return false;
-//    // Search filter
-//    if (search && !String(article.title).toLowerCase().includes(search.toLowerCase())) return false;
-//    return true;
-//  });
-//
-//  // Handler for selecting/deselecting articles
-//  const handleSelectArticle = (id: string | number, isSelected: boolean) => {
-//    setSelectedArticles(prevSelected => {
-//      const newSelected = new Set(prevSelected);
-//      if (isSelected) {
-//        newSelected.add(id);
-//      } else {
-//        newSelected.delete(id);
-//      }
-//      return newSelected;
-//    });
-//  };
-//
-//  const router = useRouter();
+"use client";
+import { Book, Plus } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+import Modal from '@/components/Modal';
+import { useDeleteTutorial, useUnpublishTutorial } from '@/hooks/brands/useFeatureApi';
+import { useExperienceStore } from '@/store/brands/useExperienceStore';
+import { 
+  useContentFilteredArticles, 
+  useContentSelectedArticles, 
+  useContentFilters, 
+  useContentLoading, 
+  useContentActions 
+} from '@/store/content/useContentStore';
+import { showToast } from '@/utils/toast';
+import ActionBar from './components/ActionBar';
+import ArticleList from './components/ArticleList';
+import ArticleFilter from './components/ContentFilter';
+import ContentDashboardHeader from './components/Header';
+
+const ContentDashboardPage: React.FC = () => {
+  // Get brand from store
+  const brand = useExperienceStore((state) => state.brand);
+  const brandId = brand?.id;
+
+  // Subscribe to store state (no hooks, pure subscription)
+  const filteredArticles = useContentFilteredArticles();
+  const selectedArticles = useContentSelectedArticles();
+  const { activeTab, selectedType, selectedCategory, search } = useContentFilters();
+  const isLoading = useContentLoading();
+  
+  // Get actions from store
+  const { 
+    fetchContentData, 
+    setActiveTab, 
+    setSelectedType, 
+    setSelectedCategory, 
+    setSearch, 
+    selectArticle, 
+    selectAllArticles, 
+    clearSelection 
+  } = useContentActions();
+
+  // Local UI state (modals)
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showUnpublishModal, setShowUnpublishModal] = useState(false);
+  
+  // Mutation hooks for actions
+  const deleteTutorialMutation = useDeleteTutorial();
+  const unpublishTutorialMutation = useUnpublishTutorial();
+
+  const router = useRouter();
+
+  // Initialize data fetching
+  useEffect(() => {
+    if (brandId) {
+      fetchContentData(brandId);
+    }
+  }, [brandId, fetchContentData]);
 //
 //  // Handler for edit action
 //  const handleEdit = () => {
