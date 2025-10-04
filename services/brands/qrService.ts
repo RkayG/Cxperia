@@ -1,13 +1,12 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:4000/api';
-import { getAuthHeaders } from '@/utils/getAuthHeaders';
+import config from '@/config/api';
+const endpoint = config.endpoints;
 /**
  * Generate a QR code for a given text or URL.
  * Returns a data URL for the QR image.
  */
-export async function generateQrCode(text: string): Promise<{ qr: string; url: string; productName?: string }> {
-	const res = await fetch(`${API_BASE}/experiences/single/qr`, {
+export async function generateQrCode(expId: string, text: string): Promise<{ qr: string; url: string; productName?: string }> {
+	const res = await fetch(`${endpoint.EXPERIENCE.QR(expId)}`, {
 		method: 'POST',
-		headers: getAuthHeaders(),
 		body: JSON.stringify({ text }),
 	});
 	const payload = await res.json();
@@ -16,7 +15,7 @@ export async function generateQrCode(text: string): Promise<{ qr: string; url: s
 		return {
 			qr: payload.qr,
 			url: payload.url,
-			productName: payload.productName
+			productName: payload.name
 		};
 	}
 	throw new Error(payload?.error || 'Failed to generate QR code');

@@ -22,9 +22,8 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ iconSrc, label, isHighlighted
       }`}></div>
       <div className="relative z-10 flex flex-col items-center text-center">
         {/* Icon container */}
-        <div className={`relative mb-4 p-2 rounded-2xl transition-all duration-300 bg-white shadow group-hover:shadow-md group-hover:scale-105`}>
+        <div className={`relative mb-4 p-2 bg-white rounded-full border-2 border-purple-800 transition-all duration-300 bg-white shadow group-hover:shadow-md group-hover:scale-105`}>
           {/* Icon subtle effect */}
-          <div className="absolute inset-0 rounded-2xl blur-[2px] opacity-0 group-hover:opacity-30 transition-opacity duration-300 bg-white"></div>
           <img
             src={iconSrc}
             alt={label + ' icon'}

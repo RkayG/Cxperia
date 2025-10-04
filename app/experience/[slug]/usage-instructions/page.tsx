@@ -1,31 +1,14 @@
-// src/App.tsx
-'use client'
-import React from 'react';
+import { redirect } from 'next/navigation';
 
-// INTERNAL IMPORTS
-import CurvedBottomNav from '@/app/experience/[slug]/components/CurvedBottomNav';
-import SectionHeader from '@/app/experience/[slug]/components/ThemeAwareSectionHeader';
-import { usePublicExpStore } from '@/store/public/usePublicExpStore';
-import InstructionsSection from './components/InstructionsSection';
-import ProductDisplay from './components/ProductDisplay';
+interface UsageInstructionsPageProps {
+  params: Promise<{ slug: string }>;
+}
 
-const DigitalInstructionsPage: React.FC = () => {
-  const color = usePublicExpStore((state) => state.color);
-  const { experience } = usePublicExpStore();
-  return (
-    <div className="min-h-screen bg-gray-50 flex justify-center"
-     style={{ backgroundColor: color }}>
-      <div className="max-w-xl  mx-auto w-full bg-white shadow-lg overflow-hidden">
-        <SectionHeader title="Instructions" subtitle="Discover how to use our product effectively." />
-        <main className="p-4 space-y-6 rounded-tl-3xl">
-          <ProductDisplay color={color} product={experience?.data?.product} />
-          <InstructionsSection color={color} />
-
-        </main>
-      </div>
-      <CurvedBottomNav />
-    </div>
-  );
+const DigitalInstructionsPage: React.FC<UsageInstructionsPageProps> = async ({ params }) => {
+  const { slug } = await params;
+  
+  // Redirect to main experience page with usage-instructions section
+  redirect(`/experience/${slug}?section=usage-instructions`);
 };
 
 export default DigitalInstructionsPage;

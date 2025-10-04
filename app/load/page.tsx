@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import React, { useEffect, useRef, useState } from "react";
 import FeatureSlider from "@/app/experience/[slug]/components/FeatureSlider";
-import UnpackingLoader  from '@/components/UnpackingLoader';
+import UnpackingLoader  from '@/app/experience/[slug]/components/UnpackingLoader';
 import { usePublicExpStore } from '@/store/public/usePublicExpStore';
 
 const YouHaveScanned: React.FC = () => {

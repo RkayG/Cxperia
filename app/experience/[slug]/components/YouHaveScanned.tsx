@@ -1,19 +1,17 @@
 // src/components/HeaderBold.tsx
 import Image from 'next/image';
-import React, { useEffect, useRef, useState } from "react";
-import UnpackingLoader  from '@/components/UnpackingLoader';
+import React, { useEffect, useState } from "react";
+import UnpackingLoader  from '@/app/experience/[slug]/components/UnpackingLoader';
 import { usePublicExpStore } from '@/store/public/usePublicExpStore';
 import FeatureSlider from "./FeatureSlider";
 
 const YouHaveScanned: React.FC = () => {
-  const contentRef = useRef<HTMLDivElement>(null);
   const experience = usePublicExpStore((state) => state.experience);
   const product = usePublicExpStore((state) => state.product) || {};
   const brandLogo = usePublicExpStore((state) => state.brandLogo) || "";
   const images = product.product_image_url || [];
   const color = experience?.data?.primary_color || "#1e3a8a";
   const [showConfetti, setShowConfetti] = useState(true);
-  const [_ctaTextIndex, setCtaTextIndex] = useState(0);
   const [showLoader, setShowLoader] = useState(true);
 
   // Log when YouHaveScanned is rendered
@@ -31,23 +29,6 @@ const YouHaveScanned: React.FC = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Engaging CTA options instead of "Explore"
-  const ctaOptions = [
-    "Discover Benefits →",
-    "See Ingredients →",
-    "Learn How To Use →",
-    "Get Beauty Tips →",
-    "Find Your Routine →",
-    "Unlock Secrets →",
-  ];
-
-  // Rotate through CTA text options
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCtaTextIndex((prev) => (prev + 1) % ctaOptions.length);
-    }, 2500);
-    return () => clearInterval(interval);
-  }, []);
 
   // Hide confetti after 5 seconds
   useEffect(() => {
@@ -92,7 +73,7 @@ const YouHaveScanned: React.FC = () => {
   );
 
   if (showLoader) {
-    return <UnpackingLoader />;
+    return <UnpackingLoader color={color} />;
   }
 
   return (
@@ -105,7 +86,7 @@ const YouHaveScanned: React.FC = () => {
           className="text-left p-8 h-60 w-full block text-white"
           style={{ backgroundColor: color }}
         >
-          <div className="flex justify-left">
+          <div className="flex justify-center">
             {brandLogo ? (
               <Image
                 src={brandLogo}
@@ -143,7 +124,6 @@ const YouHaveScanned: React.FC = () => {
 
         {/* Content Section */}
         <div
-          ref={contentRef}
           className="flex-grow min-h-96 p-3 -mt-10 space-y-6"
         >
           <div className="text-center px-2 py-8 bg-white rounded-lg shadow-md">

@@ -1,15 +1,18 @@
 "use client"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import React, { useEffect, useState } from "react"
-import { usePublicExpStore } from "@/store/public/usePublicExpStore"
 
-const CurvedBottomNav: React.FC = () => {
+interface CurvedBottomNavProps {
+  color: string;
+  slug: string;
+}
+
+const CurvedBottomNav: React.FC<CurvedBottomNavProps> = ({ color, slug }) => {
   const router = useRouter()
-  const color = usePublicExpStore((state) => state.color)
-  const slug = usePublicExpStore((state) => state.slug)
+  const searchParams = useSearchParams()
   const [isVisible, setIsVisible] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
-  // Remove debug log
+  
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY
@@ -35,6 +38,12 @@ const CurvedBottomNav: React.FC = () => {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [lastScrollY])
 
+  const navigateToHome = () => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('section', 'home');
+    router.replace(url.pathname + url.search, { scroll: false });
+  };
+
   return (
     <div
       className={`fixed right-0 bottom-0 left-0 z-50 flex h-16 w-full items-end justify-center bg-transparent transition-transform duration-300 ease-in-out sm:hidden ${
@@ -45,7 +54,7 @@ const CurvedBottomNav: React.FC = () => {
       <div
         className="mb-4 cursor-pointer rounded-lg bg-gray-100 p-2 transition-transform active:scale-95"
         style={{ boxShadow: `0 4px 24px 0 ${color}55, 0 1.5px 4px 0 ${color}33` }}
-        onClick={() => router.push(slug ? `/experience/${slug}/home` : "/")}
+        onClick={navigateToHome}
         title="Go to Home"
       >
         {/* Four squares grid */}

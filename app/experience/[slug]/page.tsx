@@ -1,79 +1,39 @@
-// src/App.tsx
-'use client';
 import React from "react";
-import FeatureGrid from "@/app/experience/[slug]/components/homepage/FeatureGrid";
-import ThemeAwareHeader from "@/app/experience/[slug]/components/homepage/ThemeAwareHeader";
-import YouHaveScanned from "@/app/experience/[slug]/components/YouHaveScanned";
-import { usePublicExpStore } from "@/store/public/usePublicExpStore";
-import PublicLoading from "./components/PublicLoading";
+import { notFound } from "next/navigation";
+import UnifiedExperienceWrapper from "./components/UnifiedExperienceWrapper";
+import { getExperienceBySlug } from "@/lib/data/experiences";
 
-const HomePage: React.FC = () => {
-  const { color, isLoading } = usePublicExpStore();
-  const [isNewCustomer, setIsNewCustomer] = React.useState<boolean | null>(null);
+interface ExperiencePageProps {
+  params: Promise<{ slug: string }>;
+}
 
-  // Check if this is a new customer (first-time visitor to this specific experience)
-  React.useEffect(() => {
-    const checkNewCustomer = () => {
-      // Get the current experience slug from the URL
-      const currentPath = window.location.pathname;
-      const experienceSlug = currentPath.split('/')[2]; // Extract slug from /experience/[slug]/home
-      
-      // Check localStorage for previous visits to this specific experience
-      const visitedExperiences = JSON.parse(localStorage.getItem('visitedExperiences') || '[]') as string[];
-      const hasVisitedThisExperience = visitedExperiences.includes(experienceSlug);
-      const isNewCustomer = !hasVisitedThisExperience;
-      
-      console.log('🔍 Customer check:', { 
-        experienceSlug, 
-        visitedExperiences, 
-        hasVisitedThisExperience, 
-        isNewCustomer 
-      });
-      
-      setIsNewCustomer(isNewCustomer);
-      
-      // Mark this experience as visited for future visits
-      if (isNewCustomer && experienceSlug) {
-        const updatedVisitedExperiences = [...visitedExperiences, experienceSlug] as string[] ;
-        localStorage.setItem('visitedExperiences', JSON.stringify(updatedVisitedExperiences));
-        console.log('✅ Marked experience as visited:', experienceSlug);
-      }
-    };
-
-    checkNewCustomer();
-  }, []);
-
-  if (isLoading) {
-    return <PublicLoading />;
+const ExperiencePage: React.FC<ExperiencePageProps> = async ({ params }) => {
+  const { slug } = await params;
+  
+  // Fetch experience data server-side
+  const experience = await getExperienceBySlug(slug);
+  
+  if (!experience) {
+    notFound();
   }
 
-  // Show loading while determining customer status
-  if (isNewCustomer === null) {
-    return <PublicLoading />;
-  }
+  // Extract data from experience
+  const color = experience.data?.primary_color || "#6366f1";
+  const product = experience.data?.product;
+  const brandLogo = experience.data?.brand?.logo_url;
+  const brandName = experience.data?.brand?.name;
+  const customer_support_links_simple = experience.data?.customer_support_links_simple || [];
 
-  // Show YouHaveScanned for new customers
-  if (isNewCustomer === true) {
-    console.log('🎉 Showing YouHaveScanned for new customer');
-    return <YouHaveScanned />;
-  }
-
-  // Show regular home page for returning customers
-  if (isNewCustomer === false) {
-    console.log('🏠 Showing home page for returning customer');
-  }
   return (
-    <div className="min-h-screen " style={{ backgroundColor: color }}>
-      <div
-        className="max-w-xl mx-auto bg-gray-50  min-h-screen overflow-hidden"
-      >
-        <ThemeAwareHeader />
-        <main className="rounded-3xl bg-gray-50 space-y-4">
-          <FeatureGrid />
-        </main>
-      </div>
-    </div>
+    <UnifiedExperienceWrapper
+      slug={slug}
+      color={color}
+      product={product}
+      brandLogo={brandLogo}
+      brandName={brandName}
+      customer_support_links_simple={customer_support_links_simple}
+    />
   );
 };
 
-export default HomePage;
+export default ExperiencePage;

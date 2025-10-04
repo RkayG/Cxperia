@@ -121,7 +121,7 @@ const generateRandomColor = () => {
   };
 
   return (
-  <div className={`bg-white rounded-2xl shadow-lg border border-gray-100 p-6 w-full ${className}`}>
+  <div className={` p-6 w-full ${className}`}>
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <div className="p-2 rounded-lg bg-gray-100">

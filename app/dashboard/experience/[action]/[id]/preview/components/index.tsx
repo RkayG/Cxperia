@@ -1,6 +1,6 @@
 "use client";
 import { ChevronLeft } from "lucide-react";
-import { useParams , useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 
 import ScrollToTop from "@/components/ScrollToTop";
@@ -55,8 +55,8 @@ export default function PreviewPage() {
   };
 
   return (
-    <div className="fade-in bg-gray-50">
-    <ScrollToTop />
+    <div className="bg-gray-50">
+      <ScrollToTop />
       <button
         onClick={() => router.push("/create-experience/customize-features")}
         className="w-fit px-8 py-3  flex justify-left mb-3   text-gray-800 font-medium rounded-xl  transition-colors duration-200"
@@ -64,10 +64,10 @@ export default function PreviewPage() {
         <ChevronLeft className="mr-2" size={20} />
         Back
       </button>
-  <div className="min-h-screen bg-gray-50 border items-center justify-center rounded-2xl p-4 sm:p-6 lg:p-8 flex flex-col">
+      <div className="min-h-screen bg-gray-50 border items-center justify-center rounded-2xl p-4 sm:p-6 lg:p-8 flex flex-col">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-2xl sm:text-3x text-center font-bold text-gray-900 mb-2">
             Preview Mode
           </h1>
           <p className="text-sm sm:text-base text-gray-600">
@@ -76,7 +76,7 @@ export default function PreviewPage() {
         </div>
 
         {/* Main Content: Responsive Tabs for mobile/tablet, grid for desktop */}
-  {!experienceId ? (
+        {!experienceId ? (
           <div className="text-center text-gray-500 py-12">
             Loading experience preview...
           </div>
@@ -85,21 +85,19 @@ export default function PreviewPage() {
             {/* Tab Switcher */}
             <div className="flex mb-4 border-b border-gray-200">
               <button
-                className={`flex-1 py-2 text-center font-medium text-base transition-colors ${
-                  activeTab === "preview"
+                className={`flex-1 py-2 text-center font-medium text-base transition-colors ${activeTab === "preview"
                     ? "border-b-2 border-purple-700 text-purple-700 bg-white"
                     : "text-gray-500 bg-gray-100"
-                }`}
+                  }`}
                 onClick={() => setActiveTab("preview")}
               >
                 Mobile Preview
               </button>
               <button
-                className={`flex-1 py-2 text-center font-medium text-base transition-colors ${
-                  activeTab === "brand"
+                className={`flex-1 py-2 text-center font-medium text-base transition-colors ${activeTab === "brand"
                     ? "border-b-2 border-purple-700 text-purple-700 bg-white"
                     : "text-gray-500 bg-gray-100"
-                }`}
+                  }`}
                 onClick={() => setActiveTab("brand")}
               >
                 Theme
@@ -118,13 +116,15 @@ export default function PreviewPage() {
               )}
             </div>
             {/* QR Code Generator and Download Options always visible below */}
-            <div className="w-full flex flex-col gap-4 mt-6">
-              <QrCodeGenerator
-                setQrCodeImageUrl={setQrCodeImageUrl}
-                setProductName={setProductName}
-              />
+            <div className="w-full flex rounded-md flex-col lg:flex-row gap-8 pt-16">
+              <div className="flex-1">
+                <QrCodeGenerator
+                  setQrCodeImageUrl={setQrCodeImageUrl}
+                  setProductName={setProductName}
+                />
+              </div>
               {qrCodeImageUrl && (
-                <div ref={downloadOptionsRef}>
+                <div className="flex-1" ref={downloadOptionsRef}>
                   <DownloadOptions
                     onDownload={handleDownloadQrCode}
                     qrCodeImageUrl={qrCodeImageUrl}
@@ -136,7 +136,7 @@ export default function PreviewPage() {
           </div>
         ) : (
           <>
-            <div className="grid  grid-cols-1 items-center lg:grid-cols-1 mb-8 flex-1">
+            <div className="grid mb-8 grid-cols-1 items-center lg:grid-cols-1 mb-8 flex-1">
               {/* Right Column (Mobile Preview + Brand Color Picker) */}
               <div className="lg:col-span-1 justify-center flex-col gap-6 mx-auto">
                 <div className="flex justify-center flex-row gap-6 xl:gap-10 items-center">
@@ -148,14 +148,16 @@ export default function PreviewPage() {
               </div>
             </div>
             {/* QR Code Generator and Download Options OUTSIDE the main box */}
-            <div className="w-full flex flex-col gap-4 mb-12">
-              <QrCodeGenerator
-                experienceId={experienceId}
-                setQrCodeImageUrl={setQrCodeImageUrl}
-                setProductName={setProductName}
-              />
+            <div className="w-full flex flex-col lg:flex-row gap-8 mb-12">
+              <div className="flex-1">
+                <QrCodeGenerator
+                  experienceId={experienceId}
+                  setQrCodeImageUrl={setQrCodeImageUrl}
+                  setProductName={setProductName}
+                />
+              </div>
               {qrCodeImageUrl && (
-                <div ref={downloadOptionsRef}>
+                <div className="flex-1" ref={downloadOptionsRef}>
                   <DownloadOptions
                     onDownload={handleDownloadQrCode}
                     qrCodeImageUrl={qrCodeImageUrl}

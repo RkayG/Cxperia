@@ -61,7 +61,7 @@ const FeatureGrid: React.FC = () => {
       <div className="relative  p-6 shadow-lg border border-white/20">
         {/* Header */}
         <div className="text-center mb-6">
-          <h2 className="text-xl font-bold mb-2" style={{ color }}>Explore</h2>
+          <h2 className="text-xl font-bold mb-2" style={{ color }}>What are you exploring today?</h2>
           <div className="w-16 h-1 rounded-full mx-auto" style={{ background: `linear-gradient(to right, ${color}, #fff)` }}></div>
         </div>
         {/* Grid */}

@@ -31,6 +31,7 @@ const config = {
       PUBLISH: (id: string) => `/api/experiences/${id}/publish`,
       THEME: (id: string) => `/api/experiences/${id}/theme`,
       URL: (id: string) => `/api/experiences/${id}/url`,
+      QR: (id: string) => `/api/experiences/${id}/qr`,
       // QR: (id: string) => `/api/experiences/${id}/qr`, // if needed in future
     },
 

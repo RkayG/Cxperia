@@ -1,68 +1,32 @@
-// src/App.tsx
-'use client'
-import React, { useCallback } from "react"
-
-// INTERNAL IMPORTS
-
-import CurvedBottomNav from "@/app/experience/[slug]/components/CurvedBottomNav"
-import SectionHeader from "@/app/experience/[slug]/components/ThemeAwareSectionHeader"
-import { useExperienceTutorials } from "@/hooks/public/useTutorials"
-import { usePublicExpStore } from "@/store/public/usePublicExpStore"
-import CategoryTabs from "./components/CategoryTabs"
-import TutorialsGrid from "./components/TutorialGrid"
-import PublicLoading from "../components/PublicLoading"
+import React from 'react';
+import { notFound } from 'next/navigation';
+import ClientTutorialsWrapper from './components/ClientTutorialsWrapper';
+import { getExperienceBySlug } from '@/lib/data/experiences';
 
 
-const TutorialPage: React.FC = () => {
-  // Use stable selectors to prevent infinite re-renders
-  const colorSelector = useCallback((state: any) => state.color, []);
-  const isLoadingSelector = useCallback((state: any) => state.isLoading, []);
-  const slugSelector = useCallback((state: any) => state.slug, []);
+interface TutorialsPageProps {
+  params: Promise<{ slug: string }>;
+}
+
+const TutorialPage: React.FC<TutorialsPageProps> = async ({ params }) => {
+  const { slug } = await params;
   
-  const color = usePublicExpStore(colorSelector);
-  const isLoading = usePublicExpStore(isLoadingSelector);
-  const slug = usePublicExpStore(slugSelector);
-
-  const { data: tutorialsData } = useExperienceTutorials(slug)
-
-  const tutorials = Array.isArray((tutorialsData as any).tutorials) ? (tutorialsData as any).tutorials : []
-
-  // Category filter state
-  const [activeCategory, setActiveCategory] = React.useState<string>("All Categories")
-  // Set default category to 'All Categories' when tutorials load
-  React.useEffect(() => {
-    setActiveCategory("All Categories")
-  }, [tutorials])
-
-  // Filter tutorials by active category
-  const filteredTutorials =
-    activeCategory && activeCategory !== "All Categories"
-      ? tutorials.filter((t: any) => t.category === activeCategory)
-      : tutorials
-      
-  if (isLoading) {
-    return <PublicLoading />;
+  // Fetch experience data server-side
+  const experience = await getExperienceBySlug(slug);
+  
+  if (!experience) {
+    notFound();
   }
 
+  // Extract data from experience
+  const color = experience.data?.primary_color || "#6366f1";
+
   return (
-      <div className="flex min-h-screen justify-center bg-gray-100 font-sans" style={{ backgroundColor: color }}>
-      <div className="mx-auto w-full max-w-xl overflow-hidden bg-gray-50 shadow-lg">
-        <SectionHeader
-          title="Tutorials & Routines"
-          subtitle="Discover personalized beauty tutorials and daily routines."
-        />
-        <main className="space-y-6">
-          <div className="px-4 pb-4">
-            <CategoryTabs tutorials={tutorials} onCategoryChange={setActiveCategory} />
-          </div>
-          <div className="mb-12">
-            <TutorialsGrid tutorials={filteredTutorials} />
-          </div>
-        </main>
-      </div>
-      <CurvedBottomNav />
-    </div>
-  )
-}
+    <ClientTutorialsWrapper
+      slug={slug}
+      color={color}
+    />
+  );
+};
 
 export default TutorialPage
