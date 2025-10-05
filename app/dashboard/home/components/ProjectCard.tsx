@@ -45,6 +45,20 @@ const ProjectCard = ({
     }
   };
 
+  const handleCardClick = () => {
+    if (isCreateCard) {
+      handleCreateClick();
+      return;
+    }
+    
+    // Navigate to edit pages based on type and id
+    if (type === "tutorial" && id) {
+      router.push(`/dashboard/content/tutorial/${id}?mode=edit`);
+    } else if (type === "product experience" && id) {
+      router.push(`/dashboard/experience/edit/${id}?step=product-details`);
+    }
+  };
+
   // Reduced dimensions for compact sizing
   const CARD_WIDTH = 240;
   const IMAGE_HEIGHT = 150;
@@ -52,9 +66,9 @@ const ProjectCard = ({
 
   return (
     <div className="p-2" style={{ width: `${CARD_WIDTH}px` }}>
-      <Card className="flex flex-col overflow-hidden md:shadow-lg bg-white border border-gray-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-1" style={{ height: `${CARD_HEIGHT}px` }}>
+      <Card className="flex flex-col overflow-hidden md:shadow-lg bg-white border border-gray-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer" style={{ height: `${CARD_HEIGHT}px` }} onClick={handleCardClick}>
         {isCreateCard ? (
-          <CardContent className="flex flex-col items-center justify-center h-full border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors" onClick={handleCreateClick}>
+          <CardContent className="flex flex-col items-center justify-center h-full border-2 border-dashed border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
             <div className="p-4 bg-gray-100 rounded-full mb-3">
               {type === "product" || type === "product experience" ? (
                 <MdOutlinePlaylistAdd className="text-3xl text-gray-500" />

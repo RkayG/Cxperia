@@ -15,9 +15,15 @@ const MobilePreview: React.FC<MobilePreviewProps> = ({ experienceId }) => {
 
   React.useEffect(() => {
     if (experienceId) {
-      fetchExperienceUrl(experienceId)
-        .then(() => setError(null))
-        .catch((e) => setError('Error preparing preview.'));
+      // Only fetch if we don't already have the URL for this experience
+      if (!experienceUrl) {
+        fetchExperienceUrl(experienceId)
+          .then(() => setError(null))
+          .catch((e) => setError('Error preparing preview.'));
+      } else {
+        // URL already exists, just clear any previous errors
+        setError(null);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [experienceId]);
@@ -60,7 +66,12 @@ const MobilePreview: React.FC<MobilePreviewProps> = ({ experienceId }) => {
                 onClick={() => {
                   setLoading(true);
                   setShowSparkle(true);
-                  if (experienceId) fetchExperienceUrl(experienceId).then(() => setError(null)).catch(() => setError('Error preparing preview.'));
+                  if (experienceId && !experienceUrl) {
+                    fetchExperienceUrl(experienceId).then(() => setError(null)).catch(() => setError('Error preparing preview.'));
+                  } else {
+                    setError(null);
+                    setLoading(false);
+                  }
                 }}
               >
                 Retry

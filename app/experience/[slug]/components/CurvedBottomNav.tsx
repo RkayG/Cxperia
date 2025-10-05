@@ -5,9 +5,10 @@ import React, { useEffect, useState } from "react"
 interface CurvedBottomNavProps {
   color: string;
   slug: string;
+  onSectionChange: (section: 'home' | 'ingredients' | 'feedback' | 'usage-instructions' | 'support-channels' | 'tutorials') => void;
 }
 
-const CurvedBottomNav: React.FC<CurvedBottomNavProps> = ({ color, slug }) => {
+const CurvedBottomNav: React.FC<CurvedBottomNavProps> = ({ color, slug, onSectionChange }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [isVisible, setIsVisible] = useState(true)
@@ -39,6 +40,10 @@ const CurvedBottomNav: React.FC<CurvedBottomNavProps> = ({ color, slug }) => {
   }, [lastScrollY])
 
   const navigateToHome = () => {
+    // Update the active section state immediately
+    onSectionChange('home');
+    
+    // Update the URL
     const url = new URL(window.location.href);
     url.searchParams.set('section', 'home');
     router.replace(url.pathname + url.search, { scroll: false });
