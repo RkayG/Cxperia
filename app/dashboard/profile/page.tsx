@@ -5,6 +5,7 @@ import { useIsMobile } from '@/hooks/brands/use-mobile';
 import BrandProfileTab from './components/BrandProfileTab';
 import UserProfileTab from './components/UserProfileTab';
 import AccountSettingsTab from './components/AccountSettingsTab';
+import SimpleDropdown from '@/components/ui/simple-dropdown';
 
 interface Tab {
   id: string;
@@ -40,6 +41,10 @@ export default function ProfilePage() {
     }
   ];
 
+  // Create options for dropdown with proper labels
+  const dropdownOptions = tabs.map(tab => tab.label);
+  const getTabIdFromLabel = (label: string) => tabs.find(tab => tab.label === label)?.id || 'brand';
+
   // Remove loading state - render immediately
 
   return (
@@ -59,17 +64,13 @@ export default function ProfilePage() {
           <div className="border-b border-gray-200">
             {isMobile ? (
               <div className="p-4">
-                <select
-                  value={activeTab}
-                  onChange={(e) => setActiveTab(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                >
-                  {tabs.map((tab) => (
-                    <option key={tab.id} value={tab.id}>
-                      {tab.label}
-                    </option>
-                  ))}
-                </select>
+                <SimpleDropdown
+                  value={tabs.find(tab => tab.id === activeTab)?.label || 'Brand Profile'}
+                  onChange={(label) => setActiveTab(getTabIdFromLabel(label))}
+                  options={dropdownOptions}
+                  placeholder="Select a tab"
+                  className="w-full"
+                />
               </div>
             ) : (
               <div className="flex">

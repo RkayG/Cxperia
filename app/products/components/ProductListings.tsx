@@ -23,10 +23,7 @@ const ProductListings: React.FC<ProductListingsPropsWithEdit> = ({
   const [loading, _setLoading] = useState(false); // Replace with real loading state if using data fetching
   const router = useRouter();
 
-  const handleAddNewProduct = () => {
-    // Navigate to the product creation page or open a modal
-    router.push("/dashboard/experience/create?step=product-details&new=true");
-  };
+
 
   // Get unique categories for the horizontal bar
   const categories = useMemo(() => {
@@ -119,7 +116,6 @@ const ProductListings: React.FC<ProductListingsPropsWithEdit> = ({
         <FilterBar
           onFilterChange={setFilter}
           onSortChange={setSort}
-          onAddNewProduct={handleAddNewProduct}
         />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6">
           {loading

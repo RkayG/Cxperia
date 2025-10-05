@@ -19,6 +19,7 @@ import { supabase } from '@/lib/supabase';
 import { useExperienceStore } from '@/store/brands/useExperienceStore';
 import Loading from '@/components/Loading';
 import ProjectCard from "./components/ProjectCard";
+import Link from "next/link";
 
 interface Brand {
   id: string;
@@ -153,14 +154,13 @@ export default function HomePage() {
         </div>
       )}
       <Image
-        src={recentBanner2.src}
-        width={1200}
-        height={200}
-        alt="Banner"
-        className="rounded-xl w-full h-full object-cover"
-        fill={false}
-        //onLoad={() => setBannerLoaded(true)}
-        style={{ display: bannerLoaded ? 'block' : 'none' }}
+        src={recentBanner2}
+        alt="Recent Experiences Banner"
+        layout="fill"
+        objectFit="cover"
+        className={`rounded-xl transition-opacity duration-500 ${bannerLoaded ? 'opacity-100' : 'opacity-0'}`}
+        onLoad={() => setBannerLoaded(true)}
+        priority
       />
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center z-10">
         <h1
@@ -218,8 +218,7 @@ export default function HomePage() {
           <div className="px-4 py-5 sm:p-6">
             <h2 className="text-lg font-medium text-gray-900 mb-4">Quick Actions</h2>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <a 
-                href="/dashboard/products"
+              <Link href="/dashboard/products"
                 className="group p-4 border rounded-lg hover:border-purple-500 hover:bg-purple-50 transition-all duration-200"
               >
                 <div className="flex items-center">
@@ -231,9 +230,8 @@ export default function HomePage() {
                     <p className="text-sm text-gray-500">Add and edit your products</p>
                   </div>
                 </div>
-              </a>
-              <a 
-                href="/dashboard/experience/create?step=product-details&new=true"
+              </Link>
+              <Link href="/dashboard/experience/create?step=product-details&new=true" 
                 className="group p-4 border rounded-lg hover:border-green-500 hover:bg-green-50 transition-all duration-200"
               >
                 <div className="flex items-center">
@@ -245,9 +243,8 @@ export default function HomePage() {
                     <p className="text-sm text-gray-500">Build digital experiences</p>
                   </div>
                 </div>
-              </a>
-              <a 
-                href="/dashboard/content"
+              </Link>
+              <Link href="/dashboard/content"
                 className="group p-4 border rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all duration-200"
               >
                 <div className="flex items-center">
@@ -259,7 +256,7 @@ export default function HomePage() {
                     <p className="text-sm text-gray-500">Build and manage your tutorials</p>
                   </div>
                 </div>
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -337,12 +334,13 @@ export default function HomePage() {
         </Carousel>
         {/* See All Products Button */}
         <div className="flex justify-center mb-12 md:mb-auto mt-4">
+          <Link href="/dashboard/products">
           <button
             className="px-6 py-2 bg-gray-100 rounded-none w-full sm:w-auto border border-gray-300 sm:rounded-full text-gray-700 hover:text-white rounded-full font-semibold hover:bg-purple-800 transition-all"
-              onClick={() => router.push('/dashboard/overview')}
           >
             See All Experiences
           </button>
+          </Link>
         </div>
       </div>
 
@@ -404,12 +402,13 @@ export default function HomePage() {
         </Carousel>
         {/* See All Tutorials Button */}
         <div className="flex justify-center mt-4 mb-16 ">
+          <Link href="/dashboard/content">  
           <button
             className="px-6 py-2 w-full sm:w-auto rounded-none sm:rounded-full bg-gray-100 border border-gray-300 text-gray-700 hover:text-white rounded-md font-semibold hover:bg-purple-800 transition-all"
-              onClick={() => router.push('/dashboard/overview')}
           >
             See All Tutorials
           </button>
+          </Link>
         </div>
       </div>
 

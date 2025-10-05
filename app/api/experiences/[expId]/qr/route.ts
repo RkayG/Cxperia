@@ -2,9 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { generateQrCode } from "@/lib/qrService"; 
 import { createClient } from '@/lib/supabase/server';
 
-// Use a fallback domain if environment variable is not set
-const PUBLIC_EXPERIENCE_DOMAIN = process.env.PUBLIC_EXPERIENCE_DOMAIN || "https://cxperiahq.com";
+const PUBLIC_PLATFORM_URL = process.env.PUBLIC_PLATFORM_URL;
 
+if (!PUBLIC_PLATFORM_URL) {
+  throw new Error("PUBLIC_PLATFORM_URL is not set");
+}
 // --- GET /api/experience/[expId]/qr (Fetch existing QR code) ---
 // Mapped from: static async fetchQrCode(req, res)
 export async function GET(req: NextRequest, { params }: { params: Promise<{ expId: string }> }) {
@@ -103,7 +105,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ exp
       urlToEncode = rawText;
     } else if (public_slug) {
       // Construct the public URL from the slug
-      urlToEncode = `${PUBLIC_EXPERIENCE_DOMAIN}/experience/${public_slug}`;
+      urlToEncode = `${PUBLIC_PLATFORM_URL}/experience/${public_slug}`;
     } else {
        return NextResponse.json({ error: "Experience found but missing public_slug. Cannot generate URL." }, { status: 400 });
     }

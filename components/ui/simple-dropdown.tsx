@@ -62,7 +62,7 @@ const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
         onClick={handleToggle}
         onKeyDown={handleKeyDown}
         disabled={disabled}
-        className={`w-full px-4 py-3.5 lg:py-2 border-2 lg:border-1 border-purple-900 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 cursor-pointer text-left flex items-center justify-between ${
+        className={`w-full px-4 py-2   rounded-xl border border-gray-300  transition-all duration-200 text-gray-900 cursor-pointer text-left flex items-center justify-between ${
           value ? 'bg-[#ede8f3]' : 'bg-white'
         } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
       >

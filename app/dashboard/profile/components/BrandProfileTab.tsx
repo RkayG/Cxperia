@@ -1,8 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { Building2, Upload, Save, Globe, MapPin, Phone, Mail, DollarSign } from 'lucide-react';
+import { Building2, Upload, Save, Globe, MapPin, Phone, Mail, DollarSign, Pencil } from 'lucide-react';
 import { useExperienceStore } from '@/store/brands/useExperienceStore';
-
+import { useIsMobile } from '@/hooks/brands/use-mobile';
 interface BrandData {
   id: string;
   name: string;
@@ -48,7 +48,7 @@ const BrandProfileTab: React.FC = () => {
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string>('');
   const { brand, setBrand } = useExperienceStore();
-
+  const isMobile = useIsMobile();
   // Use existing brand data from store, with fallback to empty object
   const brandData = brand || null;
   const [formData, setFormData] = useState<Partial<BrandData>>(brandData || {});
@@ -170,24 +170,17 @@ const BrandProfileTab: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 mb-32">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-semibold text-gray-900 flex items-center gap-3">
-            <Building2 className="text-purple-600" />
-            Brand Profile
-          </h2>
-          <p className="text-gray-600 mt-1">
-            Manage your brand information and settings
-          </p>
-        </div>
-        <div className="flex gap-3">
+          {/* Mobile Edit Button */}
+          <div className="flex gap-3 justify-end mb-6 md:hidden">
           {isEditing ? (
             <>
               <button
                 onClick={() => setIsEditing(false)}
-                className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+                className="px-4 py-2 md:hidden text-gray-600 hover:text-gray-800 transition-colors"
               >
                 Cancel
               </button>
@@ -203,7 +196,72 @@ const BrandProfileTab: React.FC = () => {
           ) : (
             <button
               onClick={() => setIsEditing(true)}
-              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+              className="px-4 py-2 md:hidden bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+            >
+              Edit Profile
+            </button>
+          )}
+        </div>
+
+        
+        {/* Desktop Edit Button */}
+        <div className="flex gap-3 hidden md:flex">
+          {isEditing ? (
+            <>
+              <button
+                onClick={() => setIsEditing(false)}
+                className="px-4 py-2 hidden md:block text-gray-600 hover:text-gray-800 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSave}
+                disabled={isSaving}
+                className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 transition-colors"
+              >
+                <Save size={16} />
+                {isSaving ? 'Saving...' : 'Save Changes'}
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="px-4 py-2 hidden md:block bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+            >
+              Edit Profile
+            </button>
+          )}
+        </div>
+          <h2 className="text-2xl font-semibold text-gray-900 flex items-center gap-3">
+            <Building2 className="text-purple-600" />
+            Brand Profile
+          </h2>
+          <p className="text-gray-600 mt-1">
+            Manage your brand information and settings
+          </p>
+        </div>
+        <div className="flex gap-3">
+          {isEditing ? (
+            <>
+              <button
+                onClick={() => setIsEditing(false)}
+                className="px-4 py-2 hidden md:block text-gray-600 hover:text-gray-800 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSave}
+                disabled={isSaving}
+                className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 transition-colors"
+              >
+                <Save size={16} />
+                {isSaving ? 'Saving...' : 'Save Changes'}
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="px-4 py-2 hidden md:block bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
             >
               Edit Profile
             </button>

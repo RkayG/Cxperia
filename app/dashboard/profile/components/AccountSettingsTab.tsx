@@ -153,14 +153,14 @@ const AccountSettingsTab: React.FC = () => {
             Manage your account preferences and security settings
           </p>
         </div>
-        <button
+        {/* <button
           onClick={handleSave}
           disabled={isSaving}
           className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 transition-colors"
         >
           <Save size={16} />
           {isSaving ? 'Saving...' : 'Save Settings'}
-        </button>
+        </button> */}
       </div>
 
       {/* Notifications */}
@@ -368,7 +368,7 @@ const AccountSettingsTab: React.FC = () => {
           <h3 className="text-lg font-medium text-red-900">Danger Zone</h3>
         </div>
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center md:flex-row flex-col justify-between">
             <div>
               <h4 className="font-medium text-red-900">Delete Account</h4>
               <p className="text-sm text-red-700">
@@ -377,7 +377,7 @@ const AccountSettingsTab: React.FC = () => {
             </div>
             <button
               onClick={() => setShowDeleteModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              className="flex items-center mt-4 md:mt-0 gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
             >
               <Trash2 size={16} />
               Delete Account

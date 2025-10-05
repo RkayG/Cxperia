@@ -40,5 +40,4 @@ export interface ProductCardProps {
 export interface FilterBarProps {
   onFilterChange: (filter: string) => void;
   onSortChange: (sort: string) => void;
-  onAddNewProduct: () => void;
 }
