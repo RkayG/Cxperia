@@ -2,7 +2,7 @@
 import { Download } from 'lucide-react';
 import React from 'react';
 import { Toaster } from 'react-hot-toast';
-import { showToast } from '@/lib/toast';
+import { showToast } from '@/utils/toast';
 
 interface DownloadOptionsProps {
   onDownload: (format: string) => void;
@@ -12,12 +12,16 @@ interface DownloadOptionsProps {
 
 const DownloadOptions: React.FC<DownloadOptionsProps> = ({ qrCodeImageUrl, productName }) => {
   const formats = ['PNG', 'PDF'];
+  
+  // Debug: Log the product name
+  console.log('DownloadOptions - productName:', productName);
 
   // Helper to download the QR code in the requested format
   const handleDownload = (format: string) => {
     if (!qrCodeImageUrl) return;
     showToast.loading('Downloading...');
     const baseName = productName ? productName.replace(/\s+/g, '_') : 'qr-code';
+    console.log('DownloadOptions - baseName:', baseName);
     if (format === 'PNG') {
       const link = document.createElement('a');
       link.href = qrCodeImageUrl;
@@ -36,7 +40,7 @@ const DownloadOptions: React.FC<DownloadOptionsProps> = ({ qrCodeImageUrl, produ
   };
 
   return (
-    <div className="bg-white   p-8 max-w-md mx-auto">
+    <div className="p-8 max-w-md mx-auto">
       <Toaster />
       
       {/* Header */}

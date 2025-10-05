@@ -19,10 +19,14 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ expI
   }
 
   try {
-    // Fetch only the existing QR code URL
+    // Fetch the existing QR code URL and product name
     const { data: exp, error } = await supabase
       .from('experiences')
-      .select('qr_code_url, experience_url')
+      .select(`
+        qr_code_url, 
+        experience_url,
+        product:product_id (name)
+      `)
       .eq('id', experienceId)
       .single();
 
@@ -34,7 +38,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ expI
     }
 
     if (exp?.qr_code_url) {
-      return NextResponse.json({ qr: exp.qr_code_url, url: exp.experience_url });
+      const productName = exp.product?.name || null;
+      return NextResponse.json({ qr: exp.qr_code_url, url: exp.experience_url, productName });
     }
     
     // If experience found but QR code is not generated yet, prompt client to POST/generate
@@ -91,7 +96,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ exp
     }
 
     const { public_slug, qr_code_url: existingQr, experience_url: existingUrl } = expResult;
-    productName = expResult.product?.[0]?.name || null;
+    productName = expResult.product?.name || null;
 
     // A. Check for existing QR code (Short-circuit return)
     if (existingQr && existingUrl) {

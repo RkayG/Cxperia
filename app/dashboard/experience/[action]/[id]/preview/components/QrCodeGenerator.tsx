@@ -20,7 +20,9 @@ const QrCodeGenerator: React.FC<QrCodeGeneratorProps> = ({ setQrCodeImageUrl, se
   }, [qrDataUrl, setQrCodeImageUrl]);
 
   React.useEffect(() => {
+    console.log('QrCodeGenerator - productName from hook:', productName);
     if (productName && setProductName) {
+      console.log('QrCodeGenerator - setting productName:', productName);
       setProductName(productName);
     }
   }, [productName, setProductName]);
@@ -35,7 +37,7 @@ const QrCodeGenerator: React.FC<QrCodeGeneratorProps> = ({ setQrCodeImageUrl, se
   };
 
   return (
-    <div className="border-2 border-purple-800 p-8 max-w-md mx-auto">
+    <div className="bg-white p-8 max-w-md mx-auto">
       {/* Header */}
       <div className="text-center mb-8">
         <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
