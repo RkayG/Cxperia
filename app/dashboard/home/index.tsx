@@ -139,7 +139,7 @@ export default function HomePage() {
 
   if (!brand) {
     return (
-      <div className="min-h-screen flex items-center justify-center" suppressHydrationWarning>
+      <div className="" suppressHydrationWarning>
         <Loading />
       </div>
     );

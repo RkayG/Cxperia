@@ -438,7 +438,7 @@ function AuthPageContent() {
             id="email"
             type="email"
             label="Email"
-            placeholder="team@example.com"
+            placeholder=""
             value={email}
             onChange={setEmail}
             onKeyPress={handleKeyPress}
@@ -449,7 +449,7 @@ function AuthPageContent() {
             id="password"
             type={showPassword ? 'text' : 'password'}
             label="Password"
-            placeholder="Enter your password"
+            placeholder=""
             value={password}
             onChange={setPassword}
             onKeyPress={handleKeyPress}

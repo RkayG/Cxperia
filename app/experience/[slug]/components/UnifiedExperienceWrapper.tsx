@@ -369,6 +369,7 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
         activeSection={activeSection}
         onSectionChange={navigateToSection}
         color={color}
+        slug={slug}
       />
       
       {/* Thank You Modal */}

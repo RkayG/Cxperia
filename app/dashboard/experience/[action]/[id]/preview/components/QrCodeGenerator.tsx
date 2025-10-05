@@ -10,8 +10,8 @@ interface QrCodeGeneratorProps {
 }
 
 const QrCodeGenerator: React.FC<QrCodeGeneratorProps> = ({ setQrCodeImageUrl, setProductName, experienceId }) => {
-  const { generate, loading, error, qrDataUrl, productName } = useQrApi();
-
+  const { generate, loading, error, qrDataUrl, productName } = useQrApi(experienceId);
+ //console.log('qrDataUrl', qrDataUrl);
   const [hasGenerated, setHasGenerated] = React.useState(false);
   React.useEffect(() => {
     if (qrDataUrl && setQrCodeImageUrl) {
@@ -113,6 +113,29 @@ const QrCodeGenerator: React.FC<QrCodeGeneratorProps> = ({ setQrCodeImageUrl, se
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
               Generate QR Code
+            </div>
+          )}
+        </button>
+      )}
+
+      {/* Regenerate Button - Show when QR exists but user wants to regenerate */}
+      {qrDataUrl && !hasGenerated && (
+        <button
+          onClick={handleGenerate}
+          disabled={loading || !experienceId}
+          className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-3 px-6 rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+        >
+          {loading ? (
+            <div className="flex items-center justify-center">
+              <Loader2 size={20} className="animate-spin mr-2" />
+              Regenerating QR Code...
+            </div>
+          ) : (
+            <div className="flex items-center justify-center">
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Regenerate QR Code
             </div>
           )}
         </button>

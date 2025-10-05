@@ -57,7 +57,7 @@ const ClientTutorialsWrapper: React.FC<ClientTutorialsWrapperProps> = ({
           </div>
         </main>
       </div>
-      <SectionNavigation activeSection="tutorials" onSectionChange={() => {}} color={color} /> {/* Navigation for mobile */}
+      <SectionNavigation activeSection="tutorials" onSectionChange={() => {}} color={color} slug={slug} /> {/* Navigation for mobile */}
     </div>
   );
 };

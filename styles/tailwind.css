@@ -68,6 +68,24 @@ button, a, input, textarea, select, [role="button"] {
     "wdth" 100;
 }
 
+.animate-pulse-logo {
+  animation: pulse-logo 1.2s ease-in-out infinite;
+}
+@keyframes pulse-logo {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 /*
   ---break---
 */

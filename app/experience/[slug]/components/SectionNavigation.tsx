@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { GiPerfumeBottle, GiPhone, GiNotebook , GiEnvelope, GiHouse} from 'react-icons/gi';
+import CurvedBottomNav from './CurvedBottomNav';
 
 type ActiveSection = 'home' | 'ingredients' | 'feedback' | 'usage-instructions' | 'support-channels' | 'tutorials';
 
@@ -9,6 +10,7 @@ interface SectionNavigationProps {
   activeSection: ActiveSection;
   onSectionChange: (section: ActiveSection) => void;
   color: string;
+  slug: string;
 }
 
 
@@ -16,6 +18,7 @@ const SectionNavigation: React.FC<SectionNavigationProps> = ({
   activeSection,
   onSectionChange,
   color,
+  slug,
 }) => {
   const sections = [
     { id: 'home', label: 'Home', icon: <GiHouse /> },
@@ -29,6 +32,28 @@ const SectionNavigation: React.FC<SectionNavigationProps> = ({
   
 const [isVisible, setIsVisible] = useState(true)
 const [lastScrollY, setLastScrollY] = useState(0)
+const [screenWidth, setScreenWidth] = useState(0)
+
+// Check screen width on mount and resize
+useEffect(() => {
+  const updateScreenWidth = () => {
+    setScreenWidth(window.innerWidth);
+  };
+
+  // Set initial width
+  updateScreenWidth();
+
+  // Add resize listener
+  window.addEventListener('resize', updateScreenWidth);
+
+  // Cleanup
+  return () => window.removeEventListener('resize', updateScreenWidth);
+}, []);
+
+// If screen width is less than 400px, return CurvedBottomNav
+if (screenWidth < 400) {
+  return <CurvedBottomNav color={color} slug={slug} />;
+}
 
 useEffect(() => {
   const handleScroll = () => {

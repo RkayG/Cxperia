@@ -72,7 +72,7 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({ onSectionChange }) => {
           <div className="w-16 h-1 rounded-full mx-auto" style={{ background: `linear-gradient(to right, ${color}, #fff)` }}></div>
         </div>
         {/* Grid */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4">
           {features.map((feature, index) => (
             <motion.button
               key={feature.id || feature.label}
