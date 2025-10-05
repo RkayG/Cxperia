@@ -12,17 +12,26 @@ const MobilePreview: React.FC<MobilePreviewProps> = ({ experienceId }) => {
   const [_showSparkle, setShowSparkle] = React.useState(true);
   const { experienceUrl, fetchExperienceUrl, isLoading } = useExperienceStore();
   const [error, setError] = React.useState<string | null>(null);
+  const [iframeError, setIframeError] = React.useState(false);
 
   React.useEffect(() => {
     if (experienceId) {
       // Only fetch if we don't already have the URL for this experience
       if (!experienceUrl) {
         fetchExperienceUrl(experienceId)
-          .then(() => setError(null))
-          .catch((e) => setError('Error preparing preview.'));
+          .then(() => {
+            setError(null);
+            setIframeError(false);
+          })
+          .catch((e) => {
+            console.error('Error fetching experience URL:', e);
+            setError('Error preparing preview.');
+            setIframeError(true);
+          });
       } else {
         // URL already exists, just clear any previous errors
         setError(null);
+        setIframeError(false);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -36,6 +45,34 @@ const MobilePreview: React.FC<MobilePreviewProps> = ({ experienceId }) => {
       setShowSparkle(false);
     }
   }, [isLoading, loading]);
+
+  const handleIframeError = () => {
+    console.error('Iframe failed to load:', previewUrl);
+    setIframeError(true);
+    setLoading(false);
+  };
+
+  const handleRetry = () => {
+    setLoading(true);
+    setShowSparkle(true);
+    setIframeError(false);
+    setError(null);
+    
+    if (experienceId && !experienceUrl) {
+      fetchExperienceUrl(experienceId)
+        .then(() => {
+          setError(null);
+          setIframeError(false);
+        })
+        .catch(() => {
+          setError('Error preparing preview.');
+          setIframeError(true);
+        });
+    } else {
+      setError(null);
+      setLoading(false);
+    }
+  };
 
   return (
 
@@ -55,40 +92,70 @@ const MobilePreview: React.FC<MobilePreviewProps> = ({ experienceId }) => {
         <div className="relative w-[calc(100%-16px)] h-[calc(100%-16px)] bg-white rounded-[2rem] overflow-hidden flex flex-col items-center p-0">
           {(loading || isLoading) && (
             <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-20">
-              <span className="text-gray-500 text-base font-medium">Loading preview…</span>
+              <div className="flex flex-col items-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mb-2"></div>
+                <span className="text-gray-500 text-base font-medium">Loading preview…</span>
+              </div>
             </div>
           )}
-          {error ? (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/90 z-20">
-              <span className="text-red-500 text-base font-semibold mb-4">Error preparing preview.</span>
-              <button
-                className="px-4 py-2 bg-purple-700 text-white rounded-lg font-semibold shadow hover:bg-purple-800 transition"
-                onClick={() => {
-                  setLoading(true);
-                  setShowSparkle(true);
-                  if (experienceId && !experienceUrl) {
-                    fetchExperienceUrl(experienceId).then(() => setError(null)).catch(() => setError('Error preparing preview.'));
-                  } else {
-                    setError(null);
-                    setLoading(false);
-                  }
-                }}
-              >
-                Retry
-              </button>
+          {(error || iframeError) ? (
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/90 z-20 p-6">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Preview Unavailable</h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  {error || 'Unable to load the preview. This might be due to network issues or the experience not being published yet.'}
+                </p>
+                <div className="flex flex-col gap-2">
+                  <button
+                    className="px-4 py-2 bg-purple-700 text-white rounded-lg font-semibold shadow hover:bg-purple-800 transition"
+                    onClick={handleRetry}
+                  >
+                    Try Again
+                  </button>
+                  {previewUrl && (
+                    <button
+                      className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition"
+                      onClick={() => window.open(previewUrl, '_blank')}
+                    >
+                      Open in New Tab
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
-          ) : (
+          ) : previewUrl ? (
             <iframe
-              src={previewUrl || undefined}
+              src={previewUrl}
               title="Live Customer Preview"
               className="w-full h-full border-0 rounded-[2rem]"
               style={{ minHeight: 0, minWidth: 0 }}
-              allow="clipboard-write; clipboard-read"
+              allow="clipboard-write; clipboard-read; camera; microphone; geolocation"
+              sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox"
               onLoad={() => {
                 setLoading(false);
                 setShowSparkle(false);
+                setIframeError(false);
               }}
+              onError={handleIframeError}
             />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-50 z-20">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">No Preview Available</h3>
+                <p className="text-sm text-gray-600">Experience URL not found</p>
+              </div>
+            </div>
           )}
         </div>
       </div>

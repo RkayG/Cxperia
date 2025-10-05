@@ -274,7 +274,7 @@ export default function SidebarLayout(props: {
   basePath: string;
 }) {
   // Add render tracking
-  console.log('🔄 SidebarLayout rendering', { timestamp: new Date().toISOString() });
+  //console.log('🔄 SidebarLayout rendering', { timestamp: new Date().toISOString() });
   
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);

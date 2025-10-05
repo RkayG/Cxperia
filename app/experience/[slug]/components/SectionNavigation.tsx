@@ -50,11 +50,7 @@ useEffect(() => {
   return () => window.removeEventListener('resize', updateScreenWidth);
 }, []);
 
-// If screen width is less than 400px, return CurvedBottomNav
-if (screenWidth < 400) {
-  return <CurvedBottomNav color={color} slug={slug} onSectionChange={onSectionChange} />;
-}
-
+// Scroll handler useEffect - always called
 useEffect(() => {
   const handleScroll = () => {
     const currentScrollY = window.scrollY
@@ -84,6 +80,11 @@ useEffect(() => {
   // Cleanup
   return () => window.removeEventListener("scroll", handleScroll)
 }, [lastScrollY])
+
+// Conditional rendering instead of early return
+if (screenWidth < 400) {
+  return <CurvedBottomNav color={color} slug={slug} onSectionChange={onSectionChange} />;
+}
 
   return (
     <div 

@@ -18,7 +18,7 @@ const ExperienceFlowPageContent: React.FC = () => {
   const isMobile = useIsMobile();
   const action = params.action as string;
   const experienceId = params.id as string;
-  console.log("[ExperienceFlowPage] action =", action, "experienceId =", experienceId);
+ //console.log("[ExperienceFlowPage] action =", action, "experienceId =", experienceId);
   const currentStepKey = searchParams.get("step") || "product-details";
 
   // Navigation handlers

@@ -23,7 +23,7 @@ const CreateExperiencePage: React.FC = () => {
   // It receives the new experience ID and navigates to the next step.
   const handleFirstStepComplete = (newExperienceId?: string) => {
     if (!newExperienceId) {
-      console.error('No experience ID provided');
+      //console.error('No experience ID provided');
       return;
     }
     router.push(`/dashboard/experience/${action}/${newExperienceId}?step=customise-features`);
@@ -43,7 +43,7 @@ const CreateExperiencePage: React.FC = () => {
             Design a tailored post-purchase journey for your product, from detailed info to engaging interactions.
           </p>
           {/* Step Indicator - always on step 1 here */}
-          <div className="mt-8">
+          <div className="mt-8 md:px-8">
             <StepIndicator currentStep={1} steps={steps} />
           </div>
         </div>

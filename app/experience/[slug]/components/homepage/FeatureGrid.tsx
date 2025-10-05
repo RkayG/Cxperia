@@ -52,12 +52,28 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({ onSectionChange }) => {
   // Get enabled feature labels from backend data
   const enabledLabels = useMemo(() => {
     if (!experience || !experience.data.features_enabled) return [];
-    return experience.data.features_enabled.map((name: string) => featureNameToLabel[name]).filter(Boolean);
+    console.log('FeatureGrid - Raw features_enabled:', experience.data.features_enabled);
+    console.log('FeatureGrid - featureNameToLabel mapping:', featureNameToLabel);
+    const mappedLabels = experience.data.features_enabled.map((name: string) => {
+      const label = featureNameToLabel[name];
+      console.log(`FeatureGrid - Mapping "${name}" to "${label}"`);
+      return label;
+    }).filter(Boolean);
+    console.log('FeatureGrid - Final enabledLabels:', mappedLabels);
+    return mappedLabels;
   }, [experience]);
 
   // Only show features that are enabled (by label)
   const features = useMemo(() => {
-    return allFeatures.filter(f => enabledLabels.includes(f.label));
+    console.log('FeatureGrid - allFeatures:', allFeatures.map(f => ({ id: f.id, label: f.label, path: f.path })));
+    console.log('FeatureGrid - enabledLabels:', enabledLabels);
+    const filteredFeatures = allFeatures.filter(f => {
+      const isEnabled = enabledLabels.includes(f.label);
+      console.log(`FeatureGrid - Feature "${f.label}" enabled: ${isEnabled}`);
+      return isEnabled;
+    });
+    console.log('FeatureGrid - Final filtered features:', filteredFeatures.map(f => f.label));
+    return filteredFeatures;
   }, [enabledLabels]);
 
   return (

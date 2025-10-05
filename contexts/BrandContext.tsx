@@ -28,26 +28,26 @@ export function BrandProvider({ children }: BrandProviderProps) {
   const brandId = brand?.id || null;
 
   const fetchBrand = async () => {
-    console.log('🔄 BrandProvider: Fetching brand data', { timestamp: new Date().toISOString() });
+    //console.log('🔄 BrandProvider: Fetching brand data', { timestamp: new Date().toISOString() });
     
     setIsLoading(true);
     setError(null);
     
     try {
       const brandData = await getCurrentUserBrand();
-      console.log('📡 BrandProvider: Brand data fetched', { brandData });
+      //console.log('📡 BrandProvider: Brand data fetched', { brandData });
       
       if (!brandData) {
-        console.log('❌ BrandProvider: No brand found, redirecting to setup');
+        //console.log('❌ BrandProvider: No brand found, redirecting to setup');
         router.push('/auth/signup');
         return;
       }
       
       setBrand(brandData);
-      console.log('✅ BrandProvider: Brand set in store', { brandId: brandData.id });
+      //console.log('✅ BrandProvider: Brand set in store', { brandId: brandData.id });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch brand';
-      console.error('❌ BrandProvider: Error fetching brand', { error: errorMessage });
+      //console.error('❌ BrandProvider: Error fetching brand', { error: errorMessage });
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -61,7 +61,7 @@ export function BrandProvider({ children }: BrandProviderProps) {
   // Fetch brand if not available
   useEffect(() => {
     if (!brand && !isLoading) {
-      console.log('🔍 BrandProvider: Brand not available, fetching...', { hasBrand: !!brand, isLoading });
+      //console.log('🔍 BrandProvider: Brand not available, fetching...', { hasBrand: !!brand, isLoading });
       fetchBrand();
     }
   }, [brand, isLoading]);

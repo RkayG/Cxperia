@@ -47,14 +47,14 @@ const EditExperienceStep: React.FC<EditExperienceStepProps> = ({
     let images: UploadedImage[] = [];
     const imageUrls = exp.product_image_url || exp.product?.product_image_url;
     
-    console.log('mapToFormData - Raw imageUrls:', imageUrls);
-    console.log('mapToFormData - exp:', exp);
+   /*  console.log('mapToFormData - Raw imageUrls:', imageUrls);
+    console.log('mapToFormData - exp:', exp); */
     
     if (Array.isArray(imageUrls)) {
       if (imageUrls && imageUrls.length > 0 && imageUrls[0] && typeof imageUrls[0] === 'object' && 'url' in imageUrls[0]) {
         // Already UploadedImage objects
         images = imageUrls as UploadedImage[];
-        console.log('mapToFormData - Using existing UploadedImage objects:', images);
+        //console.log('mapToFormData - Using existing UploadedImage objects:', images);
       } else {
         // Convert string URLs to UploadedImage objects
         images = imageUrls.map((url: unknown, index: number) => ({
@@ -65,7 +65,7 @@ const EditExperienceStep: React.FC<EditExperienceStepProps> = ({
           uploading: false,
           uploadError: null,
         }));
-        console.log('mapToFormData - Converted string URLs to UploadedImage objects:', images);
+       // console.log('mapToFormData - Converted string URLs to UploadedImage objects:', images);
       }
     } else if (typeof imageUrls === "string") {
       images = [
@@ -78,7 +78,7 @@ const EditExperienceStep: React.FC<EditExperienceStepProps> = ({
           uploadError: null,
         },
       ];
-      console.log('mapToFormData - Single string URL converted:', images);
+      //console.log('mapToFormData - Single string URL converted:', images);
     }
 
     // Map backend features array to FeatureSettings object

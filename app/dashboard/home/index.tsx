@@ -134,8 +134,8 @@ export default function HomePage() {
 
 
   // Debug logs for filtered results
-   console.log('filteredExperiences:', filteredExperiences);
-  console.log('filteredTutorials:', filteredTutorials);
+  // console.log('filteredExperiences:', filteredExperiences);
+  //console.log('filteredTutorials:', filteredTutorials);
 
   if (!brand) {
     return (
@@ -373,15 +373,7 @@ export default function HomePage() {
                   if (!imageUrl || imageUrl === "") {
                     imageUrl = tut.thumbnail_url || undefined;
                   }
-                  console.log('Tutorial mapping:', { 
-                    id: tut.id, 
-                    title: tut.title, 
-                    featured_image: tut.featured_image, 
-                    thumbnail_url: tut.thumbnail_url,
-                    imageUrl, 
-                    featured_video_url: tut.featured_video_url,
-                    video_url: tut.video_url
-                  });
+                
                   return (
                     <CarouselItem key={String(tut.id)} className="pl-4 basis-[260px]">
                       <ProjectCard

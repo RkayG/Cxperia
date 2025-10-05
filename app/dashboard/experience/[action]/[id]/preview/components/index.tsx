@@ -55,7 +55,7 @@ export default function PreviewPage() {
   };
 
   return (
-    <div className="bg-gray-50">
+    <div className="">
       <ScrollToTop />
       <button
         onClick={() => router.push("/create-experience/customize-features")}

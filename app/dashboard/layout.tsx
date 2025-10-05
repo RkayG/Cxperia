@@ -93,7 +93,6 @@ const navigationItems: SidebarItem[] = [
 
 export default async function DashboardLayout({ children }: DashboardLayoutProps) {
   // Add render tracking
-  console.log('🔄 DashboardLayout rendering', { timestamp: new Date().toISOString() });
 
   return (
     <BrandProvider>

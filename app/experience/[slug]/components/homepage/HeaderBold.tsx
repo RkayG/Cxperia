@@ -76,6 +76,11 @@ const HeaderBold: React.FC = () => {
   // Store link
   const storeLink = product.store_link || "#";
 
+  // Don't render anything if no experience data
+  if (!experience) {
+    return null;
+  }
+
   return (
     <div className=" rounded-b-3xl overflow-hidden">
       {/* Banner Section with Auto-Sliding Images */}
@@ -252,7 +257,6 @@ const HeaderBold: React.FC = () => {
           ></div>
         </div>
       </div>
-
     </div>
   );
 };

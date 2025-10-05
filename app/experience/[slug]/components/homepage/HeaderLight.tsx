@@ -71,6 +71,11 @@ const HeaderLight: React.FC = () => {
     }
   };
 
+  // Don't render anything if no experience data
+  if (!experience) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header Section with Auto-Sliding Banner */}

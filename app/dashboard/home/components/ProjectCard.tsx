@@ -36,7 +36,7 @@ const ProjectCard = ({
   isCreateCard?: boolean;
 }) => {
   const router = useRouter();
-  console.log("ProjectCard props:", { id, type, title, imageUrl, videoUrl, mediaUrl, qr_code_url, isCreateCard });
+  //console.log("ProjectCard props:", { id, type, title, imageUrl, videoUrl, mediaUrl, qr_code_url, isCreateCard });
   const handleCreateClick = () => {
     if (type === "product experience") {
       router.push(`/dashboard/experience/create?step=product-details&new=true`);
@@ -87,9 +87,7 @@ const ProjectCard = ({
               {(() => {
                 // Calculate src inside the IIFE
                 const src = type === "tutorial" ? videoUrl ?? mediaUrl ?? imageUrl : imageUrl;
-                console.log("ProjectCard rendering check:", { src, type, hasSrc: !!src });
                 if (!src) {
-                  console.log("ProjectCard: No src, showing no media");
                   return (
                     <div className="w-full h-full bg-gray-200 flex items-center justify-center">
                       <span className="text-gray-400">No media</span>
@@ -97,15 +95,12 @@ const ProjectCard = ({
                   );
                 }
                 if (type === "tutorial" && src) {
-                  console.log("ProjectCard: Processing tutorial with src:", src);
                   const videoType = getVideoType(src);
-                  console.log("ProjectCard: Video type detected:", videoType);
                   
                   // Check if this is actually an image URL (not a video)
                   const isImageUrl = src.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i) || src.includes('cloudinary.com');
                   
                   if (isImageUrl) {
-                    console.log("ProjectCard: Detected as image URL, rendering as image");
                     return (
                       <Image
                         className="w-full h-full object-cover"
@@ -157,7 +152,6 @@ const ProjectCard = ({
                     );
                   }
                   // If it's not a video URL, treat it as an image
-                  console.log("ProjectCard: Rendering tutorial as image with src:", src);
                   return (
                     <Image
                       className="w-full h-full object-cover"

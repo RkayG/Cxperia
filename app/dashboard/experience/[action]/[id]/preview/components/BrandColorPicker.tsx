@@ -23,19 +23,43 @@ const BrandColorPicker: React.FC<ColorPickerProps> = ({
   className = '',
   onApply
 }) => {
-  const [selectedColor, setSelectedColor] = useState(initialColor);
-  const [customColor, setCustomColor] = useState('#3b82f6');
+  // Get saved color from localStorage or use initialColor
+  const getSavedColor = () => {
+    if (typeof window !== 'undefined' && experienceId) {
+      const saved = localStorage.getItem(`brand-color-${experienceId}`);
+      return saved || initialColor;
+    }
+    return initialColor;
+  };
+
+  const [selectedColor, setSelectedColor] = useState(getSavedColor);
+  const [customColor, setCustomColor] = useState(getSavedColor);
   const [activeTab, setActiveTab] = useState<'presets' | 'custom'>('presets');
   const [selectedTheme, setSelectedTheme] = useState<'light' | 'bold'>('bold');
+  const [isApplying, setIsApplying] = useState(false);
 
-  // Helper to update the preview iframe
-  const updatePreview = (color: string, themeKey: 'light' | 'bold') => {
+  // Save color to localStorage whenever it changes
+  React.useEffect(() => {
+    if (typeof window !== 'undefined' && experienceId && selectedColor) {
+      localStorage.setItem(`brand-color-${experienceId}`, selectedColor);
+      console.log('Saved color to localStorage:', selectedColor);
+    }
+  }, [selectedColor, experienceId]);
+
+  // Helper to update the preview iframe by refreshing it
+  const updatePreview = () => {
     const iframe = document.querySelector('iframe[title="Live Customer Preview"]') as HTMLIFrameElement | null;
     if (iframe) {
-      const src = new URL(iframe.src);
-      src.searchParams.set('color', color);
-      src.searchParams.set('themeKey', themeKey);
-      iframe.src = src.toString();
+      try {
+        // Simply refresh the iframe to get fresh backend data
+        // The experience page will read the color from backend, not URL params
+        iframe.src = iframe.src;
+        console.log('Preview refreshed to get fresh backend data');
+      } catch (error) {
+        console.error('Error refreshing preview:', error);
+      }
+    } else {
+      console.warn('Preview iframe not found');
     }
   };
 
@@ -101,22 +125,40 @@ const generateRandomColor = () => {
 
 
   const handleApply = async () => {
-    // Update preview iframe
-    updatePreview(selectedColor, selectedTheme);
-    // Call backend to persist theme and color
-    if (experienceId) {
-      try {
+    setIsApplying(true);
+    try {
+      // Call backend to persist theme and color first
+      if (experienceId) {
         await experienceService.setThemeAndColor(experienceId, selectedTheme, selectedColor);
-      } catch (e) {
-         
-        console.warn('Failed to set theme and color', e);
+        console.log('Theme and color saved successfully');
+        
+        // Add a small delay to ensure backend changes are propagated
+        await new Promise(resolve => setTimeout(resolve, 500));
       }
-    }
-    // Optionally call onColorChange
-    onColorChange?.(selectedColor);
-    // Notify parent to switch tab if needed
-    if (typeof onApply === 'function') {
-      onApply();
+      
+      // Refresh the iframe to get fresh backend data
+      updatePreview();
+      
+      // Optionally call onColorChange
+      onColorChange?.(selectedColor);
+      
+      // Notify parent to switch tab if needed
+      if (typeof onApply === 'function') {
+        onApply();
+      }
+      
+      // Show success feedback (optional)
+      console.log('Brand color applied successfully:', selectedColor);
+      
+    } catch (error) {
+      console.error('Failed to apply brand color:', error);
+      // Still try to refresh the preview even if backend fails
+      updatePreview();
+      
+      // You could add a toast notification here
+      // toast.error('Failed to save color, but preview updated');
+    } finally {
+      setIsApplying(false);
     }
   };
 
@@ -128,8 +170,8 @@ const generateRandomColor = () => {
           <Palette className="w-5 h-5 text-gray-700" />
         </div>
         <div>
-          <h3 className="font-semibold text-gray-900">Brand Color</h3>
-          <p className="text-sm text-gray-600">Choose your brand's primary color</p>
+          <h3 className="font-semibold text-gray-900">Primary Color</h3>
+          <p className="text-sm text-gray-600">Choose your primary color</p>
         </div>
       </div>
 
@@ -286,11 +328,19 @@ const generateRandomColor = () => {
       {/* Apply Button */}
       <div className="mt-6 pt-4 border-t border-gray-200">
         <button
-          className="w-full py-3 rounded-lg text-white font-medium transition-all hover:shadow-lg transform hover:scale-[1.02]"
+          className="w-full py-3 rounded-lg text-white font-medium transition-all hover:shadow-lg transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
           style={{ backgroundColor: selectedColor }}
           onClick={handleApply}
+          disabled={isApplying}
         >
-          Apply Brand Color
+          {isApplying ? (
+            <div className="flex items-center justify-center gap-2">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+              Applying...
+            </div>
+          ) : (
+            'Apply Color'
+          )}
         </button>
       </div>
     </div>
