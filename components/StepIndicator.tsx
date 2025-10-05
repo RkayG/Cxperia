@@ -7,7 +7,7 @@ interface StepIndicatorProps {
 
 const StepIndicator: React.FC<StepIndicatorProps> = ({ currentStep, steps }) => {
   return (
-    <div className="flex items-center justify-center sm:justify-start w-full overflow-x-auto">
+    <div className=" flex items-center justify-center sm:justify-start w-full overflow-x-auto">
       {steps.map((step, index) => {
         const isActive = currentStep === step.number;
         const isCompleted = currentStep > step.number;
@@ -16,7 +16,7 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({ currentStep, steps }) => 
           <React.Fragment key={step.number}>
             <div
               className={`
-                relative flex items-center justify-center py-2 px-2 sm:px-6
+                relative flex items-center  w-full justify-center py-2 px-2 sm:px-6
                 text-xs sm:text-sm md:text-base font-medium whitespace-nowrap text-center
                 min-w-0 sm:flex-1
                 ${isCompleted

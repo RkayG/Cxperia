@@ -32,7 +32,7 @@ const StepOne: React.FC<StepOneProps> = ({
   
   // Determine if this is new experience
   const isNew = (!experienceId || experienceId === 'new' || isNewParam) && isNewProp;
-  
+  //console.log('isNew', isNew);
   // Route to appropriate component based on whether it's new or editing
   if (isNew) {
     return (

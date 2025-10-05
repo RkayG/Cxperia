@@ -48,11 +48,11 @@ const FilterBar: React.FC<FilterBarPropsWithLoading> = ({ onFilterChange, onSort
 
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-      <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+      <div className="flex flex-row gap-3 w-full sm:w-auto">
         {/* Filter Products DropdownMenu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="w-full sm:w-48 px-3 py-2 bg-white border border-gray-300 rounded-lg text-left text-gray-700 font-medium flex items-center justify-between hover:border-gray-400 transition-colors">
+            <button className="w-1/2 sm:w-48 px-3 py-2 bg-white border border-gray-300 rounded-lg text-left text-gray-700 font-medium flex items-center justify-between hover:border-gray-400 transition-colors">
               {selectedFilter || 'Filter Products'}
               <svg className="ml-2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
             </button>
@@ -76,7 +76,7 @@ const FilterBar: React.FC<FilterBarPropsWithLoading> = ({ onFilterChange, onSort
         {/* Sort By DropdownMenu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="w-full sm:w-48 px-3 py-2 bg-white border border-gray-300 rounded-lg text-left text-gray-700 font-medium flex items-center justify-between hover:border-gray-400 transition-colors">
+            <button className="w-1/2 sm:w-48 px-3 py-2 bg-white border border-gray-300 rounded-lg text-left text-gray-700 font-medium flex items-center justify-between hover:border-gray-400 transition-colors">
               {selectedSort || 'Sort By'}
               <svg className="ml-2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
             </button>
@@ -98,7 +98,7 @@ const FilterBar: React.FC<FilterBarPropsWithLoading> = ({ onFilterChange, onSort
         </DropdownMenu>
       </div>
 
-      {/* Add New Product Button - Professional text-only style */}
+      {/* Add New Product Button */}
       <button
         onClick={handleAddNewProduct}
         className="flex items-center text-purple-700 hover:text-purple-800 font-medium text-sm transition-colors duration-200 whitespace-nowrap"

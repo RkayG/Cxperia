@@ -51,6 +51,8 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
   // Local state for overview section
   const [_overviewData, setOverviewData] = useState(experienceData);
 
+  console.log('experienceData', experienceData);
+  
   // Update overview data when experienceData changes
   useEffect(() => {
     setOverviewData(experienceData);

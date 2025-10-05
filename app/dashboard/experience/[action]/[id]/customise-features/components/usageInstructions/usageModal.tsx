@@ -200,8 +200,8 @@ const ProductUsageModal: React.FC<CosmeticProductModalProps> = ({
       <MobileTabNav activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {/* Main Content Area */}
-      <div className="lg:flex-1 bg-gray-50 mb-24 sm:mb-12 overflow-y-auto4">
-        <div className="p-8 overflow-y-auto" style={{ maxHeight: "calc(100vh - 160px)" }}>
+      <div className="lg:flex-1 bg-gray-50 overflow-y-auto">
+        <div className="p-4 lg:p-8 overflow-y-auto" style={{ maxHeight: "calc(100vh - 160px)" }}>
           {activeTab === "instructions" && (
             <InstructionsTab
               formData={formData}
@@ -240,7 +240,7 @@ const ProductUsageModal: React.FC<CosmeticProductModalProps> = ({
       onOpenChange={setInternalOpen}
       shouldScaleBackground={true}
     >
-      <DrawerContent className="bg-gray-50 max-w-screen-lg mx-auto min-h-[90vh] max-h-[90vh] rounded-t-lg p-0 overflow-hidden">
+      <DrawerContent className="bg-gray-50 max-w-screen-lg mx-auto min-h-[90vh] max-h-[90vh] rounded-t-lg p-0 overflow-hidden lg:rounded-t-lg">
         <div className="flex flex-col h-full">
           
           {/* Header */}

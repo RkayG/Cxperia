@@ -7,6 +7,7 @@ import StepIndicator from "@/components/StepIndicator";
 import CustomiseFeaturesStep from "./customise-features/components";
 import PreviewStep from "./preview/components";
 import ProductDetailsStep from "./product-details/components";
+import { useIsMobile } from "@/hooks/brands/use-mobile";
 
 // This is the main flow controller for an experience that has an ID.
 // It reads the `step` from the URL and renders the appropriate component.
@@ -14,7 +15,7 @@ const ExperienceFlowPageContent: React.FC = () => {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
-
+  const isMobile = useIsMobile();
   const action = params.action as string;
   const experienceId = params.id as string;
   console.log("[ExperienceFlowPage] action =", action, "experienceId =", experienceId);
@@ -27,8 +28,8 @@ const ExperienceFlowPageContent: React.FC = () => {
 
   // Step configuration - use consistent labels to prevent hydration mismatch
    const steps = [
-     { key: "product-details",  label: "Product Details" , component: ProductDetailsStep},
-     { key: "customise-features", label: "Customize Features" , component: CustomiseFeaturesStep },
+     { key: "product-details",  label: isMobile ? "Product" : "Product Details" , component: ProductDetailsStep},
+     { key: "customise-features", label: isMobile ? "Features" : "Customize Features" , component: CustomiseFeaturesStep },
      { key: "preview", label: "Preview", component: PreviewStep },
    ];
 
