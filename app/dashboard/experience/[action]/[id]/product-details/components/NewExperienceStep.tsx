@@ -25,12 +25,18 @@ const NewExperienceStep: React.FC<NewExperienceStepProps> = ({
   isSubmitting = false,
 }) => {
   const router = useRouter();
-  const { experienceData, setExperienceData, setIds, isLoading, setLoading } = useExperienceStore();
+  const { experienceData, setExperienceData, setIds, isLoading, setLoading, clearExperienceData, clearIds } = useExperienceStore();
   const { createExperience } = useExperienceOperations();
 
   // Local state
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [hasFormChanged, setHasFormChanged] = useState(false);
+
+  // Clear experience data when component mounts for new experience
+  React.useEffect(() => {
+    clearExperienceData();
+    clearIds();
+  }, [clearExperienceData, clearIds]);
 
   // Check if any images are currently uploading
   const hasUploadingImages = (): boolean => {

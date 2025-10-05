@@ -45,6 +45,10 @@ const AccountSettingsTab: React.FC = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [hasFetchedSettings, setHasFetchedSettings] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deletePassword, setDeletePassword] = useState('');
+  const [deleteConfirmation, setDeleteConfirmation] = useState('');
+  const [deleteError, setDeleteError] = useState('');
 
   // Only fetch settings if user explicitly requests it or on first load
   useEffect(() => {
@@ -130,12 +134,60 @@ const AccountSettingsTab: React.FC = () => {
 
   const handleDeleteAccount = async () => {
     try {
-      // In a real app, you'd call delete API
-      console.log('Deleting account...');
-      setShowDeleteModal(false);
+      setIsDeleting(true);
+      setDeleteError('');
+
+      // Validate inputs
+      if (!deletePassword.trim()) {
+        setDeleteError('Password is required');
+        return;
+      }
+
+      if (deleteConfirmation !== 'DELETE') {
+        setDeleteError('Please type DELETE to confirm');
+        return;
+      }
+
+      const response = await fetch('/api/profile/delete', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          password: deletePassword,
+          confirmation: deleteConfirmation,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        // Account deleted successfully
+        setShowDeleteModal(false);
+        
+        // Clear form data
+        setDeletePassword('');
+        setDeleteConfirmation('');
+        setDeleteError('');
+        
+        // Redirect to home page or login
+        window.location.href = '/';
+      } else {
+        setDeleteError(result.error || 'Failed to delete account');
+      }
     } catch (error) {
       console.error('Error deleting account:', error);
+      setDeleteError('An unexpected error occurred. Please try again.');
+    } finally {
+      setIsDeleting(false);
     }
+  };
+
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+    setDeletePassword('');
+    setDeleteConfirmation('');
+    setDeleteError('');
   };
 
   // No loading state - render with default settings immediately
@@ -395,20 +447,60 @@ const AccountSettingsTab: React.FC = () => {
               <h3 className="text-lg font-medium text-gray-900">Delete Account</h3>
             </div>
             <p className="text-gray-600 mb-6">
-              Are you sure you want to delete your account? This action cannot be undone and will permanently remove all your data.
+              This action cannot be undone and will permanently remove all your data, including experiences, products, and analytics.
             </p>
+            
+            {/* Password Field */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Enter your password to confirm
+              </label>
+              <input
+                type="password"
+                value={deletePassword}
+                onChange={(e) => setDeletePassword(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                placeholder="Your password"
+                disabled={isDeleting}
+              />
+            </div>
+
+            {/* Confirmation Field */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Type <span className="font-bold text-red-600">DELETE</span> to confirm
+              </label>
+              <input
+                type="text"
+                value={deleteConfirmation}
+                onChange={(e) => setDeleteConfirmation(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                placeholder="Type DELETE here"
+                disabled={isDeleting}
+              />
+            </div>
+
+            {/* Error Message */}
+            {deleteError && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-sm text-red-600">{deleteError}</p>
+              </div>
+            )}
+
             <div className="flex gap-3">
               <button
-                onClick={() => setShowDeleteModal(false)}
-                className="flex-1 px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+                onClick={handleCloseDeleteModal}
+                disabled={isDeleting}
+                className="flex-1 px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDeleteAccount}
-                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                disabled={isDeleting || !deletePassword.trim() || deleteConfirmation !== 'DELETE'}
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Delete Account
+                {isDeleting ? 'Deleting...' : 'Delete Account'}
               </button>
             </div>
           </div>
