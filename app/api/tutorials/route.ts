@@ -85,6 +85,7 @@ export async function POST(req: NextRequest) {
       .select()
       .single()
 
+    
     if (error) {
       console.error("Error inserting tutorial:", error)
       return NextResponse.json({ success: false, message: error.message }, { status: 500 })

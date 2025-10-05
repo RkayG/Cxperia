@@ -1,10 +1,8 @@
 // src/components/TutorialsGrid.tsx
 import React from 'react';
 
-import { useExperienceTutorials } from '@/hooks/public/useTutorials';
 import { usePublicExpStore } from '@/store/public/usePublicExpStore';
 import TutorialCard from './TutorialCard';
-import TutorialGridSkeleton from './TutorialSkeleton';
 import { getVideoType, getVimeoEmbedUrl, getYouTubeEmbedUrl, isValidVideoUrl } from './videoUtils';
   
 interface TutorialsGridProps {
@@ -14,7 +12,6 @@ interface TutorialsGridProps {
 
 const TutorialsGrid: React.FC<TutorialsGridProps> = ({ tutorials: propTutorials }) => {
   const { experience, slug, brandLogo, brandName, color } = usePublicExpStore();
-  const { data: tutorialsData, isLoading, error } = useExperienceTutorials(slug);
   const featuredVideoUrl = experience?.data?.featured_video_url || '';
 
   // Featured video embed logic
@@ -57,14 +54,8 @@ const TutorialsGrid: React.FC<TutorialsGridProps> = ({ tutorials: propTutorials 
     return null;
   };
 
-  let tutorials: any[] = [];
-  if (propTutorials) {
-    tutorials = propTutorials;
-  } else {
-    if (isLoading) return <TutorialGridSkeleton />;
-    if (error) return < div className="text-red-600">Error loading tutorials.</div>;
-    tutorials = Array.isArray((tutorialsData as any).tutorials) ? (tutorialsData as any).tutorials : [];
-  }
+  // Use tutorials from props if provided, otherwise show empty state
+  const tutorials: any[] = propTutorials || [];
   console.log('Tutorials to display:', tutorials);
   return (
     <div>

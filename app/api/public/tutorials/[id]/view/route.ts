@@ -89,6 +89,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       .eq('is_published', true)
       .single();
 
+    console.log('tutorial', tutorial);
+    console.log('error', error);
+
     if (error) {
       if (error.code === 'PGRST116') {
         return NextResponse.json({ error: 'Tutorial not found' }, { status: 404 });
@@ -99,9 +102,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json({
       success: true,
       data: {
-        tutorial_id: tutorial.id,
-        views: tutorial.views,
-        title: tutorial.title
+        tutorial
       }
     });
 

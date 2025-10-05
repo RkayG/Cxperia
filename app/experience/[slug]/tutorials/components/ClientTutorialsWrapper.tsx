@@ -22,7 +22,7 @@ const ClientTutorialsWrapper: React.FC<ClientTutorialsWrapperProps> = ({
   const { data: tutorialsData, isLoading } = useExperienceTutorials(slug);
 
   const tutorials = Array.isArray((tutorialsData as any)?.tutorials) ? (tutorialsData as any).tutorials : [];
-
+  console.log('tutorials', tutorialsData);
   // Category filter state
   const [activeCategory, setActiveCategory] = React.useState<string>("All Categories");
   
