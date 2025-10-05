@@ -215,7 +215,8 @@ const ProjectCard = ({
             <CardFooter className="mt-auto pt-2 border-t border-gray-100 flex justify-between">
               <button
                 className="text-xs text-purple-600 hover:text-purple-800 font-medium transition-colors"
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent card click
                   // Navigate to view details based on type and id
                   if (type === "tutorial" && id) {
                     router.push(`/tutorial/${id}`);
