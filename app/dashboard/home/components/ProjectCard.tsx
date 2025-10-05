@@ -36,12 +36,12 @@ const ProjectCard = ({
   isCreateCard?: boolean;
 }) => {
   const router = useRouter();
- console.log("ProjectCard props:", { id, type, title, imageUrl, videoUrl, mediaUrl, qr_code_url, isCreateCard });
+  console.log("ProjectCard props:", { id, type, title, imageUrl, videoUrl, mediaUrl, qr_code_url, isCreateCard });
   const handleCreateClick = () => {
     if (type === "product experience") {
       router.push(`/dashboard/experience/create?step=product-details&new=true`);
     } else if (type === "tutorial") {
-      router.push("/dashboard/tutorial?mode=create");
+      router.push("/dashboard/content/tutorial?mode=create");
     }
   };
 
@@ -71,11 +71,11 @@ const ProjectCard = ({
             <CardHeader className="relative" style={{ height: `${IMAGE_HEIGHT}px` }}>
               {/* If this is a tutorial prefer videoUrl/mediaUrl over imageUrl */}
               {(() => {
-                const src =
-                  type === "tutorial"
-                    ? videoUrl ?? mediaUrl ?? imageUrl
-                    : imageUrl;
+                // Calculate src inside the IIFE
+                const src = type === "tutorial" ? videoUrl ?? mediaUrl ?? imageUrl : imageUrl;
+                console.log("ProjectCard rendering check:", { src, type, hasSrc: !!src });
                 if (!src) {
+                  console.log("ProjectCard: No src, showing no media");
                   return (
                     <div className="w-full h-full bg-gray-200 flex items-center justify-center">
                       <span className="text-gray-400">No media</span>
@@ -83,7 +83,29 @@ const ProjectCard = ({
                   );
                 }
                 if (type === "tutorial" && src) {
+                  console.log("ProjectCard: Processing tutorial with src:", src);
                   const videoType = getVideoType(src);
+                  console.log("ProjectCard: Video type detected:", videoType);
+                  
+                  // Check if this is actually an image URL (not a video)
+                  const isImageUrl = src.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i) || src.includes('cloudinary.com');
+                  
+                  if (isImageUrl) {
+                    console.log("ProjectCard: Detected as image URL, rendering as image");
+                    return (
+                      <Image
+                        className="w-full h-full object-cover"
+                        src={src}
+                        alt={title || 'Tutorial image'}
+                        width={280}
+                        height={150}
+                        onError={(e) => {
+                          e.currentTarget.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjgwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDI4MCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjI4MCIgaGVpZ2h0PSIxODAiIGZpbGw9IiNGM0YzRjMiLz4KICA8dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBmaWxsPSIjOTk5OTk5Ij5JbWFnZSBub3QgYXZhaWxhYmxlPC90ZXh0Pgo8L3N2Zz4K";
+                        }}
+                      />
+                    );
+                  }
+                  
                   if (videoType === "youtube") {
                     const embed = getYouTubeEmbedUrl(src);
                     return (
@@ -120,7 +142,8 @@ const ProjectCard = ({
                       />
                     );
                   }
-                  // fallback to image if not a recognized video url
+                  // If it's not a video URL, treat it as an image
+                  console.log("ProjectCard: Rendering tutorial as image with src:", src);
                   return (
                     <Image
                       className="w-full h-full object-cover"
@@ -137,7 +160,7 @@ const ProjectCard = ({
                 return (
                   <Image
                     className="w-full h-full object-cover"
-                    src={imageUrl}
+                    src={src || ''}
                     alt={title || 'Product image'}
                     width={280}
                     height={150}

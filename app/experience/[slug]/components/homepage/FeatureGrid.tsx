@@ -61,7 +61,7 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({ onSectionChange }) => {
   }, [enabledLabels]);
 
   return (
-    <div className="relative overflow-y-auto mb-10">
+    <div className="relative overflow-y-auto mb-32">
       {/* Background decoration */}
       <div className="absolute inset-0 bg-gray-50"></div>
       {/* Main container */}

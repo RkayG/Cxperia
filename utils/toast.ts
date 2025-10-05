@@ -35,13 +35,11 @@ export const showToast = {
     toast.error(message, {
       duration: 4000,
       style: {
-        ...BASE_GLASS_STYLE,
-        background: 'rgba(239, 68, 68, 0.5)', // Red 500 with opacity
-        border: '1px solid rgba(239, 68, 68, 0.8)',
-      },
-      iconTheme: {
-        primary: '#FCA5A5', // Light red icon
-        secondary: '#991B1B',
+        background: '#EF4444',
+        color: 'white',
+        fontSize: '14px',
+        fontWeight: 'semibold',
+        minWidth: '350px',
       },
     });
   },
@@ -51,9 +49,11 @@ export const showToast = {
     toast.loading(message, {
       duration: 4000,
       style: {
-        ...BASE_GLASS_STYLE,
-        background: 'rgba(139, 92, 246, 0.5)', // Violet 500 with opacity
-        border: '1px solid rgba(139, 92, 246, 0.8)',
+        background: '#3B82F6',
+        color: 'white',
+        fontSize: '20px',
+        fontWeight: 'semibold',
+        minWidth: '350px',
       },
     });
   },

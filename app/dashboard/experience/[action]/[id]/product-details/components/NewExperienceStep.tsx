@@ -1,7 +1,6 @@
 'use client';
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import Loading from "@/components/Loading";
 import SavingOverlay from "@/components/SavingOverlay";
 import ScrollToTop from "@/components/ScrollToTop";
 import { useExperienceOperations } from "@/hooks/brands/useExperienceOperations";
@@ -31,6 +30,7 @@ const NewExperienceStep: React.FC<NewExperienceStepProps> = ({
 
   // Local state
   const [errors, setErrors] = useState<ValidationErrors>({});
+  const [hasFormChanged, setHasFormChanged] = useState(false);
 
   // Check if any images are currently uploading
   const hasUploadingImages = (): boolean => {
@@ -78,6 +78,7 @@ const NewExperienceStep: React.FC<NewExperienceStepProps> = ({
 
   const handleFormUpdate = (data: Partial<Experience>) => {
     setExperienceData(data);
+    setHasFormChanged(true); // Mark form as changed
 
     // Clear error for updated field
     const key = Object.keys(data)[0];
@@ -174,6 +175,7 @@ const NewExperienceStep: React.FC<NewExperienceStepProps> = ({
         };
         setExperienceData(updatedData);
         setIds(responseData.id || null, responseData.productId || null);
+        setHasFormChanged(false); // Reset form changed flag after successful creation
 
         // Navigate to step 2 with experience id
         if (responseData.id && onNext) {

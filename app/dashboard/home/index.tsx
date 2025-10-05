@@ -12,15 +12,8 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Skeleton } from "@/components/ui/skeleton";
-import { 
-  useHomeFilteredExperiences, 
-  useHomeFilteredTutorials, 
-  useHomeStats, 
-  useHomeSearchQuery, 
-  useHomeLoading, 
-  useHomeError, 
-  useHomeActions 
-} from '@/store/home/useHomeStore';
+import { useOptimizedExperiences, useOptimizedRecentExperiences } from "@/hooks/brands/useOptimizedQueries";
+import { useRecentTutorials } from "@/hooks/brands/useFeatureApi";
 import { getBrandStats, getCurrentUserBrand } from '@/lib/data/brands';
 import { supabase } from '@/lib/supabase';
 import { useExperienceStore } from '@/store/brands/useExperienceStore';
@@ -41,9 +34,6 @@ interface Stats {
 
 
 export default function HomePage() {
-  // Add render tracking
-  console.log('🔄 HomePage rendering', { timestamp: new Date().toISOString() });
-  
   const router = useRouter();
   // Banner image loading state (must be top-level for hooks)
   const [bannerLoaded, setBannerLoaded] = React.useState(false);
@@ -51,18 +41,37 @@ export default function HomePage() {
   // Dashboard state
   const [user, setUser] = useState<any>(null);
   const { brand, setBrand } = useExperienceStore();
+  const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
   
-  // Get data from store
-  const experiences = useHomeFilteredExperiences();
-  const tutorials = useHomeFilteredTutorials();
-  const stats = useHomeStats();
-  const searchQuery = useHomeSearchQuery();
-  const { isLoadingExperiences, isLoadingTutorials, isLoadingStats } = useHomeLoading();
-  const error = useHomeError();
+  // Get brand from store
+  const storeBrand = require('@/store/brands/useExperienceStore').useExperienceStore((state: any) => state.brand);
   
-  // Get actions from store
-  const { fetchHomeData, setSearchQuery: setStoreSearchQuery, clearError } = useHomeActions();
+  // Conditional data fetching - only fetch when brand is available and not loading
+  const { data, isLoading: isLoadingExperiences } = useOptimizedExperiences(
+    brand?.id, 
+    { enabled: !!brand?.id && !loading }
+  );
+  const { data: tutorialsData, isLoading: isLoadingTutorials } = useRecentTutorials({ 
+    enabled: !loading 
+  });
+  
+  // Normalize experiences array
+  const experiences = Array.isArray((data as any)?.data)
+    ? (data as any).data
+    : Array.isArray(data)
+    ? data
+    : [];
+  
+  // Normalize tutorials array
+  const tutorials = Array.isArray((tutorialsData as any)?.data)
+    ? (tutorialsData as any).data
+    : Array.isArray(tutorialsData)
+    ? tutorialsData
+    : [];
+
+  // Search state
+  const [searchQuery, setSearchQuery] = React.useState("");
 
   // Dashboard initialization
   useEffect(() => {
@@ -94,8 +103,9 @@ export default function HomePage() {
         }
         setBrand(brandData);
 
-        // Fetch all home data using the store
-        await fetchHomeData(brandData.id);
+        // Get stats
+        const statsData = await getBrandStats(brandData.id);
+        setStats(statsData);
 
       } catch (error) {
         //console.error('Dashboard initialization error:', error);
@@ -105,38 +115,31 @@ export default function HomePage() {
     };
 
     initializeDashboard();
-  }, [router, setBrand, fetchHomeData]);
+  }, [router, setBrand]);
 
-  // Filtered results are now computed in the store
-  const filteredExperiences = experiences;
-  const filteredTutorials = tutorials;
+  // Filtered results
+  const filteredExperiences = searchQuery.trim()
+    ? experiences.filter((exp: any) => {
+        const val = (exp.name || exp.title || "").toLowerCase();
+        return val.includes(searchQuery.trim().toLowerCase());
+      })
+    : experiences;
+  const filteredTutorials = searchQuery.trim()
+    ? tutorials.filter((tut: any) => {
+        const val = (tut.title || tut.name || "").toLowerCase();
+        return val.includes(searchQuery.trim().toLowerCase());
+      })
+    : tutorials;
+
 
   // Debug logs for filtered results
-  //  console.log('filteredExperiences:', filteredExperiences);
-  //console.log('filteredTutorials:', filteredTutorials);
-
+   console.log('filteredExperiences:', filteredExperiences);
+  console.log('filteredTutorials:', filteredTutorials);
 
   if (!brand) {
     return (
       <div className="min-h-screen flex items-center justify-center" suppressHydrationWarning>
         <Loading />
-      </div>
-    );
-  }
-
-  // Show error state if there's an error
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center" suppressHydrationWarning>
-        <div className="text-center">
-          <p className="text-red-600 mb-4">Error loading data: {error}</p>
-          <button 
-            onClick={() => brand?.id && fetchHomeData(brand.id)} 
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-          >
-            Retry
-          </button>
-        </div>
       </div>
     );
   }
@@ -156,14 +159,14 @@ export default function HomePage() {
         alt="Banner"
         className="rounded-xl w-full h-full object-cover"
         fill={false}
-        onLoad={() => setBannerLoaded(true)}
+        //onLoad={() => setBannerLoaded(true)}
         style={{ display: bannerLoaded ? 'block' : 'none' }}
       />
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center z-10">
         <h1
           className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-700 text-transparent bg-clip-text mb-2 mt-6"
         >
-          Hello, {brand?.name || ''}
+          Hello, {brand?.name || storeBrand?.name || ''}
         </h1>
         <p className="text-gray-700 mb-6 max-w-sm md:max-w-xl">
           Welcome to your dashboard.
@@ -270,7 +273,7 @@ export default function HomePage() {
           type="text"
           placeholder="Search project"
           value={searchQuery}
-          onChange={e => setStoreSearchQuery(e.target.value)}
+          onChange={e => setSearchQuery(e.target.value)}
           // No searchActive needed
           className="w-full px-4 md:px-6 py-2 md:py-3 pr-10 md:pr-12 rounded-full border border-gray-300 md:border-gray-400 text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
         />
@@ -288,7 +291,7 @@ export default function HomePage() {
           <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Recent Experiences</h2>
         </div>
         <Carousel className="w-full">
-          <CarouselContent className="flex gap-4 pb-4 -ml-4">
+          <CarouselContent className="flex md:gap-4 gap-2 pb-4 -ml-4">
             {isLoadingExperiences ? (
               Array.from({ length: 4 }).map((_, i) => (
                 <CarouselItem key={i} className="pl-4 basis-[260px]">
@@ -306,18 +309,20 @@ export default function HomePage() {
                   <ProjectCard type="product experience" isCreateCard />
                 </CarouselItem>
                 {filteredExperiences.map((exp: any) => {
-                  let imageUrl = Array.isArray(exp.product_image_url)
-                    ? exp.product_image_url[0]
-                    : exp.product_image_url;
+                  // Access nested products data
+                  const product = exp.products;
+                  let imageUrl = Array.isArray(product?.product_image_url)
+                    ? product.product_image_url[0]
+                    : product?.product_image_url;
                   if (!imageUrl || imageUrl === "") {
-                    imageUrl = exp.logo_url || undefined;
+                    imageUrl = product?.logo_url || undefined;
                   }
                   return (
                     <CarouselItem key={String(exp.id)} className="pl-4 basis-[260px]">
                       <ProjectCard
                         id={exp.id}
                         type="product experience"
-                        title={exp.name || exp.title || `Project ${exp.id}`}
+                        title={product?.name || exp.name || `Project ${exp.id}`}
                         imageUrl={imageUrl}
                         qr_code_url={exp.qr_code_url}
                       />
@@ -333,7 +338,7 @@ export default function HomePage() {
         {/* See All Products Button */}
         <div className="flex justify-center mb-12 md:mb-auto mt-4">
           <button
-            className="px-6 py-2 bg-gray-100 rounded-none w-full sm:w-auto sm:rounded-full text-gray-700 hover:text-white rounded-full font-semibold shadow hover:bg-purple-800 transition-all"
+            className="px-6 py-2 bg-gray-100 rounded-none w-full sm:w-auto border border-gray-300 sm:rounded-full text-gray-700 hover:text-white rounded-full font-semibold hover:bg-purple-800 transition-all"
               onClick={() => router.push('/dashboard/overview')}
           >
             See All Experiences
@@ -347,7 +352,7 @@ export default function HomePage() {
           <h2 className="ml-1 text-lg sm:text-xl font-semibold text-gray-800">Recent Tutorials</h2>
         </div>
         <Carousel className="w-full">
-          <CarouselContent className="flex gap-4 pb-4 -ml-4">
+          <CarouselContent className="flex md:gap-4 gap-2 pb-4 -ml-4">
             {isLoadingTutorials ? (
               Array.from({ length: 4 }).map((_, i) => (
                 <CarouselItem key={i} className="pl-4 basis-[260px]">
@@ -365,10 +370,20 @@ export default function HomePage() {
                   <ProjectCard type="tutorial" isCreateCard />
                 </CarouselItem>
                 {filteredTutorials.map((tut: any) => {
-                  let imageUrl = tut.thumbnail_url;
+                  // Use featured_image and featured_video_url from the data structure
+                  let imageUrl = tut.featured_image;
                   if (!imageUrl || imageUrl === "") {
-                    imageUrl = tut.featured_image || tut.imageUrl || undefined;
+                    imageUrl = tut.thumbnail_url || undefined;
                   }
+                  console.log('Tutorial mapping:', { 
+                    id: tut.id, 
+                    title: tut.title, 
+                    featured_image: tut.featured_image, 
+                    thumbnail_url: tut.thumbnail_url,
+                    imageUrl, 
+                    featured_video_url: tut.featured_video_url,
+                    video_url: tut.video_url
+                  });
                   return (
                     <CarouselItem key={String(tut.id)} className="pl-4 basis-[260px]">
                       <ProjectCard
@@ -376,12 +391,7 @@ export default function HomePage() {
                         type="tutorial"
                         title={tut.title}
                         imageUrl={imageUrl}
-                        videoUrl={
-                          tut.video_url ||
-                          tut.videoUrl ||
-                          (tut.videoData && tut.videoData.url) ||
-                          tut.url
-                        }
+                        videoUrl={tut.featured_video_url || tut.video_url || undefined}
                       />
                     </CarouselItem>
                   );
@@ -395,7 +405,7 @@ export default function HomePage() {
         {/* See All Tutorials Button */}
         <div className="flex justify-center mt-4 mb-16 ">
           <button
-            className="px-6 py-2 w-full sm:w-auto rounded-none sm:rounded-full bg-gray-100 text-gray-700 hover:text-white rounded-md font-semibold shadow hover:bg-purple-800 transition-all"
+            className="px-6 py-2 w-full sm:w-auto rounded-none sm:rounded-full bg-gray-100 border border-gray-300 text-gray-700 hover:text-white rounded-md font-semibold hover:bg-purple-800 transition-all"
               onClick={() => router.push('/dashboard/overview')}
           >
             See All Tutorials

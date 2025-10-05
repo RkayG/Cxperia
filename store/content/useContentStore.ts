@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
+import { useMemo } from 'react';
 
 export interface Article {
   id: string | number;
@@ -36,8 +37,12 @@ interface ContentState {
   isLoading: boolean;
   error: string | null;
   
+  // Cache tracking
+  currentBrandId: string | null;
+  
   // Actions
   fetchContentData: (brandId: string) => Promise<void>;
+  invalidateCache: () => void;
   setActiveTab: (tab: string) => void;
   setSelectedType: (type: string) => void;
   setSelectedCategory: (category: string) => void;
@@ -124,12 +129,20 @@ export const useContentStore = create<ContentState>()(
     search: '',
     isLoading: false,
     error: null,
+    currentBrandId: null,
 
     // Actions
     fetchContentData: async (brandId: string) => {
       console.log('📡 ContentStore: fetchContentData called', { brandId, timestamp: new Date().toISOString() });
       
       if (!brandId) return;
+      
+      // Don't fetch if we already have data for this brand
+      const { currentBrandId } = get();
+      if (currentBrandId === brandId && !get().isLoading) {
+        console.log('⏭️ ContentStore: Skipping fetch - already have data for brand', { brandId });
+        return;
+      }
       
       set({ isLoading: true, error: null });
       
@@ -150,14 +163,21 @@ export const useContentStore = create<ContentState>()(
           tutorials, 
           articles, 
           filteredArticles,
-          isLoading: false
+          isLoading: false,
+          currentBrandId: brandId // Set current brand after successful fetch
         });
       } catch (error) {
         set({ 
           error: error instanceof Error ? error.message : 'Failed to fetch content data',
-          isLoading: false
+          isLoading: false,
+          currentBrandId: brandId // Set current brand even on error to prevent re-fetching immediately
         });
       }
+    },
+
+    invalidateCache: () => {
+      console.log('🔄 ContentStore: Cache invalidated - next fetch will reload data');
+      set({ currentBrandId: null });
     },
 
     setActiveTab: (tab: string) => {
@@ -230,7 +250,12 @@ export const useContentFilters = () => {
   const selectedCategory = useContentSelectedCategory();
   const search = useContentSearch();
   
-  return { activeTab, selectedType, selectedCategory, search };
+  return useMemo(() => ({
+    activeTab,
+    selectedType,
+    selectedCategory,
+    search,
+  }), [activeTab, selectedType, selectedCategory, search]);
 };
 
 export const useContentLoading = () => useContentStore(state => state.isLoading);
@@ -238,6 +263,7 @@ export const useContentError = () => useContentStore(state => state.error);
 
 // Action hooks - individual selectors to prevent infinite loops
 export const useContentFetchContentData = () => useContentStore(state => state.fetchContentData);
+export const useContentInvalidateCache = () => useContentStore(state => state.invalidateCache);
 export const useContentSetActiveTab = () => useContentStore(state => state.setActiveTab);
 export const useContentSetSelectedType = () => useContentStore(state => state.setSelectedType);
 export const useContentSetSelectedCategory = () => useContentStore(state => state.setSelectedCategory);
@@ -249,6 +275,7 @@ export const useContentClearError = () => useContentStore(state => state.clearEr
 
 export const useContentActions = () => {
   const fetchContentData = useContentFetchContentData();
+  const invalidateCache = useContentInvalidateCache();
   const setActiveTab = useContentSetActiveTab();
   const setSelectedType = useContentSetSelectedType();
   const setSelectedCategory = useContentSetSelectedCategory();
@@ -260,6 +287,7 @@ export const useContentActions = () => {
   
   return {
     fetchContentData,
+    invalidateCache,
     setActiveTab,
     setSelectedType,
     setSelectedCategory,

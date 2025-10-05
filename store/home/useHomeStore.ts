@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
+import { useMemo } from 'react';
 
 interface HomeState {
   experiences: any[];
@@ -41,7 +42,7 @@ export const useHomeStore = create(
         const [experiencesRes, tutorialsRes, statsRes] = await Promise.all([
           fetch(`/api/experiences?brand_id=${brandId}`),
           fetch('/api/tutorials?recent=true'),
-          fetch(`/api/brand-stats?brand_id=${brandId}`)
+          fetch('/api/scan-analytics/summary')
         ]);
 
         const [experiencesData, tutorialsData, statsData] = await Promise.all([
@@ -77,17 +78,30 @@ export const useHomeStore = create(
   }))
 );
 
-// Selectors
+// Individual selectors
 export const useHomeExperiences = () => useHomeStore(state => state.experiences);
 export const useHomeTutorials = () => useHomeStore(state => state.tutorials);
 export const useHomeStats = () => useHomeStore(state => state.stats);
 export const useHomeSearchQuery = () => useHomeStore(state => state.searchQuery);
-export const useHomeLoading = () => useHomeStore(state => ({
-  isLoadingExperiences: state.isLoadingExperiences,
-  isLoadingTutorials: state.isLoadingTutorials,
-  isLoadingStats: state.isLoadingStats,
-}));
 export const useHomeError = () => useHomeStore(state => state.error);
+
+// Individual loading selectors
+export const useHomeLoadingExperiences = () => useHomeStore(state => state.isLoadingExperiences);
+export const useHomeLoadingTutorials = () => useHomeStore(state => state.isLoadingTutorials);
+export const useHomeLoadingStats = () => useHomeStore(state => state.isLoadingStats);
+
+// Memoized combined loading selector
+export const useHomeLoading = () => {
+  const isLoadingExperiences = useHomeLoadingExperiences();
+  const isLoadingTutorials = useHomeLoadingTutorials();
+  const isLoadingStats = useHomeLoadingStats();
+  
+  return useMemo(() => ({
+    isLoadingExperiences,
+    isLoadingTutorials,
+    isLoadingStats,
+  }), [isLoadingExperiences, isLoadingTutorials, isLoadingStats]);
+};
 
 // Computed selectors
 export const useHomeFilteredExperiences = () => useHomeStore(state => {
@@ -108,9 +122,20 @@ export const useHomeFilteredTutorials = () => useHomeStore(state => {
   });
 });
 
-// Actions
-export const useHomeActions = () => useHomeStore(state => ({
-  fetchHomeData: state.fetchHomeData,
-  setSearchQuery: state.setSearchQuery,
-  clearError: state.clearError,
-}));
+// Individual action selectors
+export const useHomeFetchHomeData = () => useHomeStore(state => state.fetchHomeData);
+export const useHomeSetSearchQuery = () => useHomeStore(state => state.setSearchQuery);
+export const useHomeClearError = () => useHomeStore(state => state.clearError);
+
+// Memoized combined actions selector
+export const useHomeActions = () => {
+  const fetchHomeData = useHomeFetchHomeData();
+  const setSearchQuery = useHomeSetSearchQuery();
+  const clearError = useHomeClearError();
+  
+  return useMemo(() => ({
+    fetchHomeData,
+    setSearchQuery,
+    clearError,
+  }), [fetchHomeData, setSearchQuery, clearError]);
+};

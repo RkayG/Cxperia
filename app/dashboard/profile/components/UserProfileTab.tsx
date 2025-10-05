@@ -365,7 +365,7 @@ const UserProfileTab: React.FC = () => {
             </button>
           </div>
 
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+          {/* <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
             <div>
               <h4 className="font-medium text-gray-900">Two-Factor Authentication</h4>
               <p className="text-sm text-gray-600">Add an extra layer of security</p>
@@ -373,7 +373,7 @@ const UserProfileTab: React.FC = () => {
             <button className="px-4 py-2 text-purple-600 hover:text-purple-700 font-medium">
               Enable 2FA
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

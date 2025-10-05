@@ -35,6 +35,7 @@ const ContentDashboardPage: React.FC = () => {
   // Get actions from store
   const { 
     fetchContentData, 
+    invalidateCache,
     setActiveTab, 
     setSelectedType, 
     setSelectedCategory, 
@@ -91,6 +92,7 @@ const ContentDashboardPage: React.FC = () => {
       
       showToast.success(`${count} tutorial${count > 1 ? 's' : ''} unpublished successfully!`);
       clearSelection(); // Clear selection using store action
+      invalidateCache(); // Invalidate cache to refresh data
       setShowUnpublishModal(false); // Close modal
     } catch (error: any) {
       showToast.error(error?.message || 'Failed to unpublish tutorials');
@@ -133,6 +135,7 @@ const ContentDashboardPage: React.FC = () => {
       
       showToast.success(`${count} tutorial${count > 1 ? 's' : ''} deleted successfully!`);
       clearSelection(); // Clear selection using store action
+      invalidateCache(); // Invalidate cache to refresh data
       setShowDeleteModal(false); // Close modal
     } catch (error: any) {
       console.error('Delete error:', error);

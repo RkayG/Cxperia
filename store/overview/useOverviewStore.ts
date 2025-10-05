@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
+import { useMemo } from 'react';
 
 export interface OverviewMetrics {
   totalExperiences: number;
@@ -160,7 +161,10 @@ export const useOverviewLoading = () => {
   const isLoadingExperiences = useOverviewLoadingExperiences();
   const isLoadingFeedbacks = useOverviewLoadingFeedbacks();
   
-  return { isLoadingExperiences, isLoadingFeedbacks };
+  return useMemo(() => ({
+    isLoadingExperiences,
+    isLoadingFeedbacks,
+  }), [isLoadingExperiences, isLoadingFeedbacks]);
 };
 export const useOverviewError = () => useOverviewStore(state => state.error);
 
@@ -172,5 +176,8 @@ export const useOverviewActions = () => {
   const fetchOverviewData = useOverviewFetchOverviewData();
   const clearError = useOverviewClearError();
   
-  return { fetchOverviewData, clearError };
+  return useMemo(() => ({
+    fetchOverviewData,
+    clearError,
+  }), [fetchOverviewData, clearError]);
 };

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
+import { useMemo } from 'react';
 
 export interface PerformanceMetric {
   id: string;
@@ -167,5 +168,8 @@ export const useProductsActions = () => {
   const fetchProductsData = useProductsFetchProductsData();
   const clearError = useProductsClearError();
   
-  return { fetchProductsData, clearError };
+  return useMemo(() => ({
+    fetchProductsData,
+    clearError,
+  }), [fetchProductsData, clearError]);
 };

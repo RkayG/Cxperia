@@ -7,7 +7,7 @@ import ScrollToTop from "@/components/ScrollToTop";
 import { useExperienceOperations } from "@/hooks/brands/useExperienceOperations";
 import { initialExperienceData, useExperienceStore } from "@/store/brands/useExperienceStore";
 import type { Experience, UploadedImage } from "@/types/productExperience";
-import { hasFormChanges, isExperienceDataEqual } from "@/utils/compare";
+import { isExperienceDataEqual } from "@/utils/compare";
 import { validateStepOne } from "@/utils/validation";
 import type { ValidationErrors } from "@/utils/validation";
 import MediaUpload from "./MediaUpload";
@@ -35,6 +35,7 @@ const EditExperienceStep: React.FC<EditExperienceStepProps> = ({
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [initialFormData, setInitialFormData] = useState<Experience>(initialExperienceData);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [hasFormChanged, setHasFormChanged] = useState(false);
 
   // Get stable experience ID
   const experienceId = params?.id 
@@ -198,6 +199,7 @@ const EditExperienceStep: React.FC<EditExperienceStepProps> = ({
 
   const handleFormUpdate = (data: Partial<Experience>) => {
     setExperienceData(data);
+    setHasFormChanged(true); // Mark form as changed
 
     // Clear error for updated field
     const key = Object.keys(data)[0];
@@ -219,12 +221,9 @@ const EditExperienceStep: React.FC<EditExperienceStepProps> = ({
     }
 
     const currentExpData = experienceData as Experience;
-
-    // Check if form has changes
-    const hasChanges = hasFormChanges(initialFormData, experienceData);
     const expIdToUse = currentExpData?.experienceId || experienceId;
 
-    if (!hasChanges && expIdToUse) {
+    if (!hasFormChanged && expIdToUse) {
       // No changes, just navigate
       const action = params?.action || "edit";
       if (onNext) {
@@ -313,6 +312,7 @@ const EditExperienceStep: React.FC<EditExperienceStepProps> = ({
         
         // Update initial form data to prevent future unnecessary saves
         setInitialFormData(updatedData);
+        setHasFormChanged(false); // Reset form changed flag after successful save
 
         // Navigate to step 2 with experience id
         if (responseData.id) {

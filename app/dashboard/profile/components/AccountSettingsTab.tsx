@@ -164,7 +164,7 @@ const AccountSettingsTab: React.FC = () => {
       </div>
 
       {/* Notifications */}
-      <div className="bg-white border border-gray-200 rounded-lg p-6">
+      {/* <div className="bg-white border border-gray-200 rounded-lg p-6">
         <div className="flex items-center gap-3 mb-6">
           <Bell className="text-purple-600" />
           <h3 className="text-lg font-medium text-gray-900">Notifications</h3>
@@ -236,7 +236,7 @@ const AccountSettingsTab: React.FC = () => {
         </div>
       </div>
 
-      {/* Privacy */}
+      {/* Privacy 
       <div className="bg-white border border-gray-200 rounded-lg p-6">
         <div className="flex items-center gap-3 mb-6">
           <Shield className="text-purple-600" />
@@ -292,7 +292,7 @@ const AccountSettingsTab: React.FC = () => {
         </div>
       </div>
 
-      {/* Preferences */}
+      {/* Preferences 
       <div className="bg-white border border-gray-200 rounded-lg p-6">
         <h3 className="text-lg font-medium text-gray-900 mb-6">Preferences</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -359,7 +359,7 @@ const AccountSettingsTab: React.FC = () => {
             </select>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Danger Zone */}
       <div className="bg-red-50 border border-red-200 rounded-lg p-6">
@@ -388,7 +388,7 @@ const AccountSettingsTab: React.FC = () => {
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
             <div className="flex items-center gap-3 mb-4">
               <AlertTriangle className="text-red-600" />
