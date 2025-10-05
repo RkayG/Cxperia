@@ -1,5 +1,6 @@
 'use client'
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import {
   FaBell,
@@ -25,9 +26,6 @@ const bottomNavLinks: BottomNavLink[] = [
 ];
 
 const MobileBottomNav: React.FC = () => {
-  const navigate = useRouter().push;
-  // const location = useRouter().location; // useRouter does not have location
-  // Use usePathname to get the current path
   const pathname = usePathname();
   const [activeTab, setActiveTab] = useState(pathname);
 
@@ -35,13 +33,6 @@ const MobileBottomNav: React.FC = () => {
   useEffect(() => {
     setActiveTab(pathname);
   }, [pathname]);
-
-  const handleNavigation = (path: string) => {
-    if (path !== pathname) {
-      navigate(path);
-      setActiveTab(path);
-    }
-  };
 
   const isMobile = useIsMobile();
   // Only show on mobile devices
@@ -57,9 +48,9 @@ const MobileBottomNav: React.FC = () => {
           const isActive = activeTab === link.path;
           
           return (
-            <button
+            <Link
               key={link.id}
-              onClick={() => handleNavigation(link.path)}
+              href={link.path}
               className={`flex flex-col items-center justify-center w-16 py-2 rounded-lg transition-all duration-200 ${
                 isActive 
                   ? "text-purple-800 bg-purple-100" 
@@ -75,7 +66,7 @@ const MobileBottomNav: React.FC = () => {
               }`}>
                 {link.label}
               </span>
-            </button>
+            </Link>
           );
         })}
       </div>
