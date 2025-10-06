@@ -12,6 +12,7 @@ export function Graph({ experienceData }: GraphProps) {
   // Fetch real monthly scan data
   const { data: scanAnalytics, isLoading, error } = useMonthlyScanAnalytics(12);
 
+
   // Generate monthly data based on real scan events or fallback to distribution
   const monthlyData = React.useMemo(() => {
     // If we have real scan analytics data, use it
@@ -25,7 +26,11 @@ export function Graph({ experienceData }: GraphProps) {
     }
 
     // Fallback: distribute total scans across months with realistic patterns
-    const totalScans = experienceData.reduce((sum: any, exp: any) => sum + (exp.total_scan_count || exp.scan_count || 0), 0);
+    const totalScans = experienceData.reduce((sum: any, exp: any) => {
+      // Try multiple possible field names for scan count
+      const scanCount = exp.total_scan_count || exp.unique_scan_count || exp.scan_count || 0;
+      return sum + scanCount;
+    }, 0);
     
     if (totalScans === 0) {
       // Return empty data for all months

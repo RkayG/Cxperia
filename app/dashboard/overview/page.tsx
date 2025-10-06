@@ -34,6 +34,7 @@ export default function OverviewPage() {
   const metrics = useOverviewMetrics();
   const { isLoadingExperiences, isLoadingFeedbacks } = useOverviewLoading();
   
+  
   // Use navigation progress with loading state
   const isLoading = isLoadingExperiences || isLoadingFeedbacks;
   useNavigationProgressWithQuery(isLoading, !!brandError);

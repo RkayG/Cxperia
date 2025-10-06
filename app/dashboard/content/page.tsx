@@ -1,5 +1,4 @@
 "use client";
-import { Book, Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import Modal from '@/components/Modal';

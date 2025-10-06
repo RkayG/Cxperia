@@ -6,14 +6,26 @@ export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient();
     
-    // Get the current user (brand)
+    // Get the current user
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const brandId = user.id;
+    // Get the actual brand_id from the profiles table
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('brand_id')
+      .eq('id', user.id)
+      .single();
+
+    if (profileError || !profile) {
+      console.error('Error fetching profile:', profileError);
+      return NextResponse.json({ error: 'Profile not found' }, { status: 404 });
+    }
+
+    const brandId = profile.brand_id;
 
     let summary;
 
