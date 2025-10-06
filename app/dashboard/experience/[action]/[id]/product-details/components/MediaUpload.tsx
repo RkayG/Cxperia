@@ -11,10 +11,7 @@ import UploadTips from './UploadTips';
 const MediaUpload: React.FC<MediaUploadProps> = ({ images, onImagesUpdate, errors }) => {
 
   const [dragActive, setDragActive] = useState(false);
-  console.log('MediaUpload images:', images);
-  console.log('MediaUpload images type:', typeof images);
-  console.log('MediaUpload images length:', images?.length);
-  console.log('MediaUpload first image:', images?.[0]);
+ 
   // Preset images from fetched experience if available (convert URLs to UploadedImage objects)
   React.useEffect(() => {
     if (images && images.length > 0) {

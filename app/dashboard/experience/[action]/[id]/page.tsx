@@ -56,7 +56,7 @@ const ExperienceFlowPageContent: React.FC = () => {
             Design a tailored post-purchase journey for your product, from detailed info to engaging interactions.
           </p>
           {/* Step Indicator */}
-          <div className="mt-6 md:mt-8 md:px-8">
+          <div className="mt-6 md:mt-8 ">
             <StepIndicator currentStep={currentStepIndex + 1} steps={indicatorSteps} />
           </div>
         </div>

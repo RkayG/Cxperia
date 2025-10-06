@@ -42,7 +42,7 @@ const ClientTutorialsWrapper: React.FC<ClientTutorialsWrapperProps> = ({
   }
 
   return (
-    <div className="flex min-h-screen justify-center bg-gray-100 font-sans" style={{ backgroundColor: color }}>
+    <div className="flex min-h-screen mb-32 justify-center bg-gray-100 font-sans" style={{ backgroundColor: color }}>
       <div className="mx-auto w-full max-w-xl overflow-hidden bg-gray-50 shadow-lg">
         <SectionHeader
           title="Tutorials & Routines"

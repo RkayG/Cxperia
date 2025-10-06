@@ -74,7 +74,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ exp
   const user = await getCurrentUser()
   const experience_id = expId
   const brand_id = user?.brand_id
-  const { feature_name, is_enabled } = await req.json() as any
+  const requestBody = await req.json() as any;
+  const { feature_name, is_enabled } = requestBody;
+  
+  console.log('Request body:', requestBody);
+  console.log('Extracted feature_name:', feature_name);
+  console.log('Extracted is_enabled:', is_enabled);
 
   if (!experience_id) {
     return NextResponse.json({ success: false, message: 'experience_id is required in URL params' }, { status: 400 })
@@ -89,8 +94,19 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ exp
       return NextResponse.json({ success: false, message: 'Forbidden: You do not have access to this experience.' }, { status: 403 })
     }
 
+    console.log('Received feature_name:', JSON.stringify(feature_name));
+    console.log('feature_name type:', typeof feature_name);
+    console.log('feature_name length:', feature_name?.length);
+    console.log('ALLOWED_FEATURES:', ALLOWED_FEATURES);
+    console.log('Is feature_name in ALLOWED_FEATURES?', ALLOWED_FEATURES.includes(feature_name));
+    
+    // Check for exact matches
+    for (const allowed of ALLOWED_FEATURES) {
+      console.log(`Comparing "${feature_name}" with "${allowed}":`, feature_name === allowed);
+    }
+    
     if (!ALLOWED_FEATURES.includes(feature_name)) {
-      return NextResponse.json({ success: false, message: 'Invalid feature_name. Not in allowed features.' }, { status: 400 })
+      return NextResponse.json({ success: false, message: `Invalid feature_name '${feature_name}'. Not in allowed features: ${ALLOWED_FEATURES.join(', ')}` }, { status: 400 })
     }
 
     // Check if feature already exists (custom upsert logic from original controller)

@@ -171,7 +171,7 @@ const ProductUsageModal: React.FC<CosmeticProductModalProps> = ({
   // Effect for API response feedback and closing
   useEffect(() => {
     if (isSuccess) {
-      showToast.success("Instructions saved! 🎉");
+      showToast.success("Instructions saved!");
       if (onFeatureEnable) onFeatureEnable();
       if (!inline && onClose) onClose(); 
       if (!inline) setInternalOpen(false);

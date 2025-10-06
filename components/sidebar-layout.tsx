@@ -290,7 +290,7 @@ export default function SidebarLayout(props: {
         />
       </div>
       <div className="flex flex-col flex-grow w-0 lg:ml-[240px]" suppressHydrationWarning>
-        <div className="h-14 border-b flex items-center justify-between bg-white dark:bg-black px-4 md:px-6 fixed top-0 right-0 left-0 lg:left-[240px] z-20" suppressHydrationWarning>
+        <div className="h-14 border-b flex items-center justify-between bg-white dark:bg-black px-4 md:px-6 fixed top-0 right-0 left-0 lg:left-[240px] z-50" suppressHydrationWarning>
           <div className="hidden lg:flex">
             <Suspense fallback={<div className="h-6 w-32 bg-gray-200 animate-pulse rounded"></div>}>
               <HeaderBreadcrumb baseBreadcrumb={props.baseBreadcrumb} basePath={props.basePath} items={props.items} />
@@ -319,7 +319,7 @@ export default function SidebarLayout(props: {
               </SheetContent>
             </Sheet>
 
-            <div className="ml-4 flex lg:hidden">
+            <div className="ml-4 flex z-50 lg:hidden">
               <Suspense fallback={<div className="h-6 w-32 bg-gray-200 animate-pulse rounded"></div>}>
                 <HeaderBreadcrumb baseBreadcrumb={props.baseBreadcrumb} basePath={props.basePath} items={props.items} />
               </Suspense>

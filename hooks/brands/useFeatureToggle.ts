@@ -28,16 +28,6 @@ const DEFAULT_FEATURE_SETTINGS: FeatureSettings = {
   productUsage: false,
 };
 
-function callMutateAsync(mutation: any, variables: any) {
-  if (!mutation) return Promise.resolve();
-  if (typeof mutation.mutateAsync === "function") return mutation.mutateAsync(variables);
-  return new Promise((resolve, reject) => {
-    mutation.mutate(variables, {
-      onSuccess: (data: any) => resolve(data),
-      onError: (err: any) => reject(err),
-    });
-  });
-}
 
 export function useFeatureToggles(
   experienceId: string,
@@ -47,9 +37,9 @@ export function useFeatureToggles(
   const disableFeatureMutation = useDisableFeature(experienceId || "");
 
   const featuresFromApi = useMemo(() => {
-    if (!featuresApiData || !Array.isArray(featuresApiData.data)) return null;
+    if (!featuresApiData || !(featuresApiData as any).data || !Array.isArray((featuresApiData as any).data)) return null;
     const parsed: any = {};
-    for (const f of featuresApiData.data) parsed[f.feature_name] = !!f.is_enabled;
+    for (const f of (featuresApiData as any).data) parsed[f.feature_name] = !!f.is_enabled;
     return parsed as FeatureSettings;
   }, [featuresApiData]);
 
@@ -60,49 +50,78 @@ export function useFeatureToggles(
   }, [featuresFromApi]);
 
   const enableFeatureAsync = useCallback(async (featureName: string) => {
-    if (!experienceId) return;
+    console.log('enableFeatureAsync called with:', { featureName, experienceId });
+    console.log('enableFeatureMutation:', enableFeatureMutation);
+    
+    if (!experienceId) {
+      console.log('No experienceId, returning early');
+      return;
+    }
+    
+    if (!enableFeatureMutation) {
+      console.error('enableFeatureMutation is not available');
+      throw new Error('Enable feature mutation not available');
+    }
+    
     try {
-      await callMutateAsync(enableFeatureMutation, { experienceId, featureName });
-      refetchFeatures?.();
+      console.log('Calling enableFeatureMutation.mutateAsync with:', { experienceId, featureName });
+      await enableFeatureMutation.mutateAsync({ experienceId, featureName });
+      console.log('Enable feature mutation completed successfully');
     } catch (err) {
       // keep error handling lightweight here; callers can handle UI notifications
       // eslint-disable-next-line no-console
       console.error("enableFeatureAsync error", err);
       throw err;
     }
-  }, [experienceId, enableFeatureMutation, refetchFeatures]);
+  }, [experienceId, enableFeatureMutation]);
 
-  const disableFeatureAsync = useCallback(async (idOrName: number | string) => {
+  const disableFeatureAsync = useCallback(async (idOrName: string) => {
     try {
-      if (typeof idOrName === "number") {
-        await callMutateAsync(disableFeatureMutation, idOrName);
-      } else if (experienceId) {
-        // optimistic path: enable to get an id, then disable
-        const res: any = await callMutateAsync(enableFeatureMutation, { experienceId, featureName: idOrName });
-        const id = res?.data?.id;
-        if (id) await callMutateAsync(disableFeatureMutation, id);
+      if (experienceId) {
+        // Find the existing feature by name first
+        const found = (featuresApiData as any)?.data?.find?.((f: any) => f.feature_name === idOrName && f.is_enabled);
+        if (found) {
+          console.log('Found existing feature to disable:', found.id);
+          await disableFeatureMutation.mutateAsync(found.id);
+        } else {
+          console.log('No existing feature found to disable for:', idOrName);
+          // Feature doesn't exist, nothing to disable
+        }
       }
-      refetchFeatures?.();
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error("disableFeatureAsync error", err);
       throw err;
     }
-  }, [disableFeatureMutation, enableFeatureMutation, experienceId, refetchFeatures]);
+  }, [disableFeatureMutation, experienceId, featuresApiData]);
 
   const onToggleCore = useCallback(async (featureId: string, enabled: boolean) => {
+    console.log('onToggleCore called with:', { featureId, enabled, experienceId });
+    
     // keep local state consistent
     setFeatureSettings(prev => ({ ...prev, [featureId]: enabled }));
 
     if (enabled) {
-      await enableFeatureAsync(featureId);
+      console.log('Enabling feature via API:', featureId);
+      try {
+        await enableFeatureAsync(featureId);
+        console.log('Feature enabled successfully:', featureId);
+      } catch (error) {
+        console.error('Failed to enable feature:', featureId, error);
+        throw error;
+      }
       return;
     }
 
-    // disabling: find backend-enabled feature id if present
-    const found = featuresApiData?.data?.find?.((f: any) => f.feature_name === featureId && f.is_enabled);
-    if (found) await disableFeatureAsync(found.id);
-    else await disableFeatureAsync(featureId);
+    // disabling: use the feature name directly
+    console.log('Disabling feature via API:', featureId);
+    try {
+      await disableFeatureAsync(featureId);
+      console.log('Feature disabled successfully:', featureId);
+    } catch (error) {
+      console.error('Failed to disable feature:', featureId, error);
+      throw error;
+    }
   }, [enableFeatureAsync, disableFeatureAsync, featuresApiData]);
 
   return {

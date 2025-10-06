@@ -57,13 +57,7 @@ export default function PreviewPage() {
   return (
     <div className="">
       <ScrollToTop />
-      <button
-        onClick={() => router.push("/create-experience/customize-features")}
-        className="w-fit px-8 py-3  flex justify-left mb-3   text-gray-800 font-medium rounded-xl  transition-colors duration-200"
-      >
-        <ChevronLeft className="mr-2" size={20} />
-        Back
-      </button>
+      
       <div className="min-h-screen bg-gray-50 border items-center justify-center rounded-2xl p-4 sm:p-6 lg:p-8 flex flex-col">
         {/* Header */}
         <div className="mb-8">

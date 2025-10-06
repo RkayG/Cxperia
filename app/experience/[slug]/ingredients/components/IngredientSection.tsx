@@ -30,7 +30,8 @@ const IngredientsSection: React.FC = () => {
   }, {});
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+    experience && ingredients.length > 0 && (
+    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 mb-32">
       {/* Header with improved styling */}
      
         <div className="flex items-center gap-3">
@@ -143,6 +144,7 @@ const IngredientsSection: React.FC = () => {
         </div>
       )}
     </div>
+    )
   );
 };
 

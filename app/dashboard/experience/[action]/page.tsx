@@ -43,7 +43,7 @@ const CreateExperiencePage: React.FC = () => {
             Design a tailored post-purchase journey for your product, from detailed info to engaging interactions.
           </p>
           {/* Step Indicator - always on step 1 here */}
-          <div className="mt-8 md:px-8">
+          <div className="mt-8 ">
             <StepIndicator currentStep={1} steps={steps} />
           </div>
         </div>

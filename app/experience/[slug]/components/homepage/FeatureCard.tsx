@@ -24,7 +24,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ iconSrc, label, isHighlighted
         {/* Icon container */}
         <div className={`relative mb-4 p-2 bg-white rounded-full border-2 border-purple-800 transition-all duration-300 bg-white shadow group-hover:shadow-md group-hover:scale-105`}>
           {/* Icon subtle effect */}
-          <img
+            <img
             src={iconSrc}
             alt={label + ' icon'}
             className="relative z-10 w-20 h-20 object-contain mx-auto"

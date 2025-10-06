@@ -4,7 +4,6 @@ import { useInstructions } from '@/hooks/brands/useFeatureApi';
 // import { useInstructions } from '../../../hooks/useFeatureApi';
 // import { useExperienceContext } from '../../../context/ExperienceContext';
 
-import CosmeticProductModal from './ApplicationTips'
 import ProductUsageModal from './usageModal';
 
 
@@ -34,7 +33,7 @@ const DigitalInstructionsModal: React.FC<DigitalInstructionsModalProps> = ({
   onFeatureEnable,
   productName,
 }) => {
-  console.log('DigitalInstructionsModal rendered with experienceId:', experienceId);
+  //console.log('DigitalInstructionsModal rendered with experienceId:', experienceId);
   const { data: fetchedInstructions } = useInstructions(experienceId);
   const [instructions, setInstructions] = useState<any>(initialInstructions);
   
@@ -45,7 +44,7 @@ const DigitalInstructionsModal: React.FC<DigitalInstructionsModalProps> = ({
       setInstructions(fetchedInstructions);
     }
   }, [fetchedInstructions, experienceId]);
-  console.log('Fetched instructions:', fetchedInstructions);
+    //console.log('Fetched instructions:', fetchedInstructions);
 
   if (!isOpen) return null;
 

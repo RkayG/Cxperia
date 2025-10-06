@@ -23,7 +23,7 @@ export function useEnableFeature() {
 export function useDisableFeature(experienceId: string) {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: (featureId: string) => api.disableFeature(featureId),
+		mutationFn: (featureId: string) => api.disableFeature(experienceId, featureId),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['features', experienceId] });
 		},
@@ -35,7 +35,7 @@ export function useUpdateFeature(experienceId: string) {
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: ({ featureId, data }: { featureId: string; data: any }) =>
-			api.updateFeature(featureId, data),
+			api.updateFeature(experienceId, featureId, data),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['features', experienceId] });
 		},

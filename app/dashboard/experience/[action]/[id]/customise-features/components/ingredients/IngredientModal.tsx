@@ -114,10 +114,9 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
         selectedFunction: ing.function || ing.func || undefined,
       }));
       setIngredients(mapped);
-      console.log("Fetched and mapped ingredients:", mapped);
+      //console.log("Fetched and mapped ingredients:", mapped);
     }
   }, [fetchedIngredients]);
- console.log(ingredients)
   // Derived state for summary
   const totalIngredients = ingredients.length;
   const allergens = ingredients.filter((ing) => ing.isAllergen).length;
@@ -160,7 +159,7 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
   };
 
   const handleAddIngredient = (ingredient: any) => {
-    console.log("Full backend ingredient data:", ingredient);
+    //console.log("Full backend ingredient data:", ingredient);
     const newIngredient = {
       id:
         ingredient.id ||
@@ -172,7 +171,7 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
       category: ingredient.category || "",
       all_functions: ingredient.all_functions || [],
     };
-    console.log("Adding ingredient:", newIngredient);
+    //console.log("Adding ingredient:", newIngredient);
     setIngredients((prev) => [...prev, newIngredient]);
     setEditingIngredientId(null);
     setShowQuickAdd(false);
@@ -266,7 +265,7 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
     setSaving(true);
 
     if (experienceId) {
-      console.log("Saving ingredients for experience:", experienceId);
+    //console.log("Saving ingredients for experience:", experienceId);
       try {
         const payload = optimistic.map((ing) => ({
           experience_id: experienceId,
@@ -309,7 +308,7 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
           if (onFeatureEnable) {
             onFeatureEnable();
           }
-          showToast.success("Ingredients saved successfully! 🎉");
+          showToast.success("Ingredients saved successfully!");
           setSaving(false);
           onClose();
           return;

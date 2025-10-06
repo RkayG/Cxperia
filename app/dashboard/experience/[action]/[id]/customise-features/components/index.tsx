@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { FaBoxOpen } from "react-icons/fa";
 import EmptyCatalogModal from "@/components/EmptyCatalogModal";
 import ScrollToTop from "@/components/ScrollToTop";
-import { useTutorials } from "@/hooks/brands/useFeatureApi";
+import { useTutorials, useInstructions } from "@/hooks/brands/useFeatureApi";
 import { useFeatureToggles } from "@/hooks/brands/useFeatureToggle";
 import { useExperienceStore } from "@/store/brands/useExperienceStore";
 import type { FeatureSettings } from "@/types/productExperience";
@@ -70,6 +70,9 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
   // Fetchers
  // const { data: productsData = [] } = useProducts();
   const { data: tutorialsData = [] } = useTutorials();
+  const { data: instructionsData } = useInstructions(experienceId);
+  // Debug: Log fetched data
+  console.log('Fetched instructions data:', instructionsData);
 
   // Central feature hook (fallback to old logic if no store features)
   const { featureSettings, setFeatureSettings, onToggleCore } = useFeatureToggles(experienceId);
@@ -107,17 +110,27 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
   }, [onToggleCore, setFeatureSettings, closeModal, experienceId, setFeaturesForExperience, currentFeatureSettings, featureSettings]);
 
   const handleSaveDigitalInstructions = useCallback(async (instructions: any[], onFeatureEnable?: () => void) => {
-    if (!Array.isArray(instructions) || instructions.length === 0) return;
+    console.log('handleSaveDigitalInstructions called with:', { instructions, experienceId });
+    if (!Array.isArray(instructions) || instructions.length === 0) {
+      console.log('No instructions provided, returning early');
+      return;
+    }
+    
+    console.log('Setting productUsage to true in local state');
     setFeatureSettings(prev => ({ ...prev, productUsage: true }));
-    if (onFeatureEnable) onFeatureEnable();
-    closeModal("digitalInstructions");
-    await onToggleCore("productUsage", true);
+    
+    if (onFeatureEnable) {
+      console.log('Calling onFeatureEnable callback');
+      onFeatureEnable();
+    }
+    
     // Also update global store
+    console.log('Updating global store with productUsage=true');
     setFeaturesForExperience(experienceId, {
       ...((currentFeatureSettings || featureSettings) as FeatureSettings),
       productUsage: true,
     });
-  }, [onToggleCore, setFeatureSettings, closeModal, experienceId, setFeaturesForExperience, currentFeatureSettings, featureSettings]);
+  }, [setFeatureSettings, experienceId, setFeaturesForExperience, currentFeatureSettings, featureSettings]);
 
   const handleSaveCustomerSupport = useCallback(async (payload: any) => {
     if (!payload || Object.keys(payload).length === 0) return;
@@ -197,7 +210,7 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
   }, [tutorialsData, onToggleCore, openModal, experienceId, setFeaturesForExperience, currentFeatureSettings, featureSettings]);
 
   const experienceOverview = useMemo(() => {
-    console.log('Creating experienceOverview with experienceData:', experienceData);
+    //console.log('Creating experienceOverview with experienceData:', experienceData);
     return {
       experienceName: experienceData.name,
       shortTagline: experienceData.tagline,
@@ -299,22 +312,36 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
         onSaveCustomerSupport={handleSaveCustomerSupport}
         onAutoEnableCustomerService={handleAutoEnableCustomerService}
         onIngredientFeatureEnable={handleIngredientFeatureEnable}
-        onFeatureEnable={() => {
+        onFeatureEnable={async () => {
+          console.log('onFeatureEnable callback called for productUsage');
           setFeatureSettings(prev => ({ ...prev, productUsage: true }));
           setFeaturesForExperience(experienceId, {
             ...((currentFeatureSettings || featureSettings) as FeatureSettings),
             productUsage: true,
           });
           closeModal("digitalInstructions");
+          
+          // Also enable the feature via API
+          try {
+            await onToggleCore("productUsage", true);
+            console.log('Feature enabled via API in onFeatureEnable callback');
+          } catch (error) {
+            console.error('Failed to enable feature in onFeatureEnable callback:', error);
+          }
         }}
         ingredients={[]}
-        digitalInstructions={[]}
+        digitalInstructions={(instructionsData as any)?.data || []}
         customerSupportLinks={{
           liveChatWidgetUrl: "",
           whatsAppNumber: "",
           supportEmail: "",
           faqPageUrl: "",
-          automaticIntegration: false
+          automaticIntegration: true,
+          facebookUrl: "",
+          instagramUrl: "",
+          twitterUrl: "",
+          tiktokUrl: "",
+          youtubeUrl: "",
         }}
       />
 

@@ -15,7 +15,7 @@ interface InstructionsSectionProps {
 const InstructionsSection: React.FC<InstructionsSectionProps> = ({ color }) => {
   const { experience } = usePublicExpStore();
   const instructions = experience?.data?.digital_instructions[0];
-  console.log("Instructions data:", instructions);
+    //console.log("Instructions data:", instructions);
   if (!instructions) return null;
 
   // Parse skin_type if it's a stringified array
@@ -75,7 +75,7 @@ const InstructionsSection: React.FC<InstructionsSectionProps> = ({ color }) => {
   }
 
   return (
-    <div className="bg-white overflow-hidden">
+    <div className="bg-white overflow-hidden mb-32">
       {/* Header */}
       <div className="border-b border-gray-200 p-4">
         <h2 className="text-xl font-semibold text-left" style={{ color }}>

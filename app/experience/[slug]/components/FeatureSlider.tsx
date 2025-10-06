@@ -1,12 +1,12 @@
 "use client";
-import { useRouter } from "next/navigation";
 import React, { useMemo, useState } from "react";
 import { usePublicExpStore } from '@/store/public/usePublicExpStore';
+import { GiEnvelope, GiPhone, GiNotebook, GiPerfumeBottle } from "react-icons/gi";
 
 // Map backend feature_name to frontend label
 const featureNameToLabel: Record<string, string> = {
-  ingredientList: "See Ingredients",
-  productUsage: "See Instructions",
+  ingredientList: "Ingredient Breakdown",
+  productUsage: "Usage Instructions",
   feedbackForm: "Share Feedback",
   /* skinRecommendations: "Skin Recommendations", */
   tutorialsRoutines: "Tutorials & Routines",
@@ -15,27 +15,25 @@ const featureNameToLabel: Record<string, string> = {
 };
 
 const allFeatures = [
-  { icon: "/icons/ingredients.png", label: "See Ingredients", highlighted: true },
+  { icon: GiPerfumeBottle, label: "Ingredient Breakdown", highlighted: true },
   {
-    icon: "/icons/product-usage.png",
-    label: "See Instructions",
+    icon: GiNotebook,
+    label: "Usage Instructions",
     highlighted: true,
   },
-  { icon: "/icons/beauty-tips.png", label: "Beauty Tips" },
-  { icon: "/icons/feedback.png", label: "Share Feedback" },
-  {
-    icon: "/icons/skin-diagnosis.png",
-    label: "See Skin Recommendations",
-    highlighted: true,
-  },
-  { icon: "/icons/tutorial.png", label: "Tutorials & Routines" },
-  { icon: "/icons/customer-support.png", label: "Customer Support" },
+    { icon: GiEnvelope, label: "Share Feedback" },
+  { icon: GiNotebook, label: "Tutorials & Routines" },
+  { icon: GiPhone, label: "Customer Support" },
 ];
+type ActiveSection = 'home' | 'ingredients' | 'feedback' | 'usage-instructions' | 'support-channels' | 'tutorials';
+
+interface FeatureSliderProps {
+  onSectionChange: (section: ActiveSection) => void;
+}
 
 
-const FeatureSlider: React.FC = () => {
-  const router = useRouter();
-  const {color, slug, experience} = usePublicExpStore();
+const FeatureSlider: React.FC<FeatureSliderProps> = ({ onSectionChange }) => {
+  const {color, experience} = usePublicExpStore();
   const [hoveredFeature, setHoveredFeature] = useState<string | null>(null);
 
   // Get enabled feature labels from backend data
@@ -51,28 +49,23 @@ const FeatureSlider: React.FC = () => {
     return allFeatures.filter((f) => enabledLabels.includes(f.label));
   }, [enabledLabels]);
 
-  // Navigation handlers - using router.push for proper navigation
+  // Navigation handlers - using onSectionChange for instant navigation
   const navigateToFeature = (label: string) => {
-    if (!slug) return;
-    
     switch (label) {
       case "Share Feedback":
-        router.push(`/experience/${slug}/feedback`);
+        onSectionChange('feedback');
         break;
-      case "See Instructions":
-        router.push(`/experience/${slug}/usage-instructions`);
+      case "Usage Instructions":
+        onSectionChange('usage-instructions');
         break;
-      case "See Ingredients":
-        router.push(`/experience/${slug}/ingredients`);
+      case "Ingredient Breakdown":
+        onSectionChange('ingredients');
         break;
       case "Customer Support":
-        router.push(`/experience/${slug}/support-channels`);
+        onSectionChange('support-channels');
         break;
       case "Tutorials & Routines":
-        router.push(`/experience/${slug}/tutorials`);
-        break;
-      case "See Skin Recommendations":
-        router.push(`/experience/${slug}/skin-recommendations`);
+        onSectionChange('tutorials');
         break;
       default:
         return;
@@ -86,7 +79,7 @@ const FeatureSlider: React.FC = () => {
       {/* Cool headline */}
       <div className="text-center mb-6 mt-4 px-2">
         <h2 className="text-lg font-bold text-gray-800 mb-2">
-          We have prepared these specially for you ✨
+          We have prepared something extra special for you ✨
         </h2>
         <p className="text-sm text-gray-600 italic">
           Which would you like to explore first?
@@ -95,7 +88,7 @@ const FeatureSlider: React.FC = () => {
 
       {/* Compact Features Grid - 4 per row */}
       <div className="px-4">
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 gap-2">
           {features.map((feature, index) => (
             <div
               key={feature.label}
@@ -107,7 +100,7 @@ const FeatureSlider: React.FC = () => {
               <div
                 className="relative rounded-xl p-3 shadow-sm cursor-pointer transition-all duration-300 hover:shadow-md hover:scale-105"
                 style={{
-                  backgroundColor: hoveredFeature === feature.label ? 'white' : `${color}15`,
+                  backgroundColor: hoveredFeature === feature.label ? 'white' : `${color}`,
                   borderColor: hoveredFeature === feature.label ? '#e5e7eb' : color,
                 }}
               >
@@ -121,11 +114,10 @@ const FeatureSlider: React.FC = () => {
                 <div className="relative z-10 flex flex-col items-center">
                   <div
                     className="w-8 h-8 rounded-lg flex items-center justify-center mb-2 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3"
-                    style={{ backgroundColor: `${color}20` }}
+                    style={{ backgroundColor: `white` }}
                   >
-                    <img
-                      src={feature.icon}
-                      alt={feature.label}
+                      <feature.icon
+                      aria-label={feature.label + ' icon'}
                       className="w-5 h-5 object-contain"
                     />
                   </div>
@@ -134,7 +126,7 @@ const FeatureSlider: React.FC = () => {
                   <span 
                     className="text-xs font-medium text-center leading-tight transition-colors duration-300"
                     style={{ 
-                      color: hoveredFeature === feature.label ? '#374151' : color 
+                      color: hoveredFeature === feature.label ? '#374151' : 'white'
                     }}
                   >
                     {feature.label}
@@ -163,7 +155,7 @@ const FeatureSlider: React.FC = () => {
             backgroundSize: "200% 200%",
             animation: "shimmer 3s infinite",
           }}
-          onClick={() => slug && router.push(`/experience/${slug}`)}
+          onClick={() => onSectionChange('home')}
         >
           <span className="relative z-10 font-bold" style={{ color: 'white'}}>
             Start Your Journey →

@@ -8,8 +8,8 @@ import { GiEnvelope } from 'react-icons/gi';
 
 // Map backend feature_name to frontend label
 const featureNameToLabel: Record<string, string> = {
-  ingredientList: 'Ingredients',
-  productUsage: 'Instructions',
+  ingredientList: 'Ingredient Breakdown',
+  productUsage: 'Usage Instructions',
   feedbackForm: 'Feedback',
   skinRecommendations: 'Skin Recommendations',
   tutorialsRoutines: 'Tutorials & Routines',
@@ -18,14 +18,11 @@ const featureNameToLabel: Record<string, string> = {
 };
 
 const allFeatures = [
-  { id: 'ingredients', icon: GiPerfumeBottle, label: 'Ingredients', description: 'Discover what makes it special', path: 'ingredients', highlighted: true },
-  { id: 'instructions', icon: GiNotebook, label: 'Instructions', description: 'How to use the product', path: 'usage-instructions', highlighted: true },
-  { id: 'beauty-tips', icon: GiEnvelope, label: 'Beauty Tips', description: 'Tips for best results', path: 'beauty-tips' },
+  { id: 'ingredients', icon: GiPerfumeBottle, label: 'Ingredient Breakdown', description: 'Discover what makes it special', path: 'ingredients', highlighted: true },
+  { id: 'instructions', icon: GiNotebook, label: 'Usage Instructions', description: 'How to use the product', path: 'usage-instructions', highlighted: true },
   { id: 'feedback', icon: GiEnvelope, label: 'Feedback', description: 'Share your thoughts', path: 'feedback' },
   /* { id: 'skin-recommendations', icon: GiBeaker, label: 'Skin Recommendations', description: 'Personalized advice', path: 'skin-recommendations', highlighted: true }, */
   { id: 'tutorials', icon: GiNotebook, label: 'Tutorials & Routines', description: 'Watch and learn', path: 'tutorials' },
-  { id: 'digital-instructions', icon: GiNotebook, label: 'Digital Instructions', description: 'Step-by-step digital guide', path: 'digital-instructions' },
-  { id: 'loyalty', icon: GiNotebook, label: 'Loyalty Program', description: 'Earn rewards', path: 'loyalty' },
   { id: 'customer-support', icon: GiPhone, label: 'Customer Support', description: 'Get help or contact us', path: 'support-channels' },
 ];
 
@@ -77,7 +74,7 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({ onSectionChange }) => {
   }, [enabledLabels]);
 
   return (
-    <div className="relative overflow-y-auto mb-32">
+    <div className="relative overflow-y-auto mb-32 mt-16">
       {/* Background decoration */}
       <div className="absolute inset-0 bg-gray-50"></div>
       {/* Main container */}

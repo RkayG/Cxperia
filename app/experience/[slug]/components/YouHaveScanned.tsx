@@ -5,7 +5,13 @@ import UnpackingLoader  from '@/app/experience/[slug]/components/UnpackingLoader
 import { usePublicExpStore } from '@/store/public/usePublicExpStore';
 import FeatureSlider from "./FeatureSlider";
 
-const YouHaveScanned: React.FC = () => {
+type ActiveSection = 'home' | 'ingredients' | 'feedback' | 'usage-instructions' | 'support-channels' | 'tutorials';
+
+interface YouHaveScannedProps {
+  onSectionChange?: (section: ActiveSection) => void;
+}
+
+const YouHaveScanned: React.FC<YouHaveScannedProps> = ({ onSectionChange }) => {
   const experience = usePublicExpStore((state) => state.experience);
   const product = usePublicExpStore((state) => state.product) || {};
   const brandLogo = usePublicExpStore((state) => state.brandLogo) || "";
@@ -148,7 +154,7 @@ const YouHaveScanned: React.FC = () => {
               </div>
             )}
 
-            <FeatureSlider />
+            <FeatureSlider onSectionChange={onSectionChange || (() => {})} />
           </div>
           
         </div>

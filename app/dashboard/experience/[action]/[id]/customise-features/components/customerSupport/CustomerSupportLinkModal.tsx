@@ -7,8 +7,6 @@ import type { CustomerSupportLinksData, CustomerSupportLinksModalProps } from "@
 import { showToast } from "@/utils/toast";
 import IntegrationSettings from "./IntegrationSettings";
 import { validateField } from "./ValidationUtils";
-// If you have a TikTok icon, import it, else use Video as fallback
-// TikTok icon not available in lucide-react; use Video as fallback
 
 const CustomerSupportLinksModal: React.FC<CustomerSupportLinksModalProps & { onAutoEnableFeature?: () => void }> = ({
   isOpen = true,
@@ -43,7 +41,6 @@ const CustomerSupportLinksModal: React.FC<CustomerSupportLinksModalProps & { onA
 
   // Fetch customer support links for brand (backend gets brandId from req.user)
   const { data: brandLinksData, isLoading: isBrandLinksLoading } = useCustomerSupportLinksByBrand();
-  console.log('Fetched brand support links:', brandLinksData);  
   // Type guard to ensure initialData is CustomerSupportLinksData
   const safeInitialData: Partial<CustomerSupportLinksData> = initialData && typeof initialData === 'object' ? initialData : {};
   const [formData, setFormData] = useState<CustomerSupportLinksData>({
@@ -67,10 +64,15 @@ const CustomerSupportLinksModal: React.FC<CustomerSupportLinksModalProps & { onA
 
   // Prefill formData when brandLinksData is loaded
   useEffect(() => {
-    if (brandLinksData && Array.isArray(brandLinksData)) {
+    
+    // Handle the correct data structure: {success: true, data: Array(1)}
+    const linksArray = (brandLinksData as any)?.data || brandLinksData;
+    
+    if (linksArray && Array.isArray(linksArray)) {
+      
       // Map backend links to form fields
       const mapped: Partial<CustomerSupportLinksData> = {};
-      brandLinksData.forEach((link: any) => {
+      linksArray.forEach((link: any) => {
         switch (link.type) {
           case 'whatsapp': mapped.whatsAppNumber = link.value; break;
           case 'email': mapped.supportEmail = link.value; break;
@@ -80,15 +82,20 @@ const CustomerSupportLinksModal: React.FC<CustomerSupportLinksModalProps & { onA
           case 'twitter': mapped.twitterUrl = link.value; break;
           case 'tiktok': mapped.tiktokUrl = link.value; break;
           case 'youtube': mapped.youtubeUrl = link.value; break;
-          default: break;
+          default: 
+            break;
         }
       });
+      
+      
       setFormData({
         ...defaultData,
         ...mapped,
         automaticIntegration: true
       });
       // No auto-enable logic here; rely on backend state only
+    } else {
+      // do nothing
     }
   }, [brandLinksData]);
 
@@ -164,20 +171,7 @@ const CustomerSupportLinksModal: React.FC<CustomerSupportLinksModalProps & { onA
 
 
   if (!isOpen) return null;
-  if (isBrandLinksLoading) {
-    return (
-      <Drawer open={true} onOpenChange={onClose}>
-        <DrawerContent>
-          <div className="flex items-center bg-gray-50 justify-center p-8">
-            <div className="bg-white rounded-2xl shadow-2xl p-12 text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-purple-500 mx-auto mb-4" />
-              <div className="text-lg text-purple-700 font-semibold">Loading support links...</div>
-            </div>
-          </div>
-        </DrawerContent>
-      </Drawer>
-    );
-  }
+
 
   const supportFields: Array<{
     id: keyof CustomerSupportLinksData;

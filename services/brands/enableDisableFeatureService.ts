@@ -7,12 +7,28 @@ console.log('[enableDisableFeatureService] loaded');
 // Service for Experience Feature API calls (modeled after featureService.ts)
 // Add/enable a feature for an experience
 export async function enableFeature(experienceId: string, featureName: string) {
+	console.log('enableFeature called with:', { experienceId, featureName });
+	const endpoint = endpoints.FEATURE.ENABLE(experienceId);
+	console.log('API endpoint:', endpoint);
+	console.log('Full URL would be:', typeof window !== 'undefined' ? `${window.location.origin}${endpoint}` : `http://localhost:3000${endpoint}`);
+	
 	const res = await fetch(endpoints.FEATURE.ENABLE(experienceId), {
 		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
 		body: JSON.stringify({ feature_name: featureName, is_enabled: true }),
 	});
+	
 	console.log('Enable feature response status:', res.status);
-	return res.json();
+	const responseData = await res.json();
+	console.log('Enable feature response data:', responseData);
+	
+	if (!res.ok) {
+		throw new Error(`Failed to enable feature: ${responseData.message || 'Unknown error'}`);
+	}
+	
+	return responseData;
 }
 
 // Disable a feature by featureId (delete)
