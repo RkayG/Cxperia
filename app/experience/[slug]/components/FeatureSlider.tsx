@@ -1,5 +1,6 @@
 "use client";
 import React, { useMemo, useState } from "react";
+import Link from "next/link";
 import { usePublicExpStore } from '@/store/public/usePublicExpStore';
 import { GiEnvelope, GiPhone, GiNotebook, GiPerfumeBottle } from "react-icons/gi";
 

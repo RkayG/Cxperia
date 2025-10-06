@@ -22,10 +22,12 @@ interface ExperienceState {
   setIds: (experienceId: string | null, productId: string | null) => void;
   clearIds: () => void;
 
-  // Experience URL
-  experienceUrl: string | null;
-  setExperienceUrl: (url: string | null) => void;
+  // Experience URLs by ID
+  experienceUrls: { [experienceId: string]: string };
+  setExperienceUrl: (experienceId: string, url: string | null) => void;
   fetchExperienceUrl: (experienceId: string) => Promise<void>;
+  getExperienceUrl: (experienceId: string) => string | null;
+  clearExperienceUrl: (experienceId: string) => void;
 
   // Status
   isLoading: boolean;
@@ -98,7 +100,7 @@ export const useExperienceStore = create<ExperienceState>()(
       productId: null,
       isLoading: false,
       featuresByExperienceId: {},
-      experienceUrl: null,
+      experienceUrls: {},
 
       // Actions
       setExperienceData: (data, experienceId) => {
@@ -116,19 +118,54 @@ export const useExperienceStore = create<ExperienceState>()(
 
       clearIds: () => set({ experienceId: null, productId: null }),
 
-      setExperienceUrl: (url) => set({ experienceUrl: url }),
+      setExperienceUrl: (experienceId, url) => {
+        set((state) => ({
+          experienceUrls: {
+            ...state.experienceUrls,
+            [experienceId]: url || '',
+          },
+        }));
+      },
+
+      getExperienceUrl: (experienceId) => {
+        const state = get();
+        return state.experienceUrls[experienceId] || null;
+      },
+
+      clearExperienceUrl: (experienceId) => {
+        set((state) => {
+          const newUrls = { ...state.experienceUrls };
+          delete newUrls[experienceId];
+          return { experienceUrls: newUrls };
+        });
+      },
 
       fetchExperienceUrl: async (experienceId) => {
         set({ isLoading: true });
         try {
           const res = await experienceService.getExperienceUrl(experienceId);
-          if (res && res.experience_url) {
-            set({ experienceUrl: res.experience_url });
+          if (res && (res as any).experience_url) {
+            set((state) => ({
+              experienceUrls: {
+                ...state.experienceUrls,
+                [experienceId]: (res as any).experience_url,
+              },
+            }));
           } else {
-            set({ experienceUrl: null });
+            set((state) => ({
+              experienceUrls: {
+                ...state.experienceUrls,
+                [experienceId]: '',
+              },
+            }));
           }
         } catch (e) {
-          set({ experienceUrl: null });
+          set((state) => ({
+            experienceUrls: {
+              ...state.experienceUrls,
+              [experienceId]: '',
+            },
+          }));
         } finally {
           set({ isLoading: false });
         }
@@ -147,8 +184,8 @@ export const useExperienceStore = create<ExperienceState>()(
         try {
           const response = await experienceService.getById(experienceId);
           
-          if (response?.data) {
-            const experience = response.data;
+          if (response && (response as any).data) {
+            const experience = (response as any).data;
             
             // Map backend data to Experience type
             const mappedExperience: Experience = {
@@ -249,7 +286,7 @@ export const useExperienceStore = create<ExperienceState>()(
         productId: null,
         isLoading: false,
         featuresByExperienceId: {},
-        experienceUrl: null,
+        experienceUrls: {},
       }),
     }),
     {
@@ -261,7 +298,7 @@ export const useExperienceStore = create<ExperienceState>()(
         experienceId: state.experienceId,
         productId: state.productId,
         featuresByExperienceId: state.featuresByExperienceId,
-        experienceUrl: state.experienceUrl,
+        experienceUrls: state.experienceUrls,
         // Exclude isLoading from persistence
       }),
     }

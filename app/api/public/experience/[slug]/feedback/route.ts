@@ -32,7 +32,7 @@ export async function POST(
       .from('experiences')
       .select('id, brand_id, public_slug')
       .eq('public_slug', slug)
-      .eq('is_published', true) // Only allow feedback on published experiences
+     // .eq('is_published', true) // Only allow feedback on published experiences
       .single();
 
     if (expError || !experience) {

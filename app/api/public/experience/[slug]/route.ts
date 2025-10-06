@@ -10,12 +10,14 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
   const supabase = await createClient();
 
   if (!slug) {
+    console.log('Missing slug parameter');
     return NextResponse.json({ success: false, message: 'Missing slug parameter' }, { status: 400 });
   }
 
   // Security Check: Validate Secret Key
   const secret = req.headers.get('x-public-secret') || req.nextUrl.searchParams.get('secret');
   if (!secret || secret !== PUBLIC_EXPERIENCE_SECRET) {
+    console.log('Invalid secret');
     return NextResponse.json({ success: false, message: 'Invalid!!!' }, { status: 403 });
   }
 
@@ -40,6 +42,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
 
     if (expError) {
       if (expError.code === 'PGRST116') { // No rows found
+        console.log('Experience not found', expError);
         return NextResponse.json({ success: false, message: 'Not found' }, { status: 404 });
       }
       throw expError;
@@ -86,6 +89,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
     });
 
   } catch (error: any) {
+    console.log('Error getting public experience:', error.message);
     console.error('Error getting public experience:', error);
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }

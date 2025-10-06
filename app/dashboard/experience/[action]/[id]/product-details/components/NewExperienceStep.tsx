@@ -21,7 +21,7 @@ interface NewExperienceStepProps {
 const NewExperienceStep: React.FC<NewExperienceStepProps> = ({
   onNext,
   onSubmit,
-  buttonLabel = "Customise Features",
+  buttonLabel = "Features ->",
   isSubmitting = false,
 }) => {
   const router = useRouter();

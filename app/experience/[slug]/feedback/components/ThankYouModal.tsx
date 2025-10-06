@@ -17,7 +17,8 @@ const ThankYouModal: React.FC<ThankYouModalProps> = ({ isOpen, onClose, customer
   const handleContinueExploring = () => {
     onClose();
     if (slug) {
-      router.push(`/experience/${slug}/home`);
+      // Navigate to home section using URL parameter
+      router.push(`/experience/${slug}?section=home`);
     }
   };
 

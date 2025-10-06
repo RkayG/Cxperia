@@ -46,17 +46,18 @@ const BrandColorPicker: React.FC<ColorPickerProps> = ({
     }
   }, [selectedColor, experienceId]);
 
-  // Helper to update the preview iframe by refreshing it
-  const updatePreview = () => {
+  // Helper to update the preview iframe by adding color parameter
+  const updatePreview = (color: string) => {
     const iframe = document.querySelector('iframe[title="Live Customer Preview"]') as HTMLIFrameElement | null;
     if (iframe) {
       try {
-        // Simply refresh the iframe to get fresh backend data
-        // The experience page will read the color from backend, not URL params
-        iframe.src = iframe.src;
-        console.log('Preview refreshed to get fresh backend data');
+        // Add color parameter to the iframe URL for immediate color application
+        const url = new URL(iframe.src);
+        url.searchParams.set('color', color);
+        iframe.src = url.toString();
+        console.log('Preview updated with color parameter:', color);
       } catch (error) {
-        console.error('Error refreshing preview:', error);
+        console.error('Error updating preview:', error);
       }
     } else {
       console.warn('Preview iframe not found');
@@ -95,12 +96,16 @@ const presetColors: PresetColor[] = [
 
   const handlePresetColorSelect = (color: string) => {
     setSelectedColor(color);
+    // Update preview immediately for instant feedback
+    updatePreview(color);
   };
 
   const handleCustomColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const color = e.target.value;
     setCustomColor(color);
     setSelectedColor(color);
+    // Update preview immediately for instant feedback
+    updatePreview(color);
   };
 
 const generateRandomColor = () => {
@@ -121,23 +126,30 @@ const generateRandomColor = () => {
   const randomColor = colors[Math.floor(Math.random() * colors.length)] || '#8B5CF6';
   setCustomColor(randomColor);
   setSelectedColor(randomColor);
+  // Update preview immediately for instant feedback
+  updatePreview(randomColor);
 };
 
 
   const handleApply = async () => {
     setIsApplying(true);
     try {
-      // Call backend to persist theme and color first
-      if (experienceId) {
-        await experienceService.setThemeAndColor(experienceId, selectedTheme, selectedColor);
-        console.log('Theme and color saved successfully');
-        
-        // Add a small delay to ensure backend changes are propagated
-        await new Promise(resolve => setTimeout(resolve, 500));
-      }
+      // Update preview immediately with color parameter for instant feedback
+      updatePreview(selectedColor);
       
-      // Refresh the iframe to get fresh backend data
-      updatePreview();
+      // Call backend to persist theme and color in the background
+      if (experienceId) {
+        // Don't await this - let it run in background
+        experienceService.setThemeAndColor(experienceId, selectedTheme, selectedColor)
+          .then(() => {
+            console.log('Theme and color saved successfully to backend');
+          })
+          .catch((error) => {
+            console.error('Failed to save to backend:', error);
+            // You could add a toast notification here
+            // toast.error('Failed to save color to backend, but preview updated');
+          });
+      }
       
       // Optionally call onColorChange
       onColorChange?.(selectedColor);
@@ -147,16 +159,11 @@ const generateRandomColor = () => {
         onApply();
       }
       
-      // Show success feedback (optional)
+      // Show success feedback
       console.log('Brand color applied successfully:', selectedColor);
       
     } catch (error) {
       console.error('Failed to apply brand color:', error);
-      // Still try to refresh the preview even if backend fails
-      updatePreview();
-      
-      // You could add a toast notification here
-      // toast.error('Failed to save color, but preview updated');
     } finally {
       setIsApplying(false);
     }
@@ -283,6 +290,8 @@ const generateRandomColor = () => {
                     setCustomColor(e.target.value);
                     if (e.target.value.match(/^#[0-9A-F]{6}$/i)) {
                       setSelectedColor(e.target.value);
+                      // Update preview immediately for valid hex colors
+                      updatePreview(e.target.value);
                     }
                   }}
                   placeholder="#000000"

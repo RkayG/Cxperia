@@ -10,32 +10,38 @@ import type { MobilePreviewProps } from '@/types/productExperience';
 const MobilePreview: React.FC<MobilePreviewProps> = ({ experienceId }) => {
   const [loading, setLoading] = React.useState(true);
   const [_showSparkle, setShowSparkle] = React.useState(true);
-  const { experienceUrl, fetchExperienceUrl, isLoading } = useExperienceStore();
+  const { getExperienceUrl, fetchExperienceUrl, isLoading } = useExperienceStore();
   const [error, setError] = React.useState<string | null>(null);
   const [iframeError, setIframeError] = React.useState(false);
+  
+  // Get the URL for the current experience ID
+  const experienceUrl = experienceId ? getExperienceUrl(experienceId) : null;
 
   React.useEffect(() => {
     if (experienceId) {
-      // Only fetch if we don't already have the URL for this experience
+      // Only fetch if we don't already have the URL for this specific experience
       if (!experienceUrl) {
+        console.log(`🔍 MobilePreview: No URL found for experience ${experienceId}, fetching...`);
         fetchExperienceUrl(experienceId)
           .then(() => {
             setError(null);
             setIframeError(false);
+            console.log(`✅ MobilePreview: URL fetched for experience ${experienceId}`);
           })
           .catch((e) => {
-            console.error('Error fetching experience URL:', e);
+            console.error('❌ MobilePreview: Error fetching experience URL:', e);
             setError('Error preparing preview.');
             setIframeError(true);
           });
       } else {
-        // URL already exists, just clear any previous errors
+        // URL already exists for this experience, just clear any previous errors
+        console.log(`✅ MobilePreview: Using existing URL for experience ${experienceId}:`, experienceUrl);
         setError(null);
         setIframeError(false);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [experienceId]);
+  }, [experienceId, experienceUrl]);
 
   // Fallback to default preview if no experience_url
   const previewUrl = experienceUrl ? `${experienceUrl}` : null;
@@ -58,13 +64,16 @@ const MobilePreview: React.FC<MobilePreviewProps> = ({ experienceId }) => {
     setIframeError(false);
     setError(null);
     
-    if (experienceId && !experienceUrl) {
+    if (experienceId) {
+      console.log(`🔄 MobilePreview: Retrying fetch for experience ${experienceId}`);
       fetchExperienceUrl(experienceId)
         .then(() => {
           setError(null);
           setIframeError(false);
+          console.log(`✅ MobilePreview: Retry successful for experience ${experienceId}`);
         })
-        .catch(() => {
+        .catch((e) => {
+          console.error(`❌ MobilePreview: Retry failed for experience ${experienceId}:`, e);
           setError('Error preparing preview.');
           setIframeError(true);
         });

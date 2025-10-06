@@ -5,10 +5,12 @@ import { getExperienceBySlug } from "@/lib/data/experiences";
 
 interface ExperiencePageProps {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-const ExperiencePage: React.FC<ExperiencePageProps> = async ({ params }) => {
+const ExperiencePage: React.FC<ExperiencePageProps> = async ({ params, searchParams }) => {
   const { slug } = await params;
+  const urlParams = await searchParams;
   
   // Fetch experience data server-side
   const experience = await getExperienceBySlug(slug);
@@ -18,11 +20,14 @@ const ExperiencePage: React.FC<ExperiencePageProps> = async ({ params }) => {
   }
 
   // Extract data from experience
-  const color = experience.data?.primary_color || "#6366f1";
-  const product = experience.data?.product;
-  const brandLogo = experience.data?.brand?.logo_url;
-  const brandName = experience.data?.brand?.name;
-  const customer_support_links_simple = experience.data?.customer_support_links_simple || [];
+  // Check for color parameter first, then fall back to database value
+  const urlColor = urlParams.color as string;
+  const experienceData = experience && typeof experience === 'object' && 'data' in experience ? (experience as any).data : null;
+  const color = urlColor || experienceData?.primary_color || "#6366f1";
+  const product = experienceData?.product;
+  const brandLogo = experienceData?.brand?.logo_url;
+  const brandName = experienceData?.brand?.name;
+  const customer_support_links_simple = experienceData?.customer_support_links_simple || [];
 
   return (
     <UnifiedExperienceWrapper

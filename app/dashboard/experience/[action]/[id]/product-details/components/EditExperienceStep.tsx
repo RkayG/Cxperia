@@ -23,7 +23,7 @@ interface EditExperienceStepProps {
 const EditExperienceStep: React.FC<EditExperienceStepProps> = ({
   onNext,
   onSubmit,
-  buttonLabel = "Customise Features",
+  buttonLabel = "Features ->",
   isSubmitting = false,
 }) => {
   const router = useRouter();

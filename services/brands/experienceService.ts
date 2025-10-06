@@ -23,7 +23,7 @@ export const experienceService = {
   async getById(id: string) {
     const response = await fetch(endpoints.EXPERIENCE.DETAIL(id));
     const res = await response.json();
-    console.log('Experience data:', res);
+   // console.log('Experience data:', res);
     if (!response.ok) {
       throw new Error('Failed to fetch experience');
     }
