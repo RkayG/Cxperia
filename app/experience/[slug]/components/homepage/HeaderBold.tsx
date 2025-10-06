@@ -2,6 +2,14 @@ import { ChevronLeft, ChevronRight, ShoppingCart } from "lucide-react";
 import Image from 'next/image';
 import React, { useEffect, useState } from "react";
 import { usePublicExpStore } from "@/store/public/usePublicExpStore";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 
 const HeaderBold: React.FC = () => {
   const { experience, brandLogo, brandName, color } = usePublicExpStore();
@@ -63,15 +71,8 @@ const HeaderBold: React.FC = () => {
   const gradientFrom = color;
   const gradientTo = color;
 
-  // Ref for product details section
-  const productDetailsRef = React.useRef<HTMLDivElement>(null);
-
-  // Handler to scroll to product details
-  const handleScrollToDetails = () => {
-    if (productDetailsRef.current) {
-      productDetailsRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  };
+  // State for drawer
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // Store link
   const storeLink = product.store_link || "#";
@@ -173,25 +174,110 @@ const HeaderBold: React.FC = () => {
                   <ShoppingCart className="w-4 h-4" />
                   <span>VISIT STORE</span>
                 </a>
-                <button
-                  className="group border border-white text-white px-6 py-3 rounded-full font-semibold text-sm shadow-lg hover:bg-white/20 hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
-                  onClick={handleScrollToDetails}
-                >
-                  <span>VIEW DETAILS</span>
-                  <svg
-                    className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </button>
+                <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+                  <DrawerTrigger asChild>
+                    <button className="group border border-white text-white px-6 py-3 rounded-full font-semibold text-sm shadow-lg hover:bg-white/20 hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2">
+                      <span>VIEW DETAILS</span>
+                      <svg
+                        className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </button>
+                  </DrawerTrigger>
+                  <DrawerContent>
+                    <div className="mx-auto w-full max-w-sm">
+                      <DrawerHeader>
+                        <DrawerTitle className="text-center text-xl font-bold" style={{ color }}>
+                          {experience?.data?.product?.name || "Product Details"}
+                        </DrawerTitle>
+                        <DrawerDescription className="text-center text-gray-600">
+                          Learn more about this amazing product
+                        </DrawerDescription>
+                      </DrawerHeader>
+                      <div className="p-4 pb-8">
+                        <div className="space-y-4">
+                          {/* Product Description */}
+                          {product?.description && (
+                            <div>
+                              <h3 className="font-semibold text-gray-900 mb-2">Description</h3>
+                              <p className="text-gray-700 text-sm leading-relaxed">
+                                {product.description}
+                              </p>
+                            </div>
+                          )}
+                          
+                          {/* Product Category */}
+                          {product?.category && (
+                            <div>
+                              <h3 className="font-semibold text-gray-900 mb-2">Category</h3>
+                              <p className="text-gray-700 text-sm">
+                                {product.category}
+                              </p>
+                            </div>
+                          )}
+                          
+                          {/* Skin Type */}
+                          {product?.skin_type && (
+                            <div>
+                              <h3 className="font-semibold text-gray-900 mb-2">Skin Type</h3>
+                              <p className="text-gray-700 text-sm">
+                                {product.skin_type}
+                              </p>
+                            </div>
+                          )}
+                          
+                          {/* Net Content */}
+                          {product?.net_content && (
+                            <div>
+                              <h3 className="font-semibold text-gray-900 mb-2">Net Content</h3>
+                              <p className="text-gray-700 text-sm">
+                                {product.net_content}ml
+                              </p>
+                            </div>
+                          )}
+                          
+                          {/* Usage Duration */}
+                          {product?.estimated_usage_duration_days && (
+                            <div>
+                              <h3 className="font-semibold text-gray-900 mb-2">Estimated Duration</h3>
+                              <p className="text-gray-700 text-sm">
+                                {product.estimated_usage_duration_days} days
+                              </p>
+                            </div>
+                          )}
+                          
+                          {/* Pricing */}
+                          {(product?.original_price || product?.discounted_price) && (
+                            <div>
+                              <h3 className="font-semibold text-gray-900 mb-2">Pricing</h3>
+                              <div className="flex items-center gap-2">
+                                {product?.discounted_price && (
+                                  <span className="text-lg font-bold" style={{ color }}>
+                                    €{product.discounted_price}
+                                  </span>
+                                )}
+                                {product?.original_price && (
+                                  <span className="text-sm text-gray-500 line-through">
+                                    €{product.original_price}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </DrawerContent>
+                </Drawer>
               </div>
             </div>
 

@@ -1,5 +1,6 @@
 import "@/styles/tailwind.css"
 import { Providers } from './providers';
+import { Analytics } from "@vercel/analytics/next"
 
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -16,6 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <Providers>{children}</Providers>
+        <Analytics />
       </body>
     </html>
   );

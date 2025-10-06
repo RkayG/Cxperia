@@ -1,8 +1,9 @@
 // src/components/IngredientsSection.tsx
 
-import { AlertCircle, Info } from "lucide-react";
-import React, { use, useState } from "react";
+import { AlertCircle } from "lucide-react";
+import React, {useState } from "react";
 import { usePublicExpStore } from "@/store/public/usePublicExpStore";
+import { GiPerfumeBottle } from "react-icons/gi";
 
 interface Ingredient {
   id?: string | number;
@@ -39,7 +40,7 @@ const IngredientsSection: React.FC = () => {
             className="p-2 rounded-lg flex items-center justify-center"
             style={{ backgroundColor: `${color}15` }}
           >
-            <Info size={20} style={{ color }} />
+            <GiPerfumeBottle size={20} style={{ color }} />
           </div>
           <div>
             <h3
@@ -138,7 +139,7 @@ const IngredientsSection: React.FC = () => {
       {isOpen && ingredients.length === 0 && (
         <div className="text-center py-8">
           <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
-            <Info size={24} className="text-gray-400" />
+            <GiPerfumeBottle size={24} className="text-gray-400" />
           </div>
           <p className="text-gray-500">No ingredient information available</p>
         </div>

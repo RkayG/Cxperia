@@ -52,7 +52,7 @@ const DownloadOptions: React.FC<DownloadOptionsProps> = ({ qrCodeImageUrl, produ
           Download Your QR Code
         </h3>
         <p className="text-gray-600 leading-relaxed">
-          Get high-resolution files ready for print, digital use, or sharing with your team
+          High-resolution PNG and PDF files ready for printing on your packaging
         </p>
       </div>
 

@@ -72,12 +72,12 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
       const hasVisitedThisExperience = visitedExperiences.includes(slug);
       const isNewCustomer = !hasVisitedThisExperience;
       
-      console.log('🔍 UnifiedExperienceWrapper customer check:', { 
+   /*    console.log('🔍 UnifiedExperienceWrapper customer check:', { 
         slug, 
         visitedExperiences, 
         hasVisitedThisExperience, 
         isNewCustomer 
-      });
+      }); */
       
       setIsNewCustomer(isNewCustomer);
       
@@ -85,7 +85,7 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
       if (isNewCustomer && slug) {
         const updatedVisitedExperiences = [...visitedExperiences, slug] as string[];
         localStorage.setItem('visitedExperiences', JSON.stringify(updatedVisitedExperiences));
-        console.log('✅ UnifiedExperienceWrapper marked experience as visited:', slug);
+        //console.log('✅ UnifiedExperienceWrapper marked experience as visited:', slug);
       }
     };
 
@@ -200,7 +200,7 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
       setImages([]);
       
     } catch (error) {
-      console.error('Error submitting feedback:', error);
+     // console.error('Error submitting feedback:', error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to submit feedback. Please try again.';
       showToast.error(errorMessage);
     }
@@ -220,13 +220,13 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
 
   // Show YouHaveScanned for new customers
   if (isNewCustomer === true) {
-    console.log('🎉 UnifiedExperienceWrapper showing YouHaveScanned for new customer');
+    //console.log('🎉 UnifiedExperienceWrapper showing YouHaveScanned for new customer');
     return <YouHaveScanned onSectionChange={navigateToSection} slug={slug} />;
   }
 
   // Show regular home page for returning customers
   if (isNewCustomer === false) {
-    console.log('🏠 UnifiedExperienceWrapper showing home page for returning customer');
+   // console.log('🏠 UnifiedExperienceWrapper showing home page for returning customer');
   }
 
   // Render the appropriate section
