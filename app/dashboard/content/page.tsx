@@ -120,13 +120,13 @@ const ContentDashboardPage: React.FC = () => {
     const selectedIds = Array.from(selectedArticles);
     const count = selectedIds.length;
     
-    console.log('Attempting to delete tutorials with IDs:', selectedIds);
+    //console.log('Attempting to delete tutorials with IDs:', selectedIds);
     
     try {
       // Delete all selected tutorials
       await Promise.all(
         selectedIds.map(async (id) => {
-          console.log(`Deleting tutorial with ID: ${id}`);
+          //console.log(`Deleting tutorial with ID: ${id}`);
           // Convert to string for API call
           const tutorialId = typeof id === 'string' ? id : id.toString();
           return deleteTutorialMutation.mutateAsync(tutorialId);
