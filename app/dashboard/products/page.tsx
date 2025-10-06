@@ -1,9 +1,15 @@
 'use client';
 import { Camera, Clock, Play } from 'lucide-react';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { useBrand } from '@/contexts/BrandContext';
-import { useExperiences } from '@/hooks/brands/useExperienceApi';
+import { useNavigationProgressWithQuery } from '@/hooks/useNavigationProgressWithQuery';
+import { 
+  useProductsList, 
+  useProductsMetrics, 
+  useProductsLoading, 
+  useProductsActions 
+} from '@/store/products/useProductsStore';
 
 import ProductListings from './components/ProductListings';
 import ProductPerformanceOverview from './components/ProductPerformanceOverview';
@@ -14,27 +20,34 @@ const ProductDashboard: React.FC = () => {
   // Get brand from context
   const { brand, brandId, isLoading: brandLoading, error: brandError } = useBrand();
   
-  // Use React Query hook for experiences
-  const { data: experiencesData, isLoading: experiencesLoading, error: experiencesError } = useExperiences(brandId || undefined);
+  // Subscribe to store state (no hooks, pure subscription)
+  const products = useProductsList();
+  const performanceMetrics = useProductsMetrics();
+  const isLoading = useProductsLoading();
   
-  // Extract experiences and metrics from the API response
-  const products = (experiencesData as any)?.data || [];
-  const performanceMetrics = (experiencesData as any)?.metrics || [];
-  const isLoading = experiencesLoading;
+  // Use navigation progress with loading state
+  useNavigationProgressWithQuery(isLoading, !!brandError);
+  
+  // Get actions from store
+  const { fetchProductsData } = useProductsActions();
 
-  const pathname = usePathname();
   const router = useRouter();
 
+  // Initialize data fetching
+  useEffect(() => {
+    if (brandId) {
+      fetchProductsData(brandId);
+    }
+  }, [brandId, fetchProductsData]);
+
   
 
-  // Show error state if brand or experiences fetch failed
-  if (brandError || experiencesError) {
+  // Show error state if brand fetch failed
+  if (brandError) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <p className="text-red-600 mb-4">
-            Error loading data: {brandError || experiencesError?.message || 'Unknown error'}
-          </p>
+          <p className="text-red-600 mb-4">Error loading brand: {brandError}</p>
           <button 
             onClick={() => window.location.reload()} 
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
@@ -48,7 +61,7 @@ const ProductDashboard: React.FC = () => {
 
 
   // Add icons to metrics (this could be moved to store if needed)
-  const metricsWithIcons: PerformanceMetric[] = performanceMetrics.map((metric: any, index: number) => {
+  const metricsWithIcons: PerformanceMetric[] = performanceMetrics.map((metric, index) => {
     const icons = [Camera, Play, Clock];
     return {
       ...metric,

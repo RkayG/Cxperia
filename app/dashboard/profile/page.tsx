@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { User, Building2, Settings, Shield } from 'lucide-react';
 import { useIsMobile } from '@/hooks/brands/use-mobile';
+import { useNavigationProgressContext } from '@/contexts/NavigationProgressContext';
 import BrandProfileTab from './components/BrandProfileTab';
 import UserProfileTab from './components/UserProfileTab';
 import AccountSettingsTab from './components/AccountSettingsTab';
@@ -17,8 +18,16 @@ interface Tab {
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState('brand');
   const isMobile = useIsMobile();
+/*   const { startLoading, finishLoading } = useNavigationProgressContext();
   
-  // No loading state needed - data should be available on demand
+  // Trigger navigation progress on mount
+  useEffect(() => {
+    startLoading();
+    const timer = setTimeout(() => {
+      finishLoading();
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [startLoading, finishLoading]); */
 
   const tabs: Tab[] = [
     {

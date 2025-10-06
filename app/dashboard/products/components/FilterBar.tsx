@@ -1,6 +1,6 @@
 // src/components/ProductDashboard/FilterBar.tsx
 import { Plus } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import React, { useState } from 'react';
 //import UnfinishedWorkModal from '../../../components/UnfinishedWorkModal';
 import {
@@ -20,15 +20,9 @@ const FilterBar: React.FC<FilterBarPropsWithLoading> = ({ onFilterChange, onSort
   // State for dropdowns
   const [selectedFilter, setSelectedFilter] = useState('');
   const [selectedSort, setSelectedSort] = useState('');
-  const router = useRouter();
   // Options for dropdowns
   const filterOptions = ['All', 'Active QR Codes', 'Pending QR Codes'];
   const sortOptions = ['Sort By', 'None', 'Name', 'Added Date'];
-
-  // Handler for Add New Product button
-  const handleAddNewProduct = () => {
-    router.push('/dashboard/experience/create?step=product-details&new=true');
-  };
 
 
   if (isLoading) {
@@ -99,13 +93,15 @@ const FilterBar: React.FC<FilterBarPropsWithLoading> = ({ onFilterChange, onSort
       </div>
 
       {/* Add New Product Button */}
+      <Link href="/dashboard/experience/create?step=product-details&new=true">
       <button
-        onClick={handleAddNewProduct}
+        
         className="flex items-center text-purple-700 hover:text-purple-800 font-medium text-sm transition-colors duration-200 whitespace-nowrap"
       >
         <Plus size={16} className="mr-1" />
         Add New
       </button>
+      </Link>
     </div>
   );
 };

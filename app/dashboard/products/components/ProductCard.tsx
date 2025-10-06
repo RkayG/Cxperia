@@ -159,7 +159,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             {product.qrCodeStatus === 'Generated' && (
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>
-                  <Eye size={16} className="mr-2 cursor-pointer" /> Preview Experience
+                  <Eye size={16} className="mr-2 cursor-pointer" /> Preview
                 </DropdownMenuSubTrigger>
                 <DropdownMenuSubContent className="w-64 bg-white flex flex-col gap-2 z-50">
                   <div className="font-semibold text-gray-900 mb-2 px-2">Preview Experience</div>
@@ -178,10 +178,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
             )}
-            <DropdownMenuItem onClick={handleDelete} variant="destructive" disabled={isDeleting}>
-              <Trash2 size={16} className="mr-2 cursor-pointer" />
-              {isDeleting ? 'Deleting...' : 'Delete'}
-            </DropdownMenuItem>
+          
             {product.qrCodeStatus === 'Generated' && (
               <>
                 <DropdownMenuSeparator />

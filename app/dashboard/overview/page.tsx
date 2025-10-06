@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useBrand } from '@/contexts/BrandContext';
+import { useNavigationProgressWithQuery } from '@/hooks/useNavigationProgressWithQuery';
 import { 
   useOverviewExperiences, 
   useOverviewFeedbacks, 
@@ -19,22 +20,23 @@ import {
   useOverviewActions 
 } from '@/store/overview/useOverviewStore';
 import { Graph } from "./graph";
+import Loading from '@/components/Loading';
 
 export default function OverviewPage() {
-  // Add render tracking
-  console.log('🔄 OverviewPage rendering', { timestamp: new Date().toISOString() });
   
   // Get brand from context
   const { brand, brandId, isLoading: brandLoading, error: brandError } = useBrand();
   
-  // Debug brand state
-  console.log('🔍 OverviewPage brand state:', { brand, brandId, hasBrand: !!brand, brandLoading, brandError });
-
+  
   // Subscribe to store state (no hooks, pure subscription)
   const experiences = useOverviewExperiences();
   const feedbacks = useOverviewFeedbacks();
   const metrics = useOverviewMetrics();
   const { isLoadingExperiences, isLoadingFeedbacks } = useOverviewLoading();
+  
+  // Use navigation progress with loading state
+  const isLoading = isLoadingExperiences || isLoadingFeedbacks;
+  useNavigationProgressWithQuery(isLoading, !!brandError);
   
   // Get actions from store
   const { fetchOverviewData } = useOverviewActions();
@@ -54,10 +56,7 @@ export default function OverviewPage() {
   if (brandLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading brand data...</p>
-        </div>
+        <Loading />
       </div>
     );
   }

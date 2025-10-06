@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import Modal from '@/components/Modal';
 import { useDeleteTutorial, useUnpublishTutorial } from '@/hooks/brands/useFeatureApi';
+import { useNavigationProgressWithQuery } from '@/hooks/useNavigationProgressWithQuery';
 import { useExperienceStore } from '@/store/brands/useExperienceStore';
 import { 
   useContentFilteredArticles, 
@@ -19,9 +20,7 @@ import ArticleFilter from './components/ContentFilter';
 import ContentDashboardHeader from './components/Header';
 
 const ContentDashboardPage: React.FC = () => {
-  // Add render tracking
-  console.log('🔄 ContentPage rendering', { timestamp: new Date().toISOString() });
-  
+ 
   // Get brand from store
   const brand = useExperienceStore((state) => state.brand);
   const brandId = brand?.id;
@@ -31,6 +30,9 @@ const ContentDashboardPage: React.FC = () => {
   const selectedArticles = useContentSelectedArticles();
   const { activeTab, selectedType, selectedCategory, search } = useContentFilters();
   const isLoading = useContentLoading();
+  
+  // Use navigation progress with loading state
+  useNavigationProgressWithQuery(isLoading, false);
   
   // Get actions from store
   const { 

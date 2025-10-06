@@ -14,6 +14,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { useOptimizedExperiences, useOptimizedRecentExperiences } from "@/hooks/brands/useOptimizedQueries";
 import { useRecentTutorials } from "@/hooks/brands/useFeatureApi";
+import { useNavigationProgressWithQuery } from '@/hooks/useNavigationProgressWithQuery';
 import { getBrandStats, getCurrentUserBrand } from '@/lib/data/brands';
 import { supabase } from '@/lib/supabase';
 import { useExperienceStore } from '@/store/brands/useExperienceStore';
@@ -56,6 +57,10 @@ export default function HomePage() {
   const { data: tutorialsData, isLoading: isLoadingTutorials } = useRecentTutorials({ 
     enabled: !loading 
   });
+  
+  // Use navigation progress with loading state
+  const isLoading = loading || isLoadingExperiences || isLoadingTutorials;
+  useNavigationProgressWithQuery(isLoading, false);
   
   // Normalize experiences array
   const experiences = Array.isArray((data as any)?.data)

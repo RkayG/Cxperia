@@ -1,8 +1,9 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 import StepIndicator from "@/components/StepIndicator";
 import { useIsMobile } from "@/hooks/brands/use-mobile";
+import { useNavigationProgressContext } from '@/contexts/NavigationProgressContext';
 import ProductDetailsStep from "./[id]/product-details/components";
 
 // This page handles the initial step of creating a new experience,
@@ -11,8 +12,18 @@ const CreateExperiencePage: React.FC = () => {
   const router = useRouter();
   const params = useParams();
   const action = params.action as string;
+  const { startLoading, finishLoading } = useNavigationProgressContext();
 
   const isMobile = useIsMobile();
+  
+  // Trigger navigation progress on mount
+  useEffect(() => {
+    startLoading();
+    const timer = setTimeout(() => {
+      finishLoading();
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [startLoading, finishLoading]);
   const steps = [
     { number: 1, label: isMobile ? "Product" : "Product Details" },
     { number: 2, label: isMobile ? "Features" : "Customize Features" },

@@ -1,5 +1,4 @@
 "use client"
-import { C } from "@upstash/redis/zmscore-DWj9Vh1g"
 import {
   BarChart3,
   Bot,
@@ -28,6 +27,7 @@ import {
   type Product,
 } from "@/lib/chatbotService"
 import { useAuth } from "@/hooks/brands/use-auth"
+import { useNavigationProgressContext } from '@/contexts/NavigationProgressContext';
 import { supabase } from "@/lib/supabase"
 import ChatbotAnalytics from "./components/ChatbotAnalytics"
 import ChatbotAppearance from "./components/ChatbotAppearance"
@@ -48,6 +48,7 @@ interface FAQ {
 
 const ChatbotDashboard = () => {
   const { user } = useAuth()
+  const { startLoading, finishLoading } = useNavigationProgressContext()
   const [activeTab, setActiveTab] = useState("chatbot")
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [searchTerm, setSearchTerm] = useState("")
@@ -83,6 +84,15 @@ const ChatbotDashboard = () => {
     "Ingredients",
     "Application Tips",
   ]
+
+  // Use navigation progress with loading state
+  useEffect(() => {
+    if (isLoading) {
+      startLoading();
+    } else {
+      finishLoading();
+    }
+  }, [isLoading, startLoading, finishLoading]);
 
   // Fetch user's brand_id from profile
   useEffect(() => {

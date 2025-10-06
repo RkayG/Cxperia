@@ -2,6 +2,7 @@
 import { RefreshCw } from 'lucide-react';
 import React, { useEffect } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useNavigationProgressWithQuery } from '@/hooks/useNavigationProgressWithQuery';
 import { useExperienceStore } from '@/store/brands/useExperienceStore';
 import { 
   useFeedbackMessages, 
@@ -29,6 +30,9 @@ const FeedbackPage: React.FC = () => {
   const messages = useFeedbackMessages();
   const isLoading = useFeedbackLoading();
   const error = useFeedbackError();
+  
+  // Use navigation progress with loading state
+  useNavigationProgressWithQuery(isLoading, !!error);
   const filteredMessages = useFilteredMessages();
   const productOptions = useProductOptions();
   
