@@ -221,7 +221,7 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
   // Show YouHaveScanned for new customers
   if (isNewCustomer === true) {
     console.log('🎉 UnifiedExperienceWrapper showing YouHaveScanned for new customer');
-    return <YouHaveScanned onSectionChange={navigateToSection} />;
+    return <YouHaveScanned onSectionChange={navigateToSection} slug={slug} />;
   }
 
   // Show regular home page for returning customers

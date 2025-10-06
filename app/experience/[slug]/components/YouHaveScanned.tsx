@@ -9,9 +9,10 @@ type ActiveSection = 'home' | 'ingredients' | 'feedback' | 'usage-instructions' 
 
 interface YouHaveScannedProps {
   onSectionChange?: (section: ActiveSection) => void;
+  slug?: string;
 }
 
-const YouHaveScanned: React.FC<YouHaveScannedProps> = ({ onSectionChange }) => {
+const YouHaveScanned: React.FC<YouHaveScannedProps> = ({ onSectionChange, slug }) => {
   const experience = usePublicExpStore((state) => state.experience);
   const product = usePublicExpStore((state) => state.product) || {};
   const brandLogo = usePublicExpStore((state) => state.brandLogo) || "";
@@ -154,7 +155,10 @@ const YouHaveScanned: React.FC<YouHaveScannedProps> = ({ onSectionChange }) => {
               </div>
             )}
 
-            <FeatureSlider onSectionChange={onSectionChange || (() => {})} />
+            <FeatureSlider 
+              onSectionChange={onSectionChange || (() => {})} 
+              slug={slug || ''} 
+            />
           </div>
           
         </div>

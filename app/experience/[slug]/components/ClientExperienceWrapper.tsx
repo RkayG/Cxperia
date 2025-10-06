@@ -65,7 +65,7 @@ const ClientExperienceWrapper: React.FC<ClientExperienceWrapperProps> = ({
   // Show YouHaveScanned for new customers
   if (isNewCustomer === true) {
     console.log('🎉 ClientExperienceWrapper showing YouHaveScanned for new customer');
-    return <YouHaveScanned />;
+    return <YouHaveScanned slug={slug} />;
   }
 
   // Show regular home page for returning customers

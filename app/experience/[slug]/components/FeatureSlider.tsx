@@ -30,10 +30,11 @@ type ActiveSection = 'home' | 'ingredients' | 'feedback' | 'usage-instructions' 
 
 interface FeatureSliderProps {
   onSectionChange: (section: ActiveSection) => void;
+  slug: string;
 }
 
 
-const FeatureSlider: React.FC<FeatureSliderProps> = ({ onSectionChange }) => {
+const FeatureSlider: React.FC<FeatureSliderProps> = ({ onSectionChange, slug }) => {
   const {color, experience} = usePublicExpStore();
   const [hoveredFeature, setHoveredFeature] = useState<string | null>(null);
 
@@ -50,26 +51,21 @@ const FeatureSlider: React.FC<FeatureSliderProps> = ({ onSectionChange }) => {
     return allFeatures.filter((f) => enabledLabels.includes(f.label));
   }, [enabledLabels]);
 
-  // Navigation handlers - using onSectionChange for instant navigation
-  const navigateToFeature = (label: string) => {
+  // Get href for each feature
+  const getFeatureHref = (label: string) => {
     switch (label) {
       case "Share Feedback":
-        onSectionChange('feedback');
-        break;
+        return `/experience/${slug}?section=feedback`;
       case "Usage Instructions":
-        onSectionChange('usage-instructions');
-        break;
+        return `/experience/${slug}?section=usage-instructions`;
       case "Ingredient Breakdown":
-        onSectionChange('ingredients');
-        break;
+        return `/experience/${slug}?section=ingredients`;
       case "Customer Support":
-        onSectionChange('support-channels');
-        break;
+        return `/experience/${slug}?section=support-channels`;
       case "Tutorials & Routines":
-        onSectionChange('tutorials');
-        break;
+        return `/experience/${slug}?section=tutorials`;
       default:
-        return;
+        return `/experience/${slug}`;
     }
   };
 
@@ -91,10 +87,10 @@ const FeatureSlider: React.FC<FeatureSliderProps> = ({ onSectionChange }) => {
       <div className="px-4">
         <div className="grid grid-cols-2 gap-2">
           {features.map((feature, index) => (
-            <div
+            <Link
               key={feature.label}
-              className="group relative"
-              onClick={() => navigateToFeature(feature.label)}
+              href={getFeatureHref(feature.label)}
+              className="group relative block"
               onMouseEnter={() => setHoveredFeature(feature.label)}
               onMouseLeave={() => setHoveredFeature(null)}
             >
@@ -142,39 +138,26 @@ const FeatureSlider: React.FC<FeatureSliderProps> = ({ onSectionChange }) => {
                   }}
                 />
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
 
       {/* Call to Action */}
       <div className="text-center mt-6">
-        <button
-          className="group relative  px-6 py-3 rounded-full font-semibold text-sm shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 mx-auto"
+        <Link
+          href={`/experience/${slug}?section=home`}
+          className="group relative inline-block px-6 py-3 rounded-full font-semibold text-sm shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 mx-auto"
           style={{
             backgroundColor: color,
             backgroundSize: "200% 200%",
             animation: "shimmer 3s infinite",
           }}
-          onClick={() => onSectionChange('home')}
         >
           <span className="relative z-10 font-bold" style={{ color: 'white'}}>
             Start Your Journey →
           </span>
-          {/* <svg
-            className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform duration-300"
-            fill="none"
-            stroke="white"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 5l7 7-7 7"
-            />
-          </svg> */}
-        </button>
+        </Link>
       </div>
     </div>
   );

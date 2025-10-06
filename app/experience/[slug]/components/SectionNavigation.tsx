@@ -82,7 +82,7 @@ useEffect(() => {
 }, [lastScrollY])
 
 // Conditional rendering instead of early return
-if (screenWidth < 400) {
+if (screenWidth < 380) {
   return <CurvedBottomNav color={color} slug={slug} onSectionChange={onSectionChange} />;
 }
 
@@ -91,7 +91,7 @@ if (screenWidth < 400) {
       className={`fixed bottom-0 left-0 right-0 z-40 flex justify-center px-4  transition-transform duration-300 ease-in-out ${
       isVisible ? "translate-y-0" : "translate-y-full"
     }`}>
-      <div className="flex bg-white rounded-full shadow-lg border border-gray-200 overflow-hidden">
+      <div className="mb-4 flex bg-white rounded-full shadow-lg border border-gray-200 overflow-hidden">
         {sections.map((section) => (
           <button
             key={section.id}
