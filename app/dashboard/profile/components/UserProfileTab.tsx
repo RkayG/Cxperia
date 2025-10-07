@@ -159,10 +159,39 @@ const UserProfileTab: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 mb-32">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
+          {/* Mobile */}
+        <div className="flex gap-3 md:hidden justify-end mb-4 ">
+          {isEditing ? (
+            <>
+              <button
+                onClick={() => setIsEditing(false)}
+                className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSave}
+                disabled={isSaving}
+                className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 transition-colors"
+              >
+                <Save size={16} />
+                {isSaving ? 'Saving...' : 'Save Changes'}
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+            >
+              Edit Profile
+            </button>
+          )}
+        </div>
+
           <h2 className="text-2xl font-semibold text-gray-900 flex items-center gap-3">
             <User className="text-purple-600" />
             User Profile
@@ -171,7 +200,7 @@ const UserProfileTab: React.FC = () => {
             Manage your personal information and preferences
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-3 hidden md:flex">
           {isEditing ? (
             <>
               <button

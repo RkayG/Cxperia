@@ -187,7 +187,7 @@ const BrandProfileTab: React.FC = () => {
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 transition-colors"
+                className="flex items-center md:hidden gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 transition-colors"
               >
                 <Save size={16} />
                 {isSaving ? 'Saving...' : 'Save Changes'}
@@ -205,33 +205,7 @@ const BrandProfileTab: React.FC = () => {
 
         
         {/* Desktop Edit Button */}
-        <div className="flex gap-3 hidden md:flex">
-          {isEditing ? (
-            <>
-              <button
-                onClick={() => setIsEditing(false)}
-                className="px-4 py-2 hidden md:block text-gray-600 hover:text-gray-800 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSave}
-                disabled={isSaving}
-                className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 transition-colors"
-              >
-                <Save size={16} />
-                {isSaving ? 'Saving...' : 'Save Changes'}
-              </button>
-            </>
-          ) : (
-            <button
-              onClick={() => setIsEditing(true)}
-              className="px-4 py-2 hidden md:block bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-            >
-              Edit Profile
-            </button>
-          )}
-        </div>
+      
           <h2 className="text-2xl font-semibold text-gray-900 flex items-center gap-3">
             <Building2 className="text-purple-600" />
             Brand Profile
@@ -252,7 +226,7 @@ const BrandProfileTab: React.FC = () => {
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 transition-colors"
+                className="flex items-center hidden md:flex gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 transition-colors"
               >
                 <Save size={16} />
                 {isSaving ? 'Saving...' : 'Save Changes'}

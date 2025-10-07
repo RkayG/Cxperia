@@ -193,7 +193,7 @@ const AccountSettingsTab: React.FC = () => {
   // No loading state - render with default settings immediately
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 mb-32">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

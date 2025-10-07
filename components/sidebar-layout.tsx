@@ -237,7 +237,7 @@ function HeaderBreadcrumb(props: { items: SidebarItem[], baseBreadcrumb?: Header
       <BreadcrumbList>
         {hasValidBrand && (
           <BreadcrumbItem>
-            <BreadcrumbLink href="/dashboard/home">{brandName}</BreadcrumbLink>
+            <BreadcrumbLink href="/dashboard">{brandName}</BreadcrumbLink>
           </BreadcrumbItem>
         )}
         
