@@ -12,11 +12,32 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     const supabase = await createClient();
 
+    // First, get the current tutorial to check if it exists and is published
+    const { data: existingTutorial, error: fetchError } = await supabase
+      .from('tutorials')
+      .select('id, views, title, is_published')
+      .eq('id', tutorialId)
+      .single();
+
+    if (fetchError) {
+      if (fetchError.code === 'PGRST116') {
+        return NextResponse.json({ error: 'Tutorial not found' }, { status: 404 });
+      }
+      return NextResponse.json({ error: 'Failed to fetch tutorial' }, { status: 500 });
+    }
+
+    if (!existingTutorial.is_published) {
+      return NextResponse.json({ 
+        error: 'Tutorial is not published',
+        details: 'Views can only be counted for published tutorials'
+      }, { status: 403 });
+    }
+
     // Increment the view count for the tutorial
     const { data: tutorial, error } = await supabase
       .from('tutorials')
       .update({ 
-        views: supabase.rpc('increment_views', { tutorial_id: tutorialId }),
+        views: (existingTutorial.views || 0) + 1,
         updated_at: new Date().toISOString()
       })
       .eq('id', tutorialId)
@@ -26,25 +47,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     if (error) {
       console.error('Error incrementing view count:', error);
-      
-      // Check if tutorial exists but is not published
-      const { data: existingTutorial } = await supabase
-        .from('tutorials')
-        .select('id, is_published')
-        .eq('id', tutorialId)
-        .single();
-
-      if (existingTutorial && !existingTutorial.is_published) {
-        return NextResponse.json({ 
-          error: 'Tutorial is not published',
-          details: 'Views can only be counted for published tutorials'
-        }, { status: 403 });
-      }
-
-      if (error.code === 'PGRST116') {
-        return NextResponse.json({ error: 'Tutorial not found' }, { status: 404 });
-      }
-
       return NextResponse.json({ 
         error: 'Failed to increment view count',
         details: process.env.NODE_ENV === 'development' ? error.message : undefined
@@ -88,9 +90,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       .eq('id', tutorialId)
       .eq('is_published', true)
       .single();
-
-    console.log('tutorial', tutorial);
-    console.log('error', error);
 
     if (error) {
       if (error.code === 'PGRST116') {

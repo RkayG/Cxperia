@@ -33,17 +33,18 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
     
     const brand_id = exp.brand_id;
 
-    // 2. Get tutorials for the brand
+    // 2. Get tutorials for the brand ordered by recent first
     const { data: tutorials, error: tutorialsError } = await supabase
       .from('tutorials')
       .select('*')
       .eq('brand_id', brand_id)
-      .eq('is_published', true);
+      .eq('is_published', true)
+      .order('created_at', { ascending: false });
     
     if (tutorialsError) throw tutorialsError;
 
     const response = { success: true, tutorials: tutorials || [] };
-
+    console.log('tutorials', tutorials);
     // Return with caching headers
     return NextResponse.json(response, {
       headers: {

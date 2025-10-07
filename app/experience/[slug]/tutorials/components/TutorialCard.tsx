@@ -201,7 +201,7 @@ const TutorialCard: React.FC<TutorialCardProps> = ({ tutorial, brandLogo, brandN
                 // Fallback
                 return '0 steps';
               } catch (error) {
-                console.warn('Error parsing steps:', error);
+               // console.warn('Error parsing steps:', error);
                 return '0 steps';
               }
             })()}
@@ -272,8 +272,8 @@ const TutorialCard: React.FC<TutorialCardProps> = ({ tutorial, brandLogo, brandN
             </div>
             
             <div className="flex items-center space-x-1 text-xs text-gray-500">
-              <span>{views}</span>
-              <span>•</span>
+              {/* <span>{views}</span>
+              <span>•</span> */}
               <span>{getFriendlyTimeAgo(updated_at)}</span>
             </div>
           </div>

@@ -1,7 +1,7 @@
 'use client';
 import { useParams, useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
-import Loading from "@/components/Loading";
+import { Skeleton } from "@/components/ui/skeleton";
 import SavingOverlay from "@/components/SavingOverlay";
 import ScrollToTop from "@/components/ScrollToTop";
 import { useExperienceOperations } from "@/hooks/brands/useExperienceOperations";
@@ -353,14 +353,109 @@ const EditExperienceStep: React.FC<EditExperienceStepProps> = ({
   // Show loading state until initialized
   if (!isInitialized) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loading />
+      <div className="relative mx-auto mb-32 px-1.5 md:px-8 h-screen py-4">
+        <ScrollToTop />
+        
+        <div className="mx-auto">
+          <div className="rounded-2xl border-gray-200 bg-white px-4 shadow-sm sm:border sm:px-6">
+            {/* Product Form Section Skeleton */}
+            <div className="mb-8">
+              <div className="mb-6">
+                <Skeleton className="h-8 w-64 md:mt-4" />
+              </div>
+
+              {/* Form Fields Skeleton */}
+              <div className="space-y-6">
+                {/* Product Name */}
+                <div>
+                  <Skeleton className="h-4 w-24 mb-2" />
+                  <Skeleton className="h-12 w-full" />
+                </div>
+
+                {/* Tagline */}
+                <div>
+                  <Skeleton className="h-4 w-20 mb-2" />
+                  <Skeleton className="h-12 w-full" />
+                </div>
+
+                {/* Description */}
+                <div>
+                  <Skeleton className="h-4 w-28 mb-2" />
+                  <Skeleton className="h-20 w-full" />
+                </div>
+
+                {/* Category and Skin Type */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <Skeleton className="h-4 w-20 mb-2" />
+                    <Skeleton className="h-12 w-full" />
+                  </div>
+                  <div>
+                    <Skeleton className="h-4 w-24 mb-2" />
+                    <Skeleton className="h-12 w-full" />
+                  </div>
+                </div>
+
+                {/* Store Link */}
+                <div>
+                  <Skeleton className="h-4 w-24 mb-2" />
+                  <Skeleton className="h-12 w-full" />
+                </div>
+
+                {/* Pricing Section */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <Skeleton className="h-4 w-20 mb-2" />
+                    <Skeleton className="h-12 w-full" />
+                  </div>
+                  <div>
+                    <Skeleton className="h-4 w-24 mb-2" />
+                    <Skeleton className="h-12 w-full" />
+                  </div>
+                  <div>
+                    <Skeleton className="h-4 w-16 mb-2" />
+                    <Skeleton className="h-12 w-full" />
+                  </div>
+                </div>
+
+                {/* Net Content and Duration */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <Skeleton className="h-4 w-20 mb-2" />
+                    <Skeleton className="h-12 w-full" />
+                  </div>
+                  <div>
+                    <Skeleton className="h-4 w-24 mb-2" />
+                    <Skeleton className="h-12 w-full" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Media Upload Section Skeleton */}
+            <div className="mb-8">
+              <Skeleton className="h-6 w-32 mb-4" />
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="aspect-square">
+                    <Skeleton className="h-full w-full rounded-xl" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Action Button Skeleton */}
+          <div className="float-right mt-12 mr-8 flex flex-col justify-end gap-3 pt-6 pb-32 sm:flex-row sm:gap-4">
+            <Skeleton className="h-12 w-32 rounded-xl" />
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="relative mx-auto mb-32 px-1.5 md:px-8 h-screen py-4">
+    <div className="relative mx-auto mb-32 px-1.5 -mt-8 h-screen py-4">
       <ScrollToTop />
       {showSavingOverlay && <SavingOverlay visible={true} message="Saving your progress..." />}
 

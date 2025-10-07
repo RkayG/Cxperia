@@ -51,7 +51,7 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
   // Local state for overview section
   const [_overviewData, setOverviewData] = useState(experienceData);
 
-  console.log('experienceData', experienceData);
+  //console.log('experienceData', experienceData);
   
   // Update overview data when experienceData changes
   useEffect(() => {
@@ -61,7 +61,7 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
   // Fetch experience data if not already loaded
   useEffect(() => {
     if (experienceId && (!experienceData.name || experienceData.name === '')) {
-      console.log('Fetching experience data for:', experienceId);
+      //console.log('Fetching experience data for:', experienceId);
       fetchExperienceData(experienceId);
     }
   }, [experienceId, experienceData.name, fetchExperienceData]);
@@ -72,7 +72,7 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
   const { data: tutorialsData = [] } = useTutorials();
   const { data: instructionsData } = useInstructions(experienceId);
   // Debug: Log fetched data
-  console.log('Fetched instructions data:', instructionsData);
+  //console.log('Fetched instructions data:', instructionsData);
 
   // Central feature hook (fallback to old logic if no store features)
   const { featureSettings, setFeatureSettings, onToggleCore } = useFeatureToggles(experienceId);
@@ -110,22 +110,22 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
   }, [onToggleCore, setFeatureSettings, closeModal, experienceId, setFeaturesForExperience, currentFeatureSettings, featureSettings]);
 
   const handleSaveDigitalInstructions = useCallback(async (instructions: any[], onFeatureEnable?: () => void) => {
-    console.log('handleSaveDigitalInstructions called with:', { instructions, experienceId });
+    //console.log('handleSaveDigitalInstructions called with:', { instructions, experienceId });
     if (!Array.isArray(instructions) || instructions.length === 0) {
-      console.log('No instructions provided, returning early');
+     // console.log('No instructions provided, returning early');
       return;
     }
     
-    console.log('Setting productUsage to true in local state');
+    //console.log('Setting productUsage to true in local state');
     setFeatureSettings(prev => ({ ...prev, productUsage: true }));
     
     if (onFeatureEnable) {
-      console.log('Calling onFeatureEnable callback');
+     // console.log('Calling onFeatureEnable callback');
       onFeatureEnable();
     }
     
     // Also update global store
-    console.log('Updating global store with productUsage=true');
+    //console.log('Updating global store with productUsage=true');
     setFeaturesForExperience(experienceId, {
       ...((currentFeatureSettings || featureSettings) as FeatureSettings),
       productUsage: true,
@@ -169,7 +169,7 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
     if (featureId === "tutorialsRoutines") {
       if (enabled) {
         if (!Array.isArray(tutorialsData) || tutorialsData.length === 0) {
-          setEmptyTutorialsMessage("Add tutorials and routines to your catalog to enable this feature. You can create them now and turn the feature on after.");
+          setEmptyTutorialsMessage("Create step-by-step tutorials and beauty routines to help your customers get the most out of your products. Once created, you can return here to enable this feature.");
           openModal("emptyTutorials");
           return;
         }
@@ -208,6 +208,7 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
     await onToggleCore(featureId, false);
     setFeaturesForExperience(experienceId, buildFeatureSettings(currentFeatureSettings || featureSettings, featureId, false));
   }, [tutorialsData, onToggleCore, openModal, experienceId, setFeaturesForExperience, currentFeatureSettings, featureSettings]);
+
 
   const experienceOverview = useMemo(() => {
     //console.log('Creating experienceOverview with experienceData:', experienceData);
@@ -313,7 +314,7 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
         onAutoEnableCustomerService={handleAutoEnableCustomerService}
         onIngredientFeatureEnable={handleIngredientFeatureEnable}
         onFeatureEnable={async () => {
-          console.log('onFeatureEnable callback called for productUsage');
+          //console.log('onFeatureEnable callback called for productUsage');
           setFeatureSettings(prev => ({ ...prev, productUsage: true }));
           setFeaturesForExperience(experienceId, {
             ...((currentFeatureSettings || featureSettings) as FeatureSettings),
@@ -324,9 +325,9 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
           // Also enable the feature via API
           try {
             await onToggleCore("productUsage", true);
-            console.log('Feature enabled via API in onFeatureEnable callback');
+           // console.log('Feature enabled via API in onFeatureEnable callback');
           } catch (error) {
-            console.error('Failed to enable feature in onFeatureEnable callback:', error);
+            //console.error('Failed to enable feature in onFeatureEnable callback:', error);
           }
         }}
         ingredients={[]}
@@ -360,10 +361,9 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
         icon={<Sparkles className="text-yellow-400" />}
         message={emptyTutorialsMessage}
         actionLabel={"Create Tutorial or Routine"}
-        onAction={() => { 
-          closeModal("emptyTutorials"); 
-          router.push("/create-tutorial?from=experience&step=2"); 
-        }}
+        actionHref={`/dashboard/content/tutorial?from=experience&step=2&experienceId=${experienceId}`}
+        variant="warning"
+        title="Tutorials & Routines"
       />
       </div>
     </>

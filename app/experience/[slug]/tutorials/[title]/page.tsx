@@ -54,11 +54,14 @@ interface TutorialDetail {
 }
 
 const TutorialDetailPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
-  const location = usePathname();
+  const { title: urlTitle } = useParams<{ title: string }>();
   const _router = useRouter();
   const { color, slug, brandLogo, brandName } = usePublicExpStore();
-  let tutorial: TutorialDetail | undefined = location.state?.tutorial;
+  let tutorial: TutorialDetail | undefined;
+  
+  // Extract tutorial ID from URL parameter (format: "tutorial-slug-id")
+  const tutorialId = urlTitle?.split('-').pop(); // Get the last part after the last dash
+  
   const title = tutorial?.title || "";
   const description = tutorial?.description || "";
   const featuredVideoUrl = tutorial?.featured_video_url || "";
@@ -72,11 +75,11 @@ const TutorialDetailPage: React.FC = () => {
 
   // If not present, fetch from experience tutorials
   const { data: tutorialsData, isLoading } = useExperienceTutorials(slug);
-  const tutorials = Array.isArray(tutorialsData?.tutorials)
-    ? tutorialsData.tutorials
+  const tutorials = Array.isArray((tutorialsData as any)?.tutorials)
+    ? (tutorialsData as any).tutorials
     : [];
-  if (!tutorial && id && tutorials.length > 0) {
-    tutorial = tutorials.find((t: any) => String(t.id) === String(id));
+  if (!tutorial && tutorialId && tutorials.length > 0) {
+    tutorial = tutorials.find((t: any) => String(t.id) === String(tutorialId));
   }
   if (!tutorial) {
     return (
@@ -417,7 +420,7 @@ const TutorialDetailPage: React.FC = () => {
       {/* Sticky Footer */}
       <div className="sticky bottom-0 w-full z-500 bg-white border-t border-gray-200 p-4">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => _router.back()}
           className="w-full py-3 text-sm font-medium rounded-lg transition"
           style={{ backgroundColor: color, color: "white" }}
         >

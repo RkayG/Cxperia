@@ -9,7 +9,7 @@ import type { ExperienceOverviewProps } from '@/types/productExperience';
 import { showToast } from '@/utils/toast';
 
 const ExperienceOverviewSection: React.FC<ExperienceOverviewProps> = ({ data, onUpdate, isLoading: externalLoading }) => {
-  console.log('data', data);
+  //console.log('data', data);
   // Only logo can be updated, all other fields are read-only
   const { data: brandLogoData, isLoading: isBrandLogoLoading } = useBrandLogo();
 

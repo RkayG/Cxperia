@@ -1,4 +1,5 @@
 import { ArrowRight, Plus, Sparkles, X } from "lucide-react";
+import Link from "next/link";
 import React, { useEffect } from "react";
 
 interface EmptyCatalogModalProps {
@@ -125,13 +126,15 @@ const EmptyCatalogModal: React.FC<EmptyCatalogModalProps> = ({
           <div className="flex flex-col gap-3 w-full">
             {/* Primary action */}
             {actionLabel && (actionHref ? (
-              <a
+              <Link
                 href={actionHref}
                 className={`flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-white font-medium transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg ${styles.button}`}
+                onClick={() => onClose()}
               >
+                <Plus className="h-4 w-4" />
                 <span>{actionLabel}</span>
                 <ArrowRight className="h-4 w-4" />
-              </a>
+              </Link>
             ) : onAction ? (
               <button
                 className={`flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-white font-medium transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg ${styles.button}`}

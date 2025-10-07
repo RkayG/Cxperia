@@ -22,6 +22,8 @@ import {
   useTutorial,
   useUpdateTutorial,
 } from "@/hooks/brands/useFeatureApi";
+import { useEnableFeature } from "@/hooks/brands/useEnableDisableFeatures";
+import { useExperienceStore } from "@/store/brands/useExperienceStore";
 import { uploadFile } from "@/services/brands/uploadService";
 import { showToast } from "@/utils/toast";
 import ProductUsedCard from "./ProductsUsedCard";
@@ -95,6 +97,9 @@ const TutorialCreatorContent: React.FC = () => {
     searchParams.get("from") === "experience" &&
     searchParams.get("step") === "2";
 
+  // Get experience ID for callback navigation
+  const experienceId = searchParams.get("experienceId");
+
   // Extract tutorial ID from URL params (for dynamic routes) or search params (for legacy)
   const tutorialId = params.id as string || searchParams.get("id");
 
@@ -106,6 +111,10 @@ const TutorialCreatorContent: React.FC = () => {
 
   // Backend mutation hook
   const addTutorialMutation = useAddTutorial();
+  const enableFeatureMutation = useEnableFeature();
+  
+  // Zustand store for updating local state
+  const { setFeaturesForExperience, getFeaturesForExperience } = useExperienceStore();
 
   // Load draft from localStorage if present (only in create mode)
   const getInitialTutorial = (): Tutorial => {
@@ -418,10 +427,44 @@ const TutorialCreatorContent: React.FC = () => {
         // Create
         await addTutorialMutation.mutateAsync(payload);
         showToast.success("Tutorial created successfully!");
+        
+        // Enable tutorials feature if user came from experience creation
+        if (fromExperience && experienceId) {
+          try {
+            await enableFeatureMutation.mutateAsync({
+              experienceId: experienceId,
+              featureName: "tutorialsRoutines"
+            });
+            
+            // Update the local store to keep UI in sync
+            const currentFeatures = getFeaturesForExperience(experienceId) || {
+              tutorialsRoutines: false,
+              ingredientList: false,
+              loyaltyPoints: false,
+              skinRecommendations: false,
+              chatbot: false,
+              feedbackForm: true,
+              customerService: false,
+              productUsage: false,
+            };
+            
+            setFeaturesForExperience(experienceId, {
+              ...currentFeatures,
+              tutorialsRoutines: true
+            });
+            
+            showToast.success("Tutorials & Routines feature has been enabled!");
+          } catch (error) {
+            console.error("Failed to enable tutorials feature:", error);
+            showToast.error("Tutorial created, but failed to enable feature. Please enable it manually.");
+          }
+        }
+        
         // Clear draft from localStorage after successful save
         try {
           localStorage.removeItem(TUTORIAL_DRAFT_KEY);
         } catch (e) {}
+        
         if (fromExperience) {
           setShowResponseModal(true);
           return;
@@ -441,9 +484,16 @@ const TutorialCreatorContent: React.FC = () => {
   // Handler for "Continue to Experience" in response modal
   const handleContinueToExperience = () => {
     setShowResponseModal(false);
-    // Go back to StepTwo and toggle on tutorialsRoutines feature
-    // Use afterTutorial=1 param to trigger toggle in StepTwo
-    router.push("/create-experience?step=2&afterTutorial=1");
+    // Go back to the experience editing page step 2 (customise-features)
+    if (fromExperience && experienceId) {
+      router.push(`/dashboard/experience/edit/${experienceId}?step=customise-features`);
+    } else if (fromExperience) {
+      // Fallback to the create experience page
+      router.push("/dashboard/experience/create?step=customise-features");
+    } else {
+      // Default behavior for non-experience flows
+      router.push("/dashboard/content");
+    }
   };
 
   // Handler for "Create more" in response modal

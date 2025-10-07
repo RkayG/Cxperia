@@ -16,7 +16,7 @@ import RatingSection from "../feedback/components/RatingSection";
 import FeedbackForm from "../feedback/components/FeedbackForm";
 import ImageUpload from "../feedback/components/ImageUpload";
 import ThankYouModal from "../feedback/components/ThankYouModal";
-import TutorialsSection from "./TutorialsSection";
+import ClientTutorialsWrapper from "../tutorials/components/ClientTutorialsWrapper";
 
 // Import hooks for feedback functionality
 import { useCreatePublicFeedback } from '@/hooks/public/usePublicFeedbackApi';
@@ -335,14 +335,7 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
 
       case 'tutorials':
         return (
-          <div className="min-h-screen bg-gray-50 flex justify-center" style={{ backgroundColor: color }}>
-            <div className="max-w-xl mx-auto w-full bg-white shadow-lg overflow-hidden">
-              <SectionHeader title="Tutorials & Routines" subtitle="Learn how to get the best results from your product" />
-              <main className="p-4 space-y-6 rounded-tl-3xl">
-                <TutorialsSection slug={slug} color={color} />
-              </main>
-            </div>
-          </div>
+         <ClientTutorialsWrapper slug={slug} color={color} />
         );
 
       case 'home':
