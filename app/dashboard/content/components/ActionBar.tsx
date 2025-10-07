@@ -19,7 +19,7 @@ const ActionBar: React.FC<ActionBarProps> = ({ selectedCount, selectedArticleSta
     : true; // For multiple selections, show unpublish button
 
   // Handle click outside to dismiss
-  useEffect(() => {
+  /* useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (actionBarRef.current && !actionBarRef.current.contains(event.target as Node)) {
         onDismiss?.();
@@ -34,7 +34,7 @@ const ActionBar: React.FC<ActionBarProps> = ({ selectedCount, selectedArticleSta
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [onDismiss]);
-
+ */
   return (
     <div 
       ref={actionBarRef}

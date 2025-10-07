@@ -16,7 +16,7 @@ interface FilterBarPropsWithLoading extends FilterBarProps {
   isLoading?: boolean;
 }
 
-const FilterBar: React.FC<FilterBarPropsWithLoading> = ({ onFilterChange, onSortChange, isLoading = false }) => {
+const FilterBar: React.FC<FilterBarPropsWithLoading> = ({ onFilterChange, onSortChange, onAddNewProduct, isLoading = false }) => {
   // State for dropdowns
   const [selectedFilter, setSelectedFilter] = useState('');
   const [selectedSort, setSelectedSort] = useState('');

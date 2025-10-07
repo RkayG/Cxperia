@@ -37,6 +37,7 @@ const ContentDashboardPage: React.FC = () => {
   const { 
     fetchContentData, 
     invalidateCache,
+    refreshData,
     setActiveTab, 
     setSelectedType, 
     setSelectedCategory, 
@@ -49,6 +50,8 @@ const ContentDashboardPage: React.FC = () => {
   // Local UI state (modals)
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showUnpublishModal, setShowUnpublishModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isUnpublishing, setIsUnpublishing] = useState(false);
   
   // Mutation hooks for actions
   const deleteTutorialMutation = useDeleteTutorial();
@@ -82,6 +85,8 @@ const ContentDashboardPage: React.FC = () => {
     const selectedIds = Array.from(selectedArticles);
     const count = selectedIds.length;
     
+    setIsUnpublishing(true);
+    
     try {
       // Unpublish all selected tutorials
       await Promise.all(
@@ -93,10 +98,12 @@ const ContentDashboardPage: React.FC = () => {
       
       showToast.success(`${count} tutorial${count > 1 ? 's' : ''} unpublished successfully!`);
       clearSelection(); // Clear selection using store action
-      invalidateCache(); // Invalidate cache to refresh data
+      await refreshData(brandId!); // Force refresh data
       setShowUnpublishModal(false); // Close modal
     } catch (error: any) {
       showToast.error(error?.message || 'Failed to unpublish tutorials');
+    } finally {
+      setIsUnpublishing(false);
     }
   };
 
@@ -121,26 +128,32 @@ const ContentDashboardPage: React.FC = () => {
     const selectedIds = Array.from(selectedArticles);
     const count = selectedIds.length;
     
-    //console.log('Attempting to delete tutorials with IDs:', selectedIds);
+    console.log('🗑️ Attempting to delete tutorials with IDs:', selectedIds);
+    setIsDeleting(true);
     
     try {
       // Delete all selected tutorials
       await Promise.all(
         selectedIds.map(async (id) => {
-          //console.log(`Deleting tutorial with ID: ${id}`);
+          console.log(`🗑️ Deleting tutorial with ID: ${id}`);
           // Convert to string for API call
           const tutorialId = typeof id === 'string' ? id : id.toString();
-          return deleteTutorialMutation.mutateAsync(tutorialId);
+          const result = await deleteTutorialMutation.mutateAsync(tutorialId);
+          console.log(`✅ Successfully deleted tutorial ${id}:`, result);
+          return result;
         })
       );
       
+      console.log(`🎉 Successfully deleted ${count} tutorial${count > 1 ? 's' : ''}`);
       showToast.success(`${count} tutorial${count > 1 ? 's' : ''} deleted successfully!`);
       clearSelection(); // Clear selection using store action
-      invalidateCache(); // Invalidate cache to refresh data
+      await refreshData(brandId!); // Force refresh data
       setShowDeleteModal(false); // Close modal
     } catch (error: any) {
-      console.error('Delete error:', error);
+      console.error('❌ Delete error:', error);
       showToast.error(error?.message || 'Failed to delete tutorials');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -186,11 +199,12 @@ const ContentDashboardPage: React.FC = () => {
         open={showDeleteModal}
         title="Delete Tutorials"
         description={`Are you sure you want to delete ${selectedArticles.size} tutorial${selectedArticles.size > 1 ? 's' : ''}? This action cannot be undone.`}
-        confirmText="Delete"
+        confirmText={isDeleting ? "Deleting..." : "Delete"}
         cancelText="Cancel"
         onConfirm={handleConfirmDelete}
         onCancel={handleCancelDelete}
         color="red"
+        disabled={isDeleting}
       />
 
       {/* Unpublish Confirmation Modal */}
@@ -198,11 +212,12 @@ const ContentDashboardPage: React.FC = () => {
         open={showUnpublishModal}
         title="Unpublish Tutorials"
         description={`Are you sure you want to unpublish ${selectedArticles.size} tutorial${selectedArticles.size > 1 ? 's' : ''}? They will no longer be visible to customers.`}
-        confirmText="Unpublish"
+        confirmText={isUnpublishing ? "Unpublishing..." : "Unpublish"}
         cancelText="Cancel"
         onConfirm={handleConfirmUnpublish}
         onCancel={handleCancelUnpublish}
         color="orange"
+        disabled={isUnpublishing}
       />
     </div>
   );

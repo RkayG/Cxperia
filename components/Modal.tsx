@@ -9,6 +9,7 @@ interface ModalProps {
   cancelText?: string;
   onConfirm: () => void;
   onCancel: () => void;
+  disabled?: boolean;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -20,6 +21,7 @@ const Modal: React.FC<ModalProps> = ({
   cancelText = "Cancel",
   onConfirm,
   onCancel,
+  disabled = false,
 }) => {
   if (!open) return null;
   return (
@@ -31,16 +33,21 @@ const Modal: React.FC<ModalProps> = ({
         {description && <p className="text-gray-900 mb-4">{description}</p>}
         <div className="flex justify-between gap-2">
           <button
-            className="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300"
+            className="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={onCancel}
+            disabled={disabled}
           >
             {cancelText}
           </button>
           <button
-            className={`px-4 py-2 rounded-lg bg-${color}-600 text-white font-semibold hover:bg-${color}-700`}
+            className={`px-4 py-2 rounded-lg text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2`}
             onClick={onConfirm}
-            style={{ backgroundColor: color ? `${color}` : "#6B46C1" }}
+            disabled={disabled}
+            style={{ backgroundColor: disabled ? '#9CA3AF' : (color ? `${color}` : "#6B46C1") }}
           >
+            {disabled && (
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            )}
             {confirmText}
           </button>
         </div>

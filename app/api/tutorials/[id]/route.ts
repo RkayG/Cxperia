@@ -137,6 +137,8 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   const brand_id = user?.brand_id
   const { id } = await  params
 
+  console.log('🗑️ [API] DELETE tutorial request:', { id, brand_id, user_id: user?.id });
+
   if (!id) return NextResponse.json({ success: false, message: 'id is required' }, { status: 400 })
   if (!brand_id) return NextResponse.json({ success: false, message: 'brand_id is required' }, { status: 403 })
 
@@ -148,7 +150,10 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
       .eq("id", id)
       .single()
 
+    console.log('🗑️ [API] Tutorial lookup result:', { lookup, lookupError });
+
     if (lookupError || !lookup || lookup.brand_id !== brand_id) {
+        console.log('❌ [API] Tutorial not found or unauthorized:', { lookupError, lookup, brand_id });
         return NextResponse.json({ success: false, message: 'Tutorial not found or unauthorized' }, { status: 404 })
     }
 
@@ -159,16 +164,21 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
       .eq("id", id)
       .eq("brand_id", brand_id) // Security check
 
+    console.log('🗑️ [API] Delete operation result:', { deleteError });
+
     if (deleteError) {
-      console.error("Error deleting tutorial:", deleteError)
+      console.error("❌ [API] Error deleting tutorial:", deleteError)
       return NextResponse.json({ success: false, message: deleteError.message }, { status: 500 })
     }
 
+    console.log('✅ [API] Tutorial deleted successfully:', id);
+    
     // Note: Cache invalidation is removed here as per migration strategy.
     
     return NextResponse.json({ success: true, message: 'Deleted' })
 
   } catch (error: any) {
+    console.error('❌ [API] Delete tutorial error:', error);
     return NextResponse.json({ success: false, message: error.message }, { status: 500 })
   }
 }

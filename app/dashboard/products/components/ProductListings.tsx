@@ -1,5 +1,5 @@
 // src/components/ProductDashboard/ProductListings.tsx
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import React, { useMemo, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import FilterBar from "./FilterBar";
@@ -21,12 +21,6 @@ const ProductListings: React.FC<ProductListingsPropsWithEdit> = ({
   const [filter, setFilter] = useState("");
   const [sort, setSort] = useState("");
   const [products, _setProducts] = useState<Product[]>(initialProducts); // Internal state for products
-  const router = useRouter();
-
-  const handleAddNewProduct = () => {
-    // Navigate to the product creation page or open a modal
-    router.push("/dashboard/experience/create?step=product-details&new=true");
-  };
 
   // Get unique categories for the horizontal bar
   const categories = useMemo(() => {
@@ -130,7 +124,6 @@ const ProductListings: React.FC<ProductListingsPropsWithEdit> = ({
         <FilterBar
           onFilterChange={setFilter}
           onSortChange={setSort}
-          onAddNewProduct={handleAddNewProduct}
           isLoading={isLoading}
         />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6">

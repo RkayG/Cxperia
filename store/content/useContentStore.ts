@@ -43,6 +43,7 @@ interface ContentState {
   // Actions
   fetchContentData: (brandId: string) => Promise<void>;
   invalidateCache: () => void;
+  refreshData: (brandId: string) => Promise<void>;
   setActiveTab: (tab: string) => void;
   setSelectedType: (type: string) => void;
   setSelectedCategory: (category: string) => void;
@@ -180,6 +181,13 @@ export const useContentStore = create<ContentState>()(
       set({ currentBrandId: null });
     },
 
+    refreshData: async (brandId: string) => {
+      console.log('🔄 ContentStore: Force refreshing data for brand:', brandId);
+      set({ currentBrandId: null }); // Clear cache
+      const { fetchContentData } = get();
+      await fetchContentData(brandId); // Force refetch
+    },
+
     setActiveTab: (tab: string) => {
       const { articles, selectedType, selectedCategory, search } = get();
       const filteredArticles = filterArticles(articles, tab, selectedType, selectedCategory, search);
@@ -264,6 +272,7 @@ export const useContentError = () => useContentStore(state => state.error);
 // Action hooks - individual selectors to prevent infinite loops
 export const useContentFetchContentData = () => useContentStore(state => state.fetchContentData);
 export const useContentInvalidateCache = () => useContentStore(state => state.invalidateCache);
+export const useContentRefreshData = () => useContentStore(state => state.refreshData);
 export const useContentSetActiveTab = () => useContentStore(state => state.setActiveTab);
 export const useContentSetSelectedType = () => useContentStore(state => state.setSelectedType);
 export const useContentSetSelectedCategory = () => useContentStore(state => state.setSelectedCategory);
@@ -276,6 +285,7 @@ export const useContentClearError = () => useContentStore(state => state.clearEr
 export const useContentActions = () => {
   const fetchContentData = useContentFetchContentData();
   const invalidateCache = useContentInvalidateCache();
+  const refreshData = useContentRefreshData();
   const setActiveTab = useContentSetActiveTab();
   const setSelectedType = useContentSetSelectedType();
   const setSelectedCategory = useContentSetSelectedCategory();
@@ -288,6 +298,7 @@ export const useContentActions = () => {
   return {
     fetchContentData,
     invalidateCache,
+    refreshData,
     setActiveTab,
     setSelectedType,
     setSelectedCategory,

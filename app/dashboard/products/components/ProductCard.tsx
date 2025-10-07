@@ -2,6 +2,7 @@
 
 import jsPDF from 'jspdf';
 import { Download, Eye, MoreHorizontal, Pencil, QrCode, Trash2 } from 'lucide-react';
+import Link from 'next/link';
 import React from 'react';
 // DownloadOptions inline for QR popover
 const DownloadOptions: React.FC<{ qrCodeImageUrl?: string; productName?: string }> = ({ qrCodeImageUrl, productName }) => {
@@ -49,12 +50,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { useRouter } from 'next/navigation';
 import { useDeleteExperience } from '@/hooks/brands/useExperienceApi';
 import type { ProductCardProps } from './productTypes';
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const router = useRouter();
   const qrCodeStatusColor = product.qrCodeStatus === 'Generated'
     ? 'bg-green-100 text-green-800'
     : product.qrCodeStatus === 'Pending'
@@ -64,7 +63,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const handleEdit = () => {
     console.log("handleEdit product:", product);
     if (product.id) {
-      router.push(`/dashboard/experience/edit/${product.id}?step=product-details`, { state: { experienceData: product._fullExp } } as any);
+      // Store experience data in localStorage for the edit page to access
+      localStorage.setItem('experienceData', JSON.stringify(product._fullExp));
     }
   };
 
@@ -83,7 +83,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     if (option === 'browser' && product._fullExp?.experience_url) {
       window.open(product._fullExp.experience_url, '_blank');
     } else {
-      router.push(`/dashboard/experience/edit/${product.id}?step=preview`);
+      // This will be handled by Link component
     }
   };
   const handleViewQr = () => {
@@ -146,9 +146,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       </div>
       <p className="text-xs text-left text-gray-400 mb-4">Added: {product.addedDate}</p>
       <div className="flex justify-between items-center border-t border-gray-100 pt-3">
-        <button className="flex items-center text-sm text-purple-600 hover:text-purple-700 font-medium" onClick={handleEdit}>
+        <Link 
+          href={`/dashboard/experience/edit/${product.id}?step=product-details`}
+          onClick={handleEdit}
+          className="flex items-center text-sm text-purple-600 hover:text-purple-700 font-medium"
+        >
           <Pencil size={16} className="mr-1 cursor-pointer" /> Edit
-        </button>
+        </Link>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="p-1 text-gray-400 hover:text-gray-600">
@@ -163,12 +167,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 </DropdownMenuSubTrigger>
                 <DropdownMenuSubContent className="w-64 bg-white flex flex-col gap-2 z-50">
                   <div className="font-semibold text-gray-900 mb-2 px-2">Preview Experience</div>
-                  <DropdownMenuItem
-                    onClick={() => handlePreviewOption('dashboard')}
-                    className="w-full px-4 py-2 cursor-pointer rounded-lg bg-purple-700 text-white font-medium hover:bg-purple-800 transition"
-                  >
-                    Preview in Dashboard
-                  </DropdownMenuItem>
+                  <Link href={`/dashboard/experience/edit/${product.id}?step=preview`}>
+                    <DropdownMenuItem
+                      className="w-full px-4 py-2 cursor-pointer rounded-lg bg-purple-700 text-white font-medium hover:bg-purple-800 transition"
+                    >
+                      Preview in Dashboard
+                    </DropdownMenuItem>
+                  </Link>
                   <DropdownMenuItem
                     onClick={() => handlePreviewOption('browser')}
                     className="w-full px-4 py-2 cursor-pointer rounded-lg bg-gray-200 text-purple-800 font-medium hover:bg-gray-300 transition"

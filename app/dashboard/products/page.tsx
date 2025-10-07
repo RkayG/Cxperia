@@ -1,6 +1,6 @@
 'use client';
 import { Camera, Clock, Play } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import React, { useEffect } from 'react';
 import { useBrand } from '@/contexts/BrandContext';
 import { useNavigationProgressWithQuery } from '@/hooks/useNavigationProgressWithQuery';
@@ -30,8 +30,6 @@ const ProductDashboard: React.FC = () => {
   
   // Get actions from store
   const { fetchProductsData } = useProductsActions();
-
-  const router = useRouter();
 
   // Initialize data fetching
   useEffect(() => {
@@ -73,7 +71,7 @@ const ProductDashboard: React.FC = () => {
   const handleEditExperience = (exp: any) => {
     // Store experience data in localStorage for the edit page to access
     localStorage.setItem('experienceData', JSON.stringify(exp));
-    router.push(`/dashboard/experience/edit/${exp.id}?step=product-details`);
+    // Note: This will be handled by Link components in ProductCard
   };
 
   return (
