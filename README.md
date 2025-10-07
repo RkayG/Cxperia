@@ -1,105 +1,275 @@
+# Cxperia - Digital Experience Platform
 
-# [Next.js Enterprise Boilerplate](https://blazity.com/open-source/nextjs-enterprise-boilerplate) 
+[![Next.js](https://img.shields.io/badge/Next.js-15-black)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-4.0-38B2AC)](https://tailwindcss.com/)
+[![Supabase](https://img.shields.io/badge/Supabase-2.57-green)](https://supabase.com/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-A production-ready template for building enterprise applications with Next.js. This boilerplate provides a solid foundation with carefully selected technologies and ready-to-go infrastructure to help you develop high-quality applications efficiently.
+> **Cxperia** is a comprehensive digital experience platform that enables beauty and cosmetic brands to create immersive, interactive product experiences through QR codes, tutorials, and analytics.
 
-## Motivation
+## 🌟 What is Cxperia?
 
-While most Next.js boilerplates focus on individual developer needs with excessive complexity, **next-enterprise** prioritizes strategic simplicity for enterprise teams. It offers a streamlined foundation with high-impact features that maximize developer productivity and accelerate time-to-market for business-critical applications.
+Cxperia transforms how beauty brands connect with their customers by providing a complete digital experience ecosystem. Brands can create interactive product experiences that customers access by scanning QR codes, providing tutorials, usage instructions, and collecting valuable feedback and analytics.
 
-<a href="https://blazity.com/">
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="/assets/blazity-logo-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="/assets/blazity-logo-light.svg">
-  <img alt="Logo" align="right" height="80" src="/assets/blazity-logo-light.svg">
-</picture>
-</a>
+### Key Features
 
-> [!NOTE]
-> **Blazity** is a group of Next.js architects. We help organizations architect, optimize, and deploy high-performance Next.js applications at scale. Contact us at [contact@blazity.com](https://blazity.com) if you’d like to talk about your project.
+- 🎨 **Brand Experience Creation** - Build custom digital experiences for products
+- 📱 **QR Code Generation** - Generate scannable codes for instant access
+- 📚 **Tutorial Management** - Create step-by-step product tutorials and routines
+- 📊 **Analytics Dashboard** - Track engagement, scans, and user behavior
+- 🎯 **Customer Feedback** - Collect and manage product feedback
+- 📱 **Mobile-First Design** - Optimized for mobile scanning and interaction
+- 🔒 **Secure & Scalable** - Enterprise-grade security and performance
 
+## 🚀 Quick Start
 
+### Prerequisites
 
-## Documentation
+- Node.js 20.0.0 or higher
+- pnpm package manager
+- Supabase account
+- Cloudinary account (optional)
 
-There is a separate documentation that explains its functionality, highlights core business values and technical decisions, provides guidelines for future development, and includes architectural diagrams.
+### Installation
 
-We encourage you to [visit our docs (docs.blazity.com)](https://docs.blazity.com) to learn more
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-org/cxperia.git
+   cd cxperia
+   ```
 
-## Integrated features
+2. **Install dependencies**
+   ```bash
+   pnpm install
+   ```
 
-### Boilerplate
-With this template you will get all the boilerplate features included:
+3. **Set up environment variables**
+   ```bash
+   cp .env.example .env.local
+   # Edit .env.local with your configuration
+   ```
 
-* [Next.js 15](https://nextjs.org/) - Performance-optimized configuration using App Directory
-* [Tailwind CSS v4](https://tailwindcss.com/) - Utility-first CSS framework for efficient UI development
-* [ESlint 9](https://eslint.org/) and [Prettier](https://prettier.io/) - Code consistency and error prevention
-* [Corepack](https://github.com/nodejs/corepack) & [pnpm](https://pnpm.io/) as the package manager - For project management without compromises 
-* [Strict TypeScript](https://www.typescriptlang.org/) - Enhanced type safety with carefully crafted config and [ts-reset](https://github.com/total-typescript/ts-reset) library
-* [GitHub Actions](https://github.com/features/actions) - Pre-configured workflows including bundle size and performance tracking
-* Perfect Lighthouse score - Optimized performance metrics
-* [Bundle analyzer](https://www.npmjs.com/package/@next/bundle-analyzer) - Monitor and manage bundle size during development
-* Testing suite - [Vitest](https://vitest.dev), [React Testing Library](https://testing-library.com/react), and [Playwright](https://playwright.dev/) for comprehensive testing
-* [Storybook](https://storybook.js.org/) - Component development and documentation
-* Advanced testing - Smoke and acceptance testing capabilities
-* [Conventional commits](https://www.conventionalcommits.org/) - Standardized commit history management
-* [Observability](https://opentelemetry.io/) - Open Telemetry integration
-* [Absolute imports](https://nextjs.org/docs/advanced-features/module-path-aliases) - Simplified import structure
-* [Health checks](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) - Kubernetes-compatible monitoring
-* [Radix UI](https://www.radix-ui.com/) - Headless components for customization
-* [CVA](http://cva.style/) (Class Variance Authority) - Consistent design system creation
-* [Renovate BOT](https://www.whitesourcesoftware.com/free-developer-tools/renovate) - Automated dependency and security updates
-* [Patch-package](https://www.npmjs.com/package/patch-package) - External dependency fixes without compromises
-* Component relationship tools - Graph for managing coupling and cohesion
-* [Semantic Release](https://github.com/semantic-release/semantic-release) - Automated changelog generation
-* [T3 Env](https://env.t3.gg/) - Streamlined environment variable management
+4. **Set up the database**
+   ```bash
+   # Run database migrations
+   pnpm db:migrate
+   ```
 
-### Infrastructure & deployments
+5. **Start the development server**
+   ```bash
+   pnpm dev
+   ```
 
-#### Vercel
+6. **Open your browser**
+   Navigate to [http://localhost:3000](http://localhost:3000)
 
-Easily deploy your Next.js app with [Vercel](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=github&utm_campaign=next-enterprise) by clicking the button below:
+## 📁 Project Structure
 
-[![Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/Blazity/next-enterprise)
+```
+cxperia/
+├── app/                    # Next.js App Router pages
+│   ├── api/               # API routes
+│   ├── dashboard/         # Brand dashboard
+│   ├── experience/        # Public experience pages
+│   └── auth/              # Authentication pages
+├── components/            # Reusable UI components
+│   ├── ui/               # Base UI components
+│   └── ...               # Feature-specific components
+├── hooks/                 # Custom React hooks
+├── lib/                   # Utility libraries
+├── services/              # API service layers
+├── store/                 # Zustand state management
+├── types/                 # TypeScript type definitions
+├── utils/                 # Utility functions
+└── docs/                  # Documentation
+```
 
-#### Custom cloud infrastructure
+## 🏗️ Architecture Overview
 
-**next-enterprise** offers dedicated infrastructure as code (IaC) solutions built with Terraform, designed specifically for deploying Next.js applications based on our extensive experience working with enterprise clients.
+### Frontend Architecture
+- **Next.js 15** with App Router for file-based routing
+- **React 19** with modern hooks and concurrent features
+- **TypeScript** for type safety and better developer experience
+- **Tailwind CSS** for utility-first styling
+- **Radix UI** for accessible component primitives
 
-Learn more in our [documentation (docs.blazity.com)][docs] how to quickstart with the deployments using simple CLI.
+### Backend Architecture
+- **Next.js API Routes** for serverless API endpoints
+- **Supabase** for database, authentication, and real-time features
+- **PostgreSQL** with Row Level Security (RLS)
+- **Redis** for caching and session management
 
-#### Available cloud providers and theirs features:
+### State Management
+- **Zustand** for global state management
+- **React Query** for server state and caching
+- **Context API** for component-level state
 
-* **AWS (Amazon Web Services)**
-  * Automated provisioning of AWS infrastructure
-  * Scalable & secure setup using:
-     * VPC - Isolated network infrastructure
-     * Elastic Container Service (ECS) - Container orchestration
-     * Elastic Container Registry (ECR) - Container image storage
-     * Application Load Balancer - Traffic distribution
-     * S3 + CloudFront - Static asset delivery and caching
-     * AWS WAF - Web Application Firewall protection
-     * Redis Cluster - Caching
-  * CI/CD ready - Continuous integration and deployment pipeline
+## 🎯 Core Features
 
-*... more coming soon*
+### 1. Brand Dashboard
+Comprehensive dashboard for brands to manage their digital experiences:
 
-### Team & maintenance
+- **Experience Management** - Create, edit, and manage product experiences
+- **Tutorial Creation** - Build step-by-step tutorials and routines
+- **Analytics** - Track scans, engagement, and user behavior
+- **Content Management** - Manage tutorials, instructions, and media
+- **Brand Customization** - Customize colors, themes, and branding
 
-**next-enterprise** is backed and maintained by [Blazity](https://blazity.com), providing up to date security features and integrated feature updates.
+### 2. QR Code System
+Advanced QR code generation and management:
 
-#### Active maintainers
+- **Dynamic QR Codes** - Generate codes linked to specific experiences
+- **Download Options** - PNG and PDF download formats
+- **Analytics Tracking** - Track scan events and user interactions
+- **Custom Branding** - Branded QR codes with logos
 
-- Igor Klepacki ([neg4n](https://github.com/neg4n)) - Open Source Software Developer
-- Tomasz Czechowski ([tomaszczechowski](https://github.com/tomaszczechowski)) - Solutions Architect & DevOps
-- Jakub Jabłoński ([jjablonski-it](https://github.com/jjablonski-it)) - Head of Integrations
+### 3. Tutorial Management
+Comprehensive tutorial and routine system:
 
-#### All-time contributors
-[bmstefanski](https://github.com/bmstefanski)
+- **Step-by-Step Creation** - Visual tutorial builder
+- **Media Integration** - Images, videos, and interactive content
+- **Categorization** - Organize by skin type, occasion, difficulty
+- **Publishing Control** - Draft, publish, and unpublish tutorials
 
-## License
+### 4. Customer Experience
+Mobile-optimized experience for end users:
 
-MIT
+- **QR Code Scanning** - Instant access to product information
+- **Interactive Tutorials** - Step-by-step guidance
+- **Feedback System** - Rate and review products
+- **Offline Support** - Works without internet connection
 
+## 🔧 Development
 
-[docs]: https://docs.blazity.com/next-enterprise/deployments/enterprise-cli
+### Available Scripts
+
+```bash
+# Development
+pnpm dev              # Start development server
+pnpm dev:spa          # Start with HTTPS
+
+# Building
+pnpm build            # Build for production
+pnpm start            # Start production server
+
+# Code Quality
+pnpm lint             # Run ESLint
+pnpm lint:fix         # Fix ESLint issues
+pnpm prettier         # Check Prettier formatting
+pnpm prettier:fix     # Fix Prettier formatting
+
+# Testing
+pnpm test             # Run unit tests
+pnpm test:watch       # Run tests in watch mode
+pnpm test:coverage    # Run tests with coverage
+pnpm e2e:headless     # Run E2E tests
+pnpm e2e:ui           # Run E2E tests with UI
+
+# Analysis
+pnpm analyze          # Analyze bundle size
+pnpm coupling-graph   # Generate dependency graph
+```
+
+### Environment Variables
+
+Create a `.env.local` file with the following variables:
+
+```env
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+
+# Cloudinary (optional)
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+
+# Redis (optional)
+UPSTASH_REDIS_REST_URL=your_redis_url
+UPSTASH_REDIS_REST_TOKEN=your_redis_token
+
+# App Configuration
+NEXT_PUBLIC_EXPERIENCE_SECRET=your_secret_key
+NEXTAUTH_SECRET=your_nextauth_secret
+NEXTAUTH_URL=http://localhost:3000
+```
+
+## 📊 Performance
+
+Cxperia is built with performance in mind:
+
+- **Lighthouse Score**: 100/100 across all metrics
+- **Core Web Vitals**: Optimized for excellent user experience
+- **Bundle Size**: Minimized with tree shaking and code splitting
+- **Image Optimization**: Automatic optimization with Next.js
+- **Caching**: Multi-layer caching strategy
+
+## 🔒 Security
+
+Security is a top priority:
+
+- **Authentication**: Supabase Auth with JWT tokens
+- **Authorization**: Row Level Security (RLS) policies
+- **Data Validation**: Zod schema validation
+- **HTTPS**: Enforced in production
+- **CORS**: Properly configured
+- **Rate Limiting**: API rate limiting implemented
+
+## 📱 Mobile Support
+
+- **Responsive Design**: Mobile-first approach
+- **PWA Ready**: Progressive Web App capabilities
+- **Touch Optimized**: Touch-friendly interactions
+- **Offline Support**: Service worker implementation
+- **App-like Experience**: Native app feel on mobile devices
+
+## 🌐 Browser Support
+
+- Chrome 90+
+- Firefox 88+
+- Safari 14+
+- Edge 90+
+- Mobile browsers (iOS Safari 14+, Chrome Mobile 90+)
+
+## 📚 Documentation
+
+Comprehensive documentation is available in the `/docs` directory:
+
+- [Installation Guide](./docs/installation.md)
+- [API Reference](./docs/api/README.md)
+- [Component Library](./docs/components/README.md)
+- [Deployment Guide](./docs/deployment/production.md)
+- [User Guides](./docs/user-guides/README.md)
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](./CONTRIBUTING.md) for details.
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+- **Documentation**: [docs.cxperia.com](https://docs.cxperia.com)
+- **Issues**: [GitHub Issues](https://github.com/your-org/cxperia/issues)
+- **Email**: support@cxperia.com
+
+## 🙏 Acknowledgments
+
+- Built with [Next.js Enterprise Boilerplate](https://github.com/Blazity/next-enterprise)
+- UI components from [Radix UI](https://www.radix-ui.com/)
+- Icons from [Lucide React](https://lucide.dev/)
+- Database powered by [Supabase](https://supabase.com/)
+
+---
+
+**Made with ❤️ by the Cxperia Team**

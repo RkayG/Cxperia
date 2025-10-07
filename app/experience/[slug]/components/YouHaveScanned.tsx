@@ -80,7 +80,7 @@ const YouHaveScanned: React.FC<YouHaveScannedProps> = ({ onSectionChange, slug }
   );
 
   if (showLoader) {
-    return <UnpackingLoader color={color} />;
+    return <UnpackingLoader />;
   }
 
   return (
