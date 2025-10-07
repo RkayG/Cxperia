@@ -6,8 +6,10 @@ const config = {
   // Base API URL - will be different for development, staging, and production
   API_BASE_URL: API_BASE,
 
-  // API endpoints relevant to Cxperia
+    // API endpoints relevant to Cxperia
+  
   endpoints: {
+    // Auth API endpoints
     AUTH: {
       LOGIN: "/auth/login",
       REGISTER: "/auth/register",
@@ -15,12 +17,14 @@ const config = {
       PROFILE: "/auth/profile",
     },
 
+    // Invalidat Cache API endpoints
     INVALIDATE_CACHE: {
       EXPERIENCE: (slug: string) => `/api/public/experience/${slug}/purge/experience`,
       TUTORIAL: (slug: string) => `/api/public/experience/${slug}/purge/tutorials`,
       PRODUCT: (slug: string) => `/api/public/experience/${slug}/purge/products`,
     },
 
+    // Experience API endpoints
     EXPERIENCE: {
       RECENTS: "/api/experiences/recents",
       LIST: "/api/experiences",
@@ -35,6 +39,7 @@ const config = {
       // QR: (id: string) => `/api/experiences/${id}/qr`, // if needed in future
     },
 
+    // Product API endpoints
     PRODUCT: {
       LIST: "/api/products",
       DETAIL: (id: string) => `/api/products/${id}`,
@@ -43,6 +48,7 @@ const config = {
       DELETE: (id: string) => `/api/products/${id}`,
     },
 
+    // Tutorial API endpoints
     TUTORIAL: {
       LIST: (type: 'all' | 'recents' = 'all') => `/api/tutorials?type=${type}`,
       DETAIL: (id: string) => `/api/tutorials/${id}`,
@@ -52,6 +58,7 @@ const config = {
       LINK: (experienceId: string) => `/api/experiences/${experienceId}/tutorials/link`,
     },
 
+    // Ingredient API endpoints
     INGREDIENT: {
       LIST: (experienceId: string) => `/api/experiences/${experienceId}/ingredients`,
       ADD: (experienceId: string) => `/api/experiences/${experienceId}/ingredients`,
@@ -61,6 +68,7 @@ const config = {
         `/api/experiences/${experienceId}/ingredients/${ingredientId}`,
     },
 
+    // Instruction API endpoints
     INSTRUCTION: {
       LIST: (experienceId: string) => `/api/experiences/${experienceId}/instructions`,
       ADD: (experienceId: string) => `/api/experiences/${experienceId}/instructions`,
@@ -70,26 +78,31 @@ const config = {
         `/api/experiences/${experienceId}/instructions/${instructionId}`,
     },
 
+    // Feature API endpoints
     FEATURE: {
       LIST: (experienceId: string) => `/api/experiences/${experienceId}/features`,
       ENABLE: (experienceId: string) => `/api/experiences/${experienceId}/features`,
       DISABLE: (experienceId: string, featureId: string) => `/api/experiences/${experienceId}/features/${featureId}`,
     },
 
+    // Feedback API endpoints
     FEEDBACK: {
       CREATE: "/api/feedbacks",
     },
 
+    // Brand API endpoints
     BRAND: {
       LOGO: "/api/brands/logo",
       SUPPORT_LINKS: "/api/brands/support-links",
     },
 
+    // Upload API endpoints
     UPLOAD: {
       IMAGE: "/upload/image",
       VIDEO: "/upload/video",
     },
 
+    // Public API endpoints
     PUBLIC: {
       EXPERIENCE: {
         DATA: (slug: string) => `/public/experience/${slug}`,
@@ -101,6 +114,7 @@ const config = {
 
       TUTORIAL: {
         LIST: (slug: string) => `/public/experience/${slug}/tutorials`,
+        DETAIL: (id: string) => `/public/tutorials/${id}`,
       },
 
       FEEDBACK: {

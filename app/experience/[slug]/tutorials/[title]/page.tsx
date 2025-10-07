@@ -9,9 +9,12 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useParams, usePathname, useRouter } from "next/navigation";
-import { useExperienceTutorials } from "@/hooks/public/useTutorials";
+import Link from "next/link";
+import { useExperienceTutorials, useTutorialById } from "@/hooks/public/useTutorials";
 import { usePublicExpStore } from "@/store/public/usePublicExpStore";
 import { getFriendlyTimeAgo } from "@/utils/friendlyTime";
+import { Skeleton } from "@/components/ui/skeleton";
+import React, { useEffect, useState } from "react";
 
 interface TutorialStep {
   id?: string | number;
@@ -53,34 +56,196 @@ interface TutorialDetail {
   updated_at?: string;
 }
 
+// Tutorial Detail Skeleton Component
+const TutorialDetailSkeleton: React.FC = () => {
+  return (
+    <div className="min-h-screen mt-4 max-w-xl mx-auto pb-6 bg-gray-50">
+      <div className="md:max-w-4xl mx-auto md:px-6 pb-8">
+        <div className="md:bg-white md:rounded-2xl md:shadow-lg overflow-hidden">
+          {/* Featured Image/Video Skeleton */}
+          <div className="h-64 md:h-96">
+            <Skeleton className="w-full h-full" />
+          </div>
+
+          {/* Title and Meta Info Skeleton */}
+          <div className="p-6 rounded-t-4xl md:-mt-8 md:bg-white md:relative md:z-10">
+            <div className="mb-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Skeleton className="h-4 w-24" />
+              </div>
+              <Skeleton className="h-8 w-3/4 mb-3" />
+              <div className="flex items-center gap-4">
+                <Skeleton className="w-12 h-12 rounded-full" />
+                <div>
+                  <Skeleton className="h-6 w-32 mb-2" />
+                  <Skeleton className="h-3 w-20" />
+                </div>
+              </div>
+            </div>
+
+            {/* Stats Skeleton */}
+            <div className="flex flex-wrap gap-6 mb-6">
+              <div className="flex items-center">
+                <Skeleton className="h-4 w-4 mr-2" />
+                <Skeleton className="h-4 w-20" />
+              </div>
+            </div>
+
+            {/* Occasions Skeleton */}
+            <div className="mb-4">
+              <div className="flex items-center mb-2">
+                <Skeleton className="h-4 w-4 mr-2" />
+                <Skeleton className="h-4 w-24" />
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Skeleton className="h-6 w-16 rounded-full" />
+                <Skeleton className="h-6 w-20 rounded-full" />
+                <Skeleton className="h-6 w-14 rounded-full" />
+              </div>
+            </div>
+          </div>
+
+          {/* Description Skeleton */}
+          <div className="px-6 pb-2">
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+            </div>
+          </div>
+
+          {/* Steps Section Skeleton */}
+          <div className="p-0">
+            <div className="px-6 pt-6">
+              <Skeleton className="h-8 w-48 mb-6" />
+            </div>
+            
+            {/* Steps Skeleton */}
+            {Array.from({ length: 3 }).map((_, index) => (
+              <div key={index} className={index !== 2 ? "border-b border-gray-200" : ""}>
+                <div className="p-6">
+                  <div className="flex items-start gap-4 mb-2">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <Skeleton className="w-12 h-12 rounded-full" />
+                        <Skeleton className="h-6 w-48" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-2 mb-6">
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-2/3" />
+                  </div>
+                  
+                  {/* Step Media Skeleton */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <Skeleton className="w-full h-48 rounded-lg" />
+                  </div>
+                  
+                  {/* Pro Tips Skeleton */}
+                  <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-4">
+                    <div className="flex items-center mb-3">
+                      <Skeleton className="h-5 w-5 mr-2" />
+                      <Skeleton className="h-5 w-16" />
+                    </div>
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-3/4" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      
+      {/* Sticky Footer Skeleton */}
+      <div className="sticky bottom-0 w-full z-500 bg-white border-t border-gray-200 p-4">
+        <Skeleton className="w-full h-12 rounded-lg" />
+      </div>
+    </div>
+  );
+};
+
 const TutorialDetailPage: React.FC = () => {
   const { title: urlTitle } = useParams<{ title: string }>();
   const _router = useRouter();
   const { color, slug, brandLogo, brandName } = usePublicExpStore();
   let tutorial: TutorialDetail | undefined;
   
-  // Extract tutorial ID from URL parameter (format: "tutorial-slug-id")
-  const tutorialId = urlTitle?.split('-').pop(); // Get the last part after the last dash
+  // Extract tutorial ID from URL parameter (format: "tutorial-slug-uuid")
+  // UUIDs contain dashes, so we need to find the UUID pattern
+  const tutorialId = urlTitle ? (() => {
+    // UUID pattern: 8-4-4-4-12 characters
+    const uuidPattern = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
+    const match = urlTitle.match(uuidPattern);
+    return match ? match[0] : null;
+  })() : null;
   
+  // Client-side friendly time state to prevent hydration mismatch
+  const [friendlyTime, setFriendlyTime] = useState('');
+
+  // If not present, fetch from experience tutorials or by ID
+  const { data: tutorialsData, isLoading: isLoadingTutorials } = useExperienceTutorials(slug);
+  const { data: tutorialData, isLoading: isLoadingTutorial } = useTutorialById(tutorialId || '');
+  console.log('tutorialData', tutorialData);
+
+  const tutorials = Array.isArray((tutorialsData as any)?.tutorials)
+    ? (tutorialsData as any).tutorials
+    : [];
+    
+  // Try to get tutorial from experience tutorials first, then by ID
+  if (!tutorial && tutorialId && tutorials.length > 0) {
+    tutorial = tutorials.find((t: any) => String(t.id) === String(tutorialId));
+  }
+  
+  // If still not found, try fetching by ID
+  if (!tutorial && tutorialId && (tutorialData as any)?.success) {
+    tutorial = (tutorialData as any).tutorial;
+    console.log('tutorial from useTutorialById', tutorial);
+  }
+  
+  // Extract tutorial data using backend fields directly
   const title = tutorial?.title || "";
   const description = tutorial?.description || "";
   const featuredVideoUrl = tutorial?.featured_video_url || "";
   const featuredImage = tutorial?.featured_image || "";
-  const publishedAt = tutorial?.publishedAt || tutorial?.updated_at || "";
-  const steps: TutorialStep[] = Array.isArray(tutorial?.steps) ? (tutorial.steps as TutorialStep[]) : [];
+  const publishedAt = tutorial?.updated_at || "";
+  
+  // Parse steps from JSON string if it exists
+  let steps: TutorialStep[] = [];
+  if (tutorial?.steps) {
+    try {
+      if (typeof tutorial.steps === 'string') {
+        const parsedSteps = JSON.parse(tutorial.steps);
+        if (Array.isArray(parsedSteps)) {
+          steps = parsedSteps as TutorialStep[];
+        }
+      } else if (Array.isArray(tutorial.steps)) {
+        // Check if it's already TutorialStep[] or string[]
+        if (tutorial.steps.length > 0 && typeof tutorial.steps[0] === 'object') {
+          steps = tutorial.steps as TutorialStep[];
+        }
+      }
+    } catch (error) {
+      console.warn('Error parsing tutorial steps:', error);
+      steps = [];
+    }
+  }
+  
   const category = tutorial?.category || "";
   const skinTypes: string[] = tutorial?.skin_types || [];
   const occasions: string[] = tutorial?.occasions || [];
   const tags: string[] = tutorial?.tags || [];
-
-  // If not present, fetch from experience tutorials
-  const { data: tutorialsData, isLoading } = useExperienceTutorials(slug);
-  const tutorials = Array.isArray((tutorialsData as any)?.tutorials)
-    ? (tutorialsData as any).tutorials
-    : [];
-  if (!tutorial && tutorialId && tutorials.length > 0) {
-    tutorial = tutorials.find((t: any) => String(t.id) === String(tutorialId));
-  }
+  
+  // Calculate friendly time on client side only to prevent hydration mismatch
+  useEffect(() => {
+    if (publishedAt) {
+      setFriendlyTime(getFriendlyTimeAgo(publishedAt));
+    }
+  }, [publishedAt]);
   if (!tutorial) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -88,12 +253,8 @@ const TutorialDetailPage: React.FC = () => {
       </div>
     );
   }
-  if (isLoading && !tutorial) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        Loading tutorial...
-      </div>
-    );
+  if (isLoadingTutorials || isLoadingTutorial) {
+    return <TutorialDetailSkeleton />;
   }
 
   // Helper: Video embed
@@ -194,7 +355,7 @@ const TutorialDetailPage: React.FC = () => {
                     </span>
                   </div>
                   <div className="flex items-center space-x-2 text-xs text-gray-400">
-                    <span>{getFriendlyTimeAgo(publishedAt)}</span>
+                    <span>{friendlyTime || 'Loading...'}</span>
                   </div>
                 </div>
               </div>

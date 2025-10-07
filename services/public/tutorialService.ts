@@ -25,6 +25,26 @@ export async function fetchExperienceTutorials(slug: string) {
 	}
 }
 
+export async function fetchTutorialById(tutorialId: string) {
+	const endpoint = config.endpoints.PUBLIC.TUTORIAL.DETAIL(tutorialId);
+	const url = getApiUrl(endpoint);
+	try {
+		const response = await fetch(url, {
+			method: 'GET',
+			headers: {
+				'x-public-secret': PUBLIC_SECRET,
+				'Content-Type': 'application/json',
+			},
+		});
+		if (!response.ok) {
+			throw new Error(`Error fetching tutorial: ${response.statusText}`);
+		}
+		return await response.json();
+	} catch (error) {
+		throw error;
+	}
+}
+
 export async function invalidateExperienceTutorials(slug: string) {
 	const endpoint = config.endpoints.INVALIDATE_CACHE.TUTORIAL(slug);
 	const url = getApiUrl(endpoint);

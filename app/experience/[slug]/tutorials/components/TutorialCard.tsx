@@ -1,7 +1,7 @@
 'use client'
 import { Clock, List, MoreVertical, Play } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import React, { useCallback, useState } from 'react';
+import Link from 'next/link';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useIncrementTutorialView } from '@/hooks/public/useTutorialViews';
 import { usePublicExpStore } from '@/store/public/usePublicExpStore';
 import { getFriendlyTimeAgo } from '@/utils/friendlyTime';
@@ -13,25 +13,30 @@ export interface TutorialDetail {
   featured_video_url?: string;
   total_duration: string;
   steps: string | string[];
-  brandLogo: string;
-  brandName: string;
-  views: string;
+  views: number;
   updated_at: string;
   verified?: boolean;
   video_url?: string;
   description?: string;
   featured_image?: string;
   thumbnail_url?: string;
+  category?: string;
+  difficulty?: string;
+  occasions?: string[];
+  skin_types?: string[];
+  tags?: string[];
+  brand_id?: string;
+  created_at?: string;
+  is_published?: boolean;
+  experience_id?: string;
 }
 
 interface TutorialCardProps {
   tutorial: TutorialDetail;
-  brandLogo?: string;
-  brandName?: string;
   contextColor?: string;
 }
 
-const TutorialCard: React.FC<TutorialCardProps> = ({ tutorial, brandLogo, brandName }) => {
+const TutorialCard: React.FC<TutorialCardProps> = ({ tutorial }) => {
   const {
     id,
     title,
@@ -48,16 +53,28 @@ const TutorialCard: React.FC<TutorialCardProps> = ({ tutorial, brandLogo, brandN
 
   const [isHovered, setIsHovered] = useState(false);
   const [mediaLoaded, setMediaLoaded] = useState(false);
+  const [friendlyTime, setFriendlyTime] = useState('');
 
-  const router = useRouter();
   const incrementViewMutation = useIncrementTutorialView();
   
   // Use stable selectors to prevent infinite re-renders
   const colorSelector = useCallback((state: any) => state.color, []);
   const slugSelector = useCallback((state: any) => state.slug, []);
+  const brandLogoSelector = useCallback((state: any) => state.brandLogo, []);
+  const brandNameSelector = useCallback((state: any) => state.brandName, []);
   
   const color = usePublicExpStore(colorSelector);
   const slug = usePublicExpStore(slugSelector);
+  const brandLogo = usePublicExpStore(brandLogoSelector);
+  const brandName = usePublicExpStore(brandNameSelector);
+  
+  // Calculate friendly time on client side only to prevent hydration mismatch
+  useEffect(() => {
+    if (updated_at) {
+      setFriendlyTime(getFriendlyTimeAgo(updated_at));
+    }
+  }, [updated_at]);
+  
   const slugify = (str: string) =>
     str
       .toLowerCase()
@@ -72,11 +89,11 @@ const TutorialCard: React.FC<TutorialCardProps> = ({ tutorial, brandLogo, brandN
       // Don't block navigation if view tracking fails
       console.warn('Failed to track view:', error);
     }
-    
-    // Navigate to tutorial detail page
-    const tutorialSlug = slugify(title || '');
-    router.push(`/experience/${slug}/tutorials/${tutorialSlug}-${id}`);
   };
+
+  // Generate href for Link component
+  const tutorialSlug = slugify(title || '');
+  const tutorialHref = `/experience/${slug}/tutorials/${tutorialSlug}-${id}`;
 
   // Prioritize video over image
   const videoSrc = featured_video_url || video_url || '';
@@ -149,13 +166,12 @@ const TutorialCard: React.FC<TutorialCardProps> = ({ tutorial, brandLogo, brandN
   }
 
   return (
-    <div 
-      className="bg-white rounded-lg mx-3 shadow-md overflow-hidden hover:shadow-lg transition-all duration-200 cursor-pointer group"
+    <Link 
+      href={tutorialHref}
+      className="block bg-white rounded-lg mx-3 shadow-md overflow-hidden hover:shadow-lg transition-all duration-200 cursor-pointer group"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleCardClick}
-      role="button"
-      tabIndex={0}
     >
       {/* Media Preview: Video prioritized over image */}
       <div className="relative aspect-video bg-gray-200 overflow-hidden">
@@ -274,7 +290,7 @@ const TutorialCard: React.FC<TutorialCardProps> = ({ tutorial, brandLogo, brandN
             <div className="flex items-center space-x-1 text-xs text-gray-500">
               {/* <span>{views}</span>
               <span>•</span> */}
-              <span>{getFriendlyTimeAgo(updated_at)}</span>
+              <span>{friendlyTime || 'Loading...'}</span>
             </div>
           </div>
 
@@ -299,7 +315,7 @@ const TutorialCard: React.FC<TutorialCardProps> = ({ tutorial, brandLogo, brandN
         </div>
         */}
       </div>
-    </div>
+    </Link>
   );
 };
 

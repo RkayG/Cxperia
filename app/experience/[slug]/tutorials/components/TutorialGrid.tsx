@@ -56,7 +56,7 @@ const TutorialsGrid: React.FC<TutorialsGridProps> = ({ tutorials: propTutorials 
 
   // Use tutorials from props if provided, otherwise show empty state
   const tutorials: any[] = propTutorials || [];
-  console.log('Tutorials to display:', tutorials);
+ // console.log('Tutorials to display:', tutorials);
   return (
     <div>
       {renderFeaturedVideo()}
@@ -64,8 +64,6 @@ const TutorialsGrid: React.FC<TutorialsGridProps> = ({ tutorials: propTutorials 
         {tutorials.map((tutorial: any, index: number) => (
           <TutorialCard
            tutorial={tutorial}
-            brandLogo={brandLogo}
-            brandName={brandName}
             contextColor={color || '#1a202c'}
             key={tutorial.id || index}
           />
