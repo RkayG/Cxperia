@@ -163,7 +163,7 @@ const AccountSettingsTab: React.FC = () => {
 
       if (result.success) {
         // Account deleted successfully
-        setShowDeleteModal(false);
+      setShowDeleteModal(false);
         
         // Clear form data
         setDeletePassword('');
