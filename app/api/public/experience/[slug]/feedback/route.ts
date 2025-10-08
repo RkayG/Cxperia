@@ -1,11 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { logError, logAccess, extractRequestInfo, generateRequestId } from '@/lib/logging';
 
 // POST /api/public/experience/[slug]/feedback - Create feedback for public users
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  const startTime = Date.now();
+  const requestId = generateRequestId();
+  const requestInfo = extractRequestInfo(request);
+  
   try {
     const { slug } = await params;
     const body: any = await request.json();
@@ -36,7 +41,7 @@ export async function POST(
       .single();
 
     if (expError || !experience) {
-      console.error('Experience not found for slug:', slug, expError);
+      //console.error('Experience not found for slug:', slug, expError);
       return NextResponse.json({ error: 'Experience not found or not published' }, { status: 404 });
     }
 
@@ -64,7 +69,7 @@ export async function POST(
       .single();
 
     if (error) {
-      console.error('Error creating feedback:', error);
+      //console.error('Error creating feedback:', error);
       
       // Provide more specific error messages
       if (error.code === '23502') {
@@ -94,11 +99,27 @@ export async function POST(
     });
 
   } catch (error) {
-    console.error('Public feedback submission error:', error);
+    // Log the error
+    logError(error as Error, {
+      ...requestInfo,
+      requestId,
+      statusCode: 500,
+      additionalData: { slug: (await params).slug }
+    });
+    
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to submit feedback' },
       { status: 500 }
     );
+  } finally {
+    // Log successful request
+    const responseTime = Date.now() - startTime;
+    logAccess({
+      ...requestInfo,
+      statusCode: 200,
+      responseTime,
+      requestId,
+    });
   }
 }
 
@@ -107,6 +128,10 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  const startTime = Date.now();
+  const requestId = generateRequestId();
+  const requestInfo = extractRequestInfo(request);
+  
   try {
     const { slug } = await params;
     
@@ -136,7 +161,7 @@ export async function GET(
       .not('overall_rating', 'is', null);
 
     if (statsError) {
-      console.error('Error fetching feedback stats:', statsError);
+      //console.error('Error fetching feedback stats:', statsError);
       return NextResponse.json({ error: 'Failed to fetch feedback stats' }, { status: 500 });
     }
 
@@ -155,10 +180,26 @@ export async function GET(
     });
 
   } catch (error) {
-    console.error('Public feedback stats error:', error);
+    // Log the error
+    logError(error as Error, {
+      ...requestInfo,
+      requestId,
+      statusCode: 500,
+      additionalData: { slug: (await params).slug }
+    });
+    
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to fetch feedback stats' },
       { status: 500 }
     );
+  } finally {
+    // Log successful request
+    const responseTime = Date.now() - startTime;
+    logAccess({
+      ...requestInfo,
+      statusCode: 200,
+      responseTime,
+      requestId,
+    });
   }
 }

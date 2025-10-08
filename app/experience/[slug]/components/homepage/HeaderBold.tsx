@@ -193,8 +193,8 @@ const HeaderBold: React.FC = () => {
                       </svg>
                     </button>
                   </DrawerTrigger>
-                  <DrawerContent>
-                    <div className="mx-auto w-full max-w-sm">
+                  <DrawerContent className="max-w-xl mx-auto">
+                    <div className="mx-auto w-full max-w-xl">
                       <DrawerHeader>
                         <DrawerTitle className="text-center text-xl font-bold" style={{ color }}>
                           {experience?.data?.product?.name || "Product Details"}
@@ -246,14 +246,14 @@ const HeaderBold: React.FC = () => {
                           )}
                           
                           {/* Usage Duration */}
-                          {product?.estimated_usage_duration_days && (
+                        {/*   {product?.estimated_usage_duration_days && (
                             <div>
                               <h3 className="font-semibold text-gray-900 mb-2">Estimated Duration</h3>
                               <p className="text-gray-700 text-sm">
                                 {product.estimated_usage_duration_days} days
                               </p>
                             </div>
-                          )}
+                          )} */}
                           
                           {/* Pricing */}
                           {(product?.original_price || product?.discounted_price) && (

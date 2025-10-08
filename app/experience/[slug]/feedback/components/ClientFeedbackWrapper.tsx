@@ -1,10 +1,8 @@
 'use client';
 
-import { useParams } from 'next/navigation';
 import React, { useRef, useState } from 'react';
 
 // INTERNAL IMPORTS
-import CurvedBottomNav from '@/app/experience/[slug]/components/CurvedBottomNav';
 import SectionHeader from '@/app/experience/[slug]/components/ThemeAwareSectionHeader';
 import { useCreatePublicFeedback } from '@/hooks/public/usePublicFeedbackApi';
 import { showToast } from '@/utils/toast';
@@ -12,6 +10,7 @@ import FeedbackForm from './FeedbackForm';
 import ImageUpload from './ImageUpload';
 import RatingSection from './RatingSection';
 import ThankYouModal from './ThankYouModal';
+import { Toaster } from 'react-hot-toast';
 
 interface ClientFeedbackWrapperProps {
   slug: string;
@@ -131,10 +130,10 @@ const ClientFeedbackWrapper: React.FC<ClientFeedbackWrapperProps> = ({
     }
 
     // Optional: Warn if only minimal feedback is provided
-    if (hasRating && !hasComment && !hasImages && !hasName && !hasEmail) {
+   /*  if (hasRating && !hasComment && !hasImages && !hasName && !hasEmail) {
       // User only provided a rating - that's okay, but we could encourage more feedback
       console.log('User provided minimal feedback (rating only)');
-    }
+    } */
 
     try {
       const result = await createFeedbackMutation.mutateAsync({
@@ -156,14 +155,15 @@ const ClientFeedbackWrapper: React.FC<ClientFeedbackWrapperProps> = ({
       setImages([]);
       
     } catch (error) {
-      console.error('Error submitting feedback:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Failed to submit feedback. Please try again.';
-      showToast.error(errorMessage);
+      //console.error('Error submitting feedback:', error);
+     // const errorMessage = error instanceof Error ? error.message : 'Failed to submit feedback. Please try again.';
+      showToast.error('Failed to submit feedback. Please try again.');
     }
   };
 
   return (
     <div className="min-h-screen font-sans flex justify-center scroll-smooth" style={{ backgroundColor: color }}>
+      <Toaster />
       <div className="max-w-xl mx-auto pb-12 w-full bg-white shadow-lg overflow-hidden">
         <SectionHeader title="Feedback" subtitle="Share your thoughts and help us improve your experience." />
         <main className="p-4 space-y-6 rounded-tl-3xl bg-gray-50 " style={{top: '72px', left: 0, right: 0, bottom: 0}}>
@@ -203,7 +203,6 @@ const ClientFeedbackWrapper: React.FC<ClientFeedbackWrapperProps> = ({
           </button>
         </main>
       </div>
-      <CurvedBottomNav />
       
       {/* Thank You Modal */}
       <ThankYouModal 

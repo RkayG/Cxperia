@@ -1,8 +1,14 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { updateSession } from '@/lib/supabase/middleware';
+import { logAccess, extractRequestInfo, generateRequestId } from '@/lib/logging-edge';
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const startTime = Date.now();
+  const requestId = generateRequestId();
+  
+  // Extract request info for logging
+  const requestInfo = extractRequestInfo(request);
 
   // First, update the session
   const supabaseResponse = await updateSession(request);
@@ -39,6 +45,17 @@ export async function middleware(request: NextRequest) {
     supabaseResponse.cookies.getAll().forEach(cookie => {
       redirectResponse.cookies.set(cookie.name, cookie.value, cookie);
     });
+    
+    // Log the redirect
+    const responseTime = Date.now() - startTime;
+    logAccess({
+      ...requestInfo,
+      statusCode: 302,
+      responseTime,
+      requestId,
+      userId: 'anonymous',
+    });
+    
     return redirectResponse;
   }
 
@@ -51,13 +68,41 @@ export async function middleware(request: NextRequest) {
     supabaseResponse.cookies.getAll().forEach(cookie => {
       redirectResponse.cookies.set(cookie.name, cookie.value, cookie);
     });
+    
+    // Log the redirect
+    const responseTime = Date.now() - startTime;
+    logAccess({
+      ...requestInfo,
+      statusCode: 302,
+      responseTime,
+      requestId,
+      userId: user.id,
+    });
+    
     return redirectResponse;
   }
 
   // Public experience pages are accessible to everyone
   if (pathname.startsWith('/exp/')) {
+    // Log the request
+    const responseTime = Date.now() - startTime;
+    logAccess({
+      ...requestInfo,
+      statusCode: 200,
+      responseTime,
+      requestId,
+    });
     return supabaseResponse;
   }
+
+  // Log the request
+  const responseTime = Date.now() - startTime;
+  logAccess({
+    ...requestInfo,
+    statusCode: 200,
+    responseTime,
+    requestId,
+  });
 
   return supabaseResponse;
 }
