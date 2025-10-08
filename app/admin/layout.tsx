@@ -31,15 +31,11 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
   
   if (sessionError) {
     console.error('Session error:', sessionError);
-    redirect('/admin/auth/login');
-  }
-  if (sessionError) {
-    console.error('Session error:', sessionError);
-    redirect('/admin/auth/login');
+    redirect('/auth/login?redirect=/admin');
   }
 
   if (!session?.user) {
-    redirect('/admin/auth/login?redirect=/admin');
+    redirect('/auth/login?redirect=/admin');
   }
 
   // Get user's profile with role
@@ -51,7 +47,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
 
   if (profileError) {
     console.error('Profile error:', profileError);
-    redirect('/auth/login');
+    redirect('/auth/login?redirect=/admin');
   }
 
   // Only specific roles can access admin panel

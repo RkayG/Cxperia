@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import InputField from '@/components/input-field';
-import { showToast } from '@/lib/toast';
+import { showToast } from '@/utils/toast';
 
 export default function NewBrandPage() {
   const router = useRouter();
@@ -47,19 +47,35 @@ const handleSubmit = async (e: React.FormEvent) => {
         const errorData = await response.json();
         if (errorData && typeof errorData === 'object') {
           const err = errorData as any;
-          if (err.code === '23505' && err.message?.includes('brands_email_unique')) {
+          
+          // Handle Supabase Auth errors
+          if (err.error && typeof err.error === 'string') {
+            if (err.error.includes('email address has already been registered') || 
+                err.error.includes('User already registered')) {
+              errorMsg = 'A user with this email address already exists. Please use a different email.';
+            } else if (err.error.includes('Invalid email')) {
+              errorMsg = 'Please enter a valid email address.';
+            } else {
+              errorMsg = err.error;
+            }
+          }
+          // Handle database constraint errors
+          else if (err.code === '23505' && err.message?.includes('brands_email_unique')) {
             errorMsg = 'A brand with this contact email already exists.';
           } else if (err.code === '23505' && err.message?.includes('brands_brand_slug_key')) {
             errorMsg = 'A brand with this brand name already exists.';
-          } else if (typeof err.error === 'string') {
-            errorMsg = 'Error creating brand. Please try again.';
+          } else if (err.message) {
+            errorMsg = err.message;
           }
         }
-      } catch {}
+      } catch (parseError) {
+        console.error('Error parsing error response:', parseError);
+        errorMsg = 'An unexpected error occurred. Please try again.';
+      }
       showToast.error(String(errorMsg));
     }
   } catch (error) {
-    console.error('Error creating brand:', error);
+    //console.error('Error creating brand:', error);
     showToast.error('Error creating brand. Please try again.');
   } finally {
     setIsSubmitting(false);

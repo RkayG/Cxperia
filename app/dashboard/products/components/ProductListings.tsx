@@ -15,12 +15,12 @@ interface ProductListingsPropsWithEdit extends ProductListingsProps {
 const LOADING_SKELETON_COUNT = 6;
 
 const ProductListings: React.FC<ProductListingsPropsWithEdit> = ({
-  products: initialProducts,
+  products,
   isLoading = false,
 }) => {
   const [filter, setFilter] = useState("");
   const [sort, setSort] = useState("");
-  const [products, _setProducts] = useState<Product[]>(initialProducts); // Internal state for products
+  //const [products, _setProducts] = useState<Product[]>(initialProducts); // Internal state for products
 
   // Get unique categories for the horizontal bar
   const categories = useMemo(() => {
@@ -31,6 +31,7 @@ const ProductListings: React.FC<ProductListingsPropsWithEdit> = ({
     return Array.from(set);
   }, [products]);
 
+  //console.log('products', products);
   const filteredAndSortedProducts = useMemo(() => {
     let currentProducts = [...products];
 
@@ -67,6 +68,8 @@ const ProductListings: React.FC<ProductListingsPropsWithEdit> = ({
 
     return currentProducts;
   }, [products, filter, sort]);
+
+ // console.log('filteredAndSortedProducts', filteredAndSortedProducts);
 
   return (
     <div className="w-full px-4 sm:px-0 -mt-12">

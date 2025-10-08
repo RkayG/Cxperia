@@ -40,14 +40,14 @@ function AuthPageContent() {
     // Check for hash fragment first (Supabase magic link)
     const hash = window.location.hash;
     if (hash && hash.includes('access_token') && !hasHandledHash) {
-      console.log('Found access token in hash fragment');
+      //console.log('Found access token in hash fragment');
       handleMagicLinkAuth();
       return;
     }
 
     // Check for OTP token in query parameters (traditional activation)
     if (token) {
-      console.log('Found OTP token in query parameters');
+     // console.log('Found OTP token in query parameters');
       setIsActivationMode(true);
       checkActivationToken(token);
     }
@@ -60,7 +60,7 @@ function AuthPageContent() {
     
     try {
       const hash = window.location.hash;
-      console.log('Processing hash:', hash);
+      //console.log('Processing hash:', hash);
       
       if (hash && hash.includes('access_token')) {
         const params = new URLSearchParams(hash.substring(1)); // Remove the #
@@ -69,12 +69,12 @@ function AuthPageContent() {
         const token_type = params.get('token_type');
         const type = params.get('type'); // Check if it's signup
         
-        console.log('Extracted tokens:', { access_token, refresh_token, token_type, type });
+        //console.log('Extracted tokens:', { access_token, refresh_token, token_type, type });
 
         if (access_token && refresh_token && token_type) {
           // If it's a signup (activation), show activation form
           if (type === 'signup') {
-            console.log('Signup flow detected - switching to activation mode');
+            //console.log('Signup flow detected - switching to activation mode');
             setIsActivationMode(true);
             
             // Get user info from the token to display email
@@ -96,10 +96,10 @@ function AuthPageContent() {
             });
 
             if (error) {
-              console.error('Session set error:', error);
+              //console.error('Session set error:', error);
               setError('Authentication failed: ' + error.message);
             } else {
-              console.log('Session set successfully');
+              //console.log('Session set successfully');
               // Clean URL by removing hash fragment
               window.history.replaceState(null, '', window.location.pathname + window.location.search);
               
@@ -111,7 +111,7 @@ function AuthPageContent() {
         }
       }
     } catch (error: any) {
-      console.error('Magic link auth error:', error);
+      // console.error('Magic link auth error:', error);
       setError('Authentication error: ' + error.message);
     } finally {
       setLoading(false);
@@ -121,21 +121,21 @@ function AuthPageContent() {
   // Check activation token validity (for OTP tokens)
   const checkActivationToken = async (tokenHash: string) => {
     try {
-      console.log('Verifying OTP token:', tokenHash);
+      //console.log('Verifying OTP token:', tokenHash);
       const { data, error } = await supabase.auth.verifyOtp({
         token_hash: tokenHash,
         type: 'signup'
       });
 
       if (error) {
-        console.error('OTP verification error:', error);
+        //console.error('OTP verification error:', error);
         setError('Invalid or expired activation link');
       } else if (data.user) {
-        console.log('OTP token valid for user:', data.user.email);
+        //console.log('OTP token valid for user:', data.user.email);
         setUserEmail(data.user.email || 'your account');
       }
     } catch (error) {
-      console.error('Token validation error:', error);
+      //console.error('Token validation error:', error);
       setError('Error validating activation link');
     }
   };
@@ -170,7 +170,7 @@ function AuthPageContent() {
       if (storedTokens) {
         // Using magic link flow
         const { access_token, refresh_token } = JSON.parse(storedTokens) as { access_token: string; refresh_token: string };
-        console.log('Using stored tokens for activation');
+        //console.log('Using stored tokens for activation');
 
         // Set session first
         const { error: sessionError } = await supabase.auth.setSession({
@@ -196,7 +196,7 @@ function AuthPageContent() {
         
       } else if (token) {
         // Using OTP token flow
-        console.log('Using OTP token for activation');
+        //console.log('Using OTP token for activation');
         const { data: verifyData, error: verifyError } = await supabase.auth.verifyOtp({
           token_hash: token,
           type: 'signup'
@@ -228,7 +228,7 @@ function AuthPageContent() {
       }
 
       setSuccess(true);
-      console.log('Account activated successfully');
+      //console.log('Account activated successfully');
       
       setTimeout(() => {
         // Force a page reload to ensure middleware picks up the new session
@@ -236,7 +236,7 @@ function AuthPageContent() {
       }, 2000);
 
     } catch (error: any) {
-      console.error('Activation error:', error);
+      //console.error('Activation error:', error);
       setError(error.message || 'Failed to activate account');
     } finally {
       setLoading(false);
@@ -261,7 +261,7 @@ function AuthPageContent() {
         password 
       });
       
-      console.log('Sign-in response:', { data, error });
+      //console.log('Sign-in response:', { data, error });
       
       if (error) {
         setError(error.message);
@@ -274,16 +274,17 @@ function AuthPageContent() {
           .single();
 
         if (profile?.role === 'super_admin' || profile?.role === 'sales_admin') {
-          showToast.error('Please use the admin login page to access the admin dashboard.');
-          await supabase.auth.signOut();
+          //  console.log('Admin user detected, redirecting to admin dashboard');
+          // Force a page reload to ensure middleware picks up the new session
+          window.location.href = '/admin/dashboard';
         } else {
-          console.log('Sign in successful, redirecting to:', redirectTo);
+          //console.log('Sign in successful, redirecting to:', redirectTo);
           // Force a page reload to ensure middleware picks up the new session
           window.location.href = redirectTo;
         }
       }
     } catch (error: any) {
-      console.log('Error signing in:', error);
+      //console.log('Error signing in:', error);
       setError('An unexpected error occurred');
     } finally {
       setLoading(false);

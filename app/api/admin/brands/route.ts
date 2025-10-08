@@ -22,7 +22,35 @@ export async function POST(request: NextRequest) {
       notes?: string;
     };
 
-    // 1. Create brand record
+    // 1. Check for existing brand with same email or name BEFORE creating anything
+    const { data: existingBrands, error: checkError } = await supabaseAdmin
+      .from('brands')
+      .select('id, name, contact_email')
+      .or(`contact_email.eq.${data.contact_email},name.eq.${data.name}`);
+
+    if (checkError) throw checkError;
+
+    if (existingBrands && existingBrands.length > 0) {
+      const existingBrand = existingBrands[0];
+      if (existingBrand.contact_email === data.contact_email) {
+        return NextResponse.json({ 
+          error: 'A brand with this contact email already exists.' 
+        }, { status: 409 });
+      } else if (existingBrand.name === data.name) {
+        return NextResponse.json({ 
+          error: 'A brand with this brand name already exists.' 
+        }, { status: 409 });
+      }
+    }
+
+    // 2. Check for existing user with same email BEFORE creating anything
+    // Try to create user first - if it fails with email exists error, we know it's a duplicate
+    console.log('Checking for existing user with email:', data.contact_email);
+    
+    // We'll skip the user check for now and let the createUser call handle it
+    // This is more reliable than trying to query for existing users
+
+    // 3. Create brand record (only after all checks pass)
     const { data: brand, error: brandError } = await supabaseAdmin
       .from('brands')
       .insert({
@@ -42,7 +70,7 @@ export async function POST(request: NextRequest) {
 
     if (brandError) throw brandError;
 
-    // 2. Create user WITHOUT password - they'll set it during activation
+    // 4. Create user WITHOUT password - they'll set it during activation
     const { data: userData, error: userError } = await supabaseAdmin.auth.admin.createUser({
       email: data.contact_email,
       // NO PASSWORD HERE - let user set it during activation
@@ -55,9 +83,18 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    if (userError) throw userError;
+    if (userError) {
+      // If user creation fails, clean up the brand record to avoid orphaned data
+      console.log('User creation failed, cleaning up brand record:', userError);
+      await supabaseAdmin
+        .from('brands')
+        .delete()
+        .eq('id', brand.id);
+      
+      throw userError;
+    }
 
-    // 3. Create profile record
+    // 5. Create profile record
     if (userData.user) {
       await supabaseAdmin
         .from('profiles')
@@ -71,7 +108,7 @@ export async function POST(request: NextRequest) {
         });
     }
 
-    // 4. Generate activation link (NOT temporary password)
+    // 6. Generate activation link (NOT temporary password)
 
     // Supabase requires a password for signup link, but user will set it on first login. Use a random strong temp password.
     const tempPassword = `Welcome${Math.random().toString(36).slice(2, 8)}!${Math.floor(Math.random()*100)}`;
@@ -86,13 +123,13 @@ export async function POST(request: NextRequest) {
           role: 'brand_admin',
           brand_id: brand.id
         },
-        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`
+        redirectTo: `${process.env.NEXT_PLATFORM_URL}/dashboard`
       }
     });
 
     if (inviteError) throw inviteError;
 
-    // 5. Send activation email via the send-brand-invitation API endpoint
+    // 7. Send activation email via the send-brand-invitation API endpoint
     await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/admin/send-brand-invitation`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -113,7 +150,42 @@ export async function POST(request: NextRequest) {
 
   } catch (error: any) {
     console.error('Brand onboarding error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('Error name:', error.name);
+    console.error('Error message:', error.message);
+    console.error('Error code:', error.code);
+    
+    // Handle specific Supabase Auth errors
+    if (error.name === 'AuthApiError') {
+      console.log('Handling AuthApiError');
+      if (error.message?.includes('email address has already been registered') || 
+          error.message?.includes('User already registered')) {
+        return NextResponse.json({ 
+          error: 'A user with this email address already exists. Please use a different email.' 
+        }, { status: 409 });
+      } else if (error.message?.includes('Invalid email')) {
+        return NextResponse.json({ 
+          error: 'Please enter a valid email address.' 
+        }, { status: 400 });
+      }
+    }
+    
+    // Handle database constraint errors
+    if (error.code === '23505') {
+      if (error.message?.includes('brands_email_unique')) {
+        return NextResponse.json({ 
+          error: 'A brand with this contact email already exists.' 
+        }, { status: 409 });
+      } else if (error.message?.includes('brands_brand_slug_key')) {
+        return NextResponse.json({ 
+          error: 'A brand with this brand name already exists.' 
+        }, { status: 409 });
+      }
+    }
+    
+    // Generic error response
+    return NextResponse.json({ 
+      error: error.message || 'Failed to create brand. Please try again.' 
+    }, { status: 500 });
   }
 }
 

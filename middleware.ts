@@ -59,10 +59,52 @@ export async function middleware(request: NextRequest) {
     return redirectResponse;
   }
 
+  // Protect admin routes - require authentication
+  if (pathname.startsWith('/admin') && !user) {
+    console.log('No user found for admin route, redirecting to main login');
+    const redirectUrl = new URL('/auth/login', request.url);
+    redirectUrl.searchParams.set('redirect', pathname);
+    const redirectResponse = NextResponse.redirect(redirectUrl);
+    
+    // Important: Copy over the cookies from supabaseResponse
+    supabaseResponse.cookies.getAll().forEach(cookie => {
+      redirectResponse.cookies.set(cookie.name, cookie.value, cookie);
+    });
+    
+    // Log the redirect
+    const responseTime = Date.now() - startTime;
+    logAccess({
+      ...requestInfo,
+      statusCode: 302,
+      responseTime,
+      requestId,
+      userId: 'anonymous',
+    });
+    
+    return redirectResponse;
+  }
+
   // Redirect authenticated users away from auth pages
   if (pathname.startsWith('/auth') && user) {
-    console.log('User found, redirecting to dashboard');
-    const redirectResponse = NextResponse.redirect(new URL('/dashboard', request.url));
+    console.log('User found on auth page, checking role for redirect');
+    
+    // Get user profile to check role
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    let redirectUrl: URL;
+    if (profile?.role === 'super_admin' || profile?.role === 'sales_admin') {
+      console.log('Admin user found, redirecting to admin dashboard');
+      redirectUrl = new URL('/admin', request.url);
+    } else {
+      console.log('Regular user found, redirecting to dashboard');
+      redirectUrl = new URL('/dashboard', request.url);
+    }
+    
+    const redirectResponse = NextResponse.redirect(redirectUrl);
     
     // Important: Copy over the cookies from supabaseResponse  
     supabaseResponse.cookies.getAll().forEach(cookie => {
@@ -81,6 +123,7 @@ export async function middleware(request: NextRequest) {
     
     return redirectResponse;
   }
+
 
   // Public experience pages are accessible to everyone
   if (pathname.startsWith('/exp/')) {
