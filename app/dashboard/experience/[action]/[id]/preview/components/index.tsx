@@ -15,7 +15,7 @@ export default function PreviewPage() {
   const params = useParams();
   const experienceId = params?.id as string | undefined;
   const router = useRouter();
-  console.log("[PreviewPage] experienceId (from params) =", experienceId);
+  //console.log("[PreviewPage] experienceId (from params) =", experienceId);
   // Scroll to download options when QR is generated
   useEffect(() => {
     if (qrCodeImageUrl && downloadOptionsRef.current) {

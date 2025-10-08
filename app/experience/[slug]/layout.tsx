@@ -36,7 +36,7 @@ export default function ExperienceSlugLayout({ children }: { children: React.Rea
 
   useEffect(() => {
     if (slug) {
-      console.log("Fetching experience for slug:", slug);
+     // console.log("Fetching experience for slug:", slug);
       fetchExperience(slug);
     }
        }, [slug, fetchExperience]);
@@ -48,13 +48,13 @@ export default function ExperienceSlugLayout({ children }: { children: React.Rea
       const experienceKey = `${slug}_${experience.data?.id}`;
       
       if (scanAttemptedRef.current === experienceKey) {
-        console.log("⏭️ Scan already attempted for this experience, skipping");
+       // console.log("⏭️ Scan already attempted for this experience, skipping");
         return;
       }
       
       // Only count scan if it should be counted for this session
       if (shouldCountScan(slug)) {
-        console.log("📊 Tracking scan for experience:", slug);
+       // console.log("📊 Tracking scan for experience:", slug);
         
         // Mark as attempted immediately to prevent duplicates
         scanAttemptedRef.current = experienceKey;
@@ -63,15 +63,15 @@ export default function ExperienceSlugLayout({ children }: { children: React.Rea
           .then(() => {
             // Mark scan as counted for this session
             markScanCounted(slug);
-            console.log("✅ Scan count incremented successfully");
+           // console.log("✅ Scan count incremented successfully");
           })
           .catch((error) => {
-            console.warn("⚠️ Failed to track scan:", error);
+           // console.warn("⚠️ Failed to track scan:", error);
             // Reset the attempt flag on error so it can be retried
             scanAttemptedRef.current = null;
           });
       } else {
-        console.log("⏭️ Scan already counted for this session, skipping");
+       // console.log("⏭️ Scan already counted for this session, skipping");
         scanAttemptedRef.current = experienceKey; // Still mark as attempted
       }
     }
@@ -89,7 +89,7 @@ export default function ExperienceSlugLayout({ children }: { children: React.Rea
 
   
   if (error === 'not_found') {
-    console.log("Experience not found for slug:", slug);
+   // console.log("Experience not found for slug:", slug);
     return (
         <>
       <div className="min-h-screen flex items-center justify-center text-center bg-white">

@@ -45,6 +45,7 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
   const searchParams = useSearchParams();
   const [isNewCustomer, setIsNewCustomer] = useState<boolean | null>(null);
   const [activeSection, setActiveSection] = useState<ActiveSection>('home');
+  const [hasInteracted, setHasInteracted] = useState(false);
 
   // Feedback form state
   const feedbackFormRef = React.useRef<HTMLTextAreaElement>(null);
@@ -95,6 +96,7 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
   // Navigation functions
   const navigateToSection = (section: ActiveSection) => {
     setActiveSection(section);
+    setHasInteracted(true); // Hide YouHaveScanned when user interacts
     // Update URL without page reload
     const url = new URL(window.location.href);
     url.searchParams.set('section', section);
@@ -218,8 +220,8 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
     );
   }
 
-  // Show YouHaveScanned for new customers
-  if (isNewCustomer === true) {
+  // Show YouHaveScanned for new customers who haven't interacted yet
+  if (isNewCustomer === true && !hasInteracted) {
     //console.log('🎉 UnifiedExperienceWrapper showing YouHaveScanned for new customer');
     return <YouHaveScanned onSectionChange={navigateToSection} slug={slug} />;
   }

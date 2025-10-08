@@ -1,6 +1,5 @@
 "use client";
 import React, { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import { usePublicExpStore } from '@/store/public/usePublicExpStore';
 import { GiEnvelope, GiPhone, GiNotebook, GiPerfumeBottle } from "react-icons/gi";
 
@@ -37,7 +36,6 @@ interface FeatureSliderProps {
 const FeatureSlider: React.FC<FeatureSliderProps> = ({ onSectionChange, slug }) => {
   const {color, experience} = usePublicExpStore();
   const [hoveredFeature, setHoveredFeature] = useState<string | null>(null);
-  const router = useRouter();
 
   // Get enabled feature labels from backend data
   const enabledLabels = useMemo(() => {
@@ -52,7 +50,7 @@ const FeatureSlider: React.FC<FeatureSliderProps> = ({ onSectionChange, slug }) 
     return allFeatures.filter((f) => enabledLabels.includes(f.label));
   }, [enabledLabels]);
 
-  // Handle feature click with router.push
+  // Handle feature click - same as SectionNavigation
   const handleFeatureClick = (label: string) => {
     let section: ActiveSection = 'home';
     
@@ -76,8 +74,8 @@ const FeatureSlider: React.FC<FeatureSliderProps> = ({ onSectionChange, slug }) 
         section = 'home';
     }
     
+    // This will hide YouHaveScanned and show the appropriate section
     onSectionChange(section);
-    router.push(`/experience/${slug}?section=${section}`);
   };
 
   if (features.length === 0) return null;
