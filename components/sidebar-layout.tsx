@@ -16,12 +16,15 @@ import {
   Users,
   HomeIcon,
   MessageSquare,
+  LogOut,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import React, { Suspense, useState } from "react";
 import { cn } from "@/lib/utils";
 import PlatformFeedbackModal from "./ui/platform-feedback-modal";
+import LogoutConfirmationModal from "./ui/logout-confirmation-modal";
+import { useLogout } from "@/hooks/auth/useLogout";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -108,6 +111,7 @@ function SidebarContent(props: {
   sidebarTop?: React.ReactNode;
   basePath: string;
   onFeedbackClick?: () => void;
+  onLogoutClick?: () => void;
 }) {
   //const path = usePathname();
   //const segment = useSegment(props.basePath);
@@ -160,6 +164,20 @@ function SidebarContent(props: {
         })}
 
         <div className="flex-grow" />
+        
+        {/* Logout Button at Bottom */}
+        <div className="p-4 border-t">
+          <button
+            onClick={props.onLogoutClick}
+            className={cn(
+              buttonVariants({ variant: "ghost", size: "sm" }),
+              "w-full justify-start text-md bricolage-grotesque-light text-red-600 hover:text-red-700 hover:bg-red-50 px-2"
+            )}
+          >
+            <LogOut className="mr-2 h-5 w-5" />
+            Logout
+          </button>
+        </div>
       </div>
       
     </div>
@@ -278,6 +296,18 @@ export default function SidebarLayout(props: {
   
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
+  const [logoutModalOpen, setLogoutModalOpen] = useState(false);
+  
+  // Logout functionality
+  const logoutMutation = useLogout();
+  
+  const handleLogoutClick = () => {
+    setLogoutModalOpen(true);
+  };
+  
+  const handleLogoutConfirm = () => {
+    logoutMutation.mutate();
+  };
 
   return (
     <div className="w-full flex min-h-screen" suppressHydrationWarning>
@@ -287,6 +317,7 @@ export default function SidebarLayout(props: {
           sidebarTop={props.sidebarTop} 
           basePath={props.basePath}
           onFeedbackClick={() => setFeedbackModalOpen(true)}
+          onLogoutClick={handleLogoutClick}
         />
       </div>
       <div className="flex flex-col flex-grow w-0 lg:ml-[240px]" suppressHydrationWarning>
@@ -314,6 +345,10 @@ export default function SidebarLayout(props: {
                   onFeedbackClick={() => {
                     setSidebarOpen(false);
                     setFeedbackModalOpen(true);
+                  }}
+                  onLogoutClick={() => {
+                    setSidebarOpen(false);
+                    setLogoutModalOpen(true);
                   }}
                 />
               </SheetContent>
@@ -344,6 +379,14 @@ export default function SidebarLayout(props: {
       <PlatformFeedbackModal
         isOpen={feedbackModalOpen}
         onClose={() => setFeedbackModalOpen(false)}
+      />
+      
+      {/* Logout Confirmation Modal */}
+      <LogoutConfirmationModal
+        isOpen={logoutModalOpen}
+        onClose={() => setLogoutModalOpen(false)}
+        onConfirm={handleLogoutConfirm}
+        isLoading={logoutMutation.isPending}
       />
     </div>
   );

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { logError, logAccess, extractRequestInfo, generateRequestId } from '@/lib/logging';
+import { createFeedbackRateLimiter, createGeneralRateLimiter, createRateLimitResponse, addRateLimitHeaders } from '@/lib/rate-limiter';
 
 // POST /api/public/experience/[slug]/feedback - Create feedback for public users
 export async function POST(
@@ -11,7 +12,34 @@ export async function POST(
   const requestId = generateRequestId();
   const requestInfo = extractRequestInfo(request);
   
+  // Initialize rate limiter
+  const rateLimiter = createFeedbackRateLimiter();
+  
   try {
+    // Check rate limit
+    console.log('Checking rate limit for feedback submission...');
+    const rateLimitResult = await rateLimiter.checkLimit(request);
+    console.log('Rate limit result:', rateLimitResult);
+    
+    if (!rateLimitResult.success) {
+      console.log('Rate limit exceeded, blocking request');
+      // Log rate limit exceeded
+      logError('Rate limit exceeded for feedback submission', {
+        ...requestInfo,
+        requestId,
+        statusCode: 429,
+        additionalData: {
+          limit: rateLimitResult.limit,
+          remaining: rateLimitResult.remaining,
+          retryAfter: rateLimitResult.retryAfter,
+        }
+      });
+      
+      return createRateLimitResponse(rateLimitResult, 'Too many feedback submissions. Please wait before submitting again.');
+    }
+    
+    console.log('Rate limit check passed, proceeding with request');
+    
     const { slug } = await params;
     const body: any = await request.json();
     
@@ -92,11 +120,14 @@ export async function POST(
       }, { status: 500 });
     }
 
-    return NextResponse.json({ 
+    const response = NextResponse.json({ 
       success: true, 
       data: feedback,
       message: 'Thank you for your feedback!' 
     });
+    
+    // Add rate limit headers to successful response
+    return addRateLimitHeaders(response, rateLimitResult);
 
   } catch (error) {
     // Log the error
@@ -120,6 +151,8 @@ export async function POST(
       responseTime,
       requestId,
     });
+    
+    // Don't destroy rate limiter - we want it to persist across requests
   }
 }
 
@@ -132,7 +165,29 @@ export async function GET(
   const requestId = generateRequestId();
   const requestInfo = extractRequestInfo(request);
   
+  // Initialize rate limiter for GET requests (more lenient)
+  const rateLimiter = createGeneralRateLimiter();
+  
   try {
+    // Check rate limit
+    const rateLimitResult = await rateLimiter.checkLimit(request);
+    
+    if (!rateLimitResult.success) {
+      // Log rate limit exceeded
+      logError('Rate limit exceeded for feedback stats request', {
+        ...requestInfo,
+        requestId,
+        statusCode: 429,
+        additionalData: {
+          limit: rateLimitResult.limit,
+          remaining: rateLimitResult.remaining,
+          retryAfter: rateLimitResult.retryAfter,
+        }
+      });
+      
+      return createRateLimitResponse(rateLimitResult, 'Too many requests. Please try again later.');
+    }
+    
     const { slug } = await params;
     
     if (!slug) {
@@ -171,13 +226,16 @@ export async function GET(
       ? stats.reduce((sum, feedback) => sum + (feedback.overall_rating || 0), 0) / totalFeedbacks
       : 0;
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       data: {
         total_feedbacks: totalFeedbacks,
         average_rating: Math.round(averageRating * 10) / 10, // Round to 1 decimal
       }
     });
+    
+    // Add rate limit headers to successful response
+    return addRateLimitHeaders(response, rateLimitResult);
 
   } catch (error) {
     // Log the error
@@ -201,5 +259,7 @@ export async function GET(
       responseTime,
       requestId,
     });
+    
+    // Don't destroy rate limiter - we want it to persist across requests
   }
 }

@@ -2,6 +2,7 @@ import "@/styles/tailwind.css"
 import { Providers } from './providers';
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Toaster } from "react-hot-toast"
 
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <Providers>{children}</Providers>
+        <Toaster />
         <Analytics />
         <SpeedInsights /> 
       </body>

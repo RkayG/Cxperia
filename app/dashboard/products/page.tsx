@@ -22,6 +22,7 @@ const ProductDashboard: React.FC = () => {
   
   // Subscribe to store state (no hooks, pure subscription)
   const products = useProductsList();
+  console.log('products', products);
   const performanceMetrics = useProductsMetrics();
   const isLoading = useProductsLoading();
   

@@ -95,6 +95,13 @@ const ClientFeedbackWrapper: React.FC<ClientFeedbackWrapperProps> = ({
     }, 150); // Slightly longer delay for state update
   };
 
+  // Test function to verify toast is working
+  const testToast = () => {
+    console.log('Testing toast...');
+    showToast.error('Test error message');
+    showToast.success('Test success message');
+  };
+
   const handleSubmit = async () => {
     if (!slug) {
       showToast.error('Experience not found');
@@ -136,6 +143,7 @@ const ClientFeedbackWrapper: React.FC<ClientFeedbackWrapperProps> = ({
     } */
 
     try {
+      console.log('Starting feedback submission...');
       const result = await createFeedbackMutation.mutateAsync({
         customer_name: customerName.trim() || undefined,
         customer_email: customerEmail.trim() || undefined,
@@ -144,6 +152,7 @@ const ClientFeedbackWrapper: React.FC<ClientFeedbackWrapperProps> = ({
         images: images.length > 0 ? images : undefined,
       });
 
+      console.log('Feedback submitted successfully:', result);
       // Show thank you modal instead of toast
       setShowThankYouModal(true);
       
@@ -155,15 +164,31 @@ const ClientFeedbackWrapper: React.FC<ClientFeedbackWrapperProps> = ({
       setImages([]);
       
     } catch (error) {
-      //console.error('Error submitting feedback:', error);
-     // const errorMessage = error instanceof Error ? error.message : 'Failed to submit feedback. Please try again.';
-      showToast.error('Failed to submit feedback. Please try again.');
+      console.error('Error submitting feedback:', error);
+      console.error('Error type:', typeof error);
+      console.error('Error constructor:', error?.constructor?.name);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to submit feedback. Please try again.';
+      console.log('Showing toast with message:', errorMessage);
+      
+      // Try to show toast multiple times to debug
+      showToast.error(errorMessage);
+      setTimeout(() => showToast.error('Delayed error: ' + errorMessage), 1000);
     }
   };
 
   return (
+    <>
+      <Toaster 
+        position="top-center"
+        toastOptions={{
+          duration: 4000,
+          style: {
+            zIndex: 9999,
+          },
+        }}
+      />
     <div className="min-h-screen font-sans flex justify-center scroll-smooth" style={{ backgroundColor: color }}>
-      <Toaster />
+      
       <div className="max-w-xl mx-auto pb-12 w-full bg-white shadow-lg overflow-hidden">
         <SectionHeader title="Feedback" subtitle="Share your thoughts and help us improve your experience." />
         <main className="p-4 space-y-6 rounded-tl-3xl bg-gray-50 " style={{top: '72px', left: 0, right: 0, bottom: 0}}>
@@ -186,6 +211,15 @@ const ClientFeedbackWrapper: React.FC<ClientFeedbackWrapperProps> = ({
             images={images}
             onImagesChange={setImages}
           />
+          {/* Test button - remove this after debugging */}
+          <button
+            onClick={testToast}
+            className="w-full py-2 text-white font-semibold rounded-full shadow-lg transition-all duration-200 flex items-center justify-center hover:shadow-xl transform hover:-translate-y-0.5 mb-2"
+            style={{ backgroundColor: '#6B7280' }}
+          >
+            Test Toast
+          </button>
+          
           <button
             onClick={handleSubmit}
             disabled={createFeedbackMutation.status === 'pending'}
@@ -210,8 +244,9 @@ const ClientFeedbackWrapper: React.FC<ClientFeedbackWrapperProps> = ({
         onClose={() => setShowThankYouModal(false)}
         customerName={customerName}
         slug={slug}
-      />
-    </div>
+        />
+      </div>
+    </>
   );
 };
 

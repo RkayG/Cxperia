@@ -25,6 +25,15 @@ export function useCreatePublicFeedback(slug: string) {
   
         if (!response.ok) {
           const errorData = await response.json();
+          
+          // Handle rate limiting specifically
+          if (response.status === 429) {
+            const retryAfter = (errorData as any).retryAfter;
+            const retryMinutes = retryAfter ? Math.ceil(retryAfter / 60) : 15;
+            throw new Error(`Too many feedback submissions. Please wait ${retryMinutes} minutes before trying again.`);
+          }
+          
+          // Handle other errors
           throw new Error((errorData as any).error || 'Failed to submit feedback');
         }
   
