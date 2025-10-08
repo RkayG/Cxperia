@@ -1,14 +1,14 @@
 'use client'
 import { motion } from "framer-motion";
-import { GiComb, GiLipstick, GiPerfumeBottle, GiPowder } from "react-icons/gi"; 
+import { GiNotebook, GiLipstick, GiPerfumeBottle, GiPowder } from "react-icons/gi"; 
 import GradientText from "@/components/GradientText";
 // Gi* are from react-icons/gi (Game Icons), but perfect for cosmetics
 
 const icons = [
-  { Icon: GiLipstick, color: "text-rose-500" },
-  { Icon: GiPerfumeBottle, color: "text-purple-500" },
-  { Icon: GiComb, color: "text-amber-600" },
-  { Icon: GiPowder, color: "text-pink-400" },
+  { Icon: GiLipstick, color: "text-blue-600" },
+  { Icon: GiPerfumeBottle, color: "text-purple-600" },
+  { Icon: GiNotebook, color: "text-blue-600" },
+  { Icon: GiPowder, color: "text-purple-600" },
 ];
 
 const UnpackingLoader = () => (
@@ -64,7 +64,7 @@ const UnpackingLoader = () => (
       className="mt-8"
     >
       <GradientText
-        colors={["#f472b6", "#a78bfa", "#38bdf8", "#f472b6"]}
+        colors={["#b168df", "#170bbb", "#b168df", "#170bbb"]}
         animationSpeed={6}
         className="font-medium text-lg"
       >

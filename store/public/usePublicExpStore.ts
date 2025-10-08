@@ -17,6 +17,7 @@ interface PublicExperienceState {
   customer_support_links_simple: any[];
   fetchExperience: (slug: string) => Promise<void>;
   refetch: () => Promise<void>;
+  setColor: (color: string) => void;
 }
 
 export const usePublicExpStore = create<PublicExperienceState>()(
@@ -32,7 +33,11 @@ export const usePublicExpStore = create<PublicExperienceState>()(
     product: null,
   customer_support_links_simple: [],
   productName: '',
-  fetchExperience: async (slug: string) => {
+  setColor: (color: string) => {
+    console.log('Setting color:', color);
+    set({ color });
+  },
+    fetchExperience: async (slug: string) => {
       console.log('Fetching experience for slug:', slug);
       set({ isLoading: true, error: null, slug });
       try {

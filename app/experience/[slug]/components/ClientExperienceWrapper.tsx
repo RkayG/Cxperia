@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import YouHaveScanned from "./YouHaveScanned";
 import FeatureGrid from "./homepage/FeatureGrid";
 import ThemeAwareHeader from "./homepage/ThemeAwareHeader";
+import { usePublicExpStore } from "@/store/public/usePublicExpStore";
 
 interface ClientExperienceWrapperProps {
   slug: string;
@@ -21,7 +22,7 @@ const ClientExperienceWrapper: React.FC<ClientExperienceWrapperProps> = ({
   brandName,
 }) => {
   const [isNewCustomer, setIsNewCustomer] = useState<boolean | null>(null);
-
+  const { setColor } = usePublicExpStore();
   // Check if this is a new customer (first-time visitor to this specific experience)
   useEffect(() => {
     const checkNewCustomer = () => {
@@ -30,20 +31,20 @@ const ClientExperienceWrapper: React.FC<ClientExperienceWrapperProps> = ({
       const hasVisitedThisExperience = visitedExperiences.includes(slug);
       const isNewCustomer = !hasVisitedThisExperience;
       
-      console.log('🔍 ClientExperienceWrapper customer check:', { 
+    /*   console.log('🔍 ClientExperienceWrapper customer check:', { 
         slug, 
         visitedExperiences, 
         hasVisitedThisExperience, 
         isNewCustomer 
       });
-      
+       */
       setIsNewCustomer(isNewCustomer);
-      
+      setColor(color);
       // Mark this experience as visited for future visits
       if (isNewCustomer && slug) {
         const updatedVisitedExperiences = [...visitedExperiences, slug] as string[];
         localStorage.setItem('visitedExperiences', JSON.stringify(updatedVisitedExperiences));
-        console.log('✅ ClientExperienceWrapper marked experience as visited:', slug);
+       /// console.log('✅ ClientExperienceWrapper marked experience as visited:', slug);
       }
     };
 
@@ -64,13 +65,13 @@ const ClientExperienceWrapper: React.FC<ClientExperienceWrapperProps> = ({
 
   // Show YouHaveScanned for new customers
   if (isNewCustomer === true) {
-    console.log('🎉 ClientExperienceWrapper showing YouHaveScanned for new customer');
+  //  console.log('🎉 ClientExperienceWrapper showing YouHaveScanned for new customer');
     return <YouHaveScanned slug={slug} />;
   }
 
   // Show regular home page for returning customers
   if (isNewCustomer === false) {
-    console.log('🏠 ClientExperienceWrapper showing home page for returning customer');
+   // console.log('🏠 ClientExperienceWrapper showing home page for returning customer');
   }
 
   return (
@@ -96,4 +97,3 @@ const ClientExperienceWrapper: React.FC<ClientExperienceWrapperProps> = ({
 };
 
 export default ClientExperienceWrapper;
-v

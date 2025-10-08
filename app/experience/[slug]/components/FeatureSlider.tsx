@@ -1,6 +1,6 @@
 "use client";
 import React, { useMemo, useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { usePublicExpStore } from '@/store/public/usePublicExpStore';
 import { GiEnvelope, GiPhone, GiNotebook, GiPerfumeBottle } from "react-icons/gi";
 
@@ -37,6 +37,7 @@ interface FeatureSliderProps {
 const FeatureSlider: React.FC<FeatureSliderProps> = ({ onSectionChange, slug }) => {
   const {color, experience} = usePublicExpStore();
   const [hoveredFeature, setHoveredFeature] = useState<string | null>(null);
+  const router = useRouter();
 
   // Get enabled feature labels from backend data
   const enabledLabels = useMemo(() => {
@@ -51,22 +52,32 @@ const FeatureSlider: React.FC<FeatureSliderProps> = ({ onSectionChange, slug }) 
     return allFeatures.filter((f) => enabledLabels.includes(f.label));
   }, [enabledLabels]);
 
-  // Get href for each feature
-  const getFeatureHref = (label: string) => {
+  // Handle feature click with router.push
+  const handleFeatureClick = (label: string) => {
+    let section: ActiveSection = 'home';
+    
     switch (label) {
       case "Share Feedback":
-        return `/experience/${slug}?section=feedback`;
+        section = 'feedback';
+        break;
       case "Usage Instructions":
-        return `/experience/${slug}?section=usage-instructions`;
+        section = 'usage-instructions';
+        break;
       case "Ingredient Breakdown":
-        return `/experience/${slug}?section=ingredients`;
+        section = 'ingredients';
+        break;
       case "Customer Support":
-        return `/experience/${slug}?section=support-channels`;
+        section = 'support-channels';
+        break;
       case "Tutorials & Routines":
-        return `/experience/${slug}?section=tutorials`;
+        section = 'tutorials';
+        break;
       default:
-        return `/experience/${slug}`;
+        section = 'home';
     }
+    
+    onSectionChange(section);
+    router.push(`/experience/${slug}?section=${section}`);
   };
 
   if (features.length === 0) return null;
@@ -87,10 +98,10 @@ const FeatureSlider: React.FC<FeatureSliderProps> = ({ onSectionChange, slug }) 
       <div className="px-4">
         <div className="grid grid-cols-2 gap-2">
           {features.map((feature, index) => (
-            <Link
+            <div
               key={feature.label}
-              href={getFeatureHref(feature.label)}
-              className="group relative block"
+              onClick={() => handleFeatureClick(feature.label)}
+              className="group relative block cursor-pointer"
               onMouseEnter={() => setHoveredFeature(feature.label)}
               onMouseLeave={() => setHoveredFeature(null)}
             >
@@ -138,16 +149,16 @@ const FeatureSlider: React.FC<FeatureSliderProps> = ({ onSectionChange, slug }) 
                   }}
                 />
               </div>
-            </Link>
+            </div>
           ))}
         </div>
       </div>
 
       {/* Call to Action */}
       <div className="text-center mt-6">
-        <Link
-          href={`/experience/${slug}?section=home`}
-          className="group relative inline-block px-6 py-3 rounded-full font-semibold text-sm shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 mx-auto"
+        <div
+          onClick={() => handleFeatureClick('home')}
+          className="group relative inline-block px-6 py-3 rounded-full font-semibold text-sm shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 mx-auto cursor-pointer"
           style={{
             backgroundColor: color,
             backgroundSize: "200% 200%",
@@ -157,7 +168,7 @@ const FeatureSlider: React.FC<FeatureSliderProps> = ({ onSectionChange, slug }) 
           <span className="relative z-10 font-bold" style={{ color: 'white'}}>
             Start Your Journey →
           </span>
-        </Link>
+        </div>
       </div>
     </div>
   );

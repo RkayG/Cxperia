@@ -2,6 +2,7 @@ import React from "react";
 import { notFound } from "next/navigation";
 import UnifiedExperienceWrapper from "./components/UnifiedExperienceWrapper";
 import { getExperienceBySlug } from "@/lib/data/experiences";
+import { usePublicExpStore } from "@/store/public/usePublicExpStore"; 
 
 interface ExperiencePageProps {
   params: Promise<{ slug: string }>;
@@ -24,6 +25,7 @@ const ExperiencePage: React.FC<ExperiencePageProps> = async ({ params, searchPar
   const urlColor = urlParams.color as string;
   const experienceData = experience && typeof experience === 'object' && 'data' in experience ? (experience as any).data : null;
   const color = urlColor || experienceData?.primary_color || "#6366f1";
+
   const product = experienceData?.product;
   const brandLogo = experienceData?.brand?.logo_url;
   const brandName = experienceData?.brand?.name;

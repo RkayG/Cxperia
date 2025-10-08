@@ -59,8 +59,8 @@ interface TutorialDetail {
 // Tutorial Detail Skeleton Component
 const TutorialDetailSkeleton: React.FC = () => {
   return (
-    <div className="min-h-screen mt-4 max-w-xl mx-auto pb-6 bg-gray-50">
-      <div className="md:max-w-4xl mx-auto md:px-6 pb-8">
+    <div className="min-h-screen mt-4 max-w-xl mx-auto pb-6 bg-gray-50" >
+      <div className=" pb-8">
         <div className="md:bg-white md:rounded-2xl md:shadow-lg overflow-hidden">
           {/* Featured Image/Video Skeleton */}
           <div className="h-64 md:h-96">
@@ -190,7 +190,7 @@ const TutorialDetailPage: React.FC = () => {
   // If not present, fetch from experience tutorials or by ID
   const { data: tutorialsData, isLoading: isLoadingTutorials } = useExperienceTutorials(slug);
   const { data: tutorialData, isLoading: isLoadingTutorial } = useTutorialById(tutorialId || '');
-  console.log('tutorialData', tutorialData);
+  //console.log('tutorialData', tutorialData);
 
   const tutorials = Array.isArray((tutorialsData as any)?.tutorials)
     ? (tutorialsData as any).tutorials
@@ -204,7 +204,7 @@ const TutorialDetailPage: React.FC = () => {
   // If still not found, try fetching by ID
   if (!tutorial && tutorialId && (tutorialData as any)?.success) {
     tutorial = (tutorialData as any).tutorial;
-    console.log('tutorial from useTutorialById', tutorial);
+    //console.log('tutorial from useTutorialById', tutorial);
   }
   
   // Extract tutorial data using backend fields directly
@@ -230,7 +230,7 @@ const TutorialDetailPage: React.FC = () => {
         }
       }
     } catch (error) {
-      console.warn('Error parsing tutorial steps:', error);
+     // console.warn('Error parsing tutorial steps:', error);
       steps = [];
     }
   }
@@ -299,8 +299,9 @@ const TutorialDetailPage: React.FC = () => {
 
 
   return (
-    <div className="min-h-screen mt-4 max-w-xl mx-auto pb-6 bg-gray-50">
-      <div className="md:max-w-4xl mx-auto md:px-6 pb-8">
+    <div className="flex min-h-screen  justify-center bg-gray-100 font-sans" style={{ backgroundColor: color }}>
+    <div className="min-h-screen  w-full max-w-xl rounded-t-2xl  mx-auto pb-6 bg-gray-50">
+      <div className=" pb-8">
         <div className="md:bg-white md:rounded-2xl md:shadow-lg overflow-hidden">
           {/* Featured Image/Video */}
           {featuredVideoUrl ? (
@@ -405,7 +406,7 @@ const TutorialDetailPage: React.FC = () => {
           {/* Steps Section */}
           <div className="p-0">
             <h2
-              className="text-2xl font-bold text-black mb-6 px-6 pt-6"
+              className="text-2xl text-center font-bold text-black mb-6 px-6 pt-6"
               style={{ fontFamily: "Mozilla Headline, sans-serif" }}
             >
               Tutorial Steps
@@ -588,6 +589,7 @@ const TutorialDetailPage: React.FC = () => {
           ← Back to Tutorials
         </button>
       </div>
+    </div>
     </div>
   );
 };

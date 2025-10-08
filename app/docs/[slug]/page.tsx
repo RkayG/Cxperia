@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { promises as fs } from 'fs';
 import path from 'path';
-import Link from 'link';
+import Link from 'next/link';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 // This will be replaced with MDX rendering later
@@ -16,13 +16,13 @@ async function getDocContent(slug: string) {
 }
 
 interface DocPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export default async function DocPage({ params }: DocPageProps) {
-  const { slug } = params;
+  const { slug } = await params;
   const content = await getDocContent(slug);
 
   if (!content) {

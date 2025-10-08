@@ -22,13 +22,13 @@ const YouHaveScanned: React.FC<YouHaveScannedProps> = ({ onSectionChange, slug }
   const [showLoader, setShowLoader] = useState(true);
 
   // Log when YouHaveScanned is rendered
-  useEffect(() => {
+ /*  useEffect(() => {
     console.log('🎉 YouHaveScanned component rendered for new customer', {
       productName: product?.name,
       experienceId: experience?.id,
       timestamp: new Date().toISOString()
     });
-  }, []);
+  }, []); */
 
   // Always show loader for at least 2.5s
   useEffect(() => {
