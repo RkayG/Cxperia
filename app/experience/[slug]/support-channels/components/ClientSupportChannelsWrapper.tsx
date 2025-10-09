@@ -76,8 +76,8 @@ const ClientSupportChannelsWrapper: React.FC<ClientSupportChannelsWrapperProps> 
   }, [supportLinks]);
 
   return (
-    <div className="flex min-h-screen justify-center bg-gray-50 font-sans" style={{ backgroundColor: color }}>
-      <div className="w-full max-w-xl bg-gray-50">
+    <div className="flex min-h-screen  justify-center bg-gray-50 font-sans" style={{ backgroundColor: color }}>
+      <div className="w-full max-w-xl mb-32  bg-gray-50">
         <SectionHeader title="We're Here to Help" subtitle="Choose your preferred way to connect" />
 
         <main className="mt-2 space-y-4 rounded-tl-3xl bg-gray-50">

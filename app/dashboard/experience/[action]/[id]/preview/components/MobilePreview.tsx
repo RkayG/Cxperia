@@ -13,6 +13,7 @@ const MobilePreview: React.FC<MobilePreviewProps> = ({ experienceId }) => {
   const { getExperienceUrl, fetchExperienceUrl, isLoading } = useExperienceStore();
   const [error, setError] = React.useState<string | null>(null);
   const [iframeError, setIframeError] = React.useState(false);
+  const [iframeKey, setIframeKey] = React.useState(0);
   
   // Get the URL for the current experience ID
   const experienceUrl = experienceId ? getExperienceUrl(experienceId) : null;
@@ -22,22 +23,26 @@ const MobilePreview: React.FC<MobilePreviewProps> = ({ experienceId }) => {
       // Only fetch if we don't already have the URL for this specific experience
       if (!experienceUrl) {
         console.log(`🔍 MobilePreview: No URL found for experience ${experienceId}, fetching...`);
+        setLoading(true);
         fetchExperienceUrl(experienceId)
           .then(() => {
             setError(null);
             setIframeError(false);
+            setLoading(false);
             console.log(`✅ MobilePreview: URL fetched for experience ${experienceId}`);
           })
           .catch((e) => {
             console.error('❌ MobilePreview: Error fetching experience URL:', e);
             setError('Error preparing preview.');
             setIframeError(true);
+            setLoading(false);
           });
       } else {
         // URL already exists for this experience, just clear any previous errors
         console.log(`✅ MobilePreview: Using existing URL for experience ${experienceId}:`, experienceUrl);
         setError(null);
         setIframeError(false);
+        setLoading(false);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -70,17 +75,28 @@ const MobilePreview: React.FC<MobilePreviewProps> = ({ experienceId }) => {
         .then(() => {
           setError(null);
           setIframeError(false);
+          setLoading(false);
           console.log(`✅ MobilePreview: Retry successful for experience ${experienceId}`);
         })
         .catch((e) => {
           console.error(`❌ MobilePreview: Retry failed for experience ${experienceId}:`, e);
           setError('Error preparing preview.');
           setIframeError(true);
+          setLoading(false);
         });
     } else {
       setError(null);
       setLoading(false);
     }
+  };
+
+  const handleReload = () => {
+    console.log(`🔄 MobilePreview: Reloading iframe for experience ${experienceId}`);
+    setLoading(true);
+    setIframeError(false);
+    setError(null);
+    // Force iframe reload by changing the key
+    setIframeKey(prev => prev + 1);
   };
 
   return (
@@ -97,17 +113,39 @@ const MobilePreview: React.FC<MobilePreviewProps> = ({ experienceId }) => {
           <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-24 h-5 bg-black rounded-b-xl"></div>
         </div>
 
+        {/* Reload Button - Floating in top-right corner */}
+        {previewUrl && !loading && !isLoading && !error && !iframeError && (
+          <button
+            onClick={handleReload}
+            className="absolute top-4 right-4 z-30 bg-white/90 hover:bg-white border border-gray-200 rounded-full p-2 shadow-lg transition-all duration-200 hover:shadow-xl"
+            title="Reload Preview"
+          >
+            <svg 
+              className="w-4 h-4 text-gray-600 hover:text-purple-600 transition-colors" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" 
+              />
+            </svg>
+          </button>
+        )}
+
         {/* Screen Content: Live Preview Iframe */}
         <div className="relative w-[calc(100%-16px)] h-[calc(100%-16px)] bg-white rounded-[2rem] overflow-hidden flex flex-col items-center p-0">
-          {(loading || isLoading) && (
+          {(loading || isLoading) && !error && !iframeError ? (
             <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-20">
               <div className="flex flex-col items-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mb-2"></div>
                 <span className="text-gray-500 text-base font-medium">Loading preview…</span>
               </div>
             </div>
-          )}
-          {(error || iframeError) ? (
+          ) : (error || iframeError) ? (
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/90 z-20 p-6">
               <div className="text-center">
                 <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -139,6 +177,7 @@ const MobilePreview: React.FC<MobilePreviewProps> = ({ experienceId }) => {
             </div>
           ) : previewUrl ? (
             <iframe
+              key={iframeKey}
               src={previewUrl}
               title="Live Customer Preview"
               className="w-full h-full border-0 rounded-[2rem]"

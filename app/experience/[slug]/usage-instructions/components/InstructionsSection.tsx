@@ -108,6 +108,7 @@ const InstructionsSection: React.FC<InstructionsSectionProps> = ({ color }) => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Usage Time */}
+          {instructions.usage_time_type && (
           <div className="flex text-left items-start p-3 bg-white rounded-lg shadow-sm border border-gray-100">
             <div className="flex-shrink-0 p-2  rounded-md mr-3">
               <Sun className="w-5 h-5 text-yellow-600" />
@@ -119,8 +120,10 @@ const InstructionsSection: React.FC<InstructionsSectionProps> = ({ color }) => {
               </p>
             </div>
           </div>
-
+          )}
+          
           {/* Frequency */}
+          {instructions.frequency && (
           <div className="flex text-left items-start p-3 bg-white rounded-lg shadow-sm border border-gray-100">
             <div className="flex-shrink-0 p-2 rounded-md mr-3">
               <Droplet className="w-5 h-5 text-blue-600" />
@@ -130,8 +133,10 @@ const InstructionsSection: React.FC<InstructionsSectionProps> = ({ color }) => {
               <p className="text-sm text-gray-600">{instructions.frequency}</p>
             </div>
           </div>
+          )}
 
           {/* Duration */}
+          {instructions.duration && (
           <div className="flex text-left items-start p-3 bg-white rounded-lg shadow-sm border border-gray-100">
             <div className="flex-shrink-0 p-2 rounded-md mr-3">
               <svg
@@ -153,8 +158,10 @@ const InstructionsSection: React.FC<InstructionsSectionProps> = ({ color }) => {
               <p className="text-sm text-gray-600">{instructions.duration}</p>
             </div>
           </div>
+          )}
 
           {/* Skin Types */}
+          {skinTypes.length > 0 && (
           <div className="flex items-start p-3 bg-white rounded-lg shadow-sm border border-gray-100">
             <div className="flex-shrink-0 p-2  rounded-md mr-3">
               <svg
@@ -176,6 +183,7 @@ const InstructionsSection: React.FC<InstructionsSectionProps> = ({ color }) => {
               <p className="text-sm text-gray-600">{skinTypes.join(", ")}</p>
             </div>
           </div>
+          )}
         </div>
 
         {/* Tips */}

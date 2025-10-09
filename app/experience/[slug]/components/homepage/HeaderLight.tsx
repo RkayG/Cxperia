@@ -125,7 +125,7 @@ const HeaderLight: React.FC = () => {
 
               {/* Ratings and Price */}
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-6 mb-8">
-                <div className="flex items-center">
+                {/* <div className="flex items-center">
                   <div className="flex">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <Star
@@ -137,7 +137,7 @@ const HeaderLight: React.FC = () => {
                   <span className="ml-2 text-gray-600 text-sm">
                     (128 reviews)
                   </span>
-                </div>
+                </div> */}
 
                 {(product.discounted_price || product.original_price) && (
                   <div className="text-gray-900">
@@ -163,7 +163,7 @@ const HeaderLight: React.FC = () => {
                 >
                   <button
                     className="group bg-white/90 w-full backdrop-blur-sm text-slate-800 px-6 py-3 rounded-full font-semibold text-sm shadow-lg hover:bg-white hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
-                    style={{ borderColor: color }}
+                    style={{ borderColor: color, borderWidth: "1px" }}
                   >
                     <ShoppingCart className="w-4 h-4" />
                     <span>VISIT STORE</span>

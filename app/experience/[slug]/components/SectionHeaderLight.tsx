@@ -7,7 +7,7 @@ interface SectionHeaderProps {
 }
 
 const SectionHeaderLight: React.FC<SectionHeaderProps> = ({ title, subtitle}) => {
- const {color} = usePublicExpStore();
+ const {color, brandName} = usePublicExpStore();
   return (
     <div className="relative overflow-hidden">
       {/* Simple white background */}
@@ -21,10 +21,10 @@ const SectionHeaderLight: React.FC<SectionHeaderProps> = ({ title, subtitle}) =>
                 style={{ color: color }}
               >
                 <span
-                  className="font-mono text-sm block mb-1"
+                  className=" text-sm block mb-1"
                   style={{ color: color }}
                 >
-                  // BRAND
+                 // {brandName}
                 </span>
                 {title}
               </h1>
