@@ -15,7 +15,7 @@ const ModalFooter: React.FC<ModalFooterProps> = ({
   handleSave,
   onClose,
 }) => (
-  <div className="flex items-center bg-gray-50 justify-between border-t border-gray-200 px-4 lg:px-8 py-4 sticky bottom-0 z-20">
+  <div className="flex items-center bg-gray-50 justify-between border-t border-gray-200 px-4 lg:px-8 py-4 fixed w-full bottom-0 z-20">
     <div className="flex items-center space-x-3">
       {/* <button
         onClick={handlePreview}

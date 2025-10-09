@@ -14,12 +14,12 @@ import ProductUsedCard from "./ProductsUsedCard";
 
 const TutorialPreviewPage = ({ tutorial }: { tutorial?: any }) => {
   const router = useRouter();
-  
+
   // The component should render what's passed to it as props
   // In Next.js, we can't access location.state, so the tutorial data
   // should be passed as props from the parent component
   const data = tutorial;
-  
+
   // If no tutorial data is provided, show a message
   if (!data) {
     return (
@@ -125,12 +125,15 @@ const TutorialPreviewPage = ({ tutorial }: { tutorial?: any }) => {
             </div>
 
             {/* Stats */}
-            <div className="flex flex-wrap gap-6 text-sm text-gray-600 mb-6">
-              <div className="flex items-center">
-                <Users className="w-4 h-4 mr-2 text-black" />
-                <span>{data.skinTypes?.join(", ")}</span>
+            {data.skinTypes?.length > 0 && (
+
+              <div className="flex flex-wrap gap-6 text-sm text-gray-600 mb-6">
+                <div className="flex items-center">
+                  <Users className="w-4 h-4 mr-2 text-black" />
+                  <span>{data.skinTypes?.join(", ")}</span>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Occasions */}
             {data.occasion?.length > 0 && (
@@ -176,14 +179,14 @@ const TutorialPreviewPage = ({ tutorial }: { tutorial?: any }) => {
             {(() => {
               const realSteps = Array.isArray(data.steps)
                 ? data.steps.filter(
-                    (step: any) =>
-                      (step.title && step.title.trim()) ||
-                      (step.description && step.description.trim()) ||
-                      (Array.isArray(step.products) &&
-                        step.products.length > 0) ||
-                      (Array.isArray(step.tips) &&
-                        step.tips.some((tip: string) => tip.trim()))
-                  )
+                  (step: any) =>
+                    (step.title && step.title.trim()) ||
+                    (step.description && step.description.trim()) ||
+                    (Array.isArray(step.products) &&
+                      step.products.length > 0) ||
+                    (Array.isArray(step.tips) &&
+                      step.tips.some((tip: string) => tip.trim()))
+                )
                 : [];
               if (realSteps.length > 0) {
                 return realSteps.map((step: any, index: number) => (
@@ -307,7 +310,7 @@ const TutorialPreviewPage = ({ tutorial }: { tutorial?: any }) => {
             })()}
           </div>
 
-        
+
 
           {/* Action Buttons */}
           {/* <div className="flex gap-4 mt-8 justify-center">
@@ -340,13 +343,13 @@ const TutorialPreviewPage = ({ tutorial }: { tutorial?: any }) => {
       {(() => {
         const realSteps = Array.isArray(data.steps)
           ? data.steps.filter(
-              (step: any) =>
-                (step.title && step.title.trim()) ||
-                (step.description && step.description.trim()) ||
-                (Array.isArray(step.products) && step.products.length > 0) ||
-                (Array.isArray(step.tips) &&
-                  step.tips.some((tip: string) => tip.trim()))
-            )
+            (step: any) =>
+              (step.title && step.title.trim()) ||
+              (step.description && step.description.trim()) ||
+              (Array.isArray(step.products) && step.products.length > 0) ||
+              (Array.isArray(step.tips) &&
+                step.tips.some((tip: string) => tip.trim()))
+          )
           : [];
         const totalProducts = realSteps.reduce(
           (total: number, step: any) =>

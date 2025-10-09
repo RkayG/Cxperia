@@ -110,9 +110,31 @@ const ProductUsageModal: React.FC<CosmeticProductModalProps> = ({
   const [internalOpen, setInternalOpen] = useState(true);
   const isOpen = inline ? true : internalOpen;
   const [activeTab, setActiveTab] = useState<ActiveTab>("instructions");
-  const [formData, setFormData] = useState<FormData>(() =>
-    initialData(initialInstructions, productName)
-  );
+  
+  // Local storage key for this experience
+  const storageKey = `usageModal_${experienceId}`;
+  
+  // Initialize form data with local storage fallback
+  const [formData, setFormData] = useState<FormData>(() => {
+    try {
+      // Try to load from local storage first
+      const savedData = localStorage.getItem(storageKey);
+      if (savedData) {
+        const parsedData = JSON.parse(savedData);
+        //console.log('Loaded form data from local storage:', parsedData);
+        // Validate that the parsed data has the expected structure
+        if (parsedData && typeof parsedData === 'object' && 'productName' in parsedData) {
+          return parsedData as FormData;
+        }
+      }
+    } catch (error) {
+     // console.warn('Failed to load form data from local storage:', error);
+    }
+    
+    // Fallback to initial data if no saved data
+    return initialData(initialInstructions, productName);
+  });
+  
   const [errors, setErrors] = useState<any>({});
 
   // Set loading to false when initialInstructions are available
@@ -122,13 +144,42 @@ const ProductUsageModal: React.FC<CosmeticProductModalProps> = ({
     }
   }, [initialInstructions]);
 
-  // Centralized form data update handler
+  // Centralized form data update handler with local storage
   const updateFormData = useCallback(<K extends keyof FormData>(
     field: K,
     value: FormData[K]
   ) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  }, []);
+    setFormData((prev) => {
+      const newData = { ...prev, [field]: value };
+      
+      // Save to local storage
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(newData));
+       // console.log('Saved form data to local storage:', field, value);
+      } catch (error) {
+        console.warn('Failed to save form data to local storage:', error);
+      }
+      
+      return newData;
+    });
+  }, [storageKey]);
+
+  // Wrapper function for setFormData that also saves to local storage
+  const updateFormDataDirect = useCallback((newData: FormData | ((prev: FormData) => FormData)) => {
+    setFormData((prev) => {
+      const updatedData = typeof newData === 'function' ? newData(prev) : newData;
+      
+      // Save to local storage
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(updatedData));
+       // console.log('Saved form data to local storage (direct update)');
+      } catch (error) {
+      //  console.warn('Failed to save form data to local storage:', error);
+      }
+      
+      return updatedData;
+    });
+  }, [storageKey]);
 
   // Handlers for lists (Application Steps, Tips, Warnings) are passed down
 
@@ -164,7 +215,7 @@ const ProductUsageModal: React.FC<CosmeticProductModalProps> = ({
   };
 
   const handlePreview = () => {
-    console.log("Preview data:", formData);
+   // console.log("Preview data:", formData);
     alert("Opening preview..."); // Replace with actual preview logic
   };
 
@@ -172,6 +223,15 @@ const ProductUsageModal: React.FC<CosmeticProductModalProps> = ({
   useEffect(() => {
     if (isSuccess) {
       showToast.success("Instructions saved!");
+      
+      // Clear local storage on successful save
+      try {
+        localStorage.removeItem(storageKey);
+       // console.log('Cleared form data from local storage after successful save');
+      } catch (error) {
+        console.warn('Failed to clear form data from local storage:', error);
+      }
+      
       if (onFeatureEnable) onFeatureEnable();
       if (!inline && onClose) onClose(); 
       if (!inline) setInternalOpen(false);
@@ -180,7 +240,7 @@ const ProductUsageModal: React.FC<CosmeticProductModalProps> = ({
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
       showToast.error(`Error saving: ${errorMessage}`);
     }
-  }, [isSuccess, isError, error, onClose, onFeatureEnable, inline]);
+  }, [isSuccess, isError, error, onClose, onFeatureEnable, inline, storageKey]);
 
   // Effect to notify parent when drawer closes (for non-inline mode)
   useEffect(() => {
@@ -188,6 +248,23 @@ const ProductUsageModal: React.FC<CosmeticProductModalProps> = ({
       onClose();
     }
   }, [internalOpen, inline, onClose]);
+
+  // Cleanup effect to clear local storage when component unmounts (optional)
+  useEffect(() => {
+    return () => {
+      // Only clear if the modal is being closed without saving
+      // This is optional - you might want to keep the data for next time
+      // Uncomment the lines below if you want to clear on unmount
+      /*
+      try {
+        localStorage.removeItem(storageKey);
+        console.log('Cleared form data from local storage on unmount');
+      } catch (error) {
+        console.warn('Failed to clear form data from local storage on unmount:', error);
+      }
+      */
+    };
+  }, [storageKey]);
 
   if (!isOpen) return null;
 
@@ -207,21 +284,21 @@ const ProductUsageModal: React.FC<CosmeticProductModalProps> = ({
               formData={formData}
               updateFormData={updateFormData}
               errors={errors}
-              setFormData={setFormData}
+              setFormData={updateFormDataDirect}
               isLoading={isLoading}
             />
           )}
           {activeTab === "tips" && (
             <TipsTab
               formData={formData}
-              setFormData={setFormData}
+              setFormData={updateFormDataDirect}
               errors={errors}
             />
           )}
           {activeTab === "warnings" && (
             <WarningsTab
               formData={formData}
-              setFormData={setFormData}
+              setFormData={updateFormDataDirect}
               errors={errors}
             />
           )}

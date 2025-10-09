@@ -8,6 +8,7 @@ import {
   Play,
   Plus,
   Save,
+  ShoppingCart,
   Upload,
   Users,
 } from "lucide-react";
@@ -288,7 +289,7 @@ const TutorialCreatorContent: React.FC = () => {
   };
 
   // Product Management Functions
-  /* const addProductToStep = (stepId: string) => {
+   const addProductToStep = (stepId: string) => {
     const newProduct: Product = {
       id: Date.now().toString(),
       name: "",
@@ -306,7 +307,7 @@ const TutorialCreatorContent: React.FC = () => {
 
     setTutorial({ ...tutorial, steps: updatedSteps });
   };
- */
+ 
   const removeProductFromStep = (stepId: string, productId: string) => {
     const updatedSteps = tutorial.steps.map((step) =>
       step.id === stepId
@@ -407,10 +408,7 @@ const TutorialCreatorContent: React.FC = () => {
     // Use shared validation function (tags not required, videoUrl not required)
     const validation = validateTutorial(tutorial);
     setValidationErrors(validation.errors);
-    if (validation.allFieldsFilledButStepsIncomplete) {
-      showToast.error("Please complete all steps before saving.");
-      return;
-    } else if (!validation.valid) {
+  if (!validation.valid) {
       showToast.error("Please fix the errors before saving.");
       return;
     }
@@ -695,6 +693,7 @@ const TutorialCreatorContent: React.FC = () => {
             {[
               { id: "overview", label: "Overview", icon: Edit3 },
               { id: "steps", label: "Steps", icon: Play },
+              { id: "products", label: "Products", icon: ShoppingCart },
             ].map((tab) => {
               const Icon = tab.icon;
               return (
@@ -1231,7 +1230,7 @@ const TutorialCreatorContent: React.FC = () => {
 
                     {/* Products for this step */}
                     <div className="mb-4">
-                     {/*  <div className="flex items-center justify-between mb-3">
+                       <div className="flex items-center justify-between mb-3">
                         <label className="block text-left text-purple-800 text-sm font-semibold">
                           Products Used
                         </label>
@@ -1241,7 +1240,7 @@ const TutorialCreatorContent: React.FC = () => {
                         >
                           + Add Product
                         </button>
-                      </div> */}
+                      </div> 
 
                       {step.products.map((product) => (
                         <div

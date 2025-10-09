@@ -3,24 +3,24 @@ import React from "react";
 export interface TutorialValidationResult {
   valid: boolean;
   errors: string[];
-  allFieldsFilledButNoStep: boolean;
-  allFieldsFilledButStepsIncomplete: boolean;
+  //allFieldsFilledButNoStep: boolean;
+  //allFieldsFilledButStepsIncomplete: boolean;
 }
 
 export function validateTutorial(tutorial: any): TutorialValidationResult {
   const errors: string[] = [];
-  let allFieldsFilled = true;
+  //let allFieldsFilled = true;
   if (!tutorial.title || tutorial.title.trim() === "") {
     errors.push("Tutorial title is required.");
-    allFieldsFilled = false;
+    //allFieldsFilled = false;
   }
   if (!tutorial.description || tutorial.description.trim() === "") {
     errors.push("Tutorial description is required.");
-    allFieldsFilled = false;
+    //allFieldsFilled = false;
   }
   if (!tutorial.category || tutorial.category.trim() === "") {
     errors.push("Tutorial category is required.");
-    allFieldsFilled = false;
+    //allFieldsFilled = false;
   }
 /*   if (!tutorial.skinTypes || tutorial.skinTypes.length === 0) {
     errors.push("At least one skin type must be selected.");
@@ -32,9 +32,9 @@ export function validateTutorial(tutorial: any): TutorialValidationResult {
   } */
   if (!tutorial.featuredImage || tutorial.featuredImage.trim() === "") {
     errors.push("Featured image is required.");
-    allFieldsFilled = false;
+    //allFieldsFilled = false;
   }
-  let noSteps = false;
+ /*  let noSteps = false;
   let stepsIncomplete = false;
   if (!tutorial.steps || tutorial.steps.length === 0) {
     errors.push("At least one step is required.");
@@ -50,12 +50,12 @@ export function validateTutorial(tutorial: any): TutorialValidationResult {
         stepsIncomplete = true;
       }
     });
-  }
+  } */
   return {
     valid: errors.length === 0,
     errors,
-    allFieldsFilledButNoStep: allFieldsFilled && noSteps,
-    allFieldsFilledButStepsIncomplete: allFieldsFilled && stepsIncomplete
+    //allFieldsFilledButNoStep: allFieldsFilled && noSteps,
+    //allFieldsFilledButStepsIncomplete: allFieldsFilled && stepsIncomplete
   };
 }
 
