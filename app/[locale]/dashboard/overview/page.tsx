@@ -2,7 +2,7 @@
 
 import { Activity, Eye, MessageSquare, Package } from 'lucide-react';
 import React, { useEffect, useRef } from 'react';
-import { RecentSales } from "@/app/dashboard/overview/recent-sales";
+import { RecentSales } from "./recent-sales";
 import {
   Card,
   CardContent,
@@ -56,7 +56,7 @@ export default function OverviewPage() {
   // Show loading state while brand is being fetched
   if (brandLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
+      <div className="h-full flex items-center justify-center">
         <Loading />
       </div>
     );

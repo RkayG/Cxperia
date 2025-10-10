@@ -1,10 +1,9 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useExperienceStore } from '@/store/brands/useExperienceStore';
 import { getCurrentUserBrand } from '@/lib/data/brands';
-import { redirectToDashboard, redirectToSubdomain } from '@/lib/utils/subdomain';
 
 interface BrandContextType {
   brand: any | null;
@@ -25,10 +24,15 @@ export function BrandProvider({ children }: BrandProviderProps) {
   const { brand, setBrand } = useExperienceStore();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hasRedirected, setHasRedirected] = useState(false);
+  const hasAttemptedFetch = useRef(false);
 
   const brandId = brand?.id || null;
 
   const fetchBrand = async () => {
+    if (hasAttemptedFetch.current) return;
+    hasAttemptedFetch.current = true;
+    
     //console.log('🔄 BrandProvider: Fetching brand data', { timestamp: new Date().toISOString() });
     
     setIsLoading(true);
@@ -41,10 +45,13 @@ export function BrandProvider({ children }: BrandProviderProps) {
       if (!brandData) {
         //console.log('❌ BrandProvider: No brand found, redirecting to login');
         // Check if we're already on the main domain, if not redirect to login on main domain
-        if (window.location.hostname.includes('app.')) {
-          redirectToSubdomain('/auth/login');
-        } else {
-          router.push('/auth/login');
+        if (!hasRedirected) {
+          setHasRedirected(true);
+          if (window.location.hostname.includes('app.')) {
+            router.push('/auth/login');
+          } else {
+            router.push('/auth/login');
+          }
         }
         return;
       }
@@ -56,10 +63,13 @@ export function BrandProvider({ children }: BrandProviderProps) {
       //console.error('❌ BrandProvider: Error fetching brand', { error: errorMessage });
       setError(errorMessage);
       // If there's an error fetching brand (likely due to auth issues), redirect to login
-      if (window.location.hostname.includes('app.')) {
-        redirectToSubdomain('/auth/login');
-      } else {
-        router.push('/auth/login');
+      if (!hasRedirected) {
+        setHasRedirected(true);
+        if (window.location.hostname.includes('app.')) {
+          router.push('/auth/login');
+        } else {
+          router.push('/auth/login');
+        }
       }
     } finally {
       setIsLoading(false);
@@ -72,11 +82,11 @@ export function BrandProvider({ children }: BrandProviderProps) {
 
   // Fetch brand if not available
   useEffect(() => {
-    if (!brand && !isLoading) {
+    if (!brand && !hasRedirected) {
       //console.log('🔍 BrandProvider: Brand not available, fetching...', { hasBrand: !!brand, isLoading });
       fetchBrand();
     }
-  }, [brand, isLoading]);
+  }, [brand, hasRedirected]);
 
   const value: BrandContextType = {
     brand,

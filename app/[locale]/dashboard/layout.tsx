@@ -4,7 +4,7 @@ import MobileBottomNav from "@/components/MobileBottomNavbar";
 import SidebarLayout, { SidebarItem } from "@/components/sidebar-layout";
 import { BrandProvider } from "@/contexts/BrandContext";
 import DashboardNavigationProgress from "./components/DashboardNavigationProgress";
-import logo from '../../assets/logo.png'
+import logo from '@/assets/logo.png'
 
 interface DashboardLayoutProps {
   children: React.ReactNode;

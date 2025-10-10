@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { FaPlus, FaSearch } from "react-icons/fa";
-import recentBanner2 from '../../../assets/images/recent-banner2.png'
+import recentBanner2 from '@/assets/images/recent-banner2.png'
 import {
   Carousel,
   CarouselContent,
@@ -81,10 +81,15 @@ export default function HomePage() {
 
   // Dashboard initialization
   useEffect(() => {
+    let isMounted = true;
+    
     const initializeDashboard = async () => {
       try {
         // Get current user
         const { data: { user: currentUser } } = await supabase.auth.getUser();
+        
+        if (!isMounted) return;
+        
         setUser(currentUser);
 
         if (!currentUser) {
@@ -101,6 +106,9 @@ export default function HomePage() {
 
         // Get brand data
         const brandData = await getCurrentUserBrand();
+        
+        if (!isMounted) return;
+        
         //console.log("Current Brand in DashboardPage:", brandData);  
         if (!brandData) {
           //console.log('No brand found, redirecting to setup');
@@ -111,17 +119,26 @@ export default function HomePage() {
 
         // Get stats
         const statsData = await getBrandStats(brandData.id);
+        
+        if (!isMounted) return;
+        
         setStats(statsData);
 
       } catch (error) {
         //console.error('Dashboard initialization error:', error);
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     initializeDashboard();
-  }, [router, setBrand]);
+    
+    return () => {
+      isMounted = false;
+    };
+  }, []); // Remove dependencies to prevent re-runs
 
   // Filtered results
   const filteredExperiences = searchQuery.trim()

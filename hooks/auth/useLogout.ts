@@ -52,7 +52,7 @@ export function useLogout() {
       
       // Redirect to login page on main domain
       if (window.location.hostname.includes('app.')) {
-        redirectToSubdomain('/auth/login');
+        router.push('/auth/login');
       } else {
         router.push('/auth/login');
       }

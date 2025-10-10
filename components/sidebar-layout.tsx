@@ -56,8 +56,16 @@ const iconMap: Record<string, LucideIcon> = {
 
 function useSegment(basePath: string) {
   const path = usePathname();
-  const result = path.slice(basePath.length, path.length);
-  return result ? result : "/";
+  // Remove the locale prefix first, then the basePath
+  const pathWithoutLocale = path.replace(/^\/[a-z]{2}/, ''); // Remove /en, /fr, etc.
+  
+  if (pathWithoutLocale.startsWith(basePath)) {
+    const result = pathWithoutLocale.slice(basePath.length);
+    console.log('useSegment Debug:', { path, pathWithoutLocale, basePath, result });
+    return result || "/";
+  }
+  console.log('useSegment Debug - no match:', { path, pathWithoutLocale, basePath });
+  return "/";
 }
 
 type Item = {
@@ -192,6 +200,19 @@ function HeaderBreadcrumb(props: { items: SidebarItem[], baseBreadcrumb?: Header
   const searchParams = useSearchParams();
   const item = props.items.find((item) => item.type === 'item' && item.href === segment);
   const title: string | undefined = (item as any)?.name;
+  
+  // Debug logging for overview issue
+  if (pathname.includes('overview')) {
+    console.log('Overview Debug:', {
+      pathname,
+      basePath: props.basePath,
+      segment,
+      foundItem: item,
+      title,
+      allItems: props.items.filter(i => i.type === 'item')
+    });
+  }
+  
   // Get brand from store
   const brand = require('@/store/brands/useExperienceStore').useExperienceStore((state: any) => state.brand);
 

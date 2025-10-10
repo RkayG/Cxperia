@@ -29,7 +29,55 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const subdomain = extractSubdomain(request);
 
-  // If subdomain detected, route to tenant space
+  // Define routes that need locale prefixes
+  const routesNeedingLocale = ['/dashboard', '/auth', '/products', '/docs', '/experience'];
+  
+  // Check if the pathname starts with any route that needs a locale
+  const needsLocale = routesNeedingLocale.some(route => 
+    pathname === route || pathname.startsWith(`${route}/`)
+  );
+
+  // Handle routes that need locale prefixes
+  if (needsLocale) {
+    const url = request.nextUrl.clone();
+    
+    // If we're on a subdomain, preserve the subdomain in the redirect
+    if (subdomain) {
+      // For localhost, reconstruct the subdomain properly
+      if (url.hostname.includes('localhost')) {
+        url.hostname = `${subdomain}.localhost`;
+      } else {
+        // For production domains
+        const rootDomainFormatted = rootDomain.replace('https://', '').replace('http://', '');
+        url.hostname = `${subdomain}.${rootDomainFormatted}`;
+      }
+    }
+    
+    url.pathname = `/en${pathname}`;
+    return NextResponse.redirect(url);
+  }
+
+  // Handle root path redirect to default locale
+  if (pathname === '/') {
+    const url = request.nextUrl.clone();
+    
+    // If we're on a subdomain, preserve the subdomain in the redirect
+    if (subdomain) {
+      // For localhost, reconstruct the subdomain properly
+      if (url.hostname.includes('localhost')) {
+        url.hostname = `${subdomain}.localhost`;
+      } else {
+        // For production domains
+        const rootDomainFormatted = rootDomain.replace('https://', '').replace('http://', '');
+        url.hostname = `${subdomain}.${rootDomainFormatted}`;
+      }
+    }
+    
+    url.pathname = '/en';
+    return NextResponse.redirect(url);
+  }
+
+  // If subdomain detected, route to app space
   if (subdomain) {
     const url = request.nextUrl.clone();
     
@@ -38,8 +86,8 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/', request.url));
     }
 
-    // For all subdomains, rewrite to /s/[subdomain] structure
-    url.pathname = `/s/${subdomain}${pathname}`;
+    // For app subdomain, rewrite to / structure
+    url.pathname = `/${pathname}`;
     
     return NextResponse.rewrite(url);
   }
@@ -49,6 +97,11 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)',
+    // Match all pathnames except for
+    // - API routes
+    // - _next (Next.js internals)
+    // - _static (inside /public)
+    // - all root files inside /public (e.g. /favicon.ico)
+    '/((?!api|_next/static|_next/image|favicon.ico|.*\\..*|en|fr).*)',
   ],
 };
