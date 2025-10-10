@@ -1,0 +1,108 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "retry": "Try Again",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "search": "Search",
+    "filter": "Filter",
+    "all": "All",
+    "none": "None",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "experiences": "Experiences",
+    "content": "Content",
+    "analytics": "Analytics",
+    "settings": "Settings",
+    "profile": "Profile",
+    "logout": "Logout"
+  },
+  "dashboard": {
+    "welcome": "Welcome to your dashboard",
+    "overview": "Overview",
+    "recentActivity": "Recent Activity",
+    "quickActions": "Quick Actions"
+  },
+  "experience": {
+    "title": "Experience",
+    "create": "Create Experience",
+    "edit": "Edit Experience",
+    "preview": "Preview",
+    "publish": "Publish",
+    "unpublish": "Unpublish",
+    "ingredients": "Ingredients",
+    "usageInstructions": "Usage Instructions",
+    "feedback": "Feedback",
+    "tutorials": "Tutorials & Routines",
+    "customerSupport": "Customer Support"
+  },
+  "mobilePreview": {
+    "loadingPreview": "Loading preview...",
+    "previewUnavailable": "Preview Unavailable",
+    "previewError": "Unable to load the preview. This might be due to network issues or the experience not being published yet.",
+    "noPreviewAvailable": "No Preview Available",
+    "experienceUrlNotFound": "Experience URL not found",
+    "reloadPreview": "Reload Preview",
+    "openInNewTab": "Open in New Tab",
+    "retry": "Try Again"
+  },
+  "features": {
+    "ingredientBreakdown": "Ingredient Breakdown",
+    "usageInstructions": "Usage Instructions",
+    "shareFeedback": "Share Feedback",
+    "tutorialsRoutines": "Tutorials & Routines",
+    "customerSupport": "Customer Support",
+    "discoverWhatMakesItSpecial": "Discover what makes it special",
+    "howToUseTheProduct": "How to use the product",
+    "shareYourThoughts": "Share your thoughts",
+    "watchAndLearn": "Watch and learn",
+    "getHelpOrContactUs": "Get help or contact us"
+  },
+  "chatbot": {
+    "title": "Chatbot",
+    "name": "Beauty Assistant",
+    "greeting": "Hi! I'm here to help with your beauty questions. How can I assist you today?",
+    "fallbackMessage": "I'm sorry, I don't have information about that. Please contact our support team for further assistance.",
+    "categories": {
+      "all": "All",
+      "productSelection": "Product Selection",
+      "returns": "Returns",
+      "brandValues": "Brand Values",
+      "shipping": "Shipping",
+      "ingredients": "Ingredients",
+      "applicationTips": "Application Tips"
+    }
+  },
+  "content": {
+    "title": "Content",
+    "tutorials": "Tutorials",
+    "articles": "Articles",
+    "create": "Create",
+    "edit": "Edit",
+    "delete": "Delete",
+    "publish": "Publish",
+    "unpublish": "Unpublish"
+  },
+  "docs": {
+    "title": "Documentation",
+    "gettingStarted": "Getting Started",
+    "creatingExperiences": "Creating Experiences",
+    "tutorialsContent": "Tutorials & Content",
+    "analyticsInsights": "Analytics & Insights",
+    "teamManagement": "Team Management",
+    "brandCustomization": "Brand Customization",
+    "apiReference": "API Reference",
+    "support": "Support"
+  }
+}

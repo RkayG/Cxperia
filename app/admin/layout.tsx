@@ -26,11 +26,9 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
 
   // Get the current session
   const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-  console.log('Admin session:', session);
-  console.log('Cookies:', cookieStore.getAll());
   
   if (sessionError) {
-    console.error('Session error:', sessionError);
+    //console.error('Session error:', sessionError);
     redirect('/auth/login?redirect=/admin');
   }
 
@@ -46,7 +44,6 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
     .single();
 
   if (profileError) {
-    console.error('Profile error:', profileError);
     redirect('/auth/login?redirect=/admin');
   }
 

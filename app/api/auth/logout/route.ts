@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
   const requestInfo = extractRequestInfo(request);
   
   try {
-    console.log('Logout request received');
+    //console.log('Logout request received');
     
     const supabase = await createClient();
     
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     const { error: signOutError } = await supabase.auth.signOut();
     
     if (signOutError) {
-      console.error('Error during logout:', signOutError);
+      //console.error('Error during logout:', signOutError);
       logError(signOutError, {
         ...requestInfo,
         requestId,
@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to logout' }, { status: 500 });
     }
     
-    console.log('User logged out successfully:', user.email);
+   // console.log('User logged out successfully:', user.email);
     
     // Log successful logout
     logInfo('User logged out successfully', {

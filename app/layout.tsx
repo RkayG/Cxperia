@@ -4,9 +4,7 @@ import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Toaster } from "react-hot-toast"
 
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-
   return (
     <html lang="en">
       <head>
@@ -21,7 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>{children}</Providers>
         <Toaster />
         <Analytics />
-        <SpeedInsights /> 
+        <SpeedInsights />
       </body>
     </html>
   );

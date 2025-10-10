@@ -38,8 +38,8 @@ export function BrandProvider({ children }: BrandProviderProps) {
       //console.log('📡 BrandProvider: Brand data fetched', { brandData });
       
       if (!brandData) {
-        //console.log('❌ BrandProvider: No brand found, redirecting to setup');
-        router.push('/auth/signup');
+        //console.log('❌ BrandProvider: No brand found, redirecting to login');
+        router.push('/auth/login');
         return;
       }
       
@@ -49,6 +49,8 @@ export function BrandProvider({ children }: BrandProviderProps) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch brand';
       //console.error('❌ BrandProvider: Error fetching brand', { error: errorMessage });
       setError(errorMessage);
+      // If there's an error fetching brand (likely due to auth issues), redirect to login
+      router.push('/auth/login');
     } finally {
       setIsLoading(false);
     }

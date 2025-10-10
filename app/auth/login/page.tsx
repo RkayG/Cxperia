@@ -28,12 +28,12 @@ function AuthPageContent() {
   const token = searchParams.get('token');
   const redirectTo = searchParams.get('redirect') || '/dashboard';
 
-  console.log('URL Search Params:', {
+/*   console.log('URL Search Params:', {
     token: searchParams.get('token'),
     access_token: searchParams.get('access_token'), // This will be null
     redirect: searchParams.get('redirect')
-  });
-  console.log('Window location hash:', window.location.hash);
+  }); */
+  //console.log('Window location hash:', window.location.hash);
 
   // Determine if we're in activation mode
   useEffect(() => {

@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import JsonViewer from '@/components/JsonViewer';
 import { supabase } from '@/lib/supabase';
+import ResendActivationButton from './ResendActivationButton';
 
 interface BrandPageProps {
 	params: Promise<{ id: string }>;
@@ -18,10 +19,16 @@ export default async function BrandPage({ params }: BrandPageProps) {
 	if (error || !brand) {
 		notFound();
 	}
+	console.log(brand);
 
 	return (
 		<div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-			<h1 className="text-3xl font-bold mb-4">{brand.name}</h1>
+			<div className="flex justify-between items-center mb-4">
+				<h1 className="text-3xl font-bold">{brand.name}</h1>
+				{brand.status === 'pending_activation' && (
+					<ResendActivationButton brandId={brand.id} brandName={brand.name} />
+				)}
+			</div>
 			<div className="bg-white shadow rounded-lg p-6 space-y-4">
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 					<div>

@@ -1,0 +1,108 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "retry": "Réessayer",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "close": "Fermer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "submit": "Soumettre",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "all": "Tous",
+    "none": "Aucun",
+    "yes": "Oui",
+    "no": "Non"
+  },
+  "navigation": {
+    "dashboard": "Tableau de bord",
+    "experiences": "Expériences",
+    "content": "Contenu",
+    "analytics": "Analyses",
+    "settings": "Paramètres",
+    "profile": "Profil",
+    "logout": "Déconnexion"
+  },
+  "dashboard": {
+    "welcome": "Bienvenue sur votre tableau de bord",
+    "overview": "Aperçu",
+    "recentActivity": "Activité récente",
+    "quickActions": "Actions rapides"
+  },
+  "experience": {
+    "title": "Expérience",
+    "create": "Créer une expérience",
+    "edit": "Modifier l'expérience",
+    "preview": "Aperçu",
+    "publish": "Publier",
+    "unpublish": "Dépublier",
+    "ingredients": "Ingrédients",
+    "usageInstructions": "Instructions d'utilisation",
+    "feedback": "Commentaires",
+    "tutorials": "Tutoriels et routines",
+    "customerSupport": "Support client"
+  },
+  "mobilePreview": {
+    "loadingPreview": "Chargement de l'aperçu...",
+    "previewUnavailable": "Aperçu indisponible",
+    "previewError": "Impossible de charger l'aperçu. Cela peut être dû à des problèmes de réseau ou à une expérience qui n'est pas encore publiée.",
+    "noPreviewAvailable": "Aucun aperçu disponible",
+    "experienceUrlNotFound": "URL d'expérience introuvable",
+    "reloadPreview": "Recharger l'aperçu",
+    "openInNewTab": "Ouvrir dans un nouvel onglet",
+    "retry": "Réessayer"
+  },
+  "features": {
+    "ingredientBreakdown": "Analyse des ingrédients",
+    "usageInstructions": "Instructions d'utilisation",
+    "shareFeedback": "Partager des commentaires",
+    "tutorialsRoutines": "Tutoriels et routines",
+    "customerSupport": "Support client",
+    "discoverWhatMakesItSpecial": "Découvrez ce qui le rend spécial",
+    "howToUseTheProduct": "Comment utiliser le produit",
+    "shareYourThoughts": "Partagez vos pensées",
+    "watchAndLearn": "Regardez et apprenez",
+    "getHelpOrContactUs": "Obtenez de l'aide ou contactez-nous"
+  },
+  "chatbot": {
+    "title": "Chatbot",
+    "name": "Assistant Beauté",
+    "greeting": "Salut ! Je suis là pour vous aider avec vos questions beauté. Comment puis-je vous aider aujourd'hui ?",
+    "fallbackMessage": "Je suis désolé, je n'ai pas d'informations à ce sujet. Veuillez contacter notre équipe de support pour obtenir de l'aide supplémentaire.",
+    "categories": {
+      "all": "Tous",
+      "productSelection": "Sélection de produits",
+      "returns": "Retours",
+      "brandValues": "Valeurs de marque",
+      "shipping": "Expédition",
+      "ingredients": "Ingrédients",
+      "applicationTips": "Conseils d'application"
+    }
+  },
+  "content": {
+    "title": "Contenu",
+    "tutorials": "Tutoriels",
+    "articles": "Articles",
+    "create": "Créer",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "publish": "Publier",
+    "unpublish": "Dépublier"
+  },
+  "docs": {
+    "title": "Documentation",
+    "gettingStarted": "Commencer",
+    "creatingExperiences": "Créer des expériences",
+    "tutorialsContent": "Tutoriels et contenu",
+    "analyticsInsights": "Analyses et insights",
+    "teamManagement": "Gestion d'équipe",
+    "brandCustomization": "Personnalisation de marque",
+    "apiReference": "Référence API",
+    "support": "Support"
+  }
+}

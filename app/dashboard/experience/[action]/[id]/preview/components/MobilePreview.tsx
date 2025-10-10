@@ -4,6 +4,7 @@ import React from 'react';
 import SparkleOverlay from '@/components/SparkleOverlay';
 import { useExperienceStore } from '@/store/brands/useExperienceStore';
 import type { MobilePreviewProps } from '@/types/productExperience';
+import { useTranslation } from '@/hooks/useTranslation';
 
 
 
@@ -14,6 +15,7 @@ const MobilePreview: React.FC<MobilePreviewProps> = ({ experienceId }) => {
   const [error, setError] = React.useState<string | null>(null);
   const [iframeError, setIframeError] = React.useState(false);
   const [iframeKey, setIframeKey] = React.useState(0);
+  const { t } = useTranslation('mobilePreview');
   
   // Get the URL for the current experience ID
   const experienceUrl = experienceId ? getExperienceUrl(experienceId) : null;
@@ -118,7 +120,7 @@ const MobilePreview: React.FC<MobilePreviewProps> = ({ experienceId }) => {
           <button
             onClick={handleReload}
             className="absolute top-4 right-4 z-30 bg-white/90 hover:bg-white border border-gray-200 rounded-full p-2 shadow-lg transition-all duration-200 hover:shadow-xl"
-            title="Reload Preview"
+            title={t('reloadPreview')}
           >
             <svg 
               className="w-4 h-4 text-gray-600 hover:text-purple-600 transition-colors" 
@@ -137,12 +139,12 @@ const MobilePreview: React.FC<MobilePreviewProps> = ({ experienceId }) => {
         )}
 
         {/* Screen Content: Live Preview Iframe */}
-        <div className="relative w-[calc(100%-16px)] h-[calc(100%-16px)] bg-white rounded-[2rem] overflow-hidden flex flex-col items-center p-0">
+        <div className="relative w-[calc(100%-16px)] h-[calc(100%-16px)] bg-white/20 shadow-xl rounded-[2rem] overflow-hidden flex flex-col items-center p-0">
           {(loading || isLoading) && !error && !iframeError ? (
-            <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-20">
+            <div className="absolute inset-0 flex items-center justify-center bg-white/20 z-20">
               <div className="flex flex-col items-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mb-2"></div>
-                <span className="text-gray-500 text-base font-medium">Loading preview…</span>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mb-2"></div>
+                <span className="text-white text-base font-medium">{t('loadingPreview')}</span>
               </div>
             </div>
           ) : (error || iframeError) ? (
@@ -153,23 +155,23 @@ const MobilePreview: React.FC<MobilePreviewProps> = ({ experienceId }) => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Preview Unavailable</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('previewUnavailable')}</h3>
                 <p className="text-sm text-gray-600 mb-4">
-                  {error || 'Unable to load the preview. This might be due to network issues or the experience not being published yet.'}
+                  {error || t('previewError')}
                 </p>
                 <div className="flex flex-col gap-2">
                   <button
                     className="px-4 py-2 bg-purple-700 text-white rounded-lg font-semibold shadow hover:bg-purple-800 transition"
                     onClick={handleRetry}
                   >
-                    Try Again
+                    {t('retry')}
                   </button>
                   {previewUrl && (
                     <button
                       className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition"
                       onClick={() => window.open(previewUrl, '_blank')}
                     >
-                      Open in New Tab
+                      {t('openInNewTab')}
                     </button>
                   )}
                 </div>
@@ -200,8 +202,8 @@ const MobilePreview: React.FC<MobilePreviewProps> = ({ experienceId }) => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">No Preview Available</h3>
-                <p className="text-sm text-gray-600">Experience URL not found</p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('noPreviewAvailable')}</h3>
+                <p className="text-sm text-gray-600">{t('experienceUrlNotFound')}</p>
               </div>
             </div>
           )}
