@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useExperienceStore } from '@/store/brands/useExperienceStore';
 import { getCurrentUserBrand } from '@/lib/data/brands';
+import { redirectToDashboard, redirectToSubdomain } from '@/lib/utils/subdomain';
 
 interface BrandContextType {
   brand: any | null;
@@ -39,7 +40,12 @@ export function BrandProvider({ children }: BrandProviderProps) {
       
       if (!brandData) {
         //console.log('❌ BrandProvider: No brand found, redirecting to login');
-        router.push('/auth/login');
+        // Check if we're already on the main domain, if not redirect to login on main domain
+        if (window.location.hostname.includes('app.')) {
+          redirectToSubdomain('/auth/login');
+        } else {
+          router.push('/auth/login');
+        }
         return;
       }
       
@@ -50,7 +56,11 @@ export function BrandProvider({ children }: BrandProviderProps) {
       //console.error('❌ BrandProvider: Error fetching brand', { error: errorMessage });
       setError(errorMessage);
       // If there's an error fetching brand (likely due to auth issues), redirect to login
-      router.push('/auth/login');
+      if (window.location.hostname.includes('app.')) {
+        redirectToSubdomain('/auth/login');
+      } else {
+        router.push('/auth/login');
+      }
     } finally {
       setIsLoading(false);
     }

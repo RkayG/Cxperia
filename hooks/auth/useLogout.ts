@@ -2,6 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { showToast } from '@/lib/toast';
+import { redirectToSubdomain } from '@/lib/utils/subdomain';
 
 interface LogoutResponse {
   message: string;
@@ -49,8 +50,12 @@ export function useLogout() {
       // Clear any client-side state if needed
       // You can add more cleanup here if you have global state
       
-      // Redirect to login page
-      router.push('/auth/login');
+      // Redirect to login page on main domain
+      if (window.location.hostname.includes('app.')) {
+        redirectToSubdomain('/auth/login');
+      } else {
+        router.push('/auth/login');
+      }
     },
     onError: (error) => {
       console.error('Logout failed:', error);

@@ -6,6 +6,7 @@ import logo from '@/assets/logo.png';
 import InputField from '@/components/input-field';
 import { createClient } from '@/lib/supabase/client'; 
 import { showToast } from '@/lib/toast';
+import { redirectToDashboard, redirectToSubdomain } from '@/lib/utils/subdomain';
 
 function AuthPageContent() {
   const [email, setEmail] = useState('');
@@ -104,7 +105,8 @@ function AuthPageContent() {
               window.history.replaceState(null, '', window.location.pathname + window.location.search);
               
               // Force a page reload to ensure middleware picks up the new session
-              window.location.href = redirectTo;
+              // Redirect to dashboard subdomain
+              redirectToDashboard(redirectTo === '/dashboard' ? '/' : redirectTo);
               return;
             }
           }
@@ -231,8 +233,8 @@ function AuthPageContent() {
       //console.log('Account activated successfully');
       
       setTimeout(() => {
-        // Force a page reload to ensure middleware picks up the new session
-        window.location.href = '/dashboard';
+        // Redirect to dashboard subdomain
+        redirectToDashboard();
       }, 2000);
 
     } catch (error: any) {
@@ -278,9 +280,9 @@ function AuthPageContent() {
           // Force a page reload to ensure middleware picks up the new session
           window.location.href = '/admin/dashboard';
         } else {
-          //console.log('Sign in successful, redirecting to:', redirectTo);
-          // Force a page reload to ensure middleware picks up the new session
-          window.location.href = redirectTo;
+          //console.log('Sign in successful, redirecting to dashboard subdomain');
+          // Redirect to dashboard subdomain (app.domain.fr)
+          redirectToDashboard(redirectTo === '/dashboard' ? '/' : redirectTo);
         }
       }
     } catch (error: any) {
