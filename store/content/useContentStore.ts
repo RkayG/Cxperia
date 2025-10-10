@@ -183,9 +183,46 @@ export const useContentStore = create<ContentState>()(
 
     refreshData: async (brandId: string) => {
       console.log('🔄 ContentStore: Force refreshing data for brand:', brandId);
-      set({ currentBrandId: null }); // Clear cache
-      const { fetchContentData } = get();
-      await fetchContentData(brandId); // Force refetch
+      set({ 
+        currentBrandId: null, 
+        isLoading: true, 
+        error: null 
+      }); // Clear cache and set loading
+      
+      try {
+        // Fetch data directly from API instead of using hooks
+        const tutorialsResponse = await fetch(`/api/tutorials?brand_id=${brandId}`);
+        const tutorialsRaw = await tutorialsResponse.json();
+
+        // Process the data
+        const tutorials = processTutorialsData(tutorialsRaw);
+        const articles = mapTutorialsToArticles(tutorials);
+        
+        // Apply current filters
+        const { activeTab, selectedType, selectedCategory, search } = get();
+        const filteredArticles = filterArticles(articles, activeTab, selectedType, selectedCategory, search);
+        
+        set({ 
+          tutorials, 
+          articles, 
+          filteredArticles,
+          isLoading: false,
+          currentBrandId: brandId // Set current brand after successful fetch
+        });
+        
+        console.log('✅ ContentStore: Data refreshed successfully', { 
+          tutorialsCount: tutorials.length, 
+          articlesCount: articles.length,
+          filteredCount: filteredArticles.length 
+        });
+      } catch (error) {
+        console.error('❌ ContentStore: Error refreshing data:', error);
+        set({ 
+          error: error instanceof Error ? error.message : 'Failed to refresh content data',
+          isLoading: false,
+          currentBrandId: brandId // Set current brand even on error to prevent re-fetching immediately
+        });
+      }
     },
 
     setActiveTab: (tab: string) => {

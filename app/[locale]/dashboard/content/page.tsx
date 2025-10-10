@@ -98,7 +98,9 @@ const ContentDashboardPage: React.FC = () => {
       
       showToast.success(`${count} tutorial${count > 1 ? 's' : ''} unpublished successfully!`);
       clearSelection(); // Clear selection using store action
+      console.log('🔄 ContentPage: Refreshing data after unpublish...');
       await refreshData(brandId!); // Force refresh data
+      console.log('✅ ContentPage: Data refresh completed');
       setShowUnpublishModal(false); // Close modal
     } catch (error: any) {
       showToast.error(error?.message || 'Failed to unpublish tutorials');
@@ -147,7 +149,9 @@ const ContentDashboardPage: React.FC = () => {
       console.log(`🎉 Successfully deleted ${count} tutorial${count > 1 ? 's' : ''}`);
       showToast.success(`${count} tutorial${count > 1 ? 's' : ''} deleted successfully!`);
       clearSelection(); // Clear selection using store action
+      console.log('🔄 ContentPage: Refreshing data after delete...');
       await refreshData(brandId!); // Force refresh data
+      console.log('✅ ContentPage: Data refresh completed');
       setShowDeleteModal(false); // Close modal
     } catch (error: any) {
       console.error('❌ Delete error:', error);
