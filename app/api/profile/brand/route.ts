@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth/getCurrentUser';
 import { supabase } from '@/lib/supabase';
 import { redis } from '@/lib/redis';
+import { sanitizePublicData } from '@/utils/sanitizePublicData';
 
 export async function GET() {
   try {
@@ -17,13 +18,14 @@ export async function GET() {
     try {
       const cached = await redis.get(cacheKey);
       if (cached) {
-        const response = NextResponse.json({ success: true, data: JSON.parse(cached) });
+        // Cache already contains sanitized data
+        const response = NextResponse.json({ success: true, data: JSON.parse(cached as string) });
         response.headers.set('Cache-Control', 'private, max-age=600, stale-while-revalidate=1200'); // 10 min cache
         response.headers.set('X-Cache', 'HIT');
         return response;
       }
     } catch (redisError) {
-      console.warn('Redis cache read failed, falling back to database:', redisError);
+      //console.warn('Redis cache read failed, falling back to database:', redisError);
     }
 
     // Cache miss - fetch from database
@@ -34,23 +36,26 @@ export async function GET() {
       .single();
 
     if (brandError) {
-      console.error('Error fetching brand:', brandError);
+      //console.error('Error fetching brand:', brandError);
       return NextResponse.json({ error: 'Failed to fetch brand data' }, { status: 500 });
     }
 
-    // Cache the result in Redis (10 minutes)
+    // Sanitize brand data to remove sensitive fields (but keep brand_id for frontend use)
+    const sanitizedBrand = sanitizePublicData(brand, ['user_id', 'created_by', 'updated_by']);
+
+    // Cache the sanitized result in Redis (10 minutes)
     try {
-      await redis.setex(cacheKey, 600, JSON.stringify(brand));
+      await redis.setex(cacheKey, 600, JSON.stringify(sanitizedBrand));
     } catch (redisError) {
-      console.warn('Redis cache write failed:', redisError);
+      //console.warn('Redis cache write failed:', redisError);
     }
 
-    const response = NextResponse.json({ success: true, data: brand });
+    const response = NextResponse.json({ success: true, data: sanitizedBrand });
     response.headers.set('Cache-Control', 'private, max-age=600, stale-while-revalidate=1200');
     response.headers.set('X-Cache', 'MISS');
     return response;
   } catch (error) {
-    console.error('Error in GET /api/profile/brand:', error);
+    //console.error('Error in GET /api/profile/brand:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -110,7 +115,7 @@ export async function PUT(request: NextRequest) {
       .single();
 
     if (updateError) {
-      console.error('Error updating brand:', updateError);
+      //console.error('Error updating brand:', updateError);
       return NextResponse.json({ error: 'Failed to update brand' }, { status: 500 });
     }
 
@@ -119,7 +124,7 @@ export async function PUT(request: NextRequest) {
       const cacheKey = `brand:${user.brand_id}`;
       await redis.del(cacheKey);
     } catch (redisError) {
-      console.warn('Failed to invalidate brand cache:', redisError);
+      //console.warn('Failed to invalidate brand cache:', redisError);
     }
 
     return NextResponse.json({ 
@@ -128,7 +133,7 @@ export async function PUT(request: NextRequest) {
       message: 'Brand profile updated successfully' 
     });
   } catch (error) {
-    console.error('Error in PUT /api/profile/brand:', error);
+    //console.error('Error in PUT /api/profile/brand:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

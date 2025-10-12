@@ -57,11 +57,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ exp
 
   // 1. Initial validation
   if (!session_brand_id) {
-    console.error("No brand_id found in session");
     return NextResponse.json({ success: false, message: "Authentication failure: No brand_id found" }, { status: 403 })
   }
   if (!experience_id) {
-    console.error("No experience_id provided in URL");
     return NextResponse.json({ success: false, message: "experience_id parameter required in URL" }, { status: 400 })
   }
 
@@ -72,7 +70,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ exp
   else if (body) items = [body]
 
   if (items.length === 0) {
-    console.error("No ingredient data provided in request body");
     return NextResponse.json({ success: false, message: "No ingredient data provided" }, { status: 400 })
   }
 
@@ -93,7 +90,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ exp
       .in("id", expIds)
 
     if (expError) {
-      console.error("Error fetching experience data:", expError);
       return NextResponse.json({ success: false, message: "Database error resolving experience data" }, { status: 500 })
     }
 
@@ -123,7 +119,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ exp
   const { data, error } = await supabase.from("ingredients").insert(ingredientsToInsert).select()
 
   if (error) {
-    console.error("Error inserting ingredients:", error);
     return NextResponse.json({ success: false, message: error.message }, { status: 500 })
   }
 
@@ -209,7 +204,6 @@ export async function PATCH(req: NextRequest) {
     .single()
 
   if (error) {
-    console.error("Error updating ingredient:", error);
     return NextResponse.json({ success: false, message: error.message }, { status: 500 })
   }
 
@@ -235,7 +229,6 @@ export async function DELETE(req: NextRequest) {
   const { error } = await supabase.from("ingredients").delete().eq("id", id).eq("brand_id", brand_id)
 
   if (error) {
-    console.error("Error deleting ingredient:", error);
     return NextResponse.json({ success: false, message: error.message }, { status: 500 })
   }
 

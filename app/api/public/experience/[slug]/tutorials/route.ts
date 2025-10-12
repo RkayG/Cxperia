@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { sanitizePublicDataArray } from '@/utils/sanitizePublicData';
 
 const PUBLIC_EXPERIENCE_SECRET = process.env.NEXT_PUBLIC_EXPERIENCE_SECRET || 'your-frontend-secret';
 const CACHE_TTL_SECONDS = 604800; // 7 days
@@ -43,7 +44,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
     
     if (tutorialsError) throw tutorialsError;
 
-    const response = { success: true, tutorials: tutorials || [] };
+    // Sanitize tutorials to remove sensitive data
+    const sanitizedTutorials = sanitizePublicDataArray(tutorials || []);
+
+    const response = { success: true, tutorials: sanitizedTutorials };
     //console.log('tutorials', tutorials);
     // Return with caching headers
     return NextResponse.json(response, {
@@ -53,7 +57,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
       },
     });
   } catch (error: any) {
-    console.error('Error getting public tutorials:', error);
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
 }

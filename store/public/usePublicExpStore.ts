@@ -34,15 +34,12 @@ export const usePublicExpStore = create<PublicExperienceState>()(
   customer_support_links_simple: [],
   productName: '',
   setColor: (color: string) => {
-    console.log('Setting color:', color);
     set({ color });
   },
     fetchExperience: async (slug: string) => {
-      console.log('Fetching experience for slug:', slug);
       set({ isLoading: true, error: null, slug });
       try {
         const data = await fetchPublicExperience(slug);
-        console.log('Fetched experience data:', data);
         if (
           data &&
           typeof data === 'object' &&
@@ -51,7 +48,6 @@ export const usePublicExpStore = create<PublicExperienceState>()(
           'message' in data &&
           (data.message === 'Not found' || data.message === 'Not Found')
         ) {
-          console.log('data indicates not found', data.message);
           set({ error: 'not_found', isLoading: false, experience: null });
           return;
         }
@@ -74,7 +70,6 @@ export const usePublicExpStore = create<PublicExperienceState>()(
         }
         set({ experience: data, color, brandName, brandLogo, theme, product, productName, customer_support_links_simple, isLoading: false });
       } catch (error: any) {
-        console.log('Error fetching experience:', error);
         set({ error: String(error), isLoading: false, experience: null });
       }
     },

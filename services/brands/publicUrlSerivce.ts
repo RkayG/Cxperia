@@ -12,7 +12,6 @@ export async function getOrSetPublicUrl(experienceId: string): Promise<string> {
 		body: JSON.stringify({ experienceId }),
 	});
 	const payload = await res.json();
-	console.log('Public URL Service Response:', payload);
 	if (payload && payload.url) {
 		return payload.url;
 	}

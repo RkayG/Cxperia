@@ -70,7 +70,6 @@ export const logAccess = (data: {
   const logLine = formatLogEntry(entry);
   
   // Only log to console in Edge Runtime
-  console.log(`[ACCESS] ${logLine}`);
 };
 
 // Error logging function (console only for Edge Runtime)
@@ -106,8 +105,7 @@ export const logError = (error: Error | string, metadata?: {
 
   const logLine = formatLogEntry(entry);
   
-  // Log to console
-  console.error(`[ERROR] ${logLine}`);
+
 };
 
 // Warning logging function
@@ -136,7 +134,7 @@ export const logWarning = (message: string, metadata?: {
   const logLine = formatLogEntry(entry);
   
   // Log to console
-  console.warn(`[WARN] ${logLine}`);
+  //console.warn(`[WARN] ${logLine}`);
 };
 
 // Debug logging function
@@ -160,7 +158,7 @@ export const logDebug = (message: string, metadata?: {
   const logLine = formatLogEntry(entry);
   
   // Log to console
-  console.log(`[DEBUG] ${logLine}`);
+ // console.log(`[DEBUG] ${logLine}`);
 };
 
 // Info logging function
@@ -181,7 +179,7 @@ export const logInfo = (message: string, metadata?: {
   const logLine = formatLogEntry(entry);
   
   // Log to console
-  console.log(`[INFO] ${logLine}`);
+  //console.log(`[INFO] ${logLine}`);
 };
 
 // Utility function to extract request info

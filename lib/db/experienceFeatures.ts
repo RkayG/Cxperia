@@ -1,10 +1,8 @@
 import { supabase } from '@/lib/supabase';
 
 export async function setDefaultExperienceFeatures({ experienceId, brandId }: { experienceId: string; brandId: string }) {
-  console.log('Setting default features for experience', experienceId, 'and brand', brandId);
   
   if (!experienceId || !brandId) {
-    console.warn('experienceId and brandId are required to set default features');
     return;
   }
 
@@ -23,7 +21,6 @@ export async function setDefaultExperienceFeatures({ experienceId, brandId }: { 
         ignoreDuplicates: true
       });
   } catch (e) {
-    console.warn('Failed to auto-enable feedback form feature', e);
   }
 
   // Enable customerService if customer_support_links table has data for this brand
@@ -49,7 +46,6 @@ export async function setDefaultExperienceFeatures({ experienceId, brandId }: { 
         });
     }
   } catch (e) {
-    console.warn('Failed to auto-enable customerService feature', e);
   }
 
   // Enable skinRecommendations if products table has data for this brand
@@ -75,7 +71,6 @@ export async function setDefaultExperienceFeatures({ experienceId, brandId }: { 
         });
     }
   } catch (e) {
-    console.warn('Failed to auto-enable skinRecommendations feature', e);
   }
 
   // Enable tutorialsRoutines if tutorials table has data for this brand
@@ -101,6 +96,5 @@ export async function setDefaultExperienceFeatures({ experienceId, brandId }: { 
         });
     }
   } catch (e) {
-    console.warn('Failed to auto-enable tutorialsRoutines feature', e);
   }
 }

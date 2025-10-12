@@ -20,6 +20,8 @@
     "test:watch": "cross-env FORCE_COLOR=1 vitest --watch",
     "test:ui": "cross-env FORCE_COLOR=1 vitest --ui",
     "test:coverage": "cross-env FORCE_COLOR=1 vitest --coverage",
+    "test:security": "cross-env FORCE_COLOR=1 vitest run tests/api/*.test.ts --reporter=verbose",
+    "test:security:watch": "cross-env FORCE_COLOR=1 vitest --watch tests/api/*.test.ts",
     "e2e:headless": "playwright test",
     "e2e:ui": "playwright test --ui",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",

@@ -134,14 +134,12 @@ export const useContentStore = create<ContentState>()(
 
     // Actions
     fetchContentData: async (brandId: string) => {
-      console.log('📡 ContentStore: fetchContentData called', { brandId, timestamp: new Date().toISOString() });
       
       if (!brandId) return;
       
       // Don't fetch if we already have data for this brand
       const { currentBrandId } = get();
       if (currentBrandId === brandId && !get().isLoading) {
-        console.log('⏭️ ContentStore: Skipping fetch - already have data for brand', { brandId });
         return;
       }
       
@@ -177,12 +175,10 @@ export const useContentStore = create<ContentState>()(
     },
 
     invalidateCache: () => {
-      console.log('🔄 ContentStore: Cache invalidated - next fetch will reload data');
       set({ currentBrandId: null });
     },
 
     refreshData: async (brandId: string) => {
-      console.log('🔄 ContentStore: Force refreshing data for brand:', brandId);
       set({ 
         currentBrandId: null, 
         isLoading: true, 
@@ -209,14 +205,8 @@ export const useContentStore = create<ContentState>()(
           isLoading: false,
           currentBrandId: brandId // Set current brand after successful fetch
         });
-        
-        console.log('✅ ContentStore: Data refreshed successfully', { 
-          tutorialsCount: tutorials.length, 
-          articlesCount: articles.length,
-          filteredCount: filteredArticles.length 
-        });
+       
       } catch (error) {
-        console.error('❌ ContentStore: Error refreshing data:', error);
         set({ 
           error: error instanceof Error ? error.message : 'Failed to refresh content data',
           isLoading: false,

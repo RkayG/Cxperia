@@ -38,19 +38,19 @@ const ProductListings: React.FC<ProductListingsPropsWithEdit> = ({
     let currentProducts = [...products];
 
     // Apply filter
-    if (filter === "Active QR Codes") {
+    if (filter === "Codes QR actifs") {
       currentProducts = currentProducts.filter(
-        (product) => product.qrCodeStatus === "Generated"
+        (product) => product.qrCodeStatus === "Généré"
       );
-    } else if (filter === "Pending QR Codes") {
+    } else if (filter === "Codes QR en attente") {
       currentProducts = currentProducts.filter(
-        (product) => product.qrCodeStatus === "Pending"
+        (product) => product.qrCodeStatus === "En attente"
       );
     } else if (
       filter &&
-      filter !== "All" &&
-      filter !== "Name" &&
-      filter !== "Added Date"
+      filter !== "Tous" &&
+      filter !== "Nom" &&
+      filter !== "Date d'ajout"
     ) {
       // filter by category
       currentProducts = currentProducts.filter(
@@ -59,9 +59,9 @@ const ProductListings: React.FC<ProductListingsPropsWithEdit> = ({
     }
 
     // Apply sort
-    if (sort === "Name") {
+    if (sort === "Nom") {
       currentProducts.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (sort === "Added Date") {
+    } else if (sort === "Date d'ajout") {
       currentProducts.sort(
         (a, b) =>
           new Date(b.addedDate).getTime() - new Date(a.addedDate).getTime()
@@ -74,7 +74,7 @@ const ProductListings: React.FC<ProductListingsPropsWithEdit> = ({
   return (
     <div className="max-w-sm -mt-12 mx-auto sm:max-w-full ">
       <h2 className="text-xl sm:text-2xl text-center font-semibold text-gray-900 mb-6">
-        Your Product Listings
+        Vos produits
       </h2>
       {/* Horizontal category bar */}
       {categories.length > 0 && (
@@ -94,7 +94,7 @@ const ProductListings: React.FC<ProductListingsPropsWithEdit> = ({
             style={{ border: "none" }}
             onClick={() => setFilter("")}
           >
-            All
+            Tous
           </button>
           {categories.map((cat) => (
             <button
@@ -138,7 +138,7 @@ const ProductListings: React.FC<ProductListingsPropsWithEdit> = ({
       </div>
       {!loading && filteredAndSortedProducts.length === 0 && (
         <p className="text-center text-gray-500 py-10">
-          No products found.
+          Aucun produit trouvé.
         </p>
       )}
     </div>

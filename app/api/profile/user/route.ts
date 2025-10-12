@@ -17,7 +17,7 @@ export async function GET() {
       .single();
 
     if (profileError) {
-      console.error('Error fetching profile:', profileError);
+      //console.error('Error fetching profile:', profileError);
       return NextResponse.json({ error: 'Failed to fetch profile data' }, { status: 500 });
     }
 
@@ -29,7 +29,7 @@ export async function GET() {
 
     return NextResponse.json({ success: true, data: userData });
   } catch (error) {
-    console.error('Error in GET /api/profile/user:', error);
+    //console.error('Error in GET /api/profile/user:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -69,7 +69,7 @@ export async function PUT(request: NextRequest) {
       .single();
 
     if (updateError) {
-      console.error('Error updating profile:', updateError);
+      //console.error('Error updating profile:', updateError);
       return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 });
     }
 
@@ -79,7 +79,7 @@ export async function PUT(request: NextRequest) {
       message: 'User profile updated successfully' 
     });
   } catch (error) {
-    console.error('Error in PUT /api/profile/user:', error);
+    //console.error('Error in PUT /api/profile/user:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

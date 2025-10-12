@@ -97,7 +97,6 @@ const ClientFeedbackWrapper: React.FC<ClientFeedbackWrapperProps> = ({
 
   // Test function to verify toast is working
   const testToast = () => {
-    console.log('Testing toast...');
     showToast.error('Test error message');
     showToast.success('Test success message');
   };
@@ -139,11 +138,9 @@ const ClientFeedbackWrapper: React.FC<ClientFeedbackWrapperProps> = ({
     // Optional: Warn if only minimal feedback is provided
    /*  if (hasRating && !hasComment && !hasImages && !hasName && !hasEmail) {
       // User only provided a rating - that's okay, but we could encourage more feedback
-      console.log('User provided minimal feedback (rating only)');
     } */
 
     try {
-      console.log('Starting feedback submission...');
       const result = await createFeedbackMutation.mutateAsync({
         customer_name: customerName.trim() || undefined,
         customer_email: customerEmail.trim() || undefined,
@@ -152,7 +149,6 @@ const ClientFeedbackWrapper: React.FC<ClientFeedbackWrapperProps> = ({
         images: images.length > 0 ? images : undefined,
       });
 
-      console.log('Feedback submitted successfully:', result);
       // Show thank you modal instead of toast
       setShowThankYouModal(true);
       
@@ -164,11 +160,7 @@ const ClientFeedbackWrapper: React.FC<ClientFeedbackWrapperProps> = ({
       setImages([]);
       
     } catch (error) {
-      console.error('Error submitting feedback:', error);
-      console.error('Error type:', typeof error);
-      console.error('Error constructor:', error?.constructor?.name);
       const errorMessage = error instanceof Error ? error.message : 'Failed to submit feedback. Please try again.';
-      console.log('Showing toast with message:', errorMessage);
       
       // Try to show toast multiple times to debug
       showToast.error(errorMessage);

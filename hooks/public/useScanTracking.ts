@@ -20,7 +20,7 @@ export function useIncrementScanCount() {
     },
     // Don't show error toasts for scan tracking failures
     onError: (error) => {
-      console.warn('Failed to increment scan count:', error);
+     // console.warn('Failed to increment scan count:', error);
     },
   });
 }

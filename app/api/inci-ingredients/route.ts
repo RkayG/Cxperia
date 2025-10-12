@@ -78,7 +78,7 @@ export async function GET(req: NextRequest) {
     
     return response;
   } catch (error) {
-    console.error('Get ingredients error:', error);
+    //console.error('Get ingredients error:', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to fetch ingredients' },
       { status: 500 }

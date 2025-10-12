@@ -6,7 +6,7 @@ import logo from '@/assets/logo.png';
 import InputField from '@/components/input-field';
 import { createClient } from '@/lib/supabase/client'; 
 import { showToast } from '@/lib/toast';
-import { redirectToDashboard, redirectToSubdomain } from '@/lib/utils/subdomain';
+// Removed subdomain imports - no longer needed
 
 function AuthPageContent() {
   const [email, setEmail] = useState('');
@@ -98,15 +98,14 @@ function AuthPageContent() {
 
             if (error) {
               //console.error('Session set error:', error);
-              setError('Authentication failed: ' + error.message);
+              setError('Échec de l\'authentification : ' + error.message);
             } else {
               //console.log('Session set successfully');
               // Clean URL by removing hash fragment
               window.history.replaceState(null, '', window.location.pathname + window.location.search);
               
-              // Force a page reload to ensure middleware picks up the new session
-              // Redirect to dashboard subdomain
-              redirectToDashboard(redirectTo === '/dashboard' ? '/' : redirectTo);
+              // Simple redirect to dashboard
+              window.location.href = redirectTo;
               return;
             }
           }
@@ -114,7 +113,7 @@ function AuthPageContent() {
       }
     } catch (error: any) {
       // console.error('Magic link auth error:', error);
-      setError('Authentication error: ' + error.message);
+      setError('Erreur d\'authentification : ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -131,14 +130,14 @@ function AuthPageContent() {
 
       if (error) {
         //console.error('OTP verification error:', error);
-        setError('Invalid or expired activation link');
+        setError('Lien d\'activation invalide ou expiré');
       } else if (data.user) {
         //console.log('OTP token valid for user:', data.user.email);
-        setUserEmail(data.user.email || 'your account');
+        setUserEmail(data.user.email || 'votre compte');
       }
     } catch (error) {
       //console.error('Token validation error:', error);
-      setError('Error validating activation link');
+      setError('Erreur lors de la validation du lien d\'activation');
     }
   };
 
@@ -147,17 +146,17 @@ function AuthPageContent() {
     e.preventDefault();
     
     if (!password || !confirmPassword) {
-      setError('Please fill in all fields');
+      setError('Veuillez remplir tous les champs');
       return;
     }
 
     if (password.length < 6) {
-      setError('Password must be at least 6 characters long');
+      setError('Le mot de passe doit contenir au moins 6 caractères');
       return;
     }
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError('Les mots de passe ne correspondent pas');
       return;
     }
 
@@ -233,13 +232,13 @@ function AuthPageContent() {
       //console.log('Account activated successfully');
       
       setTimeout(() => {
-        // Redirect to dashboard subdomain
-        redirectToDashboard();
+        // Simple redirect to dashboard
+        window.location.href = '/dashboard';
       }, 2000);
 
     } catch (error: any) {
       //console.error('Activation error:', error);
-      setError(error.message || 'Failed to activate account');
+      setError(error.message || 'Échec de l\'activation du compte');
     } finally {
       setLoading(false);
     }
@@ -250,7 +249,7 @@ function AuthPageContent() {
     if (e) e.preventDefault();
     
     if (!email || !password) {
-      setError('Please fill in all fields');
+      setError('Veuillez remplir tous les champs');
       return;
     }
 
@@ -280,14 +279,14 @@ function AuthPageContent() {
           // Force a page reload to ensure middleware picks up the new session
           window.location.href = '/admin/dashboard';
         } else {
-          //console.log('Sign in successful, redirecting to dashboard subdomain');
-          // Redirect to dashboard subdomain (app.domain.fr)
-          redirectToDashboard(redirectTo === '/dashboard' ? '/' : redirectTo);
+          //console.log('Sign in successful, redirecting to dashboard');
+          // Simple redirect to dashboard
+          window.location.href = redirectTo;
         }
       }
     } catch (error: any) {
       //console.log('Error signing in:', error);
-      setError('An unexpected error occurred');
+      setError('Une erreur inattendue s\'est produite');
     } finally {
       setLoading(false);
     }
@@ -312,7 +311,7 @@ function AuthPageContent() {
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
-          <div className="text-purple-700 font-medium">Processing your request...</div>
+          <div className="text-purple-700 font-medium">Traitement de votre demande...</div>
         </div>
       </div>
     );
@@ -327,8 +326,8 @@ function AuthPageContent() {
             <div className="w-16 h-16 mx-auto mb-6 bg-green-100 rounded-full flex items-center justify-center">
               <span className="text-2xl">✅</span>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Account Activated!</h1>
-            <p className="text-gray-600 mb-6">Redirecting to your dashboard...</p>
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Compte activé !</h1>
+            <p className="text-gray-600 mb-6">Redirection vers votre tableau de bord...</p>
           </div>
         </div>
       );
@@ -340,10 +339,10 @@ function AuthPageContent() {
         <div className="relative hidden lg:flex items-center justify-center">
           <div className="text-center w-full max-w-xl">
             <h1 className="font-black text-4xl text-[#502274] leading-tight mb-6">
-              Activate Your Account
+              Activez votre compte
             </h1>
             <p className="text-lg text-gray-600">
-              Set your password to start using your account.
+              Définissez votre mot de passe pour commencer à utiliser votre compte.
             </p>
           </div>
         </div>
@@ -360,11 +359,11 @@ function AuthPageContent() {
                   priority
                 />
                 <h1 className="text-center text-3xl font-bold text-gray-900">
-                  Set Your Password
+                  Définissez votre mot de passe
                 </h1>
                 {userEmail && (
                   <p className="text-gray-600 mt-2 text-center">
-                    Welcome! Set a password for <strong>{userEmail}</strong>
+                    Bienvenue ! Définissez un mot de passe pour <strong>{userEmail}</strong>
                   </p>
                 )}
               </div>
@@ -373,8 +372,8 @@ function AuthPageContent() {
                 <InputField
                   id="password"
                   type={showPassword ? 'text' : 'password'}
-                  label="New Password"
-                  placeholder="Enter at least 6 characters"
+                  label="Nouveau mot de passe"
+                  placeholder="Entrez au moins 6 caractères"
                   value={password}
                   onChange={setPassword}
                   onKeyPress={handleKeyPress}
@@ -388,8 +387,8 @@ function AuthPageContent() {
                 <InputField
                   id="confirmPassword"
                   type={showPassword ? 'text' : 'password'}
-                  label="Confirm Password"
-                  placeholder="Re-enter your password"
+                  label="Confirmer le mot de passe"
+                  placeholder="Répétez votre mot de passe"
                   value={confirmPassword}
                   onChange={setConfirmPassword}
                   onKeyPress={handleKeyPress}
@@ -410,7 +409,7 @@ function AuthPageContent() {
                   disabled={loading}
                   className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {loading ? 'Activating...' : 'Activate Account'}
+                  {loading ? 'Activation...' : 'Activer le compte'}
                 </button>
               </form>
             </div>
@@ -432,7 +431,7 @@ function AuthPageContent() {
             priority
           />
           <h1 className="text-center text-3xl font-bold text-gray-900">
-            Welcome back
+            Bon retour
           </h1>
         </div>
 
@@ -441,7 +440,7 @@ function AuthPageContent() {
             id="email"
             type="email"
             label="Email"
-            placeholder="your@company.com"
+            placeholder="votre@entreprise.com"
             value={email}
             onChange={setEmail}
             onKeyPress={handleKeyPress}
@@ -451,8 +450,8 @@ function AuthPageContent() {
           <InputField
             id="password"
             type={showPassword ? 'text' : 'password'}
-            label="Password"
-            placeholder="Enter your password"
+            label="Mot de passe"
+            placeholder="Entrez votre mot de passe"
             value={password}
             onChange={setPassword}
             onKeyPress={handleKeyPress}
@@ -474,7 +473,7 @@ function AuthPageContent() {
             disabled={loading}
             className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-4 rounded-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? 'Signing in...' : 'Sign in'}
+            {loading ? 'Connexion...' : 'Se connecter'}
           </button>
         </form>
       </div>
@@ -488,7 +487,7 @@ export default function AuthPage() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-pink-100">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
+          <p className="text-gray-600">Chargement...</p>
         </div>
       </div>
     }>

@@ -4,7 +4,6 @@ import config, { getApiUrl } from '@/config/api';
 const PUBLIC_SECRET = process.env.NEXT_PUBLIC_EXPERIENCE_SECRET || '';
 
 export async function fetchPublicExperience(slug: string) {
-	console.log('Fetching public experience for slug:', slug);
 	const endpoint = config.endpoints.PUBLIC.EXPERIENCE.DATA(slug);
 	const url = getApiUrl(endpoint);
 		try {

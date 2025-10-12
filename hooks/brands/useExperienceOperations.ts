@@ -18,7 +18,6 @@ export const useExperienceOperations = () => {
         ? await updateExperienceMutation({ id: data.experience_id, data: data })
         : await createExperienceMutation(data);
       
-      console.log('Operation result:', result);
      // console.log("Mutation result:", result);
      // console.log("Mutation result type:", typeof result);
      // console.log("Mutation result keys:", Object.keys(result || {}));

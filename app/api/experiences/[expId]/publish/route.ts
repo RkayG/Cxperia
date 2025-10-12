@@ -24,7 +24,6 @@ export async function PATCH(
     return NextResponse.json({ success: true, data: experience });
 
   } catch (error) {
-    console.error('Publish experience error:', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to update publish status' },
       { status: 500 }

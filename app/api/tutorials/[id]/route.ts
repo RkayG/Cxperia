@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getCurrentUser } from "@/lib/auth/getCurrentUser"
 import { createClient } from "@/lib/supabase/server"
+import { sanitizePublicData } from "@/utils/sanitizePublicData"
 
 // --- Helper for Update Normalization ---
 /**
@@ -73,13 +74,15 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       if (error.code === 'PGRST116') { // No rows found
         return NextResponse.json({ success: false, message: 'Tutorial not found' }, { status: 404 })
       }
-      console.error("Error fetching tutorial:", error)
       return NextResponse.json({ success: false, message: error.message }, { status: 500 })
     }
 
     if (!data) return NextResponse.json({ success: false, message: 'Tutorial not found' }, { status: 404 })
 
-    return NextResponse.json({ success: true, data })
+    // Sanitize tutorial to remove sensitive data
+    const sanitizedTutorial = sanitizePublicData(data);
+
+    return NextResponse.json({ success: true, data: sanitizedTutorial })
 
   } catch (error: any) {
     return NextResponse.json({ success: false, message: error.message }, { status: 500 })
@@ -113,7 +116,6 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       .single()
 
     if (error) {
-      console.error("Error updating tutorial:", error)
       return NextResponse.json({ success: false, message: error.message }, { status: 500 })
     }
 
@@ -137,7 +139,6 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   const brand_id = user?.brand_id
   const { id } = await  params
 
-  console.log('🗑️ [API] DELETE tutorial request:', { id, brand_id, user_id: user?.id });
 
   if (!id) return NextResponse.json({ success: false, message: 'id is required' }, { status: 400 })
   if (!brand_id) return NextResponse.json({ success: false, message: 'brand_id is required' }, { status: 403 })
@@ -150,10 +151,8 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
       .eq("id", id)
       .single()
 
-    console.log('🗑️ [API] Tutorial lookup result:', { lookup, lookupError });
 
     if (lookupError || !lookup || lookup.brand_id !== brand_id) {
-        console.log('❌ [API] Tutorial not found or unauthorized:', { lookupError, lookup, brand_id });
         return NextResponse.json({ success: false, message: 'Tutorial not found or unauthorized' }, { status: 404 })
     }
 
@@ -164,21 +163,17 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
       .eq("id", id)
       .eq("brand_id", brand_id) // Security check
 
-    console.log('🗑️ [API] Delete operation result:', { deleteError });
 
     if (deleteError) {
-      console.error("❌ [API] Error deleting tutorial:", deleteError)
       return NextResponse.json({ success: false, message: deleteError.message }, { status: 500 })
     }
 
-    console.log('✅ [API] Tutorial deleted successfully:', id);
     
     // Note: Cache invalidation is removed here as per migration strategy.
     
     return NextResponse.json({ success: true, message: 'Deleted' })
 
   } catch (error: any) {
-    console.error('❌ [API] Delete tutorial error:', error);
     return NextResponse.json({ success: false, message: error.message }, { status: 500 })
   }
 }

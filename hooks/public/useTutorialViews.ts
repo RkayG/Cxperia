@@ -20,7 +20,7 @@ export function useIncrementTutorialView() {
     },
     // Don't show error toasts for view tracking failures
     onError: (error) => {
-      console.warn('Failed to increment view count:', error);
+     // console.warn('Failed to increment view count:', error);
     },
   });
 }

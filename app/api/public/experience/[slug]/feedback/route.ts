@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { logError, logAccess, extractRequestInfo, generateRequestId } from '@/lib/logging';
 import { createFeedbackRateLimiter, createGeneralRateLimiter, createRateLimitResponse, addRateLimitHeaders } from '@/lib/rate-limiter';
+import { sanitizePublicData } from '@/utils/sanitizePublicData';
 
 // POST /api/public/experience/[slug]/feedback - Create feedback for public users
 export async function POST(
@@ -17,12 +18,9 @@ export async function POST(
   
   try {
     // Check rate limit
-    console.log('Checking rate limit for feedback submission...');
     const rateLimitResult = await rateLimiter.checkLimit(request);
-    console.log('Rate limit result:', rateLimitResult);
     
     if (!rateLimitResult.success) {
-      console.log('Rate limit exceeded, blocking request');
       // Log rate limit exceeded
       logError('Rate limit exceeded for feedback submission', {
         ...requestInfo,
@@ -37,8 +35,6 @@ export async function POST(
       
       return createRateLimitResponse(rateLimitResult, 'Too many feedback submissions. Please wait before submitting again.');
     }
-    
-    console.log('Rate limit check passed, proceeding with request');
     
     const { slug } = await params;
     const body: any = await request.json();
@@ -115,14 +111,17 @@ export async function POST(
       }
       
       return NextResponse.json({ 
-        error: 'Failed to submit feedback. Please try again.',
+        error: 'Failed to submit feedback. Please try again.', 
         details: process.env.NODE_ENV === 'development' ? error.message : undefined
       }, { status: 500 });
     }
 
+    // Sanitize the feedback response to remove sensitive data
+    const sanitizedFeedback = sanitizePublicData(feedback);
+
     const response = NextResponse.json({ 
       success: true, 
-      data: feedback,
+      data: sanitizedFeedback,
       message: 'Thank you for your feedback!' 
     });
     

@@ -112,6 +112,7 @@ export interface ProductPayload {
 */
 export interface MobilePreviewProps {
   experienceId: string; // Experience ID required for preview embedding
+  refreshTrigger?: number; // Trigger to force iframe refresh
 }
 
 export interface QrCodeGeneratorProps {

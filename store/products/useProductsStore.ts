@@ -117,7 +117,6 @@ export const useProductsStore = create<ProductsState>()(
 
     // Actions
     fetchProductsData: async (brandId: string) => {
-      console.log('📡 ProductsStore: fetchProductsData called', { brandId, timestamp: new Date().toISOString() });
       
       if (!brandId) return;
       

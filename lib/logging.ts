@@ -25,7 +25,7 @@ if (typeof window === 'undefined' && process.env.NODE_ENV !== 'development') {
       highWaterMark: 1024 * 16
     });
   } catch (error) {
-    console.warn('Failed to initialize file logging:', error);
+    //console.warn('Failed to initialize file logging:', error);
   }
 }
 
@@ -103,7 +103,7 @@ export const logAccess = (data: {
   }
   
   // Also log to console
-  console.log(`[ACCESS] ${logLine.trim()}`);
+  //console.log(`[ACCESS] ${logLine.trim()}`);
 };
 
 // Error logging function
@@ -208,7 +208,7 @@ export const logDebug = (message: string, metadata?: {
   }
   
   // Also log to console
-  console.log(`[DEBUG] ${logLine.trim()}`);
+ // console.log(`[DEBUG] ${logLine.trim()}`);
 };
 
 // Info logging function
@@ -234,7 +234,7 @@ export const logInfo = (message: string, metadata?: {
   }
   
   // Also log to console
-  console.log(`[INFO] ${logLine.trim()}`);
+  //console.log(`[INFO] ${logLine.trim()}`);
 };
 
 // Utility function to extract request info

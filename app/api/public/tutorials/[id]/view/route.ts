@@ -46,7 +46,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       .single();
 
     if (error) {
-      console.error('Error incrementing view count:', error);
       return NextResponse.json({ 
         error: 'Failed to increment view count',
         details: process.env.NODE_ENV === 'development' ? error.message : undefined
@@ -64,7 +63,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     });
 
   } catch (error) {
-    console.error('View count increment error:', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to increment view count' },
       { status: 500 }
@@ -106,7 +104,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     });
 
   } catch (error) {
-    console.error('Get view count error:', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to get view count' },
       { status: 500 }

@@ -35,7 +35,6 @@ export default function ProcessingStep({ data, nextStep }: ProcessingStepProps) 
           throw new Error("Signup completed but user ID was not returned.");
         }
       } catch (error: any) {
-        console.error("Signup process failed:", error); // Keep for debugging
         setStatus('error');
         if (error.message?.includes('duplicate key value violates unique constraint')) {
             setError('An account with this email or brand name already exists.');

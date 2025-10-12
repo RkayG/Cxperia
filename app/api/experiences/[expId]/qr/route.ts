@@ -45,7 +45,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ expI
     // If experience found but QR code is not generated yet, prompt client to POST/generate
     return NextResponse.json({ error: "QR code not yet generated for this experience" }, { status: 404 });
   } catch (err: any) {
-    console.error("Error fetching QR code:", err);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
@@ -100,7 +99,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ exp
 
     // A. Check for existing QR code (Short-circuit return)
     if (existingQr && existingUrl) {
-      console.log("Existing QR found, returning cached version.");
       return NextResponse.json({ qr: existingQr, url: existingUrl, productName });
     }
     
@@ -117,7 +115,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ exp
 
     // 2. Generate QR code
     const qrDataUrl = await generateQrCode(urlToEncode);
-    console.log("Generated new QR code for URL:", urlToEncode);
 
     // 3. Update experience record with new QR and set published status
     const { error: updateError } = await supabase
@@ -130,14 +127,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ exp
       .eq('id', experienceId);
     
     if (updateError) {
-      console.error("Failed to update qr_code_url:", updateError);
       // Still return the generated QR even if DB update failed
     }
 
     return NextResponse.json({ qr: qrDataUrl, url: urlToEncode, productName });
 
   } catch (err: any) {
-    console.error("Error generating QR code:", err);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }

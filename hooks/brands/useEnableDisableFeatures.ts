@@ -1,5 +1,4 @@
 // DEBUG: Hook loaded
-console.log('[useEnableDisableFeatures] loaded');
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import * as api from '@/services/brands/enableDisableFeatureService';
 
@@ -8,7 +7,6 @@ export function useEnableFeature() {
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: ({ experienceId, featureName }: { experienceId: string; featureName: string }) => {
-			console.log('[useEnableFeature] mutationFn called with', experienceId, featureName);
 			return api.enableFeature(experienceId, featureName);
 		},
 		onSuccess: (_data, variables) => {

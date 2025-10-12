@@ -26,7 +26,6 @@ export async function POST(req: NextRequest) {
   }
   const body = await req.json() as { logo_url?: string };
   const { logo_url } = body;
-  console.log('Received logo_url:', logo_url);
   if (!logo_url) {
     return NextResponse.json({ success: false, message: 'logo_url is required' }, { status: 400 });
   }

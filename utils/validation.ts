@@ -3,11 +3,11 @@ export const validateStoreLink = (value: string): string | null => {
   try {
     const url = new URL(value);
     if (url.protocol !== "https:") {
-      return "Only https links are allowed";
+      return "Seuls les liens https sont autorisés";
     }
     return null;
   } catch (e) {
-    return "Please enter a valid URL (include https://)";
+    return "Veuillez entrer une URL valide (incluez https://)";
   }
 };
 import type { Experience } from '../types/productExperience';
@@ -25,19 +25,19 @@ export interface ValidationErrors {
 
 export const validateStepOne = (data: Experience): ValidationErrors => {
   const errors: ValidationErrors = {};
-  if (!data.name?.trim()) errors.name = 'Product name is required.';
-  if (!data.category?.trim()) errors.category = 'Category is required.';
-  if (!data.tagline?.trim()) errors.tagline = 'Tagline is required.';
-  if (!data.description?.trim()) errors.description = 'Description is required.';
+  if (!data.name?.trim()) errors.name = 'Le nom du produit est requis.';
+  if (!data.category?.trim()) errors.category = 'La catégorie est requise.';
+  if (!data.tagline?.trim()) errors.tagline = 'Le slogan est requis.';
+  if (!data.description?.trim()) errors.description = 'La description est requise.';
   if (!data.storeLink?.trim()) {
-    errors.storeLink = 'Store link is required.';
+    errors.storeLink = 'Le lien du magasin est requis.';
   } else {
     const storeLinkError = validateStoreLink(data.storeLink);
     if (storeLinkError) errors.storeLink = storeLinkError;
   }
-  if (!data.product_image_url || data.product_image_url.length === 0) errors.images = 'At least one image is required.';
+  if (!data.product_image_url || data.product_image_url.length === 0) errors.images = 'Au moins une image est requise.';
   if (!data.estimatedDurationDays || data.estimatedDurationDays <= 0) {
-    errors.estimatedDurationDays = 'Estimated duration is required.';
+    errors.estimatedDurationDays = 'La durée estimée est requise.';
   }
   return errors;
 };
@@ -66,6 +66,6 @@ export const scrollToError = (errors: ValidationErrors) => {
       }, 400);
     }
   } catch (e) {
-    console.warn('Failed to scroll to error', e);
+   // console.warn('Failed to scroll to error', e);
   }
 };

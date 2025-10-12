@@ -17,7 +17,6 @@ export async function GET() {
       .single();
 
     if (profileError) {
-      console.error('Error fetching settings:', profileError);
       return NextResponse.json({ error: 'Failed to fetch settings' }, { status: 500 });
     }
 
@@ -46,7 +45,6 @@ export async function GET() {
 
     return NextResponse.json({ success: true, data: settings });
   } catch (error) {
-    console.error('Error in GET /api/profile/settings:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -84,7 +82,7 @@ export async function PUT(request: NextRequest) {
       .single();
 
     if (updateError) {
-      console.error('Error updating settings:', updateError);
+      //console.error('Error updating settings:', updateError);
       return NextResponse.json({ error: 'Failed to update settings' }, { status: 500 });
     }
 
@@ -94,7 +92,7 @@ export async function PUT(request: NextRequest) {
       message: 'Settings updated successfully' 
     });
   } catch (error) {
-    console.error('Error in PUT /api/profile/settings:', error);
+    //console.error('Error in PUT /api/profile/settings:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

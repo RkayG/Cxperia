@@ -62,7 +62,7 @@ export async function completeSignup(data: SignupData) {
       requiresConfirmation: true
     };
   } catch (error: any) {
-    console.error('Signup error:', error);
+   // console.error('Signup error:', error);
     throw error;
   }
 }
@@ -74,6 +74,5 @@ async function sendConfirmationCodeEmail(email: string, code: string) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, code })
   });
-  console.log('Email send response:', response);
   if (!response.ok) throw new Error('Failed to send confirmation code email');
 }

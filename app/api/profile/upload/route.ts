@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
       message: `${type} uploaded successfully` 
     });
   } catch (error) {
-    console.error('Error in POST /api/profile/upload:', error);
+    //console.error('Error in POST /api/profile/upload:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

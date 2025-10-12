@@ -151,24 +151,18 @@ export async function updateTutorial(tutorialId: string, data: any) {
 
 // Delete a tutorial by id
 export async function deleteTutorial(tutorialId: string) {
-  console.log('🗑️ [featureService] Attempting to delete tutorial with ID:', tutorialId);
-  console.log('🗑️ [featureService] API endpoint:', endpoints.TUTORIAL.DELETE(tutorialId));
   
   const res = await fetch(endpoints.TUTORIAL.DELETE(tutorialId), {
     method: 'DELETE',
   });
   
-  console.log('🗑️ [featureService] Delete response status:', res.status);
-  console.log('🗑️ [featureService] Delete response headers:', Object.fromEntries(res.headers.entries()));
   
   if (!res.ok) {
     const errorText = await res.text();
-    console.error('❌ [featureService] Delete failed with status:', res.status, 'Error:', errorText);
     throw new Error(`Delete failed: ${res.status} ${errorText}`);
   }
   
   const result = await res.json();
-  console.log('✅ [featureService] Delete result:', result);
   
   return result;
 }
@@ -230,9 +224,7 @@ export async function setBrandLogo(logoUrl: string) {
     method: 'POST',
     body: JSON.stringify({ logo_url: logoUrl }),
   });
-  console.log('setBrandLogo response status:', res.status);
-  console.log('setBrandLogo response headers:', res.headers);
-  console.log('setBrandLogo response body:', await res.clone().text());
+ 
   return res.json();
 }
 

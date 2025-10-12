@@ -31,7 +31,6 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ images = [], onImagesChange }
         
         showToast.success('Image uploaded successfully!');
       } catch (error) {
-        console.error('Upload error:', error);
         const errorMessage = error instanceof Error ? error.message : 'Failed to upload image';
         showToast.error(errorMessage);
       } finally {

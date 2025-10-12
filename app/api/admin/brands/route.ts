@@ -45,7 +45,6 @@ export async function POST(request: NextRequest) {
 
     // 2. Check for existing user with same email BEFORE creating anything
     // Try to create user first - if it fails with email exists error, we know it's a duplicate
-    console.log('Checking for existing user with email:', data.contact_email);
     
     // We'll skip the user check for now and let the createUser call handle it
     // This is more reliable than trying to query for existing users
@@ -85,7 +84,6 @@ export async function POST(request: NextRequest) {
 
     if (userError) {
       // If user creation fails, clean up the brand record to avoid orphaned data
-      console.log('User creation failed, cleaning up brand record:', userError);
       await supabaseAdmin
         .from('brands')
         .delete()
@@ -149,14 +147,11 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error: any) {
-    console.error('Brand onboarding error:', error);
-    console.error('Error name:', error.name);
-    console.error('Error message:', error.message);
-    console.error('Error code:', error.code);
+    
+    
     
     // Handle specific Supabase Auth errors
     if (error.name === 'AuthApiError') {
-      console.log('Handling AuthApiError');
       if (error.message?.includes('email address has already been registered') || 
           error.message?.includes('User already registered')) {
         return NextResponse.json({ 

@@ -24,7 +24,6 @@ export async function POST(
       .single();
 
     if (fetchError) {
-      console.error('Error fetching experience:', fetchError);
       if (fetchError.code === 'PGRST116') {
         return NextResponse.json({ error: 'Experience not found' }, { status: 404 });
       }
@@ -74,7 +73,6 @@ export async function POST(
       .single();
 
     if (scanEventError) {
-      console.error('Error inserting scan event:', scanEventError);
       // Don't fail the request if scan event insertion fails
     }
 
@@ -108,7 +106,6 @@ export async function POST(
       .single();
 
     if (error) {
-      console.error('Error incrementing scan count:', error);
       return NextResponse.json({ 
         error: 'Failed to increment scan count',
         details: process.env.NODE_ENV === 'development' ? error.message : undefined
@@ -130,7 +127,6 @@ export async function POST(
     });
 
   } catch (error) {
-    console.error('Scan count increment error:', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to increment scan count' },
       { status: 500 }
@@ -177,7 +173,6 @@ export async function GET(
     });
 
   } catch (error) {
-    console.error('Get scan count error:', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to get scan count' },
       { status: 500 }

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getCurrentUser } from "@/lib/auth/getCurrentUser"
 import { createClient } from "@/lib/supabase/server"
 import { redis } from "@/lib/redis"
+import { sanitizePublicDataArray } from "@/utils/sanitizePublicData"
 
 // --- Helper for input normalization and mapping ---
 interface TutorialBody {
@@ -87,7 +88,6 @@ export async function POST(req: NextRequest) {
 
     
     if (error) {
-      console.error("Error inserting tutorial:", error)
       return NextResponse.json({ success: false, message: error.message }, { status: 500 })
     }
 
@@ -97,7 +97,6 @@ export async function POST(req: NextRequest) {
       const recentCacheKey = `tutorials:${brand_id}:false:true`; // Recent tutorials
       await redis.del(cacheKey, recentCacheKey);
     } catch (redisError) {
-      console.warn('Failed to invalidate tutorials cache:', redisError);
     }
 
     return NextResponse.json({ success: true, data: tutorial })
@@ -127,13 +126,14 @@ export async function GET(req: NextRequest) {
   try {
     const cached = await redis.get(cacheKey);
     if (cached) {
-      const response = NextResponse.json({ success: true, data: JSON.parse(cached) });
+      // Cache already contains sanitized data
+      const response = NextResponse.json({ success: true, data: JSON.parse(cached as string) });
       response.headers.set('Cache-Control', 'private, max-age=300, stale-while-revalidate=600');
       response.headers.set('X-Cache', 'HIT');
       return response;
     }
   } catch (redisError) {
-    console.warn('Redis cache read failed, falling back to database:', redisError);
+    //console.warn('Redis cache read failed, falling back to database:', redisError);
   }
 
   let query = supabase.from("tutorials").select("*")
@@ -165,18 +165,21 @@ export async function GET(req: NextRequest) {
     const { data, error } = await query
 
     if (error) {
-      console.error("Error fetching tutorials:", error)
+      //console.error("Error fetching tutorials:", error)
       return NextResponse.json({ success: false, message: error.message }, { status: 500 })
     }
 
-    // Cache the result in Redis (5 minutes)
+    // Sanitize tutorials to remove sensitive data
+    const sanitizedTutorials = sanitizePublicDataArray(data || []);
+
+    // Cache the sanitized result in Redis (5 minutes)
     try {
-      await redis.setex(cacheKey, 300, JSON.stringify(data));
+      await redis.setex(cacheKey, 300, JSON.stringify(sanitizedTutorials));
     } catch (redisError) {
-      console.warn('Redis cache write failed:', redisError);
+      //console.warn('Redis cache write failed:', redisError);
     }
 
-    const response = NextResponse.json({ success: true, data });
+    const response = NextResponse.json({ success: true, data: sanitizedTutorials });
     response.headers.set('Cache-Control', 'private, max-age=300, stale-while-revalidate=600');
     response.headers.set('X-Cache', 'MISS');
     return response;

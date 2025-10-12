@@ -23,7 +23,6 @@ const YouHaveScanned: React.FC<YouHaveScannedProps> = ({ onSectionChange, slug }
 
   // Log when YouHaveScanned is rendered
  /*  useEffect(() => {
-    console.log('🎉 YouHaveScanned component rendered for new customer', {
       productName: product?.name,
       experienceId: experience?.id,
       timestamp: new Date().toISOString()
@@ -136,7 +135,7 @@ const YouHaveScanned: React.FC<YouHaveScannedProps> = ({ onSectionChange, slug }
           <div className="text-center px-2 py-8 bg-white rounded-lg shadow-md">
             <h1 className="font-bold text-2xl">Scan Successful!</h1>
             <h3 className="text-lg font-semibold">
-              Thank you for scanning {product?.name || "this product"}!
+              Merci pour le scan de {product?.name || "this product"}!
             </h3>
 
             {/* Product Image (if available) */}

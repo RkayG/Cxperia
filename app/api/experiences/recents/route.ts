@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ success: true, data: experiences });
 
   } catch (error) {
-    console.error('Get recent experiences error:', error);
+    //console.error('Get recent experiences error:', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to fetch recent experiences' },
       { status: 500 }

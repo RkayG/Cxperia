@@ -31,7 +31,6 @@ export const useHomeStore = create(
     error: null,
 
     fetchHomeData: async (brandId: string) => {
-      console.log('📡 HomeStore: fetchHomeData called', { brandId, timestamp: new Date().toISOString() });
       
       if (!brandId) return;
       
@@ -60,7 +59,6 @@ export const useHomeStore = create(
           isLoadingStats: false,
         });
       } catch (error) {
-        console.error('HomeStore fetch error:', error);
         set({
           error: error instanceof Error ? error.message : 'Failed to fetch home data',
           isLoadingExperiences: false,

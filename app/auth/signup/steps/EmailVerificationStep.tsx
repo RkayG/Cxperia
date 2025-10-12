@@ -40,7 +40,7 @@ export default function EmailVerificationStep({ email }: EmailVerificationStepPr
       setCountdown(60);
       setCanResend(false);
     } catch (error) {
-      console.error('Error resending email:', error);
+      //console.error('Error resending email:', error);
     }
   };
 

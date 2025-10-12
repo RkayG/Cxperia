@@ -17,7 +17,7 @@ export function hydrateStepOne(setStepOneData: (arg: any) => void) {
       setStepOneData((prev: any) => ({ ...prev, ...parsed }));
     }
   } catch (e) {
-    console.warn('hydrateStepOne: failed to read/parse stepOneFormData', e);
+    //.warn('hydrateStepOne: failed to read/parse stepOneFormData', e);
   }
 }
 
@@ -46,7 +46,7 @@ export function persistStepOne(stepOneData: any) {
     };
     localStorage.setItem('stepOneFormData', JSON.stringify(toSave));
   } catch (e) {
-    console.warn('persistStepOne: failed to persist stepOneFormData', e);
+    //console.warn('persistStepOne: failed to persist stepOneFormData', e);
   }
 }
 
@@ -65,7 +65,7 @@ export function persistStepTwo(stepTwoData: any) {
   try {
     localStorage.setItem('stepTwoData', JSON.stringify(stepTwoData || {}));
   } catch (e) {
-    console.warn('persistStepTwo: failed to persist stepTwoData', e);
+   // console.warn('persistStepTwo: failed to persist stepTwoData', e);
   }
 }
 

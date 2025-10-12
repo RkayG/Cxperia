@@ -85,9 +85,7 @@ class RedisStore {
       const Redis = require('ioredis');
       this.redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
       this.isConnected = true;
-      console.log('Redis connected successfully for rate limiting');
     } catch (error) {
-      console.warn('Redis not available, falling back to memory store:', error);
       this.isConnected = false;
     }
   }
@@ -107,7 +105,6 @@ class RedisStore {
       
       return parsed;
     } catch (error) {
-      console.error('Redis get error:', error);
       return null;
     }
   }
@@ -120,7 +117,6 @@ class RedisStore {
       const ttl = Math.ceil((resetTime - Date.now()) / 1000);
       await this.redis.setex(key, ttl, value);
     } catch (error) {
-      console.error('Redis set error:', error);
     }
   }
 
@@ -145,7 +141,6 @@ class RedisStore {
         return { count: 1, resetTime };
       }
     } catch (error) {
-      console.error('Redis increment error:', error);
       // Fallback to memory store
       const memoryStore = new MemoryStore();
       return memoryStore.increment(key, windowMs);
@@ -181,10 +176,8 @@ export class RateLimiter {
     // Use Redis if available, otherwise fall back to memory
     const redisStore = new RedisStore();
     if (!redisStore.isConnected) {
-      console.log('Using memory store for rate limiting');
       this.store = new MemoryStore();
     } else {
-      console.log('Using Redis store for rate limiting');
       this.store = redisStore;
     }
   }
@@ -193,7 +186,6 @@ export class RateLimiter {
     const key = this.config.keyGenerator(request);
     
     const { count, resetTime } = await this.store.increment(key, this.config.windowMs);
-    console.log(`Rate limit check for ${key}: count=${count}/${this.config.maxRequests}, remaining=${Math.max(0, this.config.maxRequests - count)}`);
     
     const remaining = Math.max(0, this.config.maxRequests - count);
     const retryAfter = count > this.config.maxRequests 
@@ -209,7 +201,6 @@ export class RateLimiter {
     };
     
     if (!result.success) {
-      console.log(`🚫 Rate limit exceeded for ${key}: ${count}/${this.config.maxRequests} requests`);
     }
     
     return result;
@@ -234,7 +225,6 @@ let strictRateLimiter: RateLimiter | null = null;
 
 export const createFeedbackRateLimiter = () => {
   if (!feedbackRateLimiter) {
-    console.log('Creating new feedback rate limiter instance');
     feedbackRateLimiter = new RateLimiter({
       windowMs: 15 * 60 * 1000, // 15 minutes
       maxRequests: 3, // 3 feedback submissions per 15 minutes
@@ -246,7 +236,6 @@ export const createFeedbackRateLimiter = () => {
 
 export const createGeneralRateLimiter = () => {
   if (!generalRateLimiter) {
-    console.log('Creating new general rate limiter instance');
     generalRateLimiter = new RateLimiter({
       windowMs: 15 * 60 * 1000, // 15 minutes
       maxRequests: 100, // 100 requests per 15 minutes
@@ -258,7 +247,6 @@ export const createGeneralRateLimiter = () => {
 
 export const createStrictRateLimiter = () => {
   if (!strictRateLimiter) {
-    console.log('Creating new strict rate limiter instance');
     strictRateLimiter = new RateLimiter({
       windowMs: 60 * 1000, // 1 minute
       maxRequests: 10, // 10 requests per minute

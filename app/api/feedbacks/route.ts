@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth/getCurrentUser';
 import { createClient } from '@/lib/supabase/server';
+import { sanitizePublicDataArray } from '@/utils/sanitizePublicData';
 
 // GET /api/feedbacks - Get all feedbacks for a brand
 export async function GET(request: NextRequest) {
@@ -27,14 +28,17 @@ export async function GET(request: NextRequest) {
       .order('created_at', { ascending: false });
 
     if (error) {
-      console.error('Error fetching feedbacks:', error);
+      //console.error('Error fetching feedbacks:', error);
       return NextResponse.json({ error: 'Failed to fetch feedbacks' }, { status: 500 });
     }
 
-    return NextResponse.json({ success: true, data: feedbacks || [] });
+    // Sanitize feedbacks to remove sensitive data
+    const sanitizedFeedbacks = sanitizePublicDataArray(feedbacks || []);
+
+    return NextResponse.json({ success: true, data: sanitizedFeedbacks });
 
   } catch (error) {
-    console.error('Get feedbacks error:', error);
+    //console.error('Get feedbacks error:', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to fetch feedbacks' },
       { status: 500 }
@@ -95,14 +99,14 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error('Error creating feedback:', error);
+      //console.error('Error creating feedback:', error);
       return NextResponse.json({ error: 'Failed to create feedback' }, { status: 500 });
     }
 
     return NextResponse.json({ success: true, data: feedback });
 
   } catch (error) {
-    console.error('Create feedback error:', error);
+    //console.error('Create feedback error:', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to create feedback' },
       { status: 500 }

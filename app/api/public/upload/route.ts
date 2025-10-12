@@ -51,7 +51,6 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Public upload error:', error);
     return NextResponse.json(
       { error: 'Upload failed. Please try again.' }, 
       { status: 500 }
@@ -81,7 +80,6 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ success: true, message: 'Image deleted' });
 
   } catch (error) {
-    console.error('Public delete error:', error);
     return NextResponse.json(
       { error: 'Delete failed' }, 
       { status: 500 }

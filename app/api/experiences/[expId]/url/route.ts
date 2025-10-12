@@ -7,7 +7,6 @@ export async function GET(
   { params }: { params: Promise<{ expId: string }> }
 ) {
   const { expId } = await params;
-  console.log('Received GET request for experience URL with ID:', expId);
   try {
     const user = await getCurrentUser();
     if (!user) {
@@ -18,7 +17,6 @@ export async function GET(
     return NextResponse.json({ success: true, experience_url: experienceUrl });
 
   } catch (error) {
-    console.error('Get experience URL error:', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to get experience URL' },
       { status: 500 }

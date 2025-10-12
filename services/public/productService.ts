@@ -18,8 +18,6 @@ export async function fetchExperienceProducts(slug: string) {
 		if (!response.ok) {
 			throw new Error(`Error fetching products: ${response.statusText}`);
 		}
-		console.log('Response status:', response.status);
-		console.log('Response data:', await response.clone().json());
 		return await response.json();
 	} catch (error) {
 		throw error;

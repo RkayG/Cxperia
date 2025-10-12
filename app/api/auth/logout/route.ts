@@ -16,12 +16,12 @@ export async function POST(request: NextRequest) {
     const { data: { user }, error: getUserError } = await supabase.auth.getUser();
     
     if (getUserError) {
-      console.error('Error getting user during logout:', getUserError);
+      
       return NextResponse.json({ error: 'Failed to get user information' }, { status: 500 });
     }
     
     if (!user) {
-      console.log('No user found, already logged out');
+      
       return NextResponse.json({ message: 'Already logged out' }, { status: 200 });
     }
     
@@ -72,7 +72,6 @@ export async function POST(request: NextRequest) {
     });
     
   } catch (error) {
-    console.error('Unexpected error during logout:', error);
     logError(error as Error, {
       ...requestInfo,
       requestId,

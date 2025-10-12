@@ -49,7 +49,7 @@ export async function DELETE(request: NextRequest) {
         .eq('brand_id', userId);
 
       if (experiencesError) {
-        console.error('Error deleting experiences:', experiencesError);
+        //console.error('Error deleting experiences:', experiencesError);
         throw new Error('Failed to delete experiences');
       }
 
@@ -60,7 +60,7 @@ export async function DELETE(request: NextRequest) {
         .eq('brand_id', userId);
 
       if (productsError) {
-        console.error('Error deleting products:', productsError);
+        //console.error('Error deleting products:', productsError);
         throw new Error('Failed to delete products');
       }
 
@@ -71,7 +71,7 @@ export async function DELETE(request: NextRequest) {
         .eq('brand_id', userId);
 
       if (tutorialsError) {
-        console.error('Error deleting tutorials:', tutorialsError);
+        //console.error('Error deleting tutorials:', tutorialsError);
         throw new Error('Failed to delete tutorials');
       }
 
@@ -82,7 +82,7 @@ export async function DELETE(request: NextRequest) {
         .eq('brand_id', userId);
 
       if (scanEventsError) {
-        console.error('Error deleting scan events:', scanEventsError);
+        //console.error('Error deleting scan events:', scanEventsError);
         throw new Error('Failed to delete scan events');
       }
 
@@ -93,7 +93,7 @@ export async function DELETE(request: NextRequest) {
         .eq('brand_id', userId);
 
       if (feedbackError) {
-        console.error('Error deleting feedback:', feedbackError);
+        //console.error('Error deleting feedback:', feedbackError);
         throw new Error('Failed to delete feedback');
       }
 
@@ -104,7 +104,7 @@ export async function DELETE(request: NextRequest) {
         .eq('id', userId);
 
       if (profileError) {
-        console.error('Error deleting profile:', profileError);
+        //console.error('Error deleting profile:', profileError);
         throw new Error('Failed to delete profile');
       }
 
@@ -112,7 +112,7 @@ export async function DELETE(request: NextRequest) {
       const { error: authError } = await supabase.auth.admin.deleteUser(userId);
 
       if (authError) {
-        console.error('Error deleting auth user:', authError);
+        //console.error('Error deleting auth user:', authError);
         throw new Error('Failed to delete user account');
       }
 
@@ -122,7 +122,7 @@ export async function DELETE(request: NextRequest) {
       });
 
     } catch (transactionError) {
-      console.error('Transaction error during account deletion:', transactionError);
+      //console.error('Transaction error during account deletion:', transactionError);
       return NextResponse.json({ 
         error: 'Failed to delete account. Please try again or contact support.',
         details: process.env.NODE_ENV === 'development' ? transactionError.message : undefined
@@ -130,7 +130,6 @@ export async function DELETE(request: NextRequest) {
     }
 
   } catch (error) {
-    console.error('Error in DELETE /api/profile/delete:', error);
     return NextResponse.json({ 
       error: 'Internal server error',
       details: process.env.NODE_ENV === 'development' ? error.message : undefined

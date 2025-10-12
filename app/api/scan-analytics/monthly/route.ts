@@ -21,7 +21,6 @@ export async function GET(request: NextRequest) {
       .single();
 
     if (profileError || !profile) {
-      console.error('Error fetching profile:', profileError);
       return NextResponse.json({ error: 'Profile not found' }, { status: 404 });
     }
 
@@ -37,7 +36,6 @@ export async function GET(request: NextRequest) {
       });
 
     if (error) {
-      console.error('Error fetching monthly scan data:', error);
       return NextResponse.json({ 
         error: 'Failed to fetch monthly scan data',
         details: process.env.NODE_ENV === 'development' ? error.message : undefined
@@ -98,7 +96,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(response);
 
   } catch (error) {
-    console.error('Monthly scan analytics error:', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to fetch monthly scan data' },
       { status: 500 }

@@ -51,7 +51,6 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Upload error:', error);
     return NextResponse.json(
       { error: 'Upload failed' }, 
       { status: 500 }
@@ -78,7 +77,6 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ success: true, data: { deleted: id } });
 
   } catch (error) {
-    console.error('Delete error:', error);
     return NextResponse.json(
       { error: 'Delete failed' }, 
       { status: 500 }

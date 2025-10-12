@@ -55,7 +55,6 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     return NextResponse.json({ success: true, data: updatedFeature })
 
   } catch (error: any) {
-    console.error("Error setting feature status:", error)
     return NextResponse.json({ success: false, message: error.message }, { status: 500 })
   }
 }

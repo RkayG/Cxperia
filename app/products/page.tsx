@@ -47,16 +47,16 @@ const ProductDashboard: React.FC = () => {
   const performanceMetrics: PerformanceMetric[] = [
     {
       id: 'totalBrand',
-      title: 'Total Scans',
+      title: 'Total des scans',
       value: '0',
       change: '+5.5% MoM',
       isPositive: true,
-      lastUpdated: '1 hour ago',
+      lastUpdated: 'il y a 1 heure',
       icon: Camera,
     },
     {
       id: 'totalCampaigns',
-      title: 'Active QR Codes',
+      title: 'Codes QR actifs',
       value: String(activeQrCount),
       change: '-1.2% MoM',
       isPositive: activeQrCount >= 0,
@@ -65,7 +65,7 @@ const ProductDashboard: React.FC = () => {
     },
     {
       id: 'newListings',
-      title: 'Pending QR Codes',
+      title: 'Codes QR en attente',
       value: String(pendingQrCount),
       change: '+2.1% MoM',
       isPositive: pendingQrCount >= 0,
@@ -79,10 +79,10 @@ const ProductDashboard: React.FC = () => {
     return experienceArr.map((exp: any) => ({
       id: exp.experience_id,
       image: exp.product_image_url ? exp.product_image_url[0] || '/src/assets/images/demo6.png' : '/src/assets/images/demo6.png',
-      name: exp.name || exp.title || 'Untitled Product',
-      category: exp.category || 'Uncategorized',
-      experience: exp.name + ' experience' || exp.experience_name || '',
-      qrCodeStatus: exp.qr_code_url ? 'Generated' : 'Pending',
+      name: exp.name || exp.title || 'Produit sans titre',
+      category: exp.category || 'Non catégorisé',
+      experience: exp.name + ' expérience' || exp.experience_name || '',
+      qrCodeStatus: exp.qr_code_url ? 'Généré' : 'En attente',
       addedDate: exp.created_at ? new Date(exp.created_at).toISOString().slice(0, 10) : '',
       // Attach full experience data for navigation
       _fullExp: exp,
@@ -101,7 +101,7 @@ const ProductDashboard: React.FC = () => {
     <div className="min-h-screen mx-auto pb-32 bg-gray-50 sm:pb-32 sm:p-6 lg:p-8">
       <ProductPerformanceOverview metrics={performanceMetrics} />
       {isLoadingExperiences ? (
-        <div className="text-center text-gray-500 py-8">Loading products...</div>
+        <div className="text-center text-gray-500 py-8">Chargement des produits...</div>
       ) : (
         <ProductListings
           products={products}

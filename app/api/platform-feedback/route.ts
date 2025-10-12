@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Platform feedback creation error:', error);
+    //console.error('Platform feedback creation error:', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to create feedback' },
       { status: 500 }
@@ -90,7 +90,7 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Platform feedback fetch error:', error);
+    //console.error('Platform feedback fetch error:', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to fetch feedback' },
       { status: 500 }

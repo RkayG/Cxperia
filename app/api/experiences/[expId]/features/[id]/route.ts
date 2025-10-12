@@ -62,7 +62,6 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
     return NextResponse.json({ success: true, data: updatedFeature })
   } catch (error: any) {
-    console.error("Error updating feature:", error)
     return NextResponse.json({ success: false, message: error.message }, { status: 500 })
   }
 }
@@ -100,7 +99,6 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     
     return NextResponse.json({ success: true, message: 'Deleted' })
   } catch (error: any) {
-    console.error("Error deleting feature:", error)
     return NextResponse.json({ success: false, message: error.message }, { status: 500 })
   }
 }
@@ -127,7 +125,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       if (error.code === 'PGRST116') { // No rows found
         return NextResponse.json({ success: false, message: 'Feature not found' }, { status: 404 })
       }
-      console.error("Error fetching feature:", error)
       return NextResponse.json({ success: false, message: error.message }, { status: 500 })
     }
 

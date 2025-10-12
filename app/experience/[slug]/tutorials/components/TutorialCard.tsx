@@ -87,7 +87,7 @@ const TutorialCard: React.FC<TutorialCardProps> = ({ tutorial }) => {
       await incrementViewMutation.mutateAsync(id);
     } catch (error) {
       // Don't block navigation if view tracking fails
-      console.warn('Failed to track view:', error);
+      //console.warn('Failed to track view:', error);
     }
   };
 

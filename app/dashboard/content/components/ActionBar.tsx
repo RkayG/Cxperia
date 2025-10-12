@@ -1,0 +1,77 @@
+import { Edit, EyeOff, Trash2 } from 'lucide-react'; 
+import React, { useEffect, useRef } from 'react';
+
+interface ActionBarProps {
+  selectedCount: number;
+  selectedArticleStatus?: string; // Status of the selected article (for single selection)
+  onEdit?: () => void;
+  onUnpublish?: () => void;
+  onDelete?: () => void;
+  onDismiss?: () => void; // Callback to dismiss the action bar
+}
+
+const ActionBar: React.FC<ActionBarProps> = ({ selectedCount, selectedArticleStatus, onEdit, onUnpublish, onDelete, onDismiss }) => {
+  const actionBarRef = useRef<HTMLDivElement>(null);
+  
+  // Determine if we should show the unpublish button
+  const shouldShowUnpublish = selectedCount === 1 
+    ? selectedArticleStatus?.toUpperCase() !== 'DRAFT'
+    : true; // For multiple selections, show unpublish button
+
+  // Handle click outside to dismiss
+  /* useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (actionBarRef.current && !actionBarRef.current.contains(event.target as Node)) {
+        onDismiss?.();
+      }
+    };
+
+    // Add event listener
+    document.addEventListener('mousedown', handleClickOutside);
+    
+    // Cleanup
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [onDismiss]);
+ */
+  return (
+    <div 
+      ref={actionBarRef}
+      className="fixed left-1/2 -translate-x-1/2 bottom-6 w-full max-w-xs sm:max-w-md md:max-w-xl bg-purple-800 text-white p-2 sm:p-4 flex flex-col sm:flex-row justify-between items-center shadow-lg rounded-xl z-30"
+    >
+      <span className="text-sm pt-1 md:pt-0 font-medium mb-2 sm:mb-0">
+        {selectedCount} article{selectedCount > 1 ? 's' : ''} sélectionné{selectedCount > 1 ? 's' : ''}
+      </span>
+      <div className="flex gap-2 sm:gap-4">
+        {selectedCount === 1 && (
+          <button
+            className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg hover:bg-white/20 transition-colors text-xs sm:text-sm"
+            onClick={onEdit}
+          >
+            <Edit size={14} className="sm:w-4 sm:h-4 w-3.5 h-3.5" />
+            Modifier
+          </button>
+        )}
+        {shouldShowUnpublish && (
+          <button 
+            className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg hover:bg-white/20 transition-colors text-xs sm:text-sm"
+            onClick={onUnpublish}
+          >
+            <EyeOff size={14} className="sm:w-4 sm:h-4 w-3.5 h-3.5" />
+            Dépublier
+          </button>
+        )}
+        <button 
+          className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg hover:bg-white/20 transition-colors text-xs sm:text-sm"
+          onClick={onDelete}
+        >
+          <Trash2 size={14} className="sm:w-4 sm:h-4 w-3.5 h-3.5" />
+          Supprimer
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default ActionBar;

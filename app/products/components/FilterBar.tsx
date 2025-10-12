@@ -13,8 +13,8 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSortChange }) =
   const [selectedSort, setSelectedSort] = useState('');
 
   // Options for dropdowns
-  const filterOptions = ['All', 'Active QR Codes', 'Pending QR Codes'];
-  const sortOptions = ['Sort By', 'None', 'Name', 'Added Date'];
+  const filterOptions = ['Tous', 'Codes QR actifs', 'Codes QR en attente'];
+  const sortOptions = ['Trier par', 'Aucun', 'Nom', 'Date d\'ajout'];
 
 
 
@@ -28,10 +28,10 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSortChange }) =
           value={selectedFilter}
           onChange={(option) => {
             setSelectedFilter(option);
-            onFilterChange(option === 'All' ? '' : option);
+            onFilterChange(option === 'Tous' ? '' : option);
           }}
           options={filterOptions}
-          placeholder="Filter Products"
+          placeholder="Filtrer les produits"
           className="w-48"
         />
 
@@ -40,10 +40,10 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSortChange }) =
           value={selectedSort}
           onChange={(option) => {
             setSelectedSort(option);
-            onSortChange(option === 'Sort By' ? '' : option);
+            onSortChange(option === 'Trier par' ? '' : option);
           }}
           options={sortOptions}
-          placeholder="Sort By"
+          placeholder="Trier par"
           className="sm:w-48"
         />
       </div>
@@ -54,7 +54,7 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSortChange }) =
         className="w-full sm:w-auto flex items-center justify-center px-6 py-2 bg-purple-800 text-white font-medium rounded-xl hover:bg-purple-700 transition-colors duration-200 shadow-md"
       >
         <Plus size={20} className="mr-2" />
-        Add New Product
+        Ajouter un nouveau produit
       </button>
       </Link>
       

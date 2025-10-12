@@ -10,7 +10,6 @@ export async function fetchQrCode(expId: string): Promise<{ qr: string; url: str
 		method: 'GET',
 	});
 	const payload = await res.json();
-	console.log('QR Fetch Response:', payload);
 	if (payload && payload.qr) {
 		return {
 			qr: payload.qr,
@@ -31,7 +30,6 @@ export async function generateQrCode(expId: string, text?: string): Promise<{ qr
 		body: JSON.stringify({ text }),
 	});
 	const payload = await res.json();
-	console.log('QR Service Response:', payload);
 	if (payload && payload.qr) {
 		return {
 			qr: payload.qr,

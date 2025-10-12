@@ -36,7 +36,6 @@ function ActivateAccountContent() {
         });
 
         if (error) {
-            console.error('Token verification error:', error);
           setError('Invalid or expired activation link');
         } else if (data.user) {
           setUserEmail(data.user.email || 'your account');

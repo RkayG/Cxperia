@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth/getCurrentUser';
 import { getExperienceById, updateExperience } from '@/lib/db/experiences';
 import { updateProduct } from '@/lib/db/products';
+import { sanitizePublicData } from '@/utils/sanitizePublicData';
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ expId: string }> }) {
   try {
@@ -26,7 +27,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         .eq('experience_id', experience.id);
       if (featuresData) features = featuresData;
     } catch (e) {
-      console.warn('Failed to fetch experience features', e);
+     // console.warn('Failed to fetch experience features', e);
     }
 
     // Transform the response to use 'product' instead of 'products' for consistency
@@ -39,10 +40,13 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     // Remove the original 'products' field to avoid confusion
     delete transformedExperience.products;
 
-    return NextResponse.json({ success: true, data: transformedExperience });
+    // Sanitize the experience to remove sensitive data
+    const sanitizedExperience = sanitizePublicData(transformedExperience);
+
+    return NextResponse.json({ success: true, data: sanitizedExperience });
 
   } catch (error) {
-    console.error('Get experience error:', error);
+    //console.error('Get experience error:', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to fetch experience' },
       { status: 500 }
@@ -59,7 +63,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     }
 
     const body = await request.json() as any;
-    console.log('Update experience request body:', body);
+    //console.log('Update experience request body:', body);
     const { product_id, product, experience_id } = body;
     const logo_url = body.logo_url || (product && product.logo_url) || null;
     let finalProductId = product_id || null;
@@ -106,7 +110,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
         try {
           await updateProduct(finalProductId, updates);
         } catch (e) {
-          console.warn('Failed to update existing product', e);
+          //console.warn('Failed to update existing product', e);
         }
       }
     }
@@ -132,7 +136,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
         const newProduct = await createProduct(user.brand_id, productData);
         finalProductId = newProduct.id;
       } catch (err) {
-        console.error('Error creating product:', err);
+        //console.error('Error creating product:', err);
         return NextResponse.json({ error: 'Failed to create product', details: err instanceof Error ? err.message : err }, { status: 500 });
       }
     }
@@ -146,7 +150,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
           .update({ logo_url })
           .eq('id', user.brand_id);
       } catch (e) {
-        console.warn('Failed to persist brand logo_url', e);
+        //console.warn('Failed to persist brand logo_url', e);
       }
     }
 
@@ -168,14 +172,14 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
         .eq('experience_id', experience.id);
       if (featuresData) features = featuresData;
     } catch (e) {
-      console.warn('Failed to fetch experience features', e);
+      //console.warn('Failed to fetch experience features', e);
     }
     experience.features = features;
 
     return NextResponse.json({ success: true, data: experience });
 
   } catch (error) {
-    console.error('Update experience error:', error);
+    //console.error('Update experience error:', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to update experience' },
       { status: 500 }
@@ -197,7 +201,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     return NextResponse.json({ success: true, message: 'Experience deleted successfully' });
 
   } catch (error) {
-    console.error('Delete experience error:', error);
+    //console.error('Delete experience error:', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to delete experience' },
       { status: 500 }

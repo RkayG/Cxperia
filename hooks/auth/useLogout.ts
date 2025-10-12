@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { showToast } from '@/lib/toast';
-import { redirectToSubdomain } from '@/lib/utils/subdomain';
+// Removed subdomain import - no longer needed
 
 interface LogoutResponse {
   message: string;
@@ -32,7 +32,6 @@ export function useLogout() {
         const data = await response.json();
         return data;
       } catch (apiError) {
-        console.warn('API logout failed, falling back to client-side logout:', apiError);
         
         // Fallback to client-side logout
         const { error } = await supabase.auth.signOut();
@@ -40,26 +39,20 @@ export function useLogout() {
           throw new Error(error.message);
         }
         
-        return { message: 'Logged out successfully', success: true };
+        return { message: 'Déconnexion réussie', success: true };
       }
     },
     onSuccess: (data) => {
-      console.log('Logout successful:', data);
-      showToast.success('Logged out successfully');
+      showToast.success('Déconnexion réussie');
       
       // Clear any client-side state if needed
       // You can add more cleanup here if you have global state
       
-      // Redirect to login page on main domain
-      if (window.location.hostname.includes('app.')) {
-        router.push('/auth/login');
-      } else {
-        router.push('/auth/login');
-      }
+      // Simple redirect to login page
+      router.push('/auth/login');
     },
     onError: (error) => {
-      console.error('Logout failed:', error);
-      showToast.error(error instanceof Error ? error.message : 'Failed to logout');
+      showToast.error(error instanceof Error ? error.message : 'Échec de la déconnexion');
     },
   });
 }

@@ -35,13 +35,8 @@ export async function uploadToCloudinary(
       },
       (error, result) => {
         if (error) {
-          console.error('Cloudinary upload error:', error);
           reject(error);
         } else {
-          console.log('Cloudinary upload success:', { 
-            public_id: result!.public_id, 
-            url: result!.secure_url 
-          });
           resolve(result);
         }
       }
@@ -56,7 +51,6 @@ export async function deleteFromCloudinary(publicId: string) {
     const result = await cloudinary.uploader.destroy(publicId);
     return result;
   } catch (error) {
-    console.error('Cloudinary delete error:', error);
     throw error;
   }
 }
@@ -66,7 +60,6 @@ export async function getCloudinaryFileDetails(publicId: string) {
     const result = await cloudinary.api.resource(publicId);
     return result;
   } catch (error) {
-    console.error('Cloudinary get file error:', error);
     throw error;
   }
 }

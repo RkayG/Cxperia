@@ -18,11 +18,11 @@ interface BottomNavLink {
 }
 
 const bottomNavLinks: BottomNavLink[] = [
-  { id: 1, label: "Home", icon: FaHome, path: "/dashboard" },
-  { id: 2, label: "Catalog", icon: FaCrown, path: "/dashboard/products" },
-  { id: 3, label: "Create", icon: FaPlus, path: "/dashboard/experience/create?step=product-details&new=true" },
-  { id: 4, label: "Content", icon: FaFileAlt, path: "/dashboard/content" },
-  { id: 5, label: "Overview", icon: FaBell, path: "/dashboard/overview" },
+  { id: 1, label: "Accueil", icon: FaHome, path: "/dashboard" },
+  { id: 2, label: "Catalogue", icon: FaCrown, path: "/dashboard/products" },
+  { id: 3, label: "Créer", icon: FaPlus, path: "/dashboard/experience/create?step=product-details&new=true" },
+  { id: 4, label: "Contenu", icon: FaFileAlt, path: "/dashboard/content" },
+  { id: 5, label: "Aperçu", icon: FaBell, path: "/dashboard/overview" },
 ];
 
 const MobileBottomNav: React.FC = () => {

@@ -247,7 +247,6 @@ export const useExperienceStore = create<ExperienceState>()(
           }
           return null;
         } catch (error) {
-          console.error('Error fetching experience data:', error);
           return null;
         } finally {
           set({ isLoading: false });

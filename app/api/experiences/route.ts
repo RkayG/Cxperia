@@ -3,6 +3,7 @@ import { getCurrentUser } from '@/lib/auth/getCurrentUser';
 import { createExperience, getExperiencesByBrand } from '@/lib/db/experiences';
 import { createProduct } from '@/lib/db/products';
 import { redis } from '@/lib/redis';
+import { sanitizePublicDataArray } from '@/utils/sanitizePublicData';
 
 export async function GET(request: NextRequest) {
   try {
@@ -25,33 +26,37 @@ export async function GET(request: NextRequest) {
     try {
       const cached = await redis.get(cacheKey);
       if (cached) {
-        const response = NextResponse.json({ success: true, data: JSON.parse(cached) });
+        // Cache already contains sanitized data
+        const response = NextResponse.json({ success: true, data: JSON.parse(cached as string) });
         // Add cache headers
         response.headers.set('Cache-Control', 'private, max-age=300, stale-while-revalidate=600');
         response.headers.set('X-Cache', 'HIT');
         return response;
       }
     } catch (redisError) {
-      console.warn('Redis cache read failed, falling back to database:', redisError);
+      //console.warn('Redis cache read failed, falling back to database:', redisError);
     }
 
     // Cache miss - fetch from database
     const experiences = await getExperiencesByBrand(brandId);
     
-    // Cache the result in Redis (5 minutes)
+    // Sanitize experiences to remove sensitive data
+    const sanitizedExperiences = sanitizePublicDataArray(experiences);
+    
+    // Cache the sanitized result in Redis (5 minutes)
     try {
-      await redis.setex(cacheKey, 300, JSON.stringify(experiences));
+      await redis.setex(cacheKey, 300, JSON.stringify(sanitizedExperiences));
     } catch (redisError) {
-      console.warn('Redis cache write failed:', redisError);
+      //console.warn('Redis cache write failed:', redisError);
     }
 
-    const response = NextResponse.json({ success: true, data: experiences });
+    const response = NextResponse.json({ success: true, data: sanitizedExperiences });
     response.headers.set('Cache-Control', 'private, max-age=300, stale-while-revalidate=600');
     response.headers.set('X-Cache', 'MISS');
     return response;
 
   } catch (error) {
-    console.error('Get experiences error:', error);
+    //console.error('Get experiences error:', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to fetch experiences' },
       { status: 500 }
@@ -68,7 +73,7 @@ export async function POST(request: NextRequest) {
 
 
     const body = await request.json() as any;
-    console.log('Create experience request body:', body);
+    //console.log('Create experience request body:', body);
     const { product_id, product, experience_id } = body;
     const logo_url = body.logo_url || (product && product.logo_url) || null;
     let finalProductId = product_id || null;
@@ -105,7 +110,7 @@ export async function POST(request: NextRequest) {
         try {
           await (await import('@/lib/db/products')).updateProduct(finalProductId, updates);
         } catch (e) {
-          console.warn('Failed to update existing product images/logo', e);
+         // console.warn('Failed to update existing product images/logo', e);
         }
       }
     }
@@ -130,7 +135,7 @@ export async function POST(request: NextRequest) {
         const newProduct = await createProduct(user.brand_id, productData);
         finalProductId = newProduct.id;
       } catch (err) {
-        console.error('Error creating product:', err);
+        //console.error('Error creating product:', err);
         return NextResponse.json({ error: 'Failed to create product', details: err instanceof Error ? err.message : err }, { status: 500 });
       }
     }
@@ -144,7 +149,7 @@ export async function POST(request: NextRequest) {
           .update({ logo_url })
           .eq('id', user.brand_id);
       } catch (e) {
-        console.warn('Failed to persist brand logo_url', e);
+        //console.warn('Failed to persist brand logo_url', e);
       }
     }
 
@@ -166,7 +171,7 @@ export async function POST(request: NextRequest) {
         .eq('experience_id', experience.id);
       if (featuresData) features = featuresData;
     } catch (e) {
-      console.warn('Failed to fetch experience features', e);
+     // console.warn('Failed to fetch experience features', e);
     }
     experience.features = features;
 
@@ -175,13 +180,13 @@ export async function POST(request: NextRequest) {
       const cacheKey = `experiences:${user.brand_id}`;
       await redis.del(cacheKey);
     } catch (redisError) {
-      console.warn('Failed to invalidate experiences cache:', redisError);
+      //console.warn('Failed to invalidate experiences cache:', redisError);
     }
 
     return NextResponse.json({ success: true, data: experience });
 
   } catch (error) {
-    console.error('Create experience error:', error);
+    //console.error('Create experience error:', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to create experience' },
       { status: 500 }

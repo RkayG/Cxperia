@@ -18,14 +18,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ slu
     revalidatePath(`/api/public/experience/${slug}/products`);
 
 
-    console.log(`Cache invalidated for products: ${slug}`);
 
     return NextResponse.json({
       success: true,
       message: `Cache invalidated for products: ${slug}`
     });
   } catch (error: any) {
-    console.error('Error invalidating cache:', error);
     return NextResponse.json({
       success: false,
       message: error.message

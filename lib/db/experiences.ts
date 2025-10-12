@@ -165,7 +165,6 @@ export async function getExperiencesByBrand(brandId: string) {
     .order('created_at', { ascending: false });
 
   if (error) {
-    console.error('Failed to fetch experiences:', error);
     throw new Error(`Failed to fetch experiences: ${error.message}`);
   }
 
@@ -236,6 +235,18 @@ export async function setThemeAndColor(id: string, theme?: string, primary_color
 
   if (error) {
     throw new Error(`Failed to update theme and color: ${error.message}`);
+  }
+
+  // Invalidate Next.js cache for the experience page
+  try {
+    const { revalidatePath } = await import('next/cache');
+    if (data.public_slug) {
+      // Revalidate the experience page
+      revalidatePath(`/experience/${data.public_slug}`);
+    }
+  } catch (revalidateError) {
+   // console.warn('Failed to revalidate cache:', revalidateError);
+    // Don't throw error - cache invalidation is not critical
   }
 
   return data;

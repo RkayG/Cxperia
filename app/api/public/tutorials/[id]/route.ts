@@ -32,7 +32,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       if (error.code === 'PGRST116') {
         return NextResponse.json({ success: false, message: 'Tutorial not found' }, { status: 404 });
       }
-      console.error('Error fetching tutorial:', error);
       return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 
@@ -51,7 +50,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     });
 
   } catch (error: any) {
-    console.error('Error getting public tutorial:', error);
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
 }

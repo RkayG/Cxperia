@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { sanitizeExperienceData } from '@/utils/sanitizePublicData';
 
 const PUBLIC_EXPERIENCE_SECRET = process.env.NEXT_PUBLIC_EXPERIENCE_SECRET || 'your-frontend-secret';
 const CACHE_TTL_SECONDS = 604800; // 7 days
@@ -62,23 +63,14 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
       value: l.value,
     }));
 
+    // Expose brand_logo_url and brand_name directly
+    combinedExp.brand_logo_url = exp.brand?.logo_url || null;
+    combinedExp.brand_name = exp.brand?.name || null;
 
-  // Expose brand_logo_url and brand_name directly
-  combinedExp.brand_logo_url = exp.brand?.logo_url || null;
-  combinedExp.brand_name = exp.brand?.name || null;
+    // Sanitize the response to remove sensitive data
+    const sanitizedExp = sanitizeExperienceData(combinedExp);
 
-
-    // Remove nested brand.customer_support_links and brand_id (security)
-    if (combinedExp.brand) {
-      delete combinedExp.brand.customer_support_links;
-      delete combinedExp.brand_id;
-    }
-    // Also remove brand_id at top level if present
-    if ('brand_id' in combinedExp) {
-      delete combinedExp.brand_id;
-    }
-
-    const response = { success: true, data: combinedExp };
+    const response = { success: true, data: sanitizedExp };
     
     // Return with caching headers
     return NextResponse.json(response, {

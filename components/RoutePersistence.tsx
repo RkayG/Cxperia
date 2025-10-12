@@ -14,7 +14,7 @@ const RoutePersistence = () => {
       localStorage.setItem('lastPath', fullPath);
     } catch (e) {
       // Ignore storage errors
-      console.warn('RoutePersistence: failed to save lastPath', e);
+      //console.warn('RoutePersistence: failed to save lastPath', e);
     }
   }, [pathname, searchParams]);
 
@@ -26,7 +26,7 @@ const RoutePersistence = () => {
       try {
         router.replace(lastPath);
       } catch (e) {
-        console.warn('RoutePersistence: failed to restore lastPath', e);
+       // console.warn('RoutePersistence: failed to restore lastPath', e);
       }
     }
     // Only run on first mount

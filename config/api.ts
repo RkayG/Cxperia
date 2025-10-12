@@ -1,6 +1,5 @@
 import { BRAND } from "zod"
 
-console.log("[api config] loaded")
 const API_BASE = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000/api"
 const config = {
   // Base API URL - will be different for development, staging, and production

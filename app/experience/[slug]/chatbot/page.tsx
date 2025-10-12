@@ -45,7 +45,6 @@ export default function PublicChatbot() {
         timestamp: new Date()
       }]);
     } catch (error) {
-      console.error('Failed to initialize bot:', error);
       setMessages([{
         id: '1',
         type: 'bot',
@@ -105,7 +104,6 @@ export default function PublicChatbot() {
 
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
-      console.error('Failed to get response:', error);
       const errorMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         type: 'bot',

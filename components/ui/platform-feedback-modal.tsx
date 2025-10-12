@@ -90,7 +90,6 @@ const PlatformFeedbackModal: React.FC<PlatformFeedbackModalProps> = ({
         setSubmitStatus('error');
       }
     } catch (error) {
-      console.error('Error submitting feedback:', error);
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
