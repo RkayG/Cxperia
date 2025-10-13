@@ -104,15 +104,15 @@ const ProductForm: React.FC<ProductFormProps> = ({
             htmlFor="skinType"
             className="block text-left text-purple-800 text-base font-semibold mb-2"
           >
-            Skin Type 
+            Type de peau *
           </label>
           <DropdownSelect
             value={data.skinType || ""}
             onChange={(skinType) => onUpdate({ skinType })}
             options={skinTypes}
-            placeholder="Select skin type"
+            placeholder="Sélectionner un type de peau"
             className={data.skinType ? "" : ""}
-            searchPlaceholder="Search skin types..."
+            searchPlaceholder="Rechercher des types de peau..."
           />
          
         </div>
@@ -135,7 +135,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
             const value = e.target.value.slice(0, 80);
             onUpdate({ tagline: value });
           }}
-          placeholder="e.g., Glow all night!"
+          placeholder="ex: Laisse briller tout la nuit !"
           maxLength={80}
           className={`w-full px-4 py-3 text-base border-2  rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 ${
             errors.tagline ? "border-red-600 bg-red-50" : "border-purple-800"
@@ -164,7 +164,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
           name="description"
           value={data.description}
           onChange={(e) => onUpdate({ description: e.target.value })}
-          placeholder="e.g., A hydrating night serum that rejuvenates and restores your skin while you sleep."
+          placeholder="ex: Un sérum nuit hydratant qui rejuvené et restaure votre peau pendant votre sommeil."
           rows={4}
           className={`w-full px-4 py-3 text-base border-2  rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 resize-none ${
             errors.description
@@ -185,7 +185,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
           htmlFor="storeLink"
           className="block text-left text-purple-800 text-base font-semibold mb-2"
         >
-          Store Link
+          Lien du store
         </label>
         <input
           type="url"
@@ -193,7 +193,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
           name="storeLink"
           value={data.storeLink}
           onChange={(e) => onUpdate({ storeLink: e.target.value })}
-          placeholder="https://yourstore.com/product"
+          placeholder="ex: https://yourstore.com/product"
           className={`w-full px-4 py-3 text-base border-2  rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 ${
             errors.storeLink ? "border-red-600 bg-red-50" : "border-purple-800"
           } ${data.storeLink ? "bg-[#ede8f3]" : "bg-white"}`}
@@ -212,7 +212,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
             htmlFor="netQuantityMl"
             className="block text-left text-purple-800 text-base font-semibold mb-2"
           >
-            Net quantity (ml)
+            Quantité nette (ml)
           </label>
           <input
             type="number"
@@ -224,7 +224,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 netContent: e.target.value ? Number(e.target.value) : undefined,
               })
             }
-            placeholder="e.g., 50"
+            placeholder="ex: 50"
             className="w-full px-4 py-3 text-base border-2  border-purple-800 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 bg-white"
           />
         </div>
@@ -234,7 +234,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
             htmlFor="originalPrice"
             className="block text-left text-purple-800 text-base font-semibold mb-2"
           >
-            Original Price (€)
+            Prix original (€)
           </label>
           <input
             type="number"
@@ -248,7 +248,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                   : undefined,
               })
             }
-            placeholder="e.g., 100"
+            placeholder="ex: 100"
             className="w-full px-4 py-3 text-base border-2  border-purple-800 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 bg-white"
           />
         </div>
@@ -258,7 +258,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
             htmlFor="discountedPrice"
             className="block text-left text-purple-800 text-base font-semibold mb-2"
           >
-            Discounted Price (€)
+            Prix remisé (€)
           </label>
           <input
             type="number"
@@ -272,7 +272,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                   : undefined,
               })
             }
-            placeholder="e.g., 80"
+            placeholder="ex: 80"
             className="w-full px-4 py-3 text-base border-2  border-purple-800 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 bg-white"
           />
         </div>
@@ -282,7 +282,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
             htmlFor="estimatedDuration"
             className="block text-left text-purple-800 text-base font-semibold mb-2"
           >
-            Estimated duration *
+            Durée estimée *
           </label>
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             <div className="flex items-center gap-2 flex-1">
@@ -300,7 +300,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                     estimatedDurationDisplay: `${v} days`,
                   });
                 }}
-                placeholder="e.g., 14"
+                placeholder="ex: 14"
                 className={`flex-1 px-4 py-3 text-base rounded-xl border-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 ${
                   errors.estimatedDurationDays
                     ? "border-red-600 bg-red-50"
@@ -308,7 +308,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 } bg-white`}
               />
               <span className="text-base font-medium text-gray-700 whitespace-nowrap">
-                days
+                  jours
               </span>
             </div>
 
@@ -319,7 +319,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 onClick={() =>
                   onUpdate({
                     estimatedDurationDays: 7,
-                    estimatedDurationDisplay: "7 days",
+                    estimatedDurationDisplay: "7 jours",
                   })
                 }
               >
@@ -331,7 +331,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 onClick={() =>
                   onUpdate({
                     estimatedDurationDays: 14,
-                    estimatedDurationDisplay: "14 days",
+                    estimatedDurationDisplay: "14 jours",
                   })
                 }
               >
@@ -343,7 +343,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 onClick={() =>
                   onUpdate({
                     estimatedDurationDays: 21,
-                    estimatedDurationDisplay: "21 days",
+                    estimatedDurationDisplay: "21 jours",
                   })
                 }
               >
@@ -355,7 +355,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 onClick={() =>
                   onUpdate({
                     estimatedDurationDays: 30,
-                    estimatedDurationDisplay: "30 days",
+                    estimatedDurationDisplay: "30 jours",
                   })
                 }
               >
@@ -369,8 +369,8 @@ const ProductForm: React.FC<ProductFormProps> = ({
             </p>
           )}
           <p className="text-sm font-medium text-purple-700 mt-2">
-            This value (in days) will be used to remind your customers when to
-            repurchase this product.
+            Cette valeur (en jours) sera utilisée pour rappeler à vos clients quand 
+              repayer ce produit.
           </p>
         </div> */}
       </div>

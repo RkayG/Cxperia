@@ -41,7 +41,7 @@ const UploadTips: React.FC = () => {
     <div className="bg-gray-50 rounded-2xl p-4 md:p-6">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-semibold text-gray-900">
-          Tips for great photos
+          Conseils pour de belles photos
         </h3>
         <div className="flex items-center space-x-1">
           <PictureInPictureIcon className="w-5 h-5 text-gray-400" />
@@ -51,40 +51,40 @@ const UploadTips: React.FC = () => {
       <div className="space-y-3">
         <UploadTip
           icon={<SunIcon className="w-3 h-3" />}
-          text="Capture your product with clear, even lighting to highlight true color and texture."
+          text="Capturez votre produit avec une lumière claire et uniforme pour mettre en valeur sa couleur et sa texture."
           isActive={true}
         />
         <UploadTip
           icon={<CameraIcon className="w-3 h-3" />}
-          text="Show close-ups of product texture, applicator, or swatches on skin."
+          text="Montrez des grossissements de la texture du produit, de l'appliquateur ou des échantillons sur la peau."
         />
         <UploadTip
           icon={<PaintbrushIcon className="w-3 h-3" />}
-          text="Demonstrate the product in use - apply to face, lips, or hands for context."
+          text="Démontrez le produit en utilisation - appliquez-le sur le visage, les lèvres ou les mains pour le contexte."
         />
         <UploadTip
           icon={<LightbulbIcon className="w-3 h-3" />}
-          text="Use a clean, neutral background to keep focus on the beauty product."
+          text="Utilisez un fond propre et neutre pour garder le focus sur le produit de beauté."
         />
         <UploadTip
           icon={<PictureInPictureIcon className="w-3 h-3" />}
-          text="Include before-and-after or transformation shots for skincare and makeup."
+          text="Incluez des photos avant et après ou des transformations pour la cosmétique et le maquillage."
         />
       </div>
 
       {/* Additional Info */}
       <div className="mt-6 pt-4 border-t border-gray-200">
         <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-600">Recommended size:</span>
+          <span className="text-gray-600">Taille recommandée:</span>
           <span className="font-medium text-gray-900">600 x 600px</span>
         </div>
         <div className="flex items-center justify-between text-sm mt-2">
-          <span className="text-gray-600">Max file size:</span>
+          <span className="text-gray-600">Taille maximale du fichier:</span>
           <span className="font-medium text-gray-900">10MB</span>
         </div>
         <div className="flex items-center justify-between text-sm mt-2">
-          <span className="text-gray-600">Supported formats:</span>
-          <span className="font-medium text-gray-900">JPG, PNG</span>
+          <span className="text-gray-600">Formats supportés:</span>
+          <span className="font-medium text-gray-900">JPG, PNG, WEBP</span>
         </div>
       </div>
     </div>
