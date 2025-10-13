@@ -85,7 +85,7 @@ export async function DELETE(request: NextRequest) {
 }
 
 function validateFile(file: File): string | null {
-  const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/svg+xml'];
+  const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/svg+xml', 'image/webp'];
   const maxImageSize = 10 * 1024 * 1024; // 10MB
   const maxVideoSize = 100 * 1024 * 1024; // 100MB
 

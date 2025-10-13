@@ -250,7 +250,7 @@ const ExperienceOverviewSection: React.FC<ExperienceOverviewProps> = ({ data, on
                     <PictureInPicture className="w-4 h-4 text-gray-400 group-hover:text-purple-500" />
                   </div>
                   <p className="text-xs font-medium text-gray-700 mb-1">Télécharger le logo</p>
-                  <p className="text-xs text-gray-500">PNG, JPG</p>
+                  <p className="text-xs text-gray-500">PNG, JPG, WEBP</p>
                 </div>
               )}
             </label>

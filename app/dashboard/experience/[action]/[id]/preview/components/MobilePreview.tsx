@@ -181,22 +181,22 @@ const MobilePreview: React.FC<MobilePreviewProps> = ({ experienceId, refreshTrig
         {/* Screen Content: Live Preview Iframe */}
         <div className="relative w-[calc(100%-16px)] h-[calc(100%-16px)] bg-white rounded-[2rem] overflow-hidden flex flex-col items-center p-0">
           {(loading || isLoading) && !error && !iframeError ? (
-            <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-20">
+            <div className="absolute inset-0 flex items-center justify-center bg-white/20 z-20">
               <div className="flex flex-col items-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mb-2"></div>
-                <span className="text-gray-500 text-base font-medium">Loading Preview...</span>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mb-2"></div>
+                <span className="text-white text-base font-medium">Loading Preview...</span>
               </div>
             </div>
           ) : (error || iframeError) ? (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/90 z-20 p-6">
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/20 z-20 p-6">
               <div className="text-center">
                 <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Preview Unavailable</h3>
-                <p className="text-sm text-gray-600 mb-4">
+                <h3 className="text-lg font-semibold text-white mb-2">Preview Unavailable</h3>
+                <p className="text-sm text-white mb-4">
                   {error || "Unable to load preview"}
                 </p>
                 <div className="flex flex-col gap-2">

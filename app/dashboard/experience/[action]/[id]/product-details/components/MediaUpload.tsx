@@ -157,7 +157,7 @@ const MediaUpload: React.FC<MediaUploadProps> = ({ images, onImagesUpdate, error
             
             <PictureInPictureIcon className="mx-auto h-12 w-12 text-gray-400 mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">Click to upload or drag and drop</h3>
-            <p className="text-sm text-gray-600 mb-4">PNG, JPG up to 10MB each</p>
+            <p className="text-sm text-gray-600 mb-4">PNG, JPG, WebP up to 10MB each</p>
             <button type="button" className="inline-flex items-center px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors duration-200 font-medium">
               <PictureInPictureIcon className="w-4 h-4 mr-2" />Browse Files
             </button>

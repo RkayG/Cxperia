@@ -2,7 +2,7 @@
 const DEFAULTS = {
   maxImageSize: 10 * 1024 * 1024,
   maxVideoSize: 100 * 1024 * 1024,
-  allowedImageTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/svg+xml'],
+  allowedImageTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/svg+xml', 'image/webp'],
   allowedVideoTypesPrefix: 'video/',
 };
 
