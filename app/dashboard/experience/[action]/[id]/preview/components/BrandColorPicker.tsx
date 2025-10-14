@@ -148,12 +148,14 @@ const generateRandomColor = () => {
     try {
       // Call backend to persist theme and color
       if (experienceId) {
-        await experienceService.setThemeAndColor(experienceId, selectedTheme, selectedColor);
+        const response = await experienceService.setThemeAndColor(experienceId, selectedTheme, selectedColor);
+        console.log('Theme and color saved successfully to backend', response);
         //console.log('Theme and color saved successfully to backend');
       }
       
       // Optionally call onColorChange
       onColorChange?.(selectedColor);
+      console.log('Color applied successfully:', selectedColor);
       
       // Notify parent to switch tab if needed and trigger iframe refresh
       if (typeof onApply === 'function') {

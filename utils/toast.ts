@@ -27,6 +27,10 @@ export const showToast = {
         primary: '#fff', // White icon
         secondary: '#4C1D95', // Deep purple border
       },
+      ariaProps: {
+        role: 'alert',
+        'aria-live': 'polite',
+      },
     });
   },
 
@@ -41,6 +45,10 @@ export const showToast = {
         fontWeight: 'semibold',
         minWidth: '350px',
       },
+      ariaProps: {
+        role: 'alert',
+        'aria-live': 'assertive',
+      },
     });
   },
 
@@ -54,6 +62,10 @@ export const showToast = {
         fontSize: '20px',
         fontWeight: 'semibold',
         minWidth: '350px',
+      },
+      ariaProps: {
+        role: 'status',
+        'aria-live': 'polite',
       },
     });
   },
@@ -88,7 +100,11 @@ export const showToast = {
             ...BASE_GLASS_STYLE,
             background: 'rgba(139, 92, 246, 0.5)',
             border: '1px solid rgba(139, 92, 246, 0.8)',
-        }
+        },
+        ariaProps: {
+          role: 'alert',
+          'aria-live': 'polite',
+        },
       },
       error: {
         duration: 4000,
@@ -97,8 +113,18 @@ export const showToast = {
             ...BASE_GLASS_STYLE,
             background: 'rgba(239, 68, 68, 0.5)',
             border: '1px solid rgba(239, 68, 68, 0.8)',
-        }
-      }
+        },
+        ariaProps: {
+          role: 'alert',
+          'aria-live': 'assertive',
+        },
+      },
+      loading: {
+        ariaProps: {
+          role: 'status',
+          'aria-live': 'polite',
+        },
+      },
     });
   },
 };
