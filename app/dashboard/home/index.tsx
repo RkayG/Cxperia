@@ -16,7 +16,6 @@ import { useOptimizedExperiences, useOptimizedRecentExperiences } from "@/hooks/
 import { useRecentTutorials } from "@/hooks/brands/useFeatureApi";
 import { useNavigationProgressWithQuery } from '@/hooks/useNavigationProgressWithQuery';
 import { getBrandStats, getCurrentUserBrand } from '@/lib/data/brands';
-import { supabase } from '@/lib/supabase';
 import { useExperienceStore } from '@/store/brands/useExperienceStore';
 import Loading from '@/components/Loading';
 import ProjectCard from "./components/ProjectCard";
@@ -41,7 +40,6 @@ export default function HomePage() {
   const [bannerLoaded, setBannerLoaded] = React.useState(false);
   
   // Dashboard state
-  const [user, setUser] = useState<any>(null);
   const { brand, setBrand } = useExperienceStore();
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -85,25 +83,6 @@ export default function HomePage() {
     
     const initializeDashboard = async () => {
       try {
-        // Get current user
-        const { data: { user: currentUser } } = await supabase.auth.getUser();
-        
-        if (!isMounted) return;
-        
-        setUser(currentUser);
-
-        if (!currentUser) {
-          router.push('/auth/login');
-          return;
-        }
-
-        // Check email confirmation
-        if (currentUser && !currentUser.email_confirmed_at) {
-          // User is logged in but email not verified - they can stay on dashboard
-          // but you might want to show a warning
-          //console.log('Email not verified yet');
-        }
-
         // Get brand data
         const brandData = await getCurrentUserBrand();
         

@@ -134,6 +134,20 @@ export async function updateExperience(id: string, updates: Partial<Experience>)
     throw new Error(`Failed to update experience: ${error.message}`);
   }
 
+  // Invalidate Next.js cache for the experience page and public API
+  try {
+    const { revalidatePath } = await import('next/cache');
+    if (data.public_slug) {
+      // Revalidate the experience page
+      revalidatePath(`/experience/${data.public_slug}`);
+      // Also revalidate the public API cache
+      revalidatePath(`/api/public/experience/${data.public_slug}`);
+    }
+  } catch (revalidateError) {
+   // console.warn('Failed to revalidate cache:', revalidateError);
+    // Don't throw error - cache invalidation is not critical
+  }
+
   return data;
 }
 
@@ -215,6 +229,20 @@ export async function setPublishStatus(id: string, isPublished: boolean) {
     throw new Error(`Failed to update publish status: ${error.message}`);
   }
 
+  // Invalidate Next.js cache for the experience page and public API
+  try {
+    const { revalidatePath } = await import('next/cache');
+    if (data.public_slug) {
+      // Revalidate the experience page
+      revalidatePath(`/experience/${data.public_slug}`);
+      // Also revalidate the public API cache
+      revalidatePath(`/api/public/experience/${data.public_slug}`);
+    }
+  } catch (revalidateError) {
+   // console.warn('Failed to revalidate cache:', revalidateError);
+    // Don't throw error - cache invalidation is not critical
+  }
+
   return data;
 }
 
@@ -237,12 +265,14 @@ export async function setThemeAndColor(id: string, theme?: string, primary_color
     throw new Error(`Failed to update theme and color: ${error.message}`);
   }
 
-  // Invalidate Next.js cache for the experience page
+  // Invalidate Next.js cache for the experience page and public API
   try {
     const { revalidatePath } = await import('next/cache');
     if (data.public_slug) {
       // Revalidate the experience page
       revalidatePath(`/experience/${data.public_slug}`);
+      // Also revalidate the public API cache
+      revalidatePath(`/api/public/experience/${data.public_slug}`);
     }
   } catch (revalidateError) {
    // console.warn('Failed to revalidate cache:', revalidateError);
