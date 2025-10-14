@@ -8,37 +8,37 @@ const SUPPORT_TYPE_MAP: Record<string, { icon: string; getLink: (v: string) => s
   whatsapp: {
     icon: "/icons/whatsapp.svg",
     getLink: (v) => `https://wa.me/${v.replace(/[^\d]/g, "")}`,
-    description: "Chat with us on WhatsApp",
+    description: "Chattez avec nous sur WhatsApp",
   },
   email: {
     icon: "/icons/email.png",
     getLink: (v) => `mailto:${v}`,
-    description: "Send us an email",
+    description: "Envoyez-nous un email",
   },
   phone: {
     icon: "/icons/phone.png",
     getLink: (v) => `tel:${v}`,
-    description: "Give us a call",
+    description: "Appelez-nous",
   },
   faq: {
     icon: "/icons/faq.png",
     getLink: (v) => v,
-    description: "Find answers instantly",
+    description: "Trouvez des réponses instantanément",
   },
   instagram: {
     icon: "/icons/instagram.png",
     getLink: (v) => v,
-    description: "Follow us for updates",
+    description: "Suivez-nous pour les mises à jour",
   },
   facebook: {
     icon: "/icons/facebook.svg",
     getLink: (v) => v,
-    description: "Connect on Facebook",
+    description: "Connectez-vous sur Facebook",
   },
   twitter: {
     icon: "/icons/twitter.png",
     getLink: (v) => v,
-    description: "Stay connected on X",
+    description: "Restez connecté sur X",
   },
   // Add more as needed
 };
@@ -78,11 +78,11 @@ const ClientSupportChannelsWrapper: React.FC<ClientSupportChannelsWrapperProps> 
   return (
     <div className="flex min-h-screen  justify-center bg-gray-50 font-sans" style={{ backgroundColor: color }}>
       <div className="w-full max-w-xl mb-32  bg-gray-50">
-        <SectionHeader title="We're Here to Help" subtitle="Choose your preferred way to connect" />
+        <SectionHeader title="Nous sommes ici pour vous aider" subtitle="Choisissez votre façon de nous contacter" />
 
         <main className="mt-2 space-y-4 rounded-tl-3xl bg-gray-50">
           {supportOptions.length === 0 && (
-            <div className="py-8 text-center text-gray-500">No support options available.</div>
+            <div className="py-8 text-center text-gray-500">Aucune option de support disponible.</div>
           )}
           {supportOptions.map((option) => (
             <a

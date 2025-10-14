@@ -9,7 +9,7 @@ import {
   useProductsMetrics, 
   useProductsLoading, 
   useProductsActions 
-} from '@/store/products/useProductsStore';
+} from '@/store/brands/products/useProductsStore';
 
 import ProductListings from './components/ProductListings';
 import ProductPerformanceOverview from './components/ProductPerformanceOverview';
@@ -46,12 +46,14 @@ const ProductDashboard: React.FC = () => {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <p className="text-red-600 mb-4">Error loading brand: {brandError}</p>
+          {/* Error loading brand: */}
+          <p className="text-red-600 mb-4"> Erreur lors du chargement de la marque: {brandError}</p>
           <button 
             onClick={() => window.location.reload()} 
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
           >
-            Retry
+            {/* Retry */}
+            Réessayer
           </button>
         </div>
       </div>

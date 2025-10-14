@@ -2,6 +2,19 @@ import { Check, Palette, RefreshCw } from 'lucide-react';
 import React, { useState } from 'react';
 import { experienceService } from '@/services/brands/experienceService';
 
+/**
+ * BrandColorPicker Component
+ * 
+ * A comprehensive color picker component for selecting brand colors with:
+ * - Preset color categories (Luxury, Natural, Fashion)
+ * - Custom color input with hex values
+ * - Random color generation
+ * - Theme selection (Light/Bold)
+ * - Real-time preview updates
+ * - Local storage persistence
+ * - Backend integration for saving colors
+ */
+
 interface ColorPickerProps {
   experienceId?: string; // Added experienceId prop
   onColorChange?: (color: string) => void;
@@ -67,29 +80,29 @@ const BrandColorPicker: React.FC<ColorPickerProps> = ({
   // Predefined color presets organized by category
 const presetColors: PresetColor[] = [
   // Luxury / Premium tones
-  { name: 'Rose Gold', value: '#B76E79', category: 'luxury' },
-  { name: 'Deep Plum', value: '#580F41', category: 'luxury' },
-  { name: 'Emerald Green', value: '#046307', category: 'luxury' },
-  { name: 'Midnight Blue', value: '#191970', category: 'luxury' },
+  { name: 'Rose Doré', value: '#B76E79', category: 'luxury' },
+  { name: 'Prune Profonde', value: '#580F41', category: 'luxury' },
+  { name: 'Vert Émeraude', value: '#046307', category: 'luxury' },
+  { name: 'Bleu Minuit', value: '#191970', category: 'luxury' },
 
   // Natural / Wellness
-  { name: 'Sage Green', value: '#6B8E23', category: 'natural' },
-  { name: 'Earth Brown', value: '#7D5A50', category: 'natural' },
-  { name: 'Terracotta', value: '#8E4B32', category: 'natural' },
+  { name: 'Vert Sauge', value: '#6B8E23', category: 'natural' },
+  { name: 'Brun Terre', value: '#7D5A50', category: 'natural' },
+  { name: 'Terre Cuite', value: '#8E4B32', category: 'natural' },
 
   // Bold / Fashion
-  { name: 'Crimson Red', value: '#DC143C', category: 'fashion' },
-  { name: 'Royal Purple', value: '#6A0DAD', category: 'fashion' },
-  { name: 'Electric Blue', value: '#0056A3', category: 'fashion' },
-  { name: 'Vibrant Teal', value: '#008080', category: 'fashion' },
-  { name: 'Deep Magenta', value: '#8B008B', category: 'fashion' },
-  { name: 'Copper Orange', value: '#B7410E', category: 'fashion' },
+  { name: 'Rouge Carmin', value: '#DC143C', category: 'fashion' },
+  { name: 'Violet Royal', value: '#6A0DAD', category: 'fashion' },
+  { name: 'Bleu Électrique', value: '#0056A3', category: 'fashion' },
+  { name: 'Sarcelle Vibrant', value: '#008080', category: 'fashion' },
+  { name: 'Magenta Profond', value: '#8B008B', category: 'fashion' },
+  { name: 'Orange Cuivré', value: '#B7410E', category: 'fashion' },
 ];
 
   const colorCategories = [
-    { key: 'luxury', label: 'Luxury / Premium', colors: presetColors.filter(c => c.category === 'luxury') },
-    { key: 'natural', label: 'Natural / Wellness', colors: presetColors.filter(c => c.category === 'natural') },
-    { key: 'fashion', label: 'Bold / Fashion', colors: presetColors.filter(c => c.category === 'fashion') },
+    { key: 'luxury', label: 'Luxe / Premium', colors: presetColors.filter(c => c.category === 'luxury') },
+    { key: 'natural', label: 'Naturel / Bien-être', colors: presetColors.filter(c => c.category === 'natural') },
+    { key: 'fashion', label: 'Audacieux / Mode', colors: presetColors.filter(c => c.category === 'fashion') },
   ];
 
 
@@ -106,6 +119,7 @@ const presetColors: PresetColor[] = [
     // Don't update preview automatically - wait for Apply button
   };
 
+// Generate a random color from predefined palette
 const generateRandomColor = () => {
   const colors = [
     '#8B0000', // Dark Red
@@ -128,6 +142,7 @@ const generateRandomColor = () => {
 };
 
 
+  // Apply the selected color and theme to the experience
   const handleApply = async () => {
     setIsApplying(true);
     try {
@@ -163,8 +178,8 @@ const generateRandomColor = () => {
           <Palette className="w-5 h-5 text-gray-700" />
         </div>
         <div>
-          <h3 className="font-semibold text-gray-900">Primary Color</h3>
-          <p className="text-sm text-gray-600">Choose your primary color</p>
+          <h3 className="font-semibold text-gray-900">Couleur Principale</h3>
+          <p className="text-sm text-gray-600">Choisissez votre couleur principale</p>
         </div>
       </div>
 
@@ -181,7 +196,7 @@ const generateRandomColor = () => {
         </div>
         {/* Theme Selector */}
         <div className="flex items-center gap-2">
-          <label className="text-sm font-medium text-gray-700">Theme:</label>
+          <label className="text-sm font-medium text-gray-700">Thème :</label>
           <select
             value={selectedTheme}
             onChange={e => {
@@ -191,8 +206,8 @@ const generateRandomColor = () => {
             }}
             className="border border-gray-300  text-gray-900 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
           >
-            <option value="light">Light</option>
-            <option value="bold">Bold</option>
+            <option value="light">Clair</option>
+            <option value="bold">Audacieux</option>
           </select>
         </div>
       </div>
@@ -207,7 +222,7 @@ const generateRandomColor = () => {
               : 'text-gray-600 hover:text-gray-900'
           }`}
         >
-          Presets
+          Prédéfinis
         </button>
         <button
           onClick={() => setActiveTab('custom')}
@@ -217,7 +232,7 @@ const generateRandomColor = () => {
               : 'text-gray-600 hover:text-gray-900'
           }`}
         >
-          Custom
+          Personnalisé
         </button>
       </div>
 
@@ -259,7 +274,7 @@ const generateRandomColor = () => {
           {/* Color Input */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Enter Hex Color
+              Saisir la Couleur Hex
             </label>
             <div className="flex gap-2">
               <div className="relative flex-1">
@@ -286,7 +301,7 @@ const generateRandomColor = () => {
               <button
                 onClick={generateRandomColor}
                 className="px-4 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
-                title="Generate Random Color"
+                title="Générer une Couleur Aléatoire"
               >
                 <RefreshCw className="w-4 h-4 text-gray-600" />
               </button>
@@ -295,7 +310,7 @@ const generateRandomColor = () => {
 
           {/* Popular Custom Colors */}
           <div>
-            <h4 className="text-sm font-medium text-gray-700 mb-2">Popular Colors</h4>
+            <h4 className="text-sm font-medium text-gray-700 mb-2">Couleurs Populaires</h4>
             <div className="grid grid-cols-8 gap-2">
               {[
                 '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', '#54a0ff', '#5f27cd',
@@ -330,10 +345,10 @@ const generateRandomColor = () => {
           {isApplying ? (
             <div className="flex items-center justify-center gap-2">
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-              Applying...
+              Application...
             </div>
           ) : (
-            'Apply Color'
+            'Appliquer la Couleur'
           )}
         </button>
       </div>

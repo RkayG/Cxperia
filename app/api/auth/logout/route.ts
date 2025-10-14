@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
       }
     });
     
-    // Sign out the user
+    // Sign out the user - this should clear the session
     const { error: signOutError } = await supabase.auth.signOut();
     
     if (signOutError) {
@@ -65,11 +65,40 @@ export async function POST(request: NextRequest) {
       }
     });
     
-    // Return success response
-    return NextResponse.json({ 
+    // Create response with cleared cookies
+    const response = NextResponse.json({ 
       message: 'Logged out successfully',
       success: true 
     });
+    
+    // Explicitly clear all Supabase auth cookies
+    const authCookies = [
+      'sb-access-token',
+      'sb-refresh-token',
+      'supabase-auth-token',
+      'supabase.auth.token',
+    ];
+    
+    authCookies.forEach(cookieName => {
+      response.cookies.set(cookieName, '', {
+        expires: new Date(0),
+        path: '/',
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax'
+      });
+    });
+    
+    // Also clear any cookies that might contain session data
+    response.cookies.set('sb-localhost-auth-token', '', {
+      expires: new Date(0),
+      path: '/',
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax'
+    });
+    
+    return response;
     
   } catch (error) {
     logError(error as Error, {

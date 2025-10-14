@@ -107,17 +107,17 @@ const FeatureToggle: React.FC<EnhancedFeatureToggleProps> = ({
         <div className="mt-2 flex gap-2 justify-center">
           {feature.required && (
             <span className="inline-flex items-center rounded-full bg-red-100 px-4 py-1 text-base font-bold text-red-700 ring-2 ring-inset ring-red-600/30 shadow-md ">
-              Required
+              Nécessaire {/* Required */}
             </span>
           )}
           {!feature.required && isComingSoon && (
             <span className="inline-flex items-center rounded-full bg-yellow-50 px-2 py-0.5 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
-              Coming Soon
+              Prochainement {/* Coming Soon */}
             </span>
           )}
           {!feature.required && !isComingSoon && feature.recommended && (
             <span className="inline-flex items-center rounded-full bg-blue-100 px-4 py-1 text-base font-bold text-blue-700 ring-2 ring-inset ring-blue-700/20 shadow-md ">
-              Recommended
+              Recommandé {/* Recommended */}
             </span>
           )}
         </div>
@@ -141,7 +141,7 @@ const FeatureToggle: React.FC<EnhancedFeatureToggleProps> = ({
         disabled={feature.id === 'feedbackForm' || isComingSoon}
         tabIndex={isComingSoon ? -1 : 0}
       >
-        {feature.id === 'feedbackForm' ? `Always On` : isEnabled ? `Turned On` : `Turn On`}
+        {feature.id === 'feedbackForm' ? `Toujours activé` : isEnabled ? `Activé` : `Activer`} {/* Always On, Turned On, Turn On */}
       </button>
     </div>
   );

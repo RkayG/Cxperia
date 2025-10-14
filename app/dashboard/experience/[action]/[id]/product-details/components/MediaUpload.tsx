@@ -117,16 +117,16 @@ const MediaUpload: React.FC<MediaUploadProps> = ({ images, onImagesUpdate, error
   }, [images, onImagesUpdate]);
 
   const sampleImages = [
-    { id: 'sample1', url: demo6Image, name: 'Slot 1' },
-    { id: 'sample2', url: demo4Image, name: 'Slot 4' },
-    { id: 'sample3', url: demo3Image, name: 'Slot 5' }
+    { id: 'sample1', url: demo6Image, name: 'Exemple 1' },
+    { id: 'sample2', url: demo4Image, name: 'Exemple 2' },
+    { id: 'sample3', url: demo3Image, name: 'Exemple 3' }
   ];
 
   return (
     <div>
       <div className="mb-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-2">Media Upload</h2>
-        <p className="text-gray-600 text-sm">Upload high-quality images of your product. A maximum of 10 images are allowed.</p>
+        <h2 className="text-xl font-semibold text-gray-900 mb-2">Téléchargement des images</h2>
+          <p className="text-gray-600 text-sm">Téléchargez des images de haute qualité de votre produit. Un maximum de 10 images est autorisé.</p>
        
       </div>
 
@@ -156,17 +156,17 @@ const MediaUpload: React.FC<MediaUploadProps> = ({ images, onImagesUpdate, error
             />
             
             <PictureInPictureIcon className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Click to upload or drag and drop</h3>
-            <p className="text-sm text-gray-600 mb-4">PNG, JPG, WebP up to 10MB each</p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Cliquez pour télécharger ou glissez et déposez</h3>
+            <p className="text-sm text-gray-600 mb-4">PNG, JPG, WebP jusqu'à 10MB chacune</p>
             <button type="button" className="inline-flex items-center px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors duration-200 font-medium">
-              <PictureInPictureIcon className="w-4 h-4 mr-2" />Browse Files
+              <PictureInPictureIcon className="w-4 h-4 mr-2" />Parcourir les fichiers
             </button>
           
           </div>
 
           {images.length > 0 && (
             <div className="mt-6">
-              <h4 className="text-sm font-medium text-gray-900 mb-3">Uploaded Images ({images.length}/10)</h4>
+              <h4 className="text-sm font-medium text-gray-900 mb-3">Images téléchargées ({images.length}/10)</h4>
               <div className="grid grid-cols-3 gap-3">
                 {images.map((image, idx) => {
                   // Support both UploadedImage and string URL
@@ -196,8 +196,8 @@ const MediaUpload: React.FC<MediaUploadProps> = ({ images, onImagesUpdate, error
           {errors?.images && <p className="text-xs text-red-600 mt-2">{errors.images}</p>}
           <div className="mt-6">
             <div className="flex items-center justify-between mb-4">
-              <h4 className="text-sm font-medium text-gray-900">Sample images</h4>
-              <p className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">3 Preview</p>
+              <h4 className="text-sm font-medium text-gray-900">Images d'exemple</h4>
+              <p className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">3 Vignettes</p>
             </div>
             <div className="grid grid-cols-3 gap-3">
               {sampleImages.map((image) => (
@@ -211,7 +211,7 @@ const MediaUpload: React.FC<MediaUploadProps> = ({ images, onImagesUpdate, error
             </div>
           </div>
 
-          <button className="w-full mt-4 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors duration-200">Adjust Thumbnail</button>
+          <button className="w-full mt-4 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors duration-200">Ajuster la vignette</button>
         </div>
 
         <div>

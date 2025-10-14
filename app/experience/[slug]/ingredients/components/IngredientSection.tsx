@@ -46,10 +46,10 @@ const IngredientsSection: React.FC = () => {
             <h3
               className="text-xl font-bold text-left text-gray-900 group-hover:opacity-80 transition-opacity"
             >
-              Ingredients
+              Ingrédients
             </h3>
             <p className="text-sm text-gray-500 mt-1">
-              {ingredients.length} ingredients • {Object.keys(ingredientsByCategory).length} categories
+              {ingredients.length} ingrédients • {Object.keys(ingredientsByCategory).length} catégories
             </p>
           </div>
         </div>
@@ -66,7 +66,7 @@ const IngredientsSection: React.FC = () => {
                   {category}
                 </span>
                 <span className="text-sm text-gray-500">
-                  ({(categoryIngredients as Ingredient[]).length} ingredients)
+                  ({(categoryIngredients as Ingredient[]).length} ingrédients)
                 </span>
               </h4>
               <div className="space-y-3">
@@ -90,13 +90,13 @@ const IngredientsSection: React.FC = () => {
                               }}
                             >
                               <AlertCircle size={12} />
-                              Allergen
+                              Allergène
                             </span>
                           )}
                         </div>
                         {ing.common_name && ing.common_name !== ing.inci_name && (
                           <p className="text-sm text-gray-600 mb-2">
-                            Also known as: {ing.common_name}
+                            Également connu sous le nom de: {ing.common_name}
                           </p>
                         )}
                       </div>
@@ -104,7 +104,7 @@ const IngredientsSection: React.FC = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
                       {ing.function && (
                         <div>
-                          <p className="font-medium text-gray-700 mb-1">Function</p>
+                          <p className="font-medium text-gray-700 mb-1">Fonction</p>
                           <p className="text-gray-600 leading-relaxed">
                             {ing.function}
                           </p>
@@ -112,7 +112,7 @@ const IngredientsSection: React.FC = () => {
                       )}
                       {ing.concentration && (
                         <div>
-                          <p className="font-medium text-gray-700 mb-1">Concentration</p>
+                          <p className="font-medium text-gray-700 mb-1">Concentration (%)</p>
                           <p className="text-gray-600">
                             {ing.concentration}
                           </p>
@@ -141,7 +141,7 @@ const IngredientsSection: React.FC = () => {
           <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
             <GiPerfumeBottle size={24} className="text-gray-400" />
           </div>
-          <p className="text-gray-500">No ingredient information available</p>
+          <p className="text-gray-500">Aucune information sur les ingrédients disponible</p>
         </div>
       )}
     </div>

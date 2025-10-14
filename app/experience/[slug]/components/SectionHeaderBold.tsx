@@ -26,7 +26,7 @@ const SectionHeaderBold: React.FC<SectionHeaderProps> = ({ title, subtitle }) =>
                   className="font-mono text-sm block mb-1"
                   style={{ color: '#fff', opacity: 0.7 }}
                 >
-                  // {brandName || "Your Brand"}
+                  // {brandName || ""}
                 </span>
                 {title}
               </h1>

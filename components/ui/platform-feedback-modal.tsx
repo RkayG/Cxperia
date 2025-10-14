@@ -11,35 +11,35 @@ interface PlatformFeedbackModalProps {
 const feedbackTypes = [
   { 
     value: 'bug_report', 
-    label: 'Bug Report', 
+    label: 'Signaler un bug', // Bug Report 
     icon: <Bug size={20} className="text-red-500" />,
-    description: 'Report a bug or issue'
+    description: 'Signaler un bug ou un problème'
   },
   { 
     value: 'feature_request', 
-    label: 'Feature Request', 
+    label: 'Demander une fonctionnalité', // Feature Request 
     icon: <Lightbulb size={20} className="text-yellow-500" />,
-    description: 'Suggest a new feature'
+    description: 'Demander une nouvelle fonctionnalité' // Suggest a new feature
   },
   { 
     value: 'general_feedback', 
-    label: 'General Feedback', 
+    label: 'Feedback général', // General Feedback 
     icon: <MessageCircle size={20} className="text-blue-500" />,
-    description: 'Share your thoughts'
+    description: 'Partager vos thoughts' // Share your thoughts
   },
   { 
     value: 'support', 
-    label: 'Support', 
+    label: 'Support', // Support 
     icon: <HelpCircle size={20} className="text-green-500" />,
-    description: 'Get help or support'
+    description: 'Obtenir de l\'aide ou du support' // Get help or support
   },
 ];
 
 const priorityOptions = [
-  { value: 'low', label: 'Low', color: 'text-gray-500' },
-  { value: 'medium', label: 'Medium', color: 'text-blue-500' },
-  { value: 'high', label: 'High', color: 'text-orange-500' },
-  { value: 'urgent', label: 'Urgent', color: 'text-red-500' },
+  { value: 'low', label: 'Faible', color: 'text-gray-500' },
+  { value: 'medium', label: 'Moyen', color: 'text-blue-500' },
+  { value: 'high', label: 'Haut', color: 'text-orange-500' },
+  { value: 'urgent', label: 'Urgent', color: 'text-red-500' }, // Urgent 
 ];
 
 const PlatformFeedbackModal: React.FC<PlatformFeedbackModalProps> = ({
@@ -70,7 +70,7 @@ const PlatformFeedbackModal: React.FC<PlatformFeedbackModalProps> = ({
         body: JSON.stringify(formData),
       });
 
-      const result = await response.json();
+      const result: any = await response.json();
 
       if (result.success) {
         setSubmitStatus('success');
@@ -110,9 +110,11 @@ const PlatformFeedbackModal: React.FC<PlatformFeedbackModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div>
-            <h2 className="text-xl font-semibold text-gray-900">Send Feedback</h2>
+            {/* Send Feedback */}
+            <h2 className="text-xl font-semibold text-gray-900">Envoyer un feedback</h2>
+            {/* Help us improve the platform by sharing your feedback */}
             <p className="text-sm text-gray-600 mt-1">
-              Help us improve the platform by sharing your feedback
+              Aidez-nous à améliorer la plateforme en partageant votre feedback
             </p>
           </div>
           <button
@@ -127,8 +129,9 @@ const PlatformFeedbackModal: React.FC<PlatformFeedbackModalProps> = ({
         <form onSubmit={handleSubmit} className="p-6 space-y-6 overflow-y-auto max-h-[calc(90vh-120px)]">
           {/* Feedback Type */}
           <div>
+            {/* What type of feedback is this? */}
             <label className="block text-sm font-medium text-gray-700 mb-3">
-              What type of feedback is this?
+              Quel type de feedback est ce ?
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {feedbackTypes.map((type) => (
@@ -156,8 +159,9 @@ const PlatformFeedbackModal: React.FC<PlatformFeedbackModalProps> = ({
 
           {/* Priority */}
           <div>
+            {/* Priority Level */}
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Priority Level
+              Niveau de priorité
             </label>
             <select
               value={formData.priority}
@@ -174,14 +178,16 @@ const PlatformFeedbackModal: React.FC<PlatformFeedbackModalProps> = ({
 
           {/* Subject */}
           <div>
+            {/* Subject */}
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Subject *
+              Sujet *
             </label>
+            {/* Brief description of your feedback */}
             <input
               type="text"
               value={formData.subject}
               onChange={(e) => handleInputChange('subject', e.target.value)}
-              placeholder="Brief description of your feedback"
+              placeholder="Brève description de votre feedback"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
               required
             />
@@ -190,12 +196,13 @@ const PlatformFeedbackModal: React.FC<PlatformFeedbackModalProps> = ({
           {/* Message */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Message *
+              Message * {/* Message */}
             </label>
+            {/* Please provide detailed information about your feedback... */}
             <textarea
               value={formData.message}
               onChange={(e) => handleInputChange('message', e.target.value)}
-              placeholder="Please provide detailed information about your feedback..."
+              placeholder="Veuillez fournir des informations détaillées sur votre feedback..."
               rows={6}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 resize-none"
               required
@@ -208,7 +215,8 @@ const PlatformFeedbackModal: React.FC<PlatformFeedbackModalProps> = ({
             <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
               <div className="flex items-center gap-2 text-green-800">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-sm font-medium">Feedback submitted successfully!</span>
+                {/* Feedback submitted successfully! */}
+                <span className="text-sm font-medium">Feedback soumis avec succès!</span> {/* Feedback submitted successfully! */}
               </div>
             </div>
           )}
@@ -217,7 +225,8 @@ const PlatformFeedbackModal: React.FC<PlatformFeedbackModalProps> = ({
             <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
               <div className="flex items-center gap-2 text-red-800">
                 <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                <span className="text-sm font-medium">Failed to submit feedback. Please try again.</span>
+                {/* Failed to submit feedback. Please try again. */}
+                <span className="text-sm font-medium">Erreur lors de l'envoi du feedback. Veuillez réessayer.</span> {/* Failed to submit feedback. Please try again. */}
               </div>
             </div>
           )}
@@ -229,7 +238,8 @@ const PlatformFeedbackModal: React.FC<PlatformFeedbackModalProps> = ({
               onClick={onClose}
               className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
             >
-              Cancel
+              {/* Cancel */}
+              Annuler
             </button>
             <button
               type="submit"
@@ -239,12 +249,14 @@ const PlatformFeedbackModal: React.FC<PlatformFeedbackModalProps> = ({
               {isSubmitting ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Submitting...
+                  {/* Submitting... */}
+                  Envoi...
                 </>
               ) : (
                 <>
                   <Send size={16} />
-                  Send Feedback
+                  {/* Send Feedback */}
+                  Envoyer un feedback
                 </>
               )}
             </button>

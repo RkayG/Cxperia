@@ -11,7 +11,7 @@ import {
   useContentFilters, 
   useContentLoading, 
   useContentActions 
-} from '@/store/content/useContentStore';
+} from '@/store/brands/content/useContentStore';
 import { showToast } from '@/utils/toast';
 import ActionBar from './components/ActionBar';
 import ArticleList from './components/ArticleList';

@@ -82,7 +82,7 @@ const InstructionsSection: React.FC<InstructionsSectionProps> = ({ color }) => {
           Instructions
         </h2>
         <p className="text-sm text-gray-500 text-left">
-          Follow these steps for best results
+          Suivez ces étapes pour les meilleurs résultats
         </p>
       </div>
 
@@ -103,7 +103,7 @@ const InstructionsSection: React.FC<InstructionsSectionProps> = ({ color }) => {
               d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          Usage Guide
+          Guide d'utilisation
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -114,7 +114,7 @@ const InstructionsSection: React.FC<InstructionsSectionProps> = ({ color }) => {
               <Sun className="w-5 h-5 text-yellow-600" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-700">Usage Time</p>
+              <p className="text-sm font-medium text-gray-700">Temps d'utilisation</p>
               <p className="text-sm text-gray-600">
                 {instructions.usage_time_type}
               </p>
@@ -129,7 +129,7 @@ const InstructionsSection: React.FC<InstructionsSectionProps> = ({ color }) => {
               <Droplet className="w-5 h-5 text-blue-600" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-700">Frequency</p>
+              <p className="text-sm font-medium text-gray-700">Fréquence</p>
               <p className="text-sm text-gray-600">{instructions.frequency}</p>
             </div>
           </div>
@@ -154,7 +154,7 @@ const InstructionsSection: React.FC<InstructionsSectionProps> = ({ color }) => {
               </svg>
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-700">Duration</p>
+              <p className="text-sm font-medium text-gray-700">Durée</p>
               <p className="text-sm text-gray-600">{instructions.duration}</p>
             </div>
           </div>
@@ -179,7 +179,7 @@ const InstructionsSection: React.FC<InstructionsSectionProps> = ({ color }) => {
               </svg>
             </div>
             <div className="text-left">
-              <p className="text-sm font-medium text-gray-700">Skin Types</p>
+              <p className="text-sm font-medium text-gray-700">Types de peau</p>
               <p className="text-sm text-gray-600">{skinTypes.join(", ")}</p>
             </div>
           </div>
@@ -196,7 +196,7 @@ const InstructionsSection: React.FC<InstructionsSectionProps> = ({ color }) => {
               </div>
               <div>
                 <p className="text-sm font-medium text-white mb-1">
-                  Pro Tips
+                  Conseils Pro
                 </p>
                 <ul className="text-sm text-white list-disc list-inside space-y-1">
                   {tips.map((tip, index) => (
@@ -217,7 +217,7 @@ const InstructionsSection: React.FC<InstructionsSectionProps> = ({ color }) => {
               </div>
               <div>
                 <p className="text-sm font-medium text-red-800 mb-1">
-                  Important Warnings
+                    Avertissements importants
                 </p>
                 <ul className="text-sm text-red-700 list-disc list-inside space-y-1">
                   {warnings.map((warning, index) => (

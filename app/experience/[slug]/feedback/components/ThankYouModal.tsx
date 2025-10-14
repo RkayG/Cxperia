@@ -61,12 +61,12 @@ const ThankYouModal: React.FC<ThankYouModalProps> = ({ isOpen, onClose, customer
           {/* Thank You Message */}
           <div className="mb-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              Thank You{customerName ? `, ${customerName}` : ''}!
+              Merci{customerName ? `, ${customerName}` : ''}!
             </h2>
             <p className="text-gray-600 leading-relaxed">
-              Your feedback about <span className="font-semibold" style={{ color }}>
-                {product?.name || 'our product'}
-              </span> has been received and is very valuable to us.
+              Votre feedback sur <span className="font-semibold" style={{ color }}>
+                {product?.name || 'notre produit'}
+              </span> a été reçu et est très précieux pour nous.
             </p>
           </div>
 
@@ -77,8 +77,8 @@ const ThankYouModal: React.FC<ThankYouModalProps> = ({ isOpen, onClose, customer
               style={{ borderLeftColor: color }}
             >
               <p className="text-sm text-gray-700">
-                We review all feedback carefully to improve our products and services. 
-                Your input helps us create better experiences for everyone.
+                Nous examinons tous les feedbacks avec soin pour améliorer nos produits et services. 
+                Votre input nous aide à créer de meilleures expériences pour tout le monde.
               </p>
             </div>
           </div>
@@ -89,7 +89,7 @@ const ThankYouModal: React.FC<ThankYouModalProps> = ({ isOpen, onClose, customer
             className="w-full py-3 px-6 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5"
             style={{ backgroundColor: color }}
           >
-            Continue Exploring
+            Continuer l'exploration
           </button>
         </div>
 

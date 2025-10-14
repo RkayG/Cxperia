@@ -8,11 +8,11 @@ import type { InboxHeaderProps } from './inboxTypes';
 
 const ratingOptions = [
   '', // for "All"
-  'Poor',
-  'Fair',
-  'Good',
-  'Great',
-  'Excellent',
+  'Mauvais', // Poor 
+  'Moyen', // Fair 
+  'Bon', // Good 
+  'Très bon', // Great 
+  'Excellent', // Excellent 
 ];
 
 interface InboxHeaderPropsExtended extends InboxHeaderProps {
@@ -52,33 +52,37 @@ const InboxHeader: React.FC<InboxHeaderPropsExtended> = ({
       <div className="flex flex-col sm:flex-row gap-2 flex-1">
         <div className="relative flex-1 min-w-[180px] mr-3">
           <Search size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-purple-400" />
+          {/* Search message */}
           <input
             type="text"
-            placeholder="Search message"
+            placeholder="Rechercher un message" 
             value={searchQuery}
             onChange={handleSearchChange}
             className="w-full pl-10 pr-4 py-3 text-gray-900 border border-gray-300 rounded-xl focus:ring-purple-500 focus:border-purple-500 text-sm"
           />
         </div>
+        {/* All Ratings */}
         <DropdownSelect
           value={rating}
           onChange={val => { setRating(val); triggerSearch({ rating: val }); }}
           options={ratingOptions}
-          placeholder="All Ratings"
+          placeholder="Tous les avis" 
           className="min-w-[140px]"
         />
+        {/* All Products */}
         <DropdownSelect
           value={product}
           onChange={val => { setProduct(val); triggerSearch({ product: val }); }}
           options={productOptions}
-          placeholder="All Products"
+          placeholder="Tous les produits" 
           className="min-w-[140px]"
         />
+        {/* All Categories */}
         <DropdownSelect
           value={category}
           onChange={val => { setCategory(val); triggerSearch({ category: val }); }}
           options={categoryOptions}
-          placeholder="All Categories"
+          placeholder="Toutes les catégories" 
           className="min-w-[140px]"
         />
       </div>

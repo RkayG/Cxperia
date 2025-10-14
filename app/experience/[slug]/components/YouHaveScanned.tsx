@@ -16,6 +16,7 @@ const YouHaveScanned: React.FC<YouHaveScannedProps> = ({ onSectionChange, slug }
   const experience = usePublicExpStore((state) => state.experience);
   const product = usePublicExpStore((state) => state.product) || {};
   const brandLogo = usePublicExpStore((state) => state.brandLogo) || "";
+  const brandName = usePublicExpStore((state) => state.brandName) || "";
   const images = product.product_image_url || [];
   const color = experience?.data?.primary_color || "#1e3a8a";
   const [showConfetti, setShowConfetti] = useState(true);
@@ -96,7 +97,7 @@ const YouHaveScanned: React.FC<YouHaveScannedProps> = ({ onSectionChange, slug }
             {brandLogo ? (
               <Image
                 src={brandLogo}
-                alt="Brand Logo"
+                alt={brandName}
                 width={64}
                 height={64}
                 className="w-16 h-16 rounded-full bg-white/90 backdrop-blur-sm object-contain"
@@ -106,7 +107,7 @@ const YouHaveScanned: React.FC<YouHaveScannedProps> = ({ onSectionChange, slug }
             ) : (
               <div className="w-16 h-16 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg">
                 <span className="text-slate-700 font-bold text-sm tracking-wide">
-                  LOGO
+                  {brandName.slice(0, 2).toUpperCase()}
                 </span>
               </div>
             )}
@@ -133,9 +134,9 @@ const YouHaveScanned: React.FC<YouHaveScannedProps> = ({ onSectionChange, slug }
           className="flex-grow min-h-96 p-3 -mt-10 space-y-6"
         >
           <div className="text-center px-2 py-8 bg-white rounded-lg shadow-md">
-            <h1 className="font-bold text-2xl">Scan Successful!</h1>
+            <h1 className="font-bold text-2xl">Un scan réussi!</h1> {/* Scan Successful! */}
             <h3 className="text-lg font-semibold">
-              Merci pour le scan de {product?.name || "this product"}!
+              Merci pour le scan de {product?.name || "Produit"}! {/* Merci pour le scan de {product?.name || "this product"}! */}
             </h3>
 
             {/* Product Image (if available) */}
@@ -144,7 +145,7 @@ const YouHaveScanned: React.FC<YouHaveScannedProps> = ({ onSectionChange, slug }
                 style={{border:'2px', borderColor: color}}>
                 <Image
                   src={images[0]}
-                  alt={product?.name || "Product"}
+                  alt={product?.name || "Produit"}
                   width={272}
                   height={272}
                   className="h-68 w-68 rounded-full object-cover"

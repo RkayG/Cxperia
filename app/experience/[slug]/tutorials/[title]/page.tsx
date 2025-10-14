@@ -249,7 +249,7 @@ const TutorialDetailPage: React.FC = () => {
   if (!tutorial) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        Tutorial not found.
+        Tutoriel non trouvé.
       </div>
     );
   }
@@ -268,7 +268,7 @@ const TutorialDetailPage: React.FC = () => {
         <div className="relative aspect-video rounded-lg overflow-hidden">
           <iframe
             src={`https://www.youtube.com/embed/${youtubeMatch[1]}`}
-            title="Tutorial Video"
+            title="Tutoriel Vidéo"
             className="w-full h-full"
             allowFullScreen
           />
@@ -279,7 +279,7 @@ const TutorialDetailPage: React.FC = () => {
       <div className="relative aspect-video bg-gray-100 rounded-lg flex items-center justify-center">
         <div className="text-center">
           <Play className="w-12 h-12 text-purple-400 mx-auto mb-2" />
-          <p className="text-sm text-gray-600">Video: {url}</p>
+          <p className="text-sm text-gray-600">Vidéo: {url}</p>
         </div>
       </div>
     );
@@ -319,7 +319,7 @@ const TutorialDetailPage: React.FC = () => {
             </div>
           ) : (
             <div className="h-64 md:h-96 flex items-center justify-center bg-gray-100 text-gray-500 text-lg font-semibold rounded-t-2xl">
-              No featured image or video
+              Aucune image ou vidéo en vedette
             </div>
           )}
 
@@ -409,7 +409,7 @@ const TutorialDetailPage: React.FC = () => {
               className="text-2xl text-center font-bold text-black mb-6 px-6 pt-6"
               style={{ fontFamily: "Mozilla Headline, sans-serif" }}
             >
-              Tutorial Steps
+              Étapes du tutoriel
             </h2>
             {realSteps.length > 0 ? (
               realSteps.map((step: any, index: number) => (
@@ -552,8 +552,8 @@ const TutorialDetailPage: React.FC = () => {
               ))
             ) : (
               <div className="p-8 text-center text-gray-500">
-                No steps created yet. Add steps to help your customers follow
-                along.
+                Aucune étape créée encore. Ajoutez des étapes pour aider vos clients à suivre
+                le tutoriel.
               </div>
             )}
           </div>
@@ -586,7 +586,7 @@ const TutorialDetailPage: React.FC = () => {
           className="w-full py-3 text-sm font-medium rounded-lg transition"
           style={{ backgroundColor: color, color: "white" }}
         >
-          ← Back to Tutorials
+          ← Retour aux tutoriels
         </button>
       </div>
     </div>

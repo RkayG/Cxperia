@@ -19,7 +19,7 @@ const ClientIngredientsWrapper: React.FC<ClientIngredientsWrapperProps> = ({
   return (
     <div className="min-h-screen bg-neutral-100 font-sans flex justify-center" style={{ backgroundColor: color }}>
       <div className="max-w-xl mx-auto w-full bg-white shadow-lg overflow-hidden">
-        <SectionHeader title="Ingredients" subtitle="Discover the key ingredients that make our product unique and effective." />
+        <SectionHeader title="Ingrédients" subtitle="Découvrez les ingrédients qui rendent notre produit unique et efficace." />
         <main className="p-4 space-y-6 rounded-tl-3xl">
           <ProductDisplay color={color} product={product} />
           <IngredientsSection />

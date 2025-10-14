@@ -3,13 +3,8 @@ import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import React, { useState } from 'react';
 //import UnfinishedWorkModal from '../../../components/UnfinishedWorkModal';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
+import SimpleDropdown from '@/components/ui/simple-dropdown';
 import type { FilterBarProps } from './productTypes';
 
 interface FilterBarPropsWithLoading extends FilterBarProps {
@@ -20,14 +15,12 @@ const FilterBar: React.FC<FilterBarPropsWithLoading> = ({ onFilterChange, onSort
   // State for dropdowns
   const [selectedFilter, setSelectedFilter] = useState('');
   const [selectedSort, setSelectedSort] = useState('');
+  
   // Options for dropdowns
-
-  {/** Filter Options: All, Active QR Codes, Pending QR Codes */}
+  /** Filter Options: All, Active QR Codes, Pending QR Codes */
   const filterOptions = ['Tous', 'Codes QR actifs', 'Codes QR en attente'];
-  {/** Sort Options */}
+  /** Sort Options: Sort By, None, Name, Added Date */
   const sortOptions = ['Trier par', 'Aucun', 'Nom', 'Date d\'ajout'];
-  {/** Sort Options: Sort By, None, Name, Added Date */}
-
 
   if (isLoading) {
     return (
@@ -47,67 +40,41 @@ const FilterBar: React.FC<FilterBarPropsWithLoading> = ({ onFilterChange, onSort
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
       <div className="flex flex-row gap-3 w-full sm:w-auto">
-        {/* Filter Products DropdownMenu */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            {/** Filter Products DropdownMenu Trigger */}
-            <button className="w-1/2 sm:w-48 px-3 py-2 bg-white border border-gray-300 rounded-lg text-left text-gray-700 font-medium flex items-center justify-between hover:border-gray-400 transition-colors">
-              {selectedFilter || 'Filtrer les produits'}
-              <svg className="ml-2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-48 z-50 bg-white border border-gray-200 shadow-lg">
-            {filterOptions.map(option => (
-              <DropdownMenuItem
-                key={option}
-                onClick={() => {
-                  setSelectedFilter(option);
-                  onFilterChange(option === 'Tous' ? '' : option);
-                }}
-                className={selectedFilter === option ? 'bg-purple-100 text-purple-800' : 'hover:bg-gray-50'}
-              >
-                {option}
-              </DropdownMenuItem>
-            ))} 
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {/* Filter Products Dropdown */}
+        <div className="w-1/2 sm:w-48">
+          <SimpleDropdown
+            value={selectedFilter}
+            onChange={(value) => {
+              setSelectedFilter(value);
+              onFilterChange(value === 'Tous' ? '' : value);
+            }}
+            options={filterOptions}
+            placeholder="Filtrer les produits"
+            className="w-full"
+          />
+        </div>
 
-        {/* Sort By DropdownMenu */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            {/** Selected Sort or  */}
-            <button className="w-1/2 sm:w-48 px-3 py-2 bg-white border border-gray-300 rounded-lg text-left text-gray-700 font-medium flex items-center justify-between hover:border-gray-400 transition-colors">
-              {selectedSort || 'Trier par'}
-              <svg className="ml-2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-48 bg-white border border-gray-200 shadow-lg z-50">
-            {sortOptions.map(option => (
-              <DropdownMenuItem
-                key={option}
-                onClick={() => {
-                  setSelectedSort(option);
-                  onSortChange(option === 'Trier par' ? '' : option);
-                }}
-                className={selectedSort === option ? 'bg-purple-100 text-purple-800' : 'hover:bg-gray-50'}
-              >
-                {option}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {/* Sort By Dropdown */}
+        <div className="w-1/2 sm:w-48">
+          <SimpleDropdown
+            value={selectedSort}
+            onChange={(value) => {
+              setSelectedSort(value);
+              onSortChange(value === 'Trier par' ? '' : value);
+            }}
+            options={sortOptions}
+            placeholder="Trier par"
+            className="w-full"
+          />
+        </div>
       </div>
 
       {/* Add New Product Button */}
       <Link href="/dashboard/experience/create?step=product-details&new=true">
-      <button
-        
-        className="flex items-center text-purple-700 hover:text-purple-800 font-medium text-sm transition-colors duration-200 whitespace-nowrap"
-      >
-        {/** Add New Product */}
-        <Plus size={16} className="mr-1" />
-        Ajouter un nouveau
-      </button>
+        <button className="flex items-center text-purple-700 hover:text-purple-800 font-medium text-sm transition-colors duration-200 whitespace-nowrap">
+          <Plus size={16} className="mr-1" />
+          Ajouter un nouveau
+        </button>
       </Link>
     </div>
   );

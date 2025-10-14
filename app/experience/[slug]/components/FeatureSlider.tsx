@@ -5,25 +5,29 @@ import { GiEnvelope, GiPhone, GiNotebook, GiPerfumeBottle } from "react-icons/gi
 
 // Map backend feature_name to frontend label
 const featureNameToLabel: Record<string, string> = {
-  ingredientList: "Ingredient Breakdown",
-  productUsage: "Usage Instructions",
-  feedbackForm: "Share Feedback",
+  // Ingredient Breakdown
+  ingredientList: "Ingrédients détaillés",
+  // Usage Instructions
+  productUsage: "Instructions d'utilisation",
+  // Share Feedback
+  feedbackForm: "Partager des commentaires",
   /* skinRecommendations: "Skin Recommendations", */
-  tutorialsRoutines: "Tutorials & Routines",
-  customerService: "Customer Support",
+  tutorialsRoutines: "Tutoriels & Routines",
+  // Customer Support
+  customerService: "Support client",
   // Add more mappings as needed
 };
 
 const allFeatures = [
-  { icon: GiPerfumeBottle, label: "Ingredient Breakdown", highlighted: true },
+  { icon: GiPerfumeBottle, label: "Ingrédients détaillés", highlighted: true },
   {
     icon: GiNotebook,
-    label: "Usage Instructions",
+    label: "Instructions d'utilisation",
     highlighted: true,
   },
-    { icon: GiEnvelope, label: "Share Feedback" },
-  { icon: GiNotebook, label: "Tutorials & Routines" },
-  { icon: GiPhone, label: "Customer Support" },
+    { icon: GiEnvelope, label: "Partager des commentaires" },
+  { icon: GiNotebook, label: "Tutoriels & Routines" },
+  { icon: GiPhone, label: "Support client" },
 ];
 type ActiveSection = 'home' | 'ingredients' | 'feedback' | 'usage-instructions' | 'support-channels' | 'tutorials';
 
@@ -55,19 +59,19 @@ const FeatureSlider: React.FC<FeatureSliderProps> = ({ onSectionChange, slug }) 
     let section: ActiveSection = 'home';
     
     switch (label) {
-      case "Share Feedback":
+        case "Partager des commentaires":
         section = 'feedback';
         break;
-      case "Usage Instructions":
+      case "Instructions d'utilisation":
         section = 'usage-instructions';
         break;
-      case "Ingredient Breakdown":
+      case "Ingrédients détaillés":
         section = 'ingredients';
         break;
-      case "Customer Support":
+      case "Support client":
         section = 'support-channels';
         break;
-      case "Tutorials & Routines":
+      case "Tutoriels & Routines":
         section = 'tutorials';
         break;
       default:
@@ -85,10 +89,10 @@ const FeatureSlider: React.FC<FeatureSliderProps> = ({ onSectionChange, slug }) 
       {/* Cool headline */}
       <div className="text-center mb-6 mt-4 px-2">
         <h2 className="text-lg font-bold text-gray-800 mb-2">
-          We have prepared something extra special for you ✨
+          Nous avons préparé quelque chose de spécial pour vous ✨ {/* We have prepared something extra special for you ✨ */}
         </h2>
         <p className="text-sm text-gray-600 italic">
-          Which would you like to explore first?
+          Lequel aimeriez-vous explorer en premier? {/* Which would you like to explore first? */}
         </p>
       </div>
 
@@ -164,7 +168,8 @@ const FeatureSlider: React.FC<FeatureSliderProps> = ({ onSectionChange, slug }) 
           }}
         >
           <span className="relative z-10 font-bold" style={{ color: 'white'}}>
-            Start Your Journey →
+           
+            Commencer votre voyage → {/* Start Your Journey → */}
           </span>
         </div>
       </div>

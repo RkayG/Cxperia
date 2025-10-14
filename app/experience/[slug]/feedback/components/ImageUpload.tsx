@@ -58,7 +58,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ images = [], onImagesChange }
 
   return (
     <div className="space-y-2">
-      <p className="text-sm font-semibold text-gray-700">Upload Images (Optional)</p>
+      <p className="text-sm font-semibold text-gray-700">Télécharger des images (Optionnel)</p>
       <div className="flex flex-wrap gap-3 items-center">
         {/* Upload Button */}
         <label 
@@ -102,7 +102,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ images = [], onImagesChange }
       
       {/* Upload info */}
       <p className="text-xs text-gray-500">
-        Max 5MB per image. Supported formats: JPEG, PNG, WebP
+        Max 5MB par image. Formats supportés: JPEG, PNG, WebP
       </p>
     </div>
   );

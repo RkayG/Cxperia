@@ -57,7 +57,7 @@ const calculatePerformanceMetrics = (experiences: any[]): PerformanceMetric[] =>
   return [
     {
       id: 'totalBrand',
-      title: 'Total Scans',
+      title: 'Total scans', // Total Scans
       value: totalScans.toString(),
       change: '+5.5% MoM',
       isPositive: true,
@@ -66,7 +66,7 @@ const calculatePerformanceMetrics = (experiences: any[]): PerformanceMetric[] =>
     },
     {
       id: 'totalCampaigns',
-      title: 'Active QR Codes',
+      title: 'Codes QR actifs', // Active QR Codes
       value: String(activeQrCount),
       change: '-1.2% MoM',
       isPositive: activeQrCount >= 0,
@@ -75,7 +75,7 @@ const calculatePerformanceMetrics = (experiences: any[]): PerformanceMetric[] =>
     },
     {
       id: 'newListings',
-      title: 'Pending QR Codes',
+      title: 'Codes QR en attente', // Pending QR Codes
       value: String(pendingQrCount),
       change: '+2.1% MoM',
       isPositive: pendingQrCount >= 0,

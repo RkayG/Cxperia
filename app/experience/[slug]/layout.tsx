@@ -82,7 +82,8 @@ export default function ExperienceSlugLayout({ children }: { children: React.Rea
   if (!slug) {
     return (
       <div className="min-h-screen flex items-center justify-center text-center text-red-600 bg-white">
-        Invalid product link. No slug provided.
+       {/*  Invalid product link. No slug provided. */}
+        Lien de produit invalide. Aucun slug fourni.
       </div>
     );
   }
@@ -97,8 +98,9 @@ export default function ExperienceSlugLayout({ children }: { children: React.Rea
             <Link href="/">
               <Image src={logo} alt="Cxperia Logo" className="w-48 mb-8 mx-auto" />
             </Link>
-          <div className="text-3xl font-bold text-blue-700 mb-4 animate-pulse">Experience Not Found</div>
-          <div className="text-lg text-gray-500">Sorry, this product experience does not exist or is no longer available.</div>
+          <div className="text-3xl font-bold text-blue-700 mb-4 animate-pulse">Expérience non trouvée</div>
+             {/*  Sorry, this product experience does not exist or is no longer available. */}
+          <div className="text-lg text-gray-500">Désolé, cette expérience de produit n'existe pas ou n'est plus disponible.</div>
         </div>
        
       </div>
@@ -113,7 +115,8 @@ export default function ExperienceSlugLayout({ children }: { children: React.Rea
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center text-center text-red-600 bg-white">
-        {error}
+        {/*  Invalid product link. No slug provided. */}
+        Lien de produit invalide. Aucun slug fourni.
       </div>
     );
   }

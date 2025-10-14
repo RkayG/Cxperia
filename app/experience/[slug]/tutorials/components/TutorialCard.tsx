@@ -98,7 +98,7 @@ const TutorialCard: React.FC<TutorialCardProps> = ({ tutorial }) => {
   // Prioritize video over image
   const videoSrc = featured_video_url || video_url || '';
   const hasVideo = isValidVideoUrl(videoSrc);
-  const imageSrc = featured_image || thumbnail_url || 'https://placehold.co/640x360/8A2BE2/FFFFFF?text=Tutorial+Thumbnail';
+  const imageSrc = featured_image || thumbnail_url || 'https://placehold.co/640x360/8A2BE2/FFFFFF?text=Tutoriel+Miniature';
 
   // Render video using videoUtils
   let mediaPreview;
@@ -149,7 +149,7 @@ const TutorialCard: React.FC<TutorialCardProps> = ({ tutorial }) => {
           alt={title}
           className={`w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 ${mediaLoaded ? 'opacity-100' : 'opacity-0'}`}
           onLoad={() => setMediaLoaded(true)}
-          onError={(e) => { e.currentTarget.src = 'https://placehold.co/640x360/8A2BE2/FFFFFF?text=Tutorial+Thumbnail'; }}
+          onError={(e) => { e.currentTarget.src = 'https://placehold.co/640x360/8A2BE2/FFFFFF?text=Tutoriel+Miniature'; }}
         />
       );
     }
@@ -160,7 +160,7 @@ const TutorialCard: React.FC<TutorialCardProps> = ({ tutorial }) => {
         alt={title}
         className={`w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 ${mediaLoaded ? 'opacity-100' : 'opacity-0'}`}
         onLoad={() => setMediaLoaded(true)}
-        onError={(e) => { e.currentTarget.src = 'https://placehold.co/640x360/8A2BE2/FFFFFF?text=Tutorial+Thumbnail'; }}
+        onError={(e) => { e.currentTarget.src = 'https://placehold.co/640x360/8A2BE2/FFFFFF?text=Tutoriel+Miniature'; }}
       />
     );
   }
@@ -195,7 +195,7 @@ const TutorialCard: React.FC<TutorialCardProps> = ({ tutorial }) => {
                 // If steps is already an array
                 if (Array.isArray(steps)) {
                   const num = steps.length;
-                  return num === 1 ? '1 step' : `${num} steps`;
+                  return num === 1 ? '1 étape' : `${num} étapes`;
                 }
                 
                 // If steps is a JSON string, parse it
@@ -203,22 +203,22 @@ const TutorialCard: React.FC<TutorialCardProps> = ({ tutorial }) => {
                   const parsedSteps = JSON.parse(steps);
                   if (Array.isArray(parsedSteps)) {
                     const num = parsedSteps.length;
-                    return num === 1 ? '1 step' : `${num} steps`;
+                    return num === 1 ? '1 étape' : `${num} étapes`;
                   }
                 }
                 
                 // If steps is a string with number (legacy format)
                 if (typeof steps === 'string') {
                   const num = Number(steps.split(' ')[0]);
-                  if (num === 1) return '1 step';
+                  if (num === 1) return '1 étape';
                   if (num > 1) return `${num} steps`;
                 }
                 
                 // Fallback
-                return '0 steps';
+                return '0 étapes';
               } catch (error) {
                // console.warn('Error parsing steps:', error);
-                return '0 steps';
+                return '0 étapes';
               }
             })()}
           </span>
@@ -240,7 +240,7 @@ const TutorialCard: React.FC<TutorialCardProps> = ({ tutorial }) => {
         {/* Loading skeleton */}
         {!mediaLoaded && (
           <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
-            <div className="text-gray-400">Loading...</div>
+            <div className="text-gray-400">Chargement...</div>
           </div>
         )}
       </div>
@@ -290,7 +290,7 @@ const TutorialCard: React.FC<TutorialCardProps> = ({ tutorial }) => {
             <div className="flex items-center space-x-1 text-xs text-gray-500">
               {/* <span>{views}</span>
               <span>•</span> */}
-              <span>{friendlyTime || 'Loading...'}</span>
+              <span>{friendlyTime || 'Chargement...'}</span>
             </div>
           </div>
 
@@ -310,7 +310,7 @@ const TutorialCard: React.FC<TutorialCardProps> = ({ tutorial }) => {
             style={{ background: contextColor }}
           >
             <Play size={14} className="fill-current" />
-            <span>Watch</span>
+              <span>Regarder</span>
           </button>
         </div>
         */}

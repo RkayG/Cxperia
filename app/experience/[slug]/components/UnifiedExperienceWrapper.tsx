@@ -108,37 +108,37 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
     whatsapp: {
       icon: "/icons/whatsapp.svg",
       getLink: (v) => `https://wa.me/${v.replace(/[^\d]/g, "")}`,
-      description: "Chat with us on WhatsApp",
+      description: "Chattez avec nous sur WhatsApp",
     },
     email: {
       icon: "/icons/email.png",
       getLink: (v) => `mailto:${v}`,
-      description: "Send us an email",
+      description: "Envoyez-nous un email",
     },
     phone: {
       icon: "/icons/phone.png",
       getLink: (v) => `tel:${v}`,
-      description: "Give us a call",
+      description: "Appelez-nous",
     },
     faq: {
       icon: "/icons/faq.png",
       getLink: (v) => v,
-      description: "Find answers instantly",
+      description: "Trouvez des réponses instantanément",
     },
     instagram: {
       icon: "/icons/instagram.png",
       getLink: (v) => v,
-      description: "Follow us for updates",
+      description: "Suivez-nous pour les mises à jour",
     },
     facebook: {
       icon: "/icons/facebook.svg",
       getLink: (v) => v,
-      description: "Connect on Facebook",
+      description: "Connectez-vous sur Facebook",
     },
     twitter: {
       icon: "/icons/twitter.png",
       getLink: (v) => v,
-      description: "Stay connected on X",
+      description: "Restez connecté sur X",
     },
   };
 
@@ -170,7 +170,8 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
 
   const handleSubmitFeedback = async () => {
     if (!slug) {
-      showToast.error('Experience not found');
+      // Experience not found
+      showToast.error('Expérience non trouvée');
       return;
     }
 
@@ -179,7 +180,8 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
     const hasImages = images.length > 0;
 
     if (!hasRating && !hasComment && !hasImages) {
-      showToast.error('Please provide a rating, comment, or upload an image to submit feedback');
+      // Please provide a rating, comment, or upload an image to submit feedback
+      showToast.error('Veuillez fournir une note, un commentaire, ou un upload d\'image pour envoyer le feedback');
       return;
     }
 
@@ -203,7 +205,8 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
       
     } catch (error) {
      // console.error('Error submitting feedback:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Failed to submit feedback. Please try again.';
+      const errorMessage = error instanceof Error ? error.message : 'Échec de la soumission du feedback. Veuillez réessayer.';
+      // Failed to submit feedback. Please try again.
       showToast.error(errorMessage);
     }
   };
@@ -214,7 +217,7 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: color }}>
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-4"></div>
-          <p className="text-white">Loading...</p>
+          <p className="text-white">Chargement...</p>
         </div>
       </div>
     );
@@ -238,7 +241,7 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
         return (
           <div className="min-h-screen bg-neutral-100 font-sans flex justify-center" style={{ backgroundColor: color }}>
             <div className="max-w-xl mx-auto w-full bg-white shadow-lg overflow-hidden">
-              <SectionHeader title="Ingredients" subtitle="Discover the key ingredients that make our product unique and effective." />
+              <SectionHeader title="Ingredients" subtitle="Découvrez les ingrédients qui rendent notre produit unique et efficace." />
               <main className="p-4 space-y-6 rounded-tl-3xl">
                 <ProductDisplay color={color} product={product} />
                 <IngredientsSection />
@@ -251,7 +254,7 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
         return (
           <div className="min-h-screen font-sans flex justify-center scroll-smooth" style={{ backgroundColor: color }}>
             <div className="max-w-xl mx-auto pb-12 w-full bg-white shadow-lg overflow-hidden">
-              <SectionHeader title="Feedback" subtitle="Share your thoughts and help us improve your experience." />
+              <SectionHeader title="Feedback" subtitle="Partagez vos thoughts et aidez-nous à améliorer votre expérience." />
               <main className="p-4 space-y-6 rounded-tl-3xl bg-gray-50">
                 <div data-rating-section>
                   <RatingSection 
@@ -281,10 +284,10 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
                   {createFeedbackMutation.status === 'pending' ? (
                     <>
                       <div className="w-5 h-5 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      Submitting...
+                      Envoi...
                     </>
                   ) : (
-                    'Submit Feedback'
+                    'Envoyer Feedback'
                   )}
                 </button>
               </main>
@@ -296,7 +299,7 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
         return (
           <div className="min-h-screen bg-gray-50 flex justify-center" style={{ backgroundColor: color }}>
             <div className="max-w-xl mx-auto w-full bg-white shadow-lg overflow-hidden">
-              <SectionHeader title="Instructions" subtitle="Discover how to use our product effectively." />
+              <SectionHeader title="Instructions" subtitle="Découvrez comment utiliser notre produit efficacement." />
               <main className="p-4 space-y-6 rounded-tl-3xl">
                 <ProductDisplay color={color} product={product} />
                 <InstructionsSection color={color} />
@@ -309,10 +312,10 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
         return (
           <div className="flex min-h-screen justify-center bg-gray-50 font-sans" style={{ backgroundColor: color }}>
             <div className="w-full max-w-xl bg-gray-50">
-              <SectionHeader title="We're Here to Help" subtitle="Choose your preferred way to connect" />
+              <SectionHeader title="Nous sommes ici pour vous aider" subtitle="Choisissez votre façon préférée de nous contacter" />
               <main className="mt-2 space-y-4 rounded-tl-3xl bg-gray-50">
                 {supportOptions.length === 0 && (
-                  <div className="py-8 text-center text-gray-500">No support options available.</div>
+                  <div className="py-8 text-center text-gray-500">Aucune option de support disponible.</div>
                 )}
                 {supportOptions.map((option: any) => (
                   <a
@@ -337,7 +340,11 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
 
       case 'tutorials':
         return (
-         <ClientTutorialsWrapper slug={slug} color={color} />
+          <div className="min-h-screen" style={{ backgroundColor: color }}>
+            <div className="max-w-xl mx-auto bg-gray-50 min-h-screen overflow-hidden">
+              <ClientTutorialsWrapper slug={slug} color={color} />
+            </div>
+          </div>
         );
 
       case 'home':

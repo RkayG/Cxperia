@@ -8,14 +8,14 @@ export function getFriendlyTimeAgo(dateString: string): string {
   const diffMin = Math.floor(diffSec / 60);
   const diffHour = Math.floor(diffMin / 60);
   const diffDay = Math.floor(diffHour / 24);
-  if (diffSec < 60) return 'just now';
+  if (diffSec < 60) return 'juste maintenant';
   if (diffMin < 60) return `${diffMin} minute${diffMin === 1 ? '' : 's'} ago`;
-  if (diffHour < 24) return `${diffHour} hour${diffHour === 1 ? '' : 's'} ago`;
-  if (diffDay < 7) return `${diffDay} day${diffDay === 1 ? '' : 's'} ago`;
+  if (diffHour < 24) return `${diffHour} heure${diffHour === 1 ? '' : 's'} ago`; 
+  if (diffDay < 7) return `${diffDay} jour${diffDay === 1 ? '' : 's'} ago`;
   const diffWeek = Math.floor(diffDay / 7);
-  if (diffWeek < 4) return `${diffWeek} week${diffWeek === 1 ? '' : 's'} ago`;
+  if (diffWeek < 4) return `${diffWeek} semaine${diffWeek === 1 ? '' : 's'} ago`;
   const diffMonth = Math.floor(diffDay / 30);
-  if (diffMonth < 12) return `${diffMonth} month${diffMonth === 1 ? '' : 's'} ago`;
+  if (diffMonth < 12) return `${diffMonth} mois${diffMonth === 1 ? '' : 's'} ago`;
   const diffYear = Math.floor(diffDay / 365);
-  return `${diffYear} year${diffYear === 1 ? '' : 's'} ago`;
+  return `${diffYear} année${diffYear === 1 ? '' : 's'} ago`;
 }

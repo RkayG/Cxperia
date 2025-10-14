@@ -12,11 +12,11 @@ const RatingSection: React.FC<RatingSectionProps> = ({ onRatingSelected, selecte
   const { color, product } = usePublicExpStore();
   // Rating data with emojis and descriptive text
   const ratings = [
-    { emoji: '😠', label: 'Poor', color: 'from-red-500 to-red-600' },
-    { emoji: '😞', label: 'Fair', color: 'from-orange-500 to-orange-600' },
-    { emoji: '😐', label: 'Good', color: 'from-yellow-500 to-yellow-600' },
-    { emoji: '😊', label: 'Great', color: 'from-blue-500 to-blue-600' },
-    { emoji: '😍', label: 'Excellent', color: 'from-purple-500 to-pink-500' }
+    { emoji: '😠', label: 'Mauvais', color: 'from-red-500 to-red-600' },
+    { emoji: '😞', label: 'Moyen', color: 'from-orange-500 to-orange-600' },
+    { emoji: '😐', label: 'Bon', color: 'from-yellow-500 to-yellow-600' },
+    { emoji: '😊', label: 'Excellent', color: 'from-blue-500 to-blue-600' },
+    { emoji: '😍', label: 'Super', color: 'from-purple-500 to-pink-500' }
   ];
 
   const currentRating = hoveredRating || selectedRating;
@@ -32,11 +32,11 @@ const RatingSection: React.FC<RatingSectionProps> = ({ onRatingSelected, selecte
         {/* Header */}
         <div className="mb-8 text-center">
           <h2 className="text-2xl font-bold mb-2" style={{ color }}>
-            Rate Your Experience With {product?.name || 'Our Product'}
+            Notez votre expérience avec {product?.name || 'Notre produit'}
           </h2>
           <div className="w-16 h-px mx-auto" style={{ backgroundColor: color }}></div>
           <p className="text-sm mt-3 font-light text-black">
-            Help us improve by sharing your feedback
+            Aidez-nous à nous améliorer en partageant votre feedback
           </p>
         </div>
 
@@ -103,8 +103,8 @@ const RatingSection: React.FC<RatingSectionProps> = ({ onRatingSelected, selecte
 
         {/* Rating Scale */}
         <div className="flex justify-between text-xs text-slate-800 px-4">
-          <span>Poor</span>
-          <span>Excellent</span>
+          <span>Mauvais</span>
+          <span>Super</span>
         </div>
 
 

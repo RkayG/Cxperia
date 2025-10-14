@@ -97,7 +97,7 @@ const HeaderLight: React.FC = () => {
                 />
               ) : (
                 <span className="text-gray-800 font-bold text-sm tracking-wide">
-                  LOGO
+                  {brandName.slice(0, 2).toUpperCase()}
                 </span>
               )}
             </div>
@@ -166,7 +166,7 @@ const HeaderLight: React.FC = () => {
                     style={{ borderColor: color, borderWidth: "1px" }}
                   >
                     <ShoppingCart className="w-4 h-4" />
-                    <span>VISIT STORE</span>
+                    <span>VISITER LE STORE</span>
                   </button>
                 </a>
 
@@ -176,7 +176,7 @@ const HeaderLight: React.FC = () => {
                       className="group border border-white text-white px-6 py-3 rounded-full font-semibold text-sm shadow-lg hover:bg-white/20 hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
                       style={{ backgroundColor: color }}
                     >
-                      <span>VIEW DETAILS</span>
+                      <span>VOIR LES DÉTAILS</span>
                       <svg
                         className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200"
                         fill="none"
@@ -196,10 +196,10 @@ const HeaderLight: React.FC = () => {
                     <div className="mx-auto w-full max-w-sm">
                       <DrawerHeader>
                         <DrawerTitle className="text-center text-xl font-bold" style={{ color }}>
-                          {product?.name || "Product Details"}
+                          {product?.name || "Détails du produit"}
                         </DrawerTitle>
                         <DrawerDescription className="text-center text-gray-600">
-                          Learn more about this amazing product
+                          En savoir plus sur ce produit incroyable
                         </DrawerDescription>
                       </DrawerHeader>
                       <div className="p-4 pb-8">
@@ -207,7 +207,7 @@ const HeaderLight: React.FC = () => {
                           {/* Product Description */}
                           {product?.description && (
                             <div>
-                              <h3 className="font-semibold text-gray-900 mb-2">Description</h3>
+                              <h3 className="font-semibold text-gray-900 mb-2">Description</h3> {/* Description */}
                               <p className="text-gray-700 text-sm leading-relaxed">
                                 {product.description}
                               </p>
@@ -287,7 +287,7 @@ const HeaderLight: React.FC = () => {
                 <div className="relative h-64 md:h-80 lg:h-96 bg-gray-100">
                   <Image
                     src={images[currentImageIndex] || '/assets/images/placeholder.png'}
-                    alt={product.name || "Product image"}
+                    alt={product.name || "Image du produit"}
                     fill
                     sizes="(max-width: 768px) 100vw, 800px"
                     className="object-cover transition-opacity duration-500"
@@ -301,14 +301,14 @@ const HeaderLight: React.FC = () => {
                       <button
                         onClick={goToPrevious}
                         className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/90 rounded-full p-2 shadow-md hover:bg-white transition-colors z-20"
-                        aria-label="Previous image"
+                        aria-label="Image précédente"
                       >
                         <ChevronLeft className="h-5 w-5 text-gray-800" />
                       </button>
                       <button
                         onClick={goToNext}
                         className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/90 rounded-full p-2 shadow-md hover:bg-white transition-colors z-20"
-                        aria-label="Next image"
+                        aria-label="Image suivante"
                       >
                         <ChevronRight className="h-5 w-5 text-gray-800" />
                       </button>
@@ -328,7 +328,7 @@ const HeaderLight: React.FC = () => {
                             ? "bg-gray-800"
                             : "bg-gray-400"
                         } transition-colors`}
-                        aria-label={`Go to image ${index + 1}`}
+                        aria-label={`Aller à l'image ${index + 1}`}
                       />
                     ))}
                   </div>

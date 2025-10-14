@@ -10,10 +10,10 @@ const MessageListItem: React.FC<MessageListItemProps> = ({ message: feedback, on
   // Choose smiley based on rating
     // Rating data with emojis and descriptive text
     const ratings = [
-      { emoji: '😠', label: 'Poor', color: 'from-red-500 to-red-600' },
-      { emoji: '😞', label: 'Fair', color: 'from-orange-500 to-orange-600' },
-      { emoji: '😐', label: 'Good', color: 'from-yellow-500 to-yellow-600' },
-      { emoji: '😊', label: 'Great', color: 'from-blue-500 to-blue-600' },
+      { emoji: '😠', label: 'Mauvais', color: 'from-red-500 to-red-600' },
+      { emoji: '😞', label: 'Moyen', color: 'from-orange-500 to-orange-600' },
+      { emoji: '😐', label: 'Bon', color: 'from-yellow-500 to-yellow-600' },
+      { emoji: '😊', label: 'Très bon', color: 'from-blue-500 to-blue-600' },
       { emoji: '😍', label: 'Excellent', color: 'from-purple-500 to-pink-500' }
     ];
     // Clamp rating to 1-5
@@ -42,7 +42,7 @@ const MessageListItem: React.FC<MessageListItemProps> = ({ message: feedback, on
             {/* Emoji with gradient background */}
             <span
               className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-lg shadow`}
-              title={ratingData?.label || 'Rating'}
+              title={ratingData?.label || 'Avis'}
             >
               {ratingData?.emoji || '😊'}
             </span>
@@ -52,7 +52,7 @@ const MessageListItem: React.FC<MessageListItemProps> = ({ message: feedback, on
                 type="button"
                 className="ml-2 flex items-center gap-1 px-2 py-1 bg-purple-50 hover:bg-purple-100 rounded text-purple-700 text-xs font-medium border border-purple-200"
                 onClick={e => { e.stopPropagation(); setShowImages(true); }}
-                title="View attached images"
+                title="Voir les images attachées"
               >
                 <ImageIcon size={16} />
                 {feedback.images.length}
@@ -61,7 +61,7 @@ const MessageListItem: React.FC<MessageListItemProps> = ({ message: feedback, on
           </div>
           <div className='flex justify-between gap-2 mb-1'>
             <p className='text-sm font-bold text-gray-900 mb-1 text-left border-b border-purple-300 w-fit'>
-              {feedback.productName || 'Product'}
+              {feedback.productName || 'Produit'}
             </p>
           </div>
           <div className='flex justify-between items-center'>
@@ -70,9 +70,9 @@ const MessageListItem: React.FC<MessageListItemProps> = ({ message: feedback, on
           <p className="text-sm text-black text-right">{feedback.time}</p>
         </div>
         </div>
-        {!feedback.read && (
+        {/* {!feedback.read && (
           <span className="w-2.5 h-2.5 bg-red-500 rounded-full ml-4 flex-shrink-0" aria-label="Unread message"></span>
-        )}
+        )} */}
       </div>
       {/* Image Modal */}
       {Array.isArray(feedback.images) && feedback.images.length > 0 && (

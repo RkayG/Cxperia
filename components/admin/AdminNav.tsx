@@ -20,8 +20,38 @@ export default function AdminNav({ user }: AdminNavProps) {
   ];
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    window.location.href = '/';
+    try {
+      // Use the proper logout API endpoint for comprehensive cleanup
+      const response = await fetch('/api/auth/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        // Fallback to client-side logout
+        await supabase.auth.signOut();
+      }
+
+      // Clear all client-side storage
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      // Clear cookies (client-side)
+      document.cookie.split(";").forEach(function(c) { 
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+      });
+      
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Still try to clear client-side data
+      localStorage.clear();
+      sessionStorage.clear();
+    }
+    
+    // Force redirect to ensure clean state
+    window.location.href = '/auth/login';
   };
 
   return (

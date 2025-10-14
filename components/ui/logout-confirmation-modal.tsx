@@ -44,9 +44,13 @@ export default function LogoutConfirmationModal({
             <LogOut className="h-5 w-5 text-red-600" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold leading-none tracking-tight">Confirm Logout</h2>
+            <h2 className="text-lg font-semibold leading-none tracking-tight">
+              {/* Confirm Logout */}
+              Confirmation de déconnexion
+            </h2>
             <p className="text-sm text-gray-600 mt-1">
-              Are you sure you want to logout? You'll need to sign in again to access your account.
+              {/* Are you sure you want to logout? You'll need to sign in again to access your account. */}
+              Êtes-vous sûr de vouloir vous déconnecter? Vous devrez vous reconnecter pour accéder à votre compte.
             </p>
           </div>
         </div>
@@ -58,22 +62,26 @@ export default function LogoutConfirmationModal({
             onClick={onClose}
             disabled={isLoading}
           >
-            Cancel
+            {/* Cancel */}
+            Annuler
           </Button>
           <Button
             variant="destructive"
             onClick={onConfirm}
             disabled={isLoading}
+            className='text-white'
           >
             {isLoading ? (
               <>
                 <div className="w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                Logging out...
+                {/* Logging out... */}
+                  Déconnexion...
               </>
             ) : (
               <>
-                <LogOut className="w-4 h-4 mr-2" />
-                Logout
+                <LogOut className="w-4 h-4 text-white mr-2" />
+                {/* Logout */}
+                Déconnexion
               </>
             )}
           </Button>

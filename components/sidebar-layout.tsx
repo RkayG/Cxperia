@@ -134,14 +134,14 @@ function SidebarContent(props: {
           href="/dashboard/experience/create?step=product-details&new=true"
           className={cn(buttonVariants({ variant: 'default' }), "w-full")}
         >
-          Create
+          Créer {/* Create */}
         </Link>
         <button
           onClick={props.onFeedbackClick}
           className={cn(buttonVariants({ variant: 'outline' }), "lg:hidden w-full flex items-center gap-2")}
         >
           <MessageSquare size={16} />
-          Send Feedback
+          Envoyer un feedback {/* Send Feedback */}
         </button>
       </div>
       <div className="flex flex-grow flex-col gap-2 pt-4 overflow-y-auto">
@@ -181,7 +181,7 @@ function SidebarContent(props: {
             )}
           >
             <LogOut className="mr-2 h-5 w-5" />
-            Logout
+            Déconnexion {/* Logout */}
           </button>
         </div>
       </div>
@@ -212,41 +212,45 @@ function HeaderBreadcrumb(props: { items: SidebarItem[], baseBreadcrumb?: Header
 
     // Handle experience routes
     if (pathname.includes('/dashboard/experience/create')) {
+      {/* Create Experience */}
       return {
         items: [
-          { title: 'Create Experience', href: '/dashboard/experience/create' }
+          { title: 'Créer une expérience', href: '/dashboard/experience/create' } 
         ]
       };
     }
     
     if (pathname.includes('/dashboard/experience/edit')) {
+      {/* Edit Experience */}
       return {
         items: [
-          { title: 'Edit Experience', href: '/dashboard/experience/edit' }
+          { title: 'Modifier une expérience', href: '/dashboard/experience/edit' } 
         ]
       };
     }
     
     if (pathname.includes('/dashboard/experience/preview')) {
+      {/* Preview Experience */}
       return {
         items: [
-          { title: 'Preview Experience', href: '/dashboard/experience/preview' }
+          { title: 'Aperçu de l\'expérience', href: '/dashboard/experience/preview' } 
         ]
       };
     }
 
     // Handle tutorial routes
     if (pathname.includes('/dashboard/content/tutorial')) {
+      {/* Content */}
       const tutorialItems = [
-        { title: 'Content', href: '/dashboard/content' }
+        { title: 'Contenu', href: '/dashboard/content' } 
       ];
       
       if (mode === 'create') {
-        tutorialItems.push({ title: 'Create Tutorial', href: '/dashboard/content/tutorial?mode=create' });
+        tutorialItems.push({ title: 'Créer un tutoriel', href: '/dashboard/content/tutorial?mode=create' }); {/* Create Tutorial */}
       } else if (mode === 'edit') {
-        tutorialItems.push({ title: 'Edit Tutorial', href: '/dashboard/content/tutorial?mode=edit' });
+        tutorialItems.push({ title: 'Modifier un tutoriel', href: '/dashboard/content/tutorial?mode=edit' }); {/* Edit Tutorial */}
       } else {
-        tutorialItems.push({ title: 'Tutorial', href: '/dashboard/content/tutorial' });
+        tutorialItems.push({ title: 'Tutoriel', href: '/dashboard/content/tutorial' }); {/* Tutorial */}
       }
       
       return { items: tutorialItems };
@@ -375,8 +379,8 @@ export default function SidebarLayout(props: {
               className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
             >
               <MessageSquare size={16} />
-              Send Feedback
-            </button>
+                Envoyer un feedback {/* Send Feedback */}
+              </button>
           </div>
         </div>
         <div className="flex-grow bg-gray-50 pt-14" suppressHydrationWarning>{props.children}</div>

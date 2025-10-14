@@ -95,16 +95,12 @@ const ClientFeedbackWrapper: React.FC<ClientFeedbackWrapperProps> = ({
     }, 150); // Slightly longer delay for state update
   };
 
-  // Test function to verify toast is working
-  const testToast = () => {
-    showToast.error('Test error message');
-    showToast.success('Test success message');
-  };
+
 
   const handleSubmit = async () => {
     if (!slug) {
-      showToast.error('Experience not found');
-      return;
+        showToast.error('Experience non trouvée');
+        return;
     }
 
     // Enhanced validation - require at least one meaningful input
@@ -116,7 +112,7 @@ const ClientFeedbackWrapper: React.FC<ClientFeedbackWrapperProps> = ({
 
     // Check if user provided any meaningful feedback
     if (!hasRating && !hasComment && !hasImages) {
-      showToast.error('Please provide a rating, comment, or upload an image to submit feedback');
+      showToast.error('Veuillez fournir une note, un commentaire ou télécharger une image pour soumettre le feedback');
       
       // Focus on the first empty required field
       if (!hasRating) {
@@ -160,7 +156,7 @@ const ClientFeedbackWrapper: React.FC<ClientFeedbackWrapperProps> = ({
       setImages([]);
       
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to submit feedback. Please try again.';
+      const errorMessage = error instanceof Error ? error.message : 'Échec de la soumission du feedback. Veuillez réessayer.';
       
       // Try to show toast multiple times to debug
       showToast.error(errorMessage);
@@ -182,7 +178,7 @@ const ClientFeedbackWrapper: React.FC<ClientFeedbackWrapperProps> = ({
     <div className="min-h-screen font-sans flex justify-center scroll-smooth" style={{ backgroundColor: color }}>
       
       <div className="max-w-xl mx-auto pb-12 w-full bg-white shadow-lg overflow-hidden">
-        <SectionHeader title="Feedback" subtitle="Share your thoughts and help us improve your experience." />
+        <SectionHeader title="Feedback" subtitle="Partagez vos pensées et aidez-nous à améliorer votre expérience." />
         <main className="p-4 space-y-6 rounded-tl-3xl bg-gray-50 " style={{top: '72px', left: 0, right: 0, bottom: 0}}>
           <div data-rating-section>
             <RatingSection 
@@ -203,14 +199,7 @@ const ClientFeedbackWrapper: React.FC<ClientFeedbackWrapperProps> = ({
             images={images}
             onImagesChange={setImages}
           />
-          {/* Test button - remove this after debugging */}
-          <button
-            onClick={testToast}
-            className="w-full py-2 text-white font-semibold rounded-full shadow-lg transition-all duration-200 flex items-center justify-center hover:shadow-xl transform hover:-translate-y-0.5 mb-2"
-            style={{ backgroundColor: '#6B7280' }}
-          >
-            Test Toast
-          </button>
+        
           
           <button
             onClick={handleSubmit}
@@ -221,10 +210,10 @@ const ClientFeedbackWrapper: React.FC<ClientFeedbackWrapperProps> = ({
             {createFeedbackMutation.status === 'pending' ? (
               <>
                 <div className="w-5 h-5 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                Submitting...
+                Soumission en cours...
               </>
             ) : (
-              'Submit Feedback'
+              'Soumettre le feedback'
             )}
           </button>
         </main>

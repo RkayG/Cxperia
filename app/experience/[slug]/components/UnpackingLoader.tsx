@@ -68,7 +68,7 @@ const UnpackingLoader = () => (
         animationSpeed={6}
         className="font-medium text-lg"
       >
-        Unpacking something lush...
+       un déballage luxurieux... {/* Unpacking something lush... */}
       </GradientText>
     </motion.div>
 

@@ -48,9 +48,9 @@ export default function GetDemoPage() {
           <div className="w-20 h-20 mx-auto mb-6 bg-green-100 rounded-2xl flex items-center justify-center">
             <span className="text-3xl">✅</span>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Thank You!</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Merci!</h1>
           <p className="text-gray-600 mb-6">
-            Our sales team will contact you soon to schedule your personalized demo.
+            Notre équipe de ventes vous contactera bientôt pour planifier votre démo personnalisée.
           </p>
 
         </div>
@@ -64,8 +64,8 @@ export default function GetDemoPage() {
       {/* Left: Benefits Section */}
       <div className="relative hidden lg:flex flex-col items-center justify-center bg-[#e9c0e9] p-10">
         <div className="text-left w-full max-w-md text-[#502274]">
-          <h1 className="font-black text-4xl bricolage-grotesque leading-tight mb-6">Schedule Your Demo</h1>
-            <p className="mb-4 bricolage-grotesque-light">One step closer to turning your products into digital journeys.</p>
+          <h1 className="font-black text-4xl bricolage-grotesque leading-tight mb-6">Planifier votre démo</h1>
+            <p className="mb-4 bricolage-grotesque-light">Un pas de plus vers la transformation de vos produits en parcours numériques.</p>
         </div>
       </div>
 
@@ -82,16 +82,16 @@ export default function GetDemoPage() {
                 <InputField
                   id="brandName"
                   type="text"
-                  label="Brand Name *"
-                  placeholder="Your beauty brand"
+                  label="Nom de la marque *"
+                  placeholder="Votre marque de beauté"
                   value={formData.brandName}
                   onChange={(val) => handleChange('brandName', val)}
                 />
                 <InputField
                   id="contactName"
                   type="text"
-                  label="Your Name *"
-                  placeholder="Your full name"
+                  label="Votre nom *"
+                  placeholder="Votre nom complet"
                   value={formData.contactName}
                   onChange={(val) => handleChange('contactName', val)}
                 />
@@ -101,15 +101,15 @@ export default function GetDemoPage() {
                 <InputField
                   id="email"
                   type="email"
-                  label="Work Email *"
-                  placeholder="you@brand.com"
+                  label="Email professionnel *"
+                  placeholder="vous@marque.com"
                   value={formData.email}
                   onChange={(val) => handleChange('email', val)}
                 />
                 <InputField
                   id="phone"
                   type="tel"
-                  label="Phone Number"
+                  label="Numéro de téléphone"
                   placeholder="+33 1 23 45 67 89"
                   value={formData.phone}
                   onChange={(val) => handleChange('phone', val)}
@@ -119,42 +119,42 @@ export default function GetDemoPage() {
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <label className="block bricolage-grotesque-light text-sm font-medium text-gray-700 mb-2">
-                    Brand Size
+                    Taille de la marque
                   </label>
                   <select
                     value={formData.brandSize}
                     onChange={(e) => handleChange('brandSize', e.target.value)}
                     className="w-full bricolage-grotesque-light px-4 py-3 bg-gray-50 border border-purple-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:bg-white transition-all duration-200"
                   >
-                    <option value="">Select...</option>
-                    <option value="startup">Startup (1-10 employees)</option>
-                    <option value="small">Small Business (11-50 employees)</option>
-                    <option value="medium">Medium Business (51-200 employees)</option>
-                    <option value="enterprise">Enterprise (200+ employees)</option>
+                    <option value="">Sélectionner...</option>
+                    <option value="startup">Startup (1-10 employés)</option>
+                    <option value="small">Petite entreprise (11-50 employés)</option>
+                    <option value="medium">Entreprise moyenne (51-200 employés)</option>
+                    <option value="enterprise">Entreprise (200+ employés)</option>
                   </select>
                 </div>
 
                 <div>
                   <label className="block bricolage-grotesque-light text-sm font-medium text-gray-700 mb-2">
-                    Monthly Products Shipped
+                      Produits mensuels expédiés
                   </label>
                   <select
                     value={formData.monthlyProducts}
                     onChange={(e) => handleChange('monthlyProducts', e.target.value)}
                     className="w-full bricolage-grotesque-light px-4 py-3 bg-gray-50 border border-purple-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:bg-white transition-all duration-200"
                   >
-                    <option value="">Select...</option>
-                    <option value="1-500">1-500 units</option>
-                    <option value="501-5000">501-5,000 units</option>
-                    <option value="5001-50000">5,001-50,000 units</option>
-                    <option value="50000+">50,000+ units</option>
+                    <option value="">Sélectionner...</option>
+                    <option value="1-500">1-500 unités</option>
+                    <option value="501-5000">501-5,000 unités</option>
+                    <option value="5001-50000">5,001-50,000 unités</option>
+                    <option value="50000+">50,000+ unités</option>
                   </select>
                 </div>
               </div>
 
               <div>
                 <label className="block bricolage-grotesque-light text-sm font-medium text-gray-700 mb-2">
-                 Additional Message
+                 Message additionnel
                 </label>
                 <textarea
                   rows={4}
@@ -172,7 +172,7 @@ export default function GetDemoPage() {
                   className: "w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3"
                 })}
               >
-                {isSubmitting ? 'Scheduling...' : 'Schedule Demo'}
+                {isSubmitting ? 'Planification...' : 'Planifier la démo'}
               </button>
             </form>
           </div>

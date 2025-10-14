@@ -124,7 +124,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
           htmlFor="tagline"
           className="block text-left text-purple-800 text-base font-semibold mb-2"
         >
-          Tagline
+          Slogan *
         </label>
         <input
           type="text"
@@ -157,7 +157,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
           htmlFor="description"
           className="block text-left text-purple-800 text-base font-semibold mb-2"
         >
-          Description *
+          Utilisation *
         </label>
         <textarea
           id="description"
@@ -185,7 +185,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
           htmlFor="storeLink"
           className="block text-left text-purple-800 text-base font-semibold mb-2"
         >
-          Lien du store
+          Lien du site web
         </label>
         <input
           type="url"
@@ -193,7 +193,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
           name="storeLink"
           value={data.storeLink}
           onChange={(e) => onUpdate({ storeLink: e.target.value })}
-          placeholder="ex: https://yourstore.com/product"
+          placeholder="ex: https://yourstore.com/un-produit"
           className={`w-full px-4 py-3 text-base border-2  rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500 ${
             errors.storeLink ? "border-red-600 bg-red-50" : "border-purple-800"
           } ${data.storeLink ? "bg-[#ede8f3]" : "bg-white"}`}

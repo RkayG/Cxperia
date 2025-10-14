@@ -11,7 +11,7 @@ import {
   useFeedbackActions,
   useFilteredMessages,
   useProductOptions
-} from '@/store/feedback/useFeedbackStore';
+} from '@/store/brands/feedback/useFeedbackStore';
 import ProfessionalInboxHeader from './components/ProfessionalInboxHeader';
 import MessageList from './components/MessageList';
 import { useIsMobile } from '@/hooks/brands/use-mobile';

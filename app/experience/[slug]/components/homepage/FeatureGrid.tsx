@@ -8,22 +8,23 @@ import { GiEnvelope } from 'react-icons/gi';
 
 // Map backend feature_name to frontend label
 const featureNameToLabel: Record<string, string> = {
-  ingredientList: 'Ingredient Breakdown',
-  productUsage: 'Usage Instructions',
-  feedbackForm: 'Feedback',
-  skinRecommendations: 'Skin Recommendations',
-  tutorialsRoutines: 'Tutorials & Routines',
-  customerService: 'Customer Support',
+  ingredientList: 'Ingrédients détaillés détaillés',
+  productUsage: "Instructions d'utilisation",
+  feedbackForm: 'Partager des commentaires',
+  // Skin Recommendations
+  skinRecommendations: 'Recommandations de peau',
+  tutorialsRoutines: 'Tutoriels & Routines',
+  customerService: 'Support client',
   // Add more mappings as needed
 };
 
 const allFeatures = [
-  { id: 'ingredients', icon: GiPerfumeBottle, label: 'Ingredient Breakdown', description: 'Discover what makes it special', path: 'ingredients', highlighted: true },
-  { id: 'instructions', icon: GiNotebook, label: 'Usage Instructions', description: 'How to use the product', path: 'usage-instructions', highlighted: true },
-  { id: 'feedback', icon: GiEnvelope, label: 'Feedback', description: 'Share your thoughts', path: 'feedback' },
+  { id: 'ingredients', icon: GiPerfumeBottle, label: 'Ingrédients détaillés', description: 'Découvrez ce qui rend spécial', path: 'ingredients', highlighted: true },
+  { id: 'instructions', icon: GiNotebook, label: "Instructions d'utilisation", description: 'Comment utiliser le produit', path: 'usage-instructions', highlighted: true },
+  { id: 'feedback', icon: GiEnvelope, label: 'Partager des commentaires', description: 'Partagez vos thoughts', path: 'feedback' },
   /* { id: 'skin-recommendations', icon: GiBeaker, label: 'Skin Recommendations', description: 'Personalized advice', path: 'skin-recommendations', highlighted: true }, */
-  { id: 'tutorials', icon: GiNotebook, label: 'Tutorials & Routines', description: 'Watch and learn', path: 'tutorials' },
-  { id: 'customer-support', icon: GiPhone, label: 'Customer Support', description: 'Get help or contact us', path: 'support-channels' },
+  { id: 'tutorials', icon: GiNotebook, label: 'Tutoriels & Routines', description: 'Regardez et apprenez', path: 'tutorials' },
+  { id: 'customer-support', icon: GiPhone, label: 'Support client', description: "Obtenez de l'aide ou contactez-nous", path: 'support-channels' },
 ];
 
 
@@ -73,13 +74,13 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({ onSectionChange }) => {
       <div className="relative  p-6 shadow-lg border border-white/20">
         {/* Header */}
         <div className="text-center mb-6">
-          <h2 className="text-xl font-bold mb-2" style={{ color }}>What will you like to explore?</h2>
+            <h2 className="text-xl font-bold mb-2" style={{ color }}>Qu'aimeriez-vous explorer?</h2> {/* What will you like to explore? */}
           <div className="w-16 h-1 rounded-full mx-auto" style={{ background: `linear-gradient(to right, ${color}, #fff)` }}></div>
         </div>
         {/* Grid */}
         <div className="grid grid-cols-1 gap-4">
-          {features.map((feature, index) => (
-            <motion.button
+                {features.map((feature, index) => (
+                  <motion.button
               key={feature.id || feature.label}
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}

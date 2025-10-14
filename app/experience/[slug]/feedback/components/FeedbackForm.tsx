@@ -50,10 +50,10 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
         {/* Header Section */}
         <div className="text-center space-y-2">
           <h2 className="text-2xl font-bold text-gray-900" style={{ color }}>
-            Care to share more?
+            Vous avez plus à dire ?
           </h2>
           <p className="text-gray-600 text-sm text-black">
-            Your thoughts help us improve and create better experiences
+            Vos pensées nous aident à nous améliorer et à créer de meilleures expériences
           </p>
         </div>
 
@@ -62,7 +62,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label htmlFor="customerName" className="block text-sm font-medium text-gray-700 mb-1">
-                Name (Optional)
+                Nom (Optionnel)
               </label>
               <input
                 id="customerName"
@@ -71,12 +71,12 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
                 onChange={handleNameChange}
                 className="w-full p-3 border-2 border-gray-200 rounded-lg focus:outline-none transition-all duration-200 text-gray-800 placeholder-gray-400"
                 style={{ boxShadow: `0 0 0 2px ${color}33`, borderColor: color }}
-                placeholder="Your name"
+                placeholder="Votre nom"
               />
             </div>
             <div>
               <label htmlFor="customerEmail" className="block text-sm font-medium text-gray-700 mb-1">
-                Email (Optional)
+                Email (Optionnel)
               </label>
               <input
                 id="customerEmail"
@@ -85,7 +85,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
                 onChange={handleEmailChange}
                 className="w-full p-3 border-2 border-gray-200 rounded-lg focus:outline-none transition-all duration-200 text-gray-800 placeholder-gray-400"
                 style={{ boxShadow: `0 0 0 2px ${color}33`, borderColor: color }}
-                placeholder="your@email.com"
+                placeholder="votre@email.com"
               />
             </div>
           </div>
@@ -94,7 +94,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
         {/* Feedback Input Section */}
         <div className="space-y-3">
           <label htmlFor="feedback" className="block text-sm font-medium text-gray-700">
-            Your Feedback
+            Votre Feedback
           </label>
           <div className="relative">
             <textarea
@@ -104,7 +104,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
               onChange={handleFeedbackChange}
               className="w-full p-4 border-2 border-gray-200 rounded-lg focus:outline-none transition-all duration-200 resize-none min-h-[120px] text-gray-800 placeholder-gray-400"
               style={{ boxShadow: `0 0 0 2px ${color}33`, borderColor: color }}
-              placeholder="Tell us what's on your mind..."
+              placeholder="tapez votre feedback ici..." // Tell us what's on your mind...
               rows={5}
             />
             {/* Character Counter */}
@@ -125,7 +125,8 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
             }}
             className="px-6 py-2.5 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors duration-200"
           >
-            Clear All
+            {/* Clear All */}
+            Effacer tout
           </button>
         </div>
       </div>

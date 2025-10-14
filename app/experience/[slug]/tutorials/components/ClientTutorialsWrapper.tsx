@@ -8,7 +8,6 @@ import { useExperienceTutorials } from "@/hooks/public/useTutorials";
 import CategoryTabs from "./CategoryTabs";
 import TutorialsGrid from "./TutorialGrid";
 import { Skeleton } from "@/components/ui/skeleton";
-import SectionNavigation from "../../components/SectionNavigation";
 
 interface ClientTutorialsWrapperProps {
   slug: string;
@@ -24,16 +23,16 @@ const ClientTutorialsWrapper: React.FC<ClientTutorialsWrapperProps> = ({
   const tutorials = Array.isArray((tutorialsData as any)?.tutorials) ? (tutorialsData as any).tutorials : [];
   //console.log('tutorials', tutorialsData);
   // Category filter state
-  const [activeCategory, setActiveCategory] = React.useState<string>("All Categories");
+  const [activeCategory, setActiveCategory] = React.useState<string>("Toutes les catégories");
   
   // Set default category to 'All Categories' when tutorials load
   React.useEffect(() => {
-    setActiveCategory("All Categories");
+    setActiveCategory("Toutes les catégories");
   }, [tutorials]);
 
   // Filter tutorials by active category
   const filteredTutorials =
-    activeCategory && activeCategory !== "All Categories"
+    activeCategory && activeCategory !== "Toutes les catégories"
       ? tutorials.filter((t: any) => t.category === activeCategory)
       : tutorials;
       
@@ -42,23 +41,20 @@ const ClientTutorialsWrapper: React.FC<ClientTutorialsWrapperProps> = ({
   }
 
   return (
-    <div className="flex min-h-screen  justify-center bg-gray-100 font-sans" style={{ backgroundColor: color }}>
-      <div className="mx-auto w-full max-w-xl overflow-hidden bg-gray-50 shadow-lg">
-        <SectionHeader
-          title="Tutorials & Routines"
-          subtitle="Discover personalized beauty tutorials and daily routines."
-        />
-        <main className="space-y-6">
-          <div className="px-4 pb-4">
-            <CategoryTabs tutorials={tutorials} onCategoryChange={setActiveCategory} />
-          </div>
-          <div className="mb-12">
-            <TutorialsGrid tutorials={filteredTutorials} />
-          </div>
-        </main>
-      </div>
-      <SectionNavigation activeSection="tutorials" onSectionChange={() => {}} color={color} slug={slug} /> {/* Navigation for mobile */}
-    </div>
+    <>
+      <SectionHeader
+        title="Tutoriels & Routines"
+        subtitle="Découvrez des tutoriels personnalisés et des routines quotidiennes."
+      />
+      <main className="space-y-6">
+        <div className="px-4 pb-4">
+          <CategoryTabs tutorials={tutorials} onCategoryChange={setActiveCategory} />
+        </div>
+        <div className="mb-12">
+          <TutorialsGrid tutorials={filteredTutorials} />
+        </div>
+      </main>
+    </>
   );
 };
 

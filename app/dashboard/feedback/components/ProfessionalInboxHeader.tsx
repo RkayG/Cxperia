@@ -18,7 +18,7 @@ interface ProfessionalInboxHeaderProps {
 const ProfessionalInboxHeader: React.FC<ProfessionalInboxHeaderProps> = ({
   onSearch,
   productOptions,
-  searchPlaceholder = "Rechercher des commentaires..."
+  searchPlaceholder = "Rechercher des commentaires..." // Search feedback
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRating, setSelectedRating] = useState('');

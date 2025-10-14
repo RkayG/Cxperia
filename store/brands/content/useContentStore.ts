@@ -86,7 +86,7 @@ const mapTutorialsToArticles = (tutorials: any[]): Article[] => {
     date: formatDateFriendly(tut.created_at || tut.createdAt),
     image: tut.featured_image_url || tut.featured_image || placeholderImg,
     status: tut.is_published ? 'PUBLISHED' : 'DRAFT',
-    views: tut.views || Math.floor(Math.random() * 1000) + 50, // Default views or random
+    views: tut.views, // Default views
     userImage: tut.user_image || tut.userImage || defaultUserImage, // Default user image
   }));
 };

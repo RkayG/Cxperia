@@ -49,14 +49,14 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, isSelected, onSelect
           
           <div className="flex items-center justify-between mb-2">
             <span className={`px-2 py-1 rounded-full font-medium text-xs ${
-              article.status.toUpperCase() === 'PUBLISHED' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+              article.status.toUpperCase() === 'PUBLISHED' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700' // Published 
             }`}>
               {article.status}
             </span>
             
             <div className="flex items-center text-gray-600">
               <Eye size={12} className="mr-1 w-3 h-3" />
-              <span className="text-xs">{article.views} views</span>
+              <span className="text-xs">{article.views} vues</span>
             </div>
           </div>
           
@@ -90,7 +90,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, isSelected, onSelect
           <h3 className="text-base md:text-lg font-semibold text-gray-800 mb-1 truncate">{article.title}</h3>
           <div className="flex items-center gap-2 text-sm">
             <span className={`px-2 py-0.5 rounded-full font-medium text-sm ${
-              article.status.toUpperCase() === 'PUBLISHED' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+              article.status.toUpperCase() === 'PUBLISHED' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700' // Published 
             }`}>
               {article.status}
             </span>
@@ -102,7 +102,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, isSelected, onSelect
         <div className="flex flex-col items-end gap-2 text-sm flex-shrink-0">
           <div className="flex items-center text-gray-600">
             <Eye size={12} className="mr-1 w-3.5 h-3.5" />
-            <span className="text-sm">{article.views} views</span>
+            <span className="text-sm">{article.views} vues</span>
           </div>
         </div>
       </div>

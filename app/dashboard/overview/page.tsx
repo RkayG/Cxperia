@@ -18,7 +18,7 @@ import {
   useOverviewMetrics, 
   useOverviewLoading, 
   useOverviewActions 
-} from '@/store/overview/useOverviewStore';
+} from '@/store/brands/overview/useOverviewStore';
 import { Graph } from "./graph";
 import Loading from '@/components/Loading';
 

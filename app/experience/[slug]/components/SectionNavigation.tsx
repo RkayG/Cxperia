@@ -21,10 +21,10 @@ const SectionNavigation: React.FC<SectionNavigationProps> = ({
   slug,
 }) => {
   const sections = [
-    { id: 'home', label: 'Home', icon: <GiHouse /> },
-    { id: 'ingredients', label: 'Ingredients', icon: <GiPerfumeBottle /> },
+    { id: 'home', label: 'Accueil', icon: <GiHouse /> },
+    { id: 'ingredients', label: 'Ingrédients', icon: <GiPerfumeBottle /> },
     { id: 'usage-instructions', label: 'Instructions', icon: <GiNotebook /> },
-   /*  { id: 'tutorials', label: 'Tutorials', icon: <GiVideoCamera /> }, */
+   /*  { id: 'tutorials', label: 'Tutoriels', icon: <GiVideoCamera /> }, */
     { id: 'feedback', label: 'Feedback', icon: <GiEnvelope /> },
     { id: 'support-channels', label: 'Support', icon: <GiPhone /> },
   ];
