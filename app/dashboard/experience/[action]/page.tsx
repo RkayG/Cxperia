@@ -33,10 +33,23 @@ const CreateExperiencePage: React.FC = () => {
   // This handler is called after the first step is successfully completed.
   // It receives the new experience ID and navigates to the next step.
   const handleFirstStepComplete = (newExperienceId?: string) => {
-    if (!newExperienceId) {
-      //console.error('No experience ID provided');
+    // Validate experience ID before proceeding
+    const isValidId = newExperienceId && 
+                     newExperienceId !== 'undefined' && 
+                     newExperienceId !== 'null' && 
+                     newExperienceId !== '' && 
+                     typeof newExperienceId === 'string' && 
+                     newExperienceId.trim().length > 0;
+    
+    if (!isValidId) {
+      console.error('Invalid experience ID provided:', newExperienceId);
+      // Show error toast to user
+      import('@/utils/toast').then(({ showToast }) => {
+        showToast.error('Erreur: ID d\'expérience invalide. Veuillez réessayer.');
+      });
       return;
     }
+    
     router.push(`/dashboard/experience/${action}/${newExperienceId}?step=customise-features`);
   };
 

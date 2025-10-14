@@ -183,9 +183,28 @@ const NewExperienceStep: React.FC<NewExperienceStepProps> = ({
         setIds(responseData.id || null, responseData.productId || null);
         setHasFormChanged(false); // Reset form changed flag after successful creation
 
-        // Navigate to step 2 with experience id
+        // Navigate to step 2 with experience id - validate ID first
         if (responseData.id && onNext) {
-          onNext(responseData.id);
+          // Validate that the experience ID is not null, undefined, empty, or invalid
+          const isValidId = responseData.id && 
+                           responseData.id !== 'undefined' && 
+                           responseData.id !== 'null' && 
+                           responseData.id !== '' && 
+                           typeof responseData.id === 'string' && 
+                           responseData.id.trim().length > 0;
+          
+          if (isValidId) {
+            onNext(responseData.id);
+          } else {
+            console.error('Invalid experience ID received:', responseData.id);
+            // Show error toast to user
+            const { showToast } = await import('@/utils/toast');
+            showToast.error('Erreur: ID d\'expérience invalide. Veuillez réessayer.');
+          }
+        } else {
+          console.error('No experience ID received from API or onNext callback missing');
+          const { showToast } = await import('@/utils/toast');
+          showToast.error('Erreur: Impossible de créer l\'expérience. Veuillez réessayer.');
         }
       }
     } catch (err) {

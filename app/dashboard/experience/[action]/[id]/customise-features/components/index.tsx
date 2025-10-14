@@ -253,6 +253,21 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
 
   // Custom Next handler with validation
   const handleNext = () => {
+    // First validate experience ID
+    const isValidId = experienceId && 
+                     experienceId !== 'undefined' && 
+                     experienceId !== 'null' && 
+                     experienceId !== '' && 
+                     typeof experienceId === 'string' && 
+                     experienceId.trim().length > 0;
+    
+    if (!isValidId) {
+      console.error('Invalid experience ID in step 2:', experienceId);
+      showToast.error('Erreur: ID d\'expérience invalide. Veuillez recommencer.');
+      router.push('/dashboard/experience/create');
+      return;
+    }
+    
     const features = sanitizeFeatureSettings(currentFeatureSettings || featureSettings);
     const validation = validateFeatures(features);
     setFeatureErrors(validation.errors);
