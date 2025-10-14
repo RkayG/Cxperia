@@ -20,8 +20,8 @@ export async function PATCH(
       return NextResponse.json({ error: 'theme or primary_color is required' }, { status: 400 });
     }
 
-    const experience = await setThemeAndColor(expId, theme, primary_color);
-    return NextResponse.json({ success: true, data: experience });
+    const result = await setThemeAndColor(expId, theme, primary_color);
+    return NextResponse.json({ success: true });
 
   } catch (error) {
     return NextResponse.json(

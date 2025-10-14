@@ -124,10 +124,7 @@ export async function updateExperience(id: string, updates: Partial<Experience>)
     .from('experiences')
     .update({ ...updates, updated_at: new Date().toISOString() })
     .eq('id', id)
-    .select(`
-      *,
-      products (*)
-    `)
+    .select('id, theme, primary_color, public_slug, updated_at, products(*)')
     .single();
 
   if (error) {
@@ -222,7 +219,7 @@ export async function setPublishStatus(id: string, isPublished: boolean) {
       updated_at: new Date().toISOString() 
     })
     .eq('id', id)
-    .select()
+    .select('id, is_published, public_slug, updated_at')
     .single();
 
   if (error) {
@@ -254,32 +251,37 @@ export async function setThemeAndColor(id: string, theme?: string, primary_color
   if (theme !== undefined) updates.theme = theme;
   if (primary_color !== undefined) updates.primary_color = primary_color;
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from('experiences')
     .update(updates)
-    .eq('id', id)
-    .select()
-    .single();
+    .eq('id', id);
 
   if (error) {
     throw new Error(`Failed to update theme and color: ${error.message}`);
   }
 
+  // Get public_slug for cache invalidation
+  const { data: expData } = await supabase
+    .from('experiences')
+    .select('public_slug')
+    .eq('id', id)
+    .single();
+
   // Invalidate Next.js cache for the experience page and public API
   try {
     const { revalidatePath } = await import('next/cache');
-    if (data.public_slug) {
+    if (expData?.public_slug) {
       // Revalidate the experience page
-      revalidatePath(`/experience/${data.public_slug}`);
+      revalidatePath(`/experience/${expData.public_slug}`);
       // Also revalidate the public API cache
-      revalidatePath(`/api/public/experience/${data.public_slug}`);
+      revalidatePath(`/api/public/experience/${expData.public_slug}`);
     }
   } catch (revalidateError) {
    // console.warn('Failed to revalidate cache:', revalidateError);
     // Don't throw error - cache invalidation is not critical
   }
 
-  return data;
+  return { success: true };
 }
 
 export async function getOrSetExperienceUrl(id: string) {
