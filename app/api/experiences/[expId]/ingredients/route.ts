@@ -133,6 +133,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ expI
   const experience_id = expId
   const brand_id = user?.brand_id
 
+  console.log('GET /api/experiences/[expId]/ingredients - Experience ID:', experience_id);
+  console.log('GET /api/experiences/[expId]/ingredients - Brand ID:', brand_id);
+  console.log('GET /api/experiences/[expId]/ingredients - User:', user);
+
   if (!experience_id) {
     return NextResponse.json({ success: false, message: "experience_id parameter required" }, { status: 400 })
   }
@@ -149,10 +153,14 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ expI
     .eq("brand_id", brand_id)
     .order("created_at", { ascending: true })
 
+  console.log('GET /api/experiences/[expId]/ingredients - Supabase query result:', { data, error });
+
   if (error) {
+    console.log('GET /api/experiences/[expId]/ingredients - Error:', error);
     return NextResponse.json({ success: false, message: error.message }, { status: 500 })
   }
 
+  console.log('GET /api/experiences/[expId]/ingredients - Returning data:', data);
   return NextResponse.json({ success: true, data })
 }
 

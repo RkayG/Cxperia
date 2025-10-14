@@ -56,16 +56,44 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
   experienceId,
   onFeatureEnable,
 }) => {
+  // Local storage key for this experience
+  const storageKey = `ingredientModal_${experienceId}`;
+  
+  // Initialize state with local storage fallback
   const [productName, _setProductName] = useState(initialProductName);
-  const [ingredients, setIngredients] = useState<Ingredient[]>(initialIngredients);
+  const [ingredients, setIngredients] = useState<Ingredient[]>(() => {
+    try {
+      // Try to load from local storage first
+      const savedData = localStorage.getItem(storageKey);
+      if (savedData) {
+        const parsedData = JSON.parse(savedData);
+        if (parsedData && typeof parsedData === 'object' && 'ingredients' in parsedData && Array.isArray(parsedData.ingredients)) {
+          return parsedData.ingredients as Ingredient[];
+        }
+      }
+    } catch (error) {
+      console.warn('Failed to load ingredients from local storage:', error);
+    }
+    
+    // Fallback to initial ingredients
+    return initialIngredients;
+  });
   const { data: fetchedIngredients } = useIngredients(experienceId || undefined);
   const addIngredientsMutation = useAddIngredient(experienceId || '');
+  
+  // Debug logging
+  console.log('IngredientModal - Experience ID:', experienceId);
+  console.log('IngredientModal - Initial Ingredients:', initialIngredients);
+  console.log('IngredientModal - Fetched Ingredients:', fetchedIngredients);
   const [editingIngredientId, setEditingIngredientId] = useState<string | null>(null);
   const [_showQuickAdd, setShowQuickAdd] = useState(false);
   const [saving, setSaving] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [inlineEdit, setInlineEdit] = useState<{id: string, field: 'commonName'|'category'|'concentration'|null} | null>(null);
   const [inlineValue, setInlineValue] = useState<string>('');
+  
+  // Track if we've loaded fetched data to avoid overriding localStorage
+  const [hasLoadedFetchedData, setHasLoadedFetchedData] = useState(false);
 
   // Skeleton component for ingredient table
   const IngredientTableSkeleton = () => (
@@ -98,25 +126,48 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
   );
 
   useEffect(() => {
-    if (fetchedIngredients && Array.isArray(fetchedIngredients)) {
-      const mapped = fetchedIngredients.map((ing: any) => ({
-        id: String(ing.id || ing._id || ''),
-        inciName: ing.inci_name || ing.inciName || '',
-        commonName: ing.common_name || ing.commonName || '',
-        concentration: ing.concentration || '',
-        isAllergen: !!ing.is_allergen,
-        category: ing.category || '',
-        all_functions: Array.isArray(ing.all_functions)
-          ? ing.all_functions
-          : typeof ing.all_functions === 'string' && ing.all_functions.length > 0
-            ? ing.all_functions.split(';').map((s: string) => s.trim()).filter(Boolean)
-            : [],
-        selectedFunction: ing.function || ing.func || undefined,
-      }));
-      setIngredients(mapped);
-      //console.log("Fetched and mapped ingredients:", mapped);
+    // Handle both direct array and API response object formats
+    const ingredientsArray = Array.isArray(fetchedIngredients) 
+      ? fetchedIngredients 
+      : fetchedIngredients?.data || [];
+      
+    if (ingredientsArray && Array.isArray(ingredientsArray) && ingredientsArray.length > 0 && !hasLoadedFetchedData) {
+      // Check if we have localStorage data
+      const hasLocalStorageData = (() => {
+        try {
+          const savedData = localStorage.getItem(storageKey);
+          if (savedData) {
+            const parsedData = JSON.parse(savedData);
+            return parsedData && typeof parsedData === 'object' && 'ingredients' in parsedData && Array.isArray(parsedData.ingredients) && parsedData.ingredients.length > 0;
+          }
+        } catch (error) {
+          console.warn('Failed to check localStorage:', error);
+        }
+        return false;
+      })();
+
+      // Only load fetched data if we don't have localStorage data
+      if (!hasLocalStorageData) {
+        const mapped = ingredientsArray.map((ing: any) => ({
+          id: String(ing.id || ing._id || ''),
+          inciName: ing.inci_name || ing.inciName || '',
+          commonName: ing.common_name || ing.commonName || '',
+          concentration: ing.concentration || '',
+          isAllergen: !!ing.is_allergen,
+          category: ing.category || '',
+          all_functions: Array.isArray(ing.all_functions)
+            ? ing.all_functions
+            : typeof ing.all_functions === 'string' && ing.all_functions.length > 0
+              ? ing.all_functions.split(';').map((s: string) => s.trim()).filter(Boolean)
+              : [],
+          selectedFunction: ing.function || ing.func || undefined,
+        }));
+        setIngredients(mapped);
+        console.log("Fetched and mapped ingredients:", mapped);
+      }
+      setHasLoadedFetchedData(true);
     }
-  }, [fetchedIngredients]);
+  }, [fetchedIngredients, hasLoadedFetchedData, storageKey]);
   // Derived state for summary
   const totalIngredients = ingredients.length;
   const allergens = ingredients.filter((ing) => ing.isAllergen).length;
@@ -139,15 +190,19 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
   const saveInlineEdit = () => {
     if (inlineEdit && inlineEdit.field) {
       const field = String(inlineEdit.field);
-      setIngredients((prev) => prev.map((ing) => {
-        if (ing.id === inlineEdit.id) {
-          return {
-            ...ing,
-            [field]: inlineValue,
-          };
-        }
-        return ing;
-      }));
+      setIngredients((prev) => {
+        const newIngredients = prev.map((ing) => {
+          if (ing.id === inlineEdit.id) {
+            return {
+              ...ing,
+              [field]: inlineValue,
+            };
+          }
+          return ing;
+        });
+        saveIngredientsToStorage(newIngredients);
+        return newIngredients;
+      });
       setInlineEdit(null);
       setInlineValue('');
     }
@@ -156,6 +211,20 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
   const cancelInlineEdit = () => {
     setInlineEdit(null);
     setInlineValue('');
+  };
+
+  // Save ingredients to localStorage whenever they change
+  const saveIngredientsToStorage = (newIngredients: Ingredient[]) => {
+    try {
+      const dataToSave = {
+        ingredients: newIngredients,
+        productName: productName,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(storageKey, JSON.stringify(dataToSave));
+    } catch (error) {
+      console.warn('Failed to save ingredients to local storage:', error);
+    }
   };
 
   const handleAddIngredient = (ingredient: any) => {
@@ -172,7 +241,11 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
       all_functions: ingredient.all_functions || [],
     };
     //console.log("Adding ingredient:", newIngredient);
-    setIngredients((prev) => [...prev, newIngredient]);
+    setIngredients((prev) => {
+      const newIngredients = [...prev, newIngredient];
+      saveIngredientsToStorage(newIngredients);
+      return newIngredients;
+    });
     setEditingIngredientId(null);
     setShowQuickAdd(false);
   };
@@ -190,13 +263,25 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
         try {
           // Note: This should be refactored to use the hook properly at component level
           // For now, just remove locally to avoid the hook rules error
-          setIngredients((prev) => prev.filter((ing) => ing.id !== id));
+          setIngredients((prev) => {
+            const newIngredients = prev.filter((ing) => ing.id !== id);
+            saveIngredientsToStorage(newIngredients);
+            return newIngredients;
+          });
         } catch (e) {
           
-          setIngredients((prev) => prev.filter((ing) => ing.id !== id));
+          setIngredients((prev) => {
+            const newIngredients = prev.filter((ing) => ing.id !== id);
+            saveIngredientsToStorage(newIngredients);
+            return newIngredients;
+          });
         }
       } else {
-        setIngredients((prev) => prev.filter((ing) => ing.id !== id));
+        setIngredients((prev) => {
+          const newIngredients = prev.filter((ing) => ing.id !== id);
+          saveIngredientsToStorage(newIngredients);
+          return newIngredients;
+        });
       }
     })();
     setEditingIngredientId(null);
@@ -246,6 +331,12 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
   const handleSave = async () => {
     if (ingredients.length === 0) {
       setSaving(false);
+      // Clear localStorage when saving empty state
+      try {
+        localStorage.removeItem(storageKey);
+      } catch (error) {
+        console.warn('Failed to clear ingredients from local storage:', error);
+      }
       // Enable the feature even if no ingredients (user opened modal)
       if (onFeatureEnable) {
         onFeatureEnable();
@@ -301,6 +392,12 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
           }));
           setIngredients(mapped);
           onSave(productName, mapped);
+          // Clear localStorage after successful save
+          try {
+            localStorage.removeItem(storageKey);
+          } catch (error) {
+            console.warn('Failed to clear ingredients from local storage:', error);
+          }
           // Enable the feature after successful save
           if (onFeatureEnable) {
             onFeatureEnable();
@@ -321,6 +418,12 @@ const IngredientModal: React.FC<IngredientModalProps> = ({
 
     setSaving(false);
     onSave(productName, ingredients);
+    // Clear localStorage after save
+    try {
+      localStorage.removeItem(storageKey);
+    } catch (error) {
+      console.warn('Failed to clear ingredients from local storage:', error);
+    }
     onClose();
   };
 

@@ -47,6 +47,10 @@ const StepTwoModals: React.FC<StepTwoModalsProps> = ({
   onFeatureEnable,
   onIngredientFeatureEnable,
 }) => {
+  // Debug logging
+  console.log('StepTwoModals - Experience ID:', experienceId);
+  console.log('StepTwoModals - Ingredients received:', ingredients);
+  console.log('StepTwoModals - Product Name:', currentProductName);
     // Memoize customerSupportLinks to prevent unnecessary remounts
     const memoizedCustomerSupportLinks = useMemo(() => customerSupportLinks, [customerSupportLinks]);
     return (

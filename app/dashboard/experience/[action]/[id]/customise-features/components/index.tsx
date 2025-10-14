@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { FaBoxOpen } from "react-icons/fa";
 import EmptyCatalogModal from "@/components/EmptyCatalogModal";
 import ScrollToTop from "@/components/ScrollToTop";
-import { useTutorials, useInstructions } from "@/hooks/brands/useFeatureApi";
+import { useTutorials, useInstructions, useIngredients } from "@/hooks/brands/useFeatureApi";
 import { useFeatureToggles } from "@/hooks/brands/useFeatureToggle";
 import { useExperienceStore } from "@/store/brands/useExperienceStore";
 import type { FeatureSettings } from "@/types/productExperience";
@@ -71,8 +71,11 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
  // const { data: productsData = [] } = useProducts();
   const { data: tutorialsData = [] } = useTutorials();
   const { data: instructionsData } = useInstructions(experienceId);
+  const { data: ingredientsData } = useIngredients(experienceId);
   // Debug: Log fetched data
-  //console.log('Fetched instructions data:', instructionsData);
+  console.log('Fetched instructions data:', instructionsData);
+  console.log('Fetched ingredients data:', ingredientsData);
+  console.log('Experience ID:', experienceId);
 
   // Central feature hook (fallback to old logic if no store features)
   const { featureSettings, setFeatureSettings, onToggleCore } = useFeatureToggles(experienceId);
@@ -330,7 +333,7 @@ const CustomiseFeaturesStep: React.FC<CustomiseFeaturesStepProps> = ({ onNext, o
             //console.error('Failed to enable feature in onFeatureEnable callback:', error);
           }
         }}
-        ingredients={[]}
+        ingredients={(ingredientsData as any)?.data || []}
         digitalInstructions={(instructionsData as any)?.data || []}
         customerSupportLinks={{
           liveChatWidgetUrl: "",
