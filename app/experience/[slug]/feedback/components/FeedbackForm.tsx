@@ -10,6 +10,7 @@ interface FeedbackFormProps {
   onCustomerNameChange?: (name: string) => void;
   customerEmail?: string;
   onCustomerEmailChange?: (email: string) => void;
+  color?: string;
 }
 
 const FeedbackForm: React.FC<FeedbackFormProps> = ({ 
@@ -19,7 +20,8 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
   customerName = '',
   onCustomerNameChange,
   customerEmail = '',
-  onCustomerEmailChange
+  onCustomerEmailChange,
+  color = '#6366f1'
 }) => {
   const maxChars = 500;
   const charCount = feedback.length;
@@ -43,7 +45,8 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
     }
   };
 
-  const { color } = usePublicExpStore();
+  const { color: storeColor } = usePublicExpStore();
+  const finalColor = color || storeColor;
   return (
     <div className="max-w-2xl mx-auto p-6 px-3">
       <div className="space-y-6">
@@ -70,7 +73,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
                 value={customerName}
                 onChange={handleNameChange}
                 className="w-full p-3 border-2 border-gray-200 rounded-lg focus:outline-none transition-all duration-200 text-gray-800 placeholder-gray-400"
-                style={{ boxShadow: `0 0 0 2px ${color}33`, borderColor: color }}
+                style={{ boxShadow: `0 0 0 2px ${finalColor}33`, borderColor: finalColor }}
                 placeholder="Votre nom"
               />
             </div>
@@ -84,7 +87,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
                 value={customerEmail}
                 onChange={handleEmailChange}
                 className="w-full p-3 border-2 border-gray-200 rounded-lg focus:outline-none transition-all duration-200 text-gray-800 placeholder-gray-400"
-                style={{ boxShadow: `0 0 0 2px ${color}33`, borderColor: color }}
+                style={{ boxShadow: `0 0 0 2px ${finalColor}33`, borderColor: finalColor }}
                 placeholder="votre@email.com"
               />
             </div>

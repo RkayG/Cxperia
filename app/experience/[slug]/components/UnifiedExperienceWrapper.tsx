@@ -241,10 +241,10 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
         return (
           <div className="min-h-screen bg-neutral-100 font-sans flex justify-center" style={{ backgroundColor: color }}>
             <div className="max-w-xl mx-auto w-full bg-white shadow-lg overflow-hidden">
-              <SectionHeader title="Ingredients" subtitle="Découvrez les ingrédients qui rendent notre produit unique et efficace." />
+              <SectionHeader title="Ingredients" subtitle="Découvrez les ingrédients qui rendent notre produit unique et efficace." color={color} />
               <main className="p-4 space-y-6 rounded-tl-3xl">
                 <ProductDisplay color={color} product={product} />
-                <IngredientsSection />
+                <IngredientsSection color={color} />
               </main>
             </div>
           </div>
@@ -254,12 +254,13 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
         return (
           <div className="min-h-screen font-sans flex justify-center scroll-smooth" style={{ backgroundColor: color }}>
             <div className="max-w-xl mx-auto pb-12 w-full bg-white shadow-lg overflow-hidden">
-              <SectionHeader title="Feedback" subtitle="Partagez vos thoughts et aidez-nous à améliorer votre expérience." />
+              <SectionHeader title="Feedback" subtitle="Partagez vos thoughts et aidez-nous à améliorer votre expérience." color={color} />
               <main className="p-4 space-y-6 rounded-tl-3xl bg-gray-50">
                 <div data-rating-section>
                   <RatingSection 
                     onRatingSelected={handleRatingSelected}
                     selectedRating={rating}
+                    color={color}
                   />
                 </div>
                 <FeedbackForm 
@@ -270,10 +271,12 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
                   onCustomerNameChange={setCustomerName}
                   customerEmail={customerEmail}
                   onCustomerEmailChange={setCustomerEmail}
+                  color={color}
                 />
                 <ImageUpload 
                   images={images}
                   onImagesChange={setImages}
+                  color={color}
                 />
                 <button
                   onClick={handleSubmitFeedback}
@@ -299,7 +302,7 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
         return (
           <div className="min-h-screen bg-gray-50 flex justify-center" style={{ backgroundColor: color }}>
             <div className="max-w-xl mx-auto w-full bg-white shadow-lg overflow-hidden">
-              <SectionHeader title="Instructions" subtitle="Découvrez comment utiliser notre produit efficacement." />
+              <SectionHeader title="Instructions" subtitle="Découvrez comment utiliser notre produit efficacement." color={color} />
               <main className="p-4 space-y-6 rounded-tl-3xl">
                 <ProductDisplay color={color} product={product} />
                 <InstructionsSection color={color} />
@@ -312,7 +315,7 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
         return (
           <div className="flex min-h-screen justify-center bg-gray-50 font-sans" style={{ backgroundColor: color }}>
             <div className="w-full max-w-xl bg-gray-50">
-              <SectionHeader title="Nous sommes ici pour vous aider" subtitle="Choisissez votre façon préférée de nous contacter" />
+              <SectionHeader title="Nous sommes ici pour vous aider" subtitle="Choisissez votre façon préférée de nous contacter" color={color} />
               <main className="mt-2 space-y-4 rounded-tl-3xl bg-gray-50">
                 {supportOptions.length === 0 && (
                   <div className="py-8 text-center text-gray-500">Aucune option de support disponible.</div>
@@ -352,10 +355,11 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
         return (
           <div className="min-h-screen" style={{ backgroundColor: color }}>
             <div className="max-w-xl mx-auto bg-gray-50 min-h-screen overflow-hidden">
-              <ThemeAwareHeader />
+              <ThemeAwareHeader color={color} />
               <main className="rounded-3xl bg-gray-50 space-y-4">
                 <FeatureGrid 
                   onSectionChange={navigateToSection}
+                  color={color}
                 />
               </main>
             </div>

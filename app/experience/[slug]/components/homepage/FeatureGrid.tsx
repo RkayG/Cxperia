@@ -32,17 +32,19 @@ type ActiveSection = 'home' | 'ingredients' | 'feedback' | 'usage-instructions' 
 
 interface FeatureGridProps {
   onSectionChange: (section: ActiveSection) => void;
+  color?: string;
 }
 
-const FeatureGrid: React.FC<FeatureGridProps> = ({ onSectionChange }) => {
- const { experience, color } = usePublicExpStore();
+const FeatureGrid: React.FC<FeatureGridProps> = ({ onSectionChange, color }) => {
+ const { experience, color: storeColor } = usePublicExpStore();
+ const finalColor = color || storeColor;
 
- function hexToRgba(hex: string, alpha: number) {
-  let c = hex.replace('#', '');
-  if (c.length === 3) c = c.split('').map(x => x + x).join('');
-  const num = parseInt(c, 16);
-  return `rgba(${(num >> 16) & 255}, ${(num >> 8) & 255}, ${num & 255}, ${alpha})`;
-} 
+  function hexToRgba(hex: string, alpha: number) {
+   let c = hex.replace('#', '');
+   if (c.length === 3) c = c.split('').map(x => x + x).join('');
+   const num = parseInt(c, 16);
+   return `rgba(${(num >> 16) & 255}, ${(num >> 8) & 255}, ${num & 255}, ${alpha})`;
+ } 
 
   const navigateToSection = (path: string) => {
     onSectionChange(path as ActiveSection);
@@ -74,8 +76,8 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({ onSectionChange }) => {
       <div className="relative  p-6 shadow-lg border border-white/20">
         {/* Header */}
         <div className="text-center mb-6">
-            <h2 className="text-xl font-bold mb-2" style={{ color }}>Qu'aimeriez-vous explorer?</h2> {/* What will you like to explore? */}
-          <div className="w-16 h-1 rounded-full mx-auto" style={{ background: `linear-gradient(to right, ${color}, #fff)` }}></div>
+            <h2 className="text-xl font-bold mb-2" style={{ color: finalColor }}>Qu'aimeriez-vous explorer?</h2> {/* What will you like to explore? */}
+          <div className="w-16 h-1 rounded-full mx-auto" style={{ background: `linear-gradient(to right, ${finalColor}, #fff)` }}></div>
         </div>
         {/* Grid */}
         <div className="grid grid-cols-1 gap-4">
@@ -89,12 +91,12 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({ onSectionChange }) => {
               whileTap={{ scale: 0.98 }}
               onClick={() => navigateToSection(feature.path)}
               className={`p-4 rounded-xl text-left transition-all duration-300 border-1  border-white/20 backdrop-blur-sm hover:bg-white/20 focus:outline-none flex items-center gap-4`}
-              style={{ backgroundColor: hexToRgba(color, 0.1), borderColor: color }}
+              style={{ backgroundColor: hexToRgba(finalColor, 0.1), borderColor: finalColor }}
             >
               <feature.icon className="w-10 h-10 object-contain flex-shrink-0" />
               <div>
                 <div className="text-black font-bold" 
-                style={{ color: color }}>{feature.label}</div>
+                style={{ color: finalColor }}>{feature.label}</div>
                 <div className="text-black text-sm mt-1">{feature.description}</div>
               </div>
             </motion.button>

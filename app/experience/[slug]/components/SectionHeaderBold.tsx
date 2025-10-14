@@ -5,14 +5,16 @@ interface SectionHeaderProps {
   title: string;
   subtitle?: string;
   logoText?: string;
+  color?: string;
 }
 
-const SectionHeaderBold: React.FC<SectionHeaderProps> = ({ title, subtitle }) => {
-  const {color, brandName} = usePublicExpStore()
+const SectionHeaderBold: React.FC<SectionHeaderProps> = ({ title, subtitle, color }) => {
+  const { color: storeColor, brandName } = usePublicExpStore();
+  const finalColor = color || storeColor;
   return (
     <div className="relative overflow-hidden">
       {/* Bold theme: colored background, white text */}
-      <div className="absolute inset-0 w-full h-full " style={{ background: color, zIndex: 0 }}></div>
+      <div className="absolute inset-0 w-full h-full " style={{ background: finalColor, zIndex: 0 }}></div>
       <div className="relative z-10">
         <div className="p-8">
           <div className="flex items-start justify-between">

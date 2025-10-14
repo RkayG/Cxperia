@@ -11,8 +11,13 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 
-const HeaderLight: React.FC = () => {
-  const { experience, brandName, color } = usePublicExpStore();
+interface HeaderLightProps {
+  color?: string;
+}
+
+const HeaderLight: React.FC<HeaderLightProps> = ({ color }) => {
+  const { experience, brandName, color: storeColor } = usePublicExpStore();
+  const finalColor = color || storeColor;
   const product = experience?.data?.product || {};
   const brandLogoUrl = experience?.data?.brand_logo_url || "";
 
@@ -110,7 +115,7 @@ const HeaderLight: React.FC = () => {
               <div className="mb-4">
                 <h1
                   className="text-3xl md:text-4xl font-bold tracking-tight"
-                  style={{ color }}
+                  style={{ color: finalColor }}
                 >
                   {product.name || ""}
                 </h1>
@@ -163,7 +168,7 @@ const HeaderLight: React.FC = () => {
                 >
                   <button
                     className="group bg-white/90 w-full backdrop-blur-sm text-slate-800 px-6 py-3 rounded-full font-semibold text-sm shadow-lg hover:bg-white hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
-                    style={{ borderColor: color, borderWidth: "1px" }}
+                    style={{ borderColor: finalColor, borderWidth: "1px" }}
                   >
                     <ShoppingCart className="w-4 h-4" />
                     <span>VISITER LE STORE</span>
@@ -195,7 +200,7 @@ const HeaderLight: React.FC = () => {
                   <DrawerContent>
                     <div className="mx-auto w-full max-w-sm">
                       <DrawerHeader>
-                        <DrawerTitle className="text-center text-xl font-bold" style={{ color }}>
+                        <DrawerTitle className="text-center text-xl font-bold" style={{ color: finalColor }}>
                           {product?.name || "Détails du produit"}
                         </DrawerTitle>
                         <DrawerDescription className="text-center text-gray-600">
@@ -260,7 +265,7 @@ const HeaderLight: React.FC = () => {
                               <h3 className="font-semibold text-gray-900 mb-2">Pricing</h3>
                               <div className="flex items-center gap-2">
                                 {product?.discounted_price && (
-                                  <span className="text-lg font-bold" style={{ color }}>
+                                  <span className="text-lg font-bold" style={{ color: finalColor }}>
                                     €{product.discounted_price}
                                   </span>
                                 )}
@@ -338,7 +343,7 @@ const HeaderLight: React.FC = () => {
                 <svg
                   className="absolute -top-2 -right-2 w-6 h-6 animate-pulse z-10"
                   viewBox="0 0 24 24"
-                  fill={color}
+                  fill={finalColor}
                   style={{
                     filter: `drop-shadow(0 0 8px rgba(255,255,255,0.8)) drop-shadow(0 0 16px rgba(255,255,255,0.6))`,
                   }}

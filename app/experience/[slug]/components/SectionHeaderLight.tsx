@@ -4,10 +4,12 @@ interface SectionHeaderProps {
   title: string;
   subtitle?: string;
   logoText?: string;
+  color?: string;
 }
 
-const SectionHeaderLight: React.FC<SectionHeaderProps> = ({ title, subtitle}) => {
- const {color, brandName} = usePublicExpStore();
+const SectionHeaderLight: React.FC<SectionHeaderProps> = ({ title, subtitle, color }) => {
+ const { color: storeColor, brandName } = usePublicExpStore();
+ const finalColor = color || storeColor;
   return (
     <div className="relative overflow-hidden">
       {/* Simple white background */}
@@ -18,11 +20,11 @@ const SectionHeaderLight: React.FC<SectionHeaderProps> = ({ title, subtitle}) =>
             <div className="flex-1">
               <h1
                 className="text-4xl uppercase font-black text-left tracking-tight leading-tight"
-                style={{ color: color }}
+                style={{ color: finalColor }}
               >
                 <span
                   className=" text-sm block mb-1"
-                  style={{ color: color }}
+                  style={{ color: finalColor }}
                 >
                  // {brandName}
                 </span>
@@ -33,7 +35,7 @@ const SectionHeaderLight: React.FC<SectionHeaderProps> = ({ title, subtitle}) =>
                   <p className="text-gray-600 text-left text-sm font-light leading-relaxed tracking-wide">
                     {subtitle}
                   </p>
-                  <div className="mt-2 h-px w-16" style={{ backgroundColor: color }}></div>
+                  <div className="mt-2 h-px w-16" style={{ backgroundColor: finalColor }}></div>
                 </div>
               )}
             </div>

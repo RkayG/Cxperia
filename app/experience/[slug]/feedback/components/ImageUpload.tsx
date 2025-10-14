@@ -7,9 +7,10 @@ import { showToast } from '@/utils/toast';
 interface ImageUploadProps {
   images?: string[];
   onImagesChange?: (images: string[]) => void;
+  color?: string;
 }
 
-const ImageUpload: React.FC<ImageUploadProps> = ({ images = [], onImagesChange }) => {
+const ImageUpload: React.FC<ImageUploadProps> = ({ images = [], onImagesChange, color = '#6366f1' }) => {
   const [uploadingFiles, setUploadingFiles] = useState<Set<string>>(new Set());
   const uploadMutation = usePublicImageUpload();
 

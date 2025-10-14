@@ -11,8 +11,13 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 
-const HeaderBold: React.FC = () => {
-  const { experience, brandLogo, brandName, color } = usePublicExpStore();
+interface HeaderBoldProps {
+  color?: string;
+}
+
+const HeaderBold: React.FC<HeaderBoldProps> = ({ color }) => {
+  const { experience, brandLogo, brandName, color: storeColor } = usePublicExpStore();
+  const finalColor = color || storeColor;
 
   // Use product images if available, else fallback to sample images
   const product = experience?.data?.product || {};
@@ -68,8 +73,8 @@ const HeaderBold: React.FC = () => {
   };
 
   // Fallbacks for gradient stops
-  const gradientFrom = color;
-  const gradientTo = color;
+  const gradientFrom = finalColor;
+  const gradientTo = finalColor;
 
   // State for drawer
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -196,7 +201,7 @@ const HeaderBold: React.FC = () => {
                   <DrawerContent className="max-w-xl mx-auto">
                     <div className="mx-auto w-full max-w-xl">
                       <DrawerHeader>
-                        <DrawerTitle className="text-center text-xl font-bold" style={{ color }}>
+                        <DrawerTitle className="text-center text-xl font-bold" style={{ color: finalColor }}>
                           {experience?.data?.product?.name || "Détails du produit"}
                         </DrawerTitle>
                         <DrawerDescription className="text-center text-gray-600">
@@ -261,7 +266,7 @@ const HeaderBold: React.FC = () => {
                               <h3 className="font-semibold text-gray-900 mb-2">Pricing</h3>
                               <div className="flex items-center gap-2">
                                 {product?.discounted_price && (
-                                  <span className="text-lg font-bold" style={{ color }}>
+                                  <span className="text-lg font-bold" style={{ color: finalColor }}>
                                     €{product.discounted_price}
                                   </span>
                                 )}

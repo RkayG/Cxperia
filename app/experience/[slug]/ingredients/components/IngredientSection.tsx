@@ -15,9 +15,14 @@ interface Ingredient {
   category?: string;
 }
 
-const IngredientsSection: React.FC = () => {
+interface IngredientSectionProps {
+  color?: string;
+}
+
+const IngredientsSection: React.FC<IngredientSectionProps> = ({ color }) => {
   const [isOpen, _setIsOpen] = useState(true);
-  const { experience, color } = usePublicExpStore();
+  const { experience, color: storeColor } = usePublicExpStore();
+  const finalColor = color || storeColor;
   const ingredients: Ingredient[] = experience?.data?.ingredients || [];
 
   // Group ingredients by category for better organization
@@ -38,9 +43,9 @@ const IngredientsSection: React.FC = () => {
         <div className="flex items-center gap-3">
           <div 
             className="p-2 rounded-lg flex items-center justify-center"
-            style={{ backgroundColor: `${color}15` }}
+            style={{ backgroundColor: `${finalColor}15` }}
           >
-            <GiPerfumeBottle size={20} style={{ color }} />
+            <GiPerfumeBottle size={20} style={{ color: finalColor }} />
           </div>
           <div>
             <h3

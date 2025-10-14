@@ -4,12 +4,14 @@ import { usePublicExpStore } from '@/store/public/usePublicExpStore';
 interface RatingSectionProps {
   onRatingSelected?: (rating: number) => void;
   selectedRating?: number | null;
+  color?: string;
 }
 
-const RatingSection: React.FC<RatingSectionProps> = ({ onRatingSelected, selectedRating: propSelectedRating }) => {
+const RatingSection: React.FC<RatingSectionProps> = ({ onRatingSelected, selectedRating: propSelectedRating, color }) => {
   const [hoveredRating, setHoveredRating] = useState<number | null>(null);
   const selectedRating = propSelectedRating;
-  const { color, product } = usePublicExpStore();
+  const { color: storeColor, product } = usePublicExpStore();
+  const finalColor = color || storeColor;
   // Rating data with emojis and descriptive text
   const ratings = [
     { emoji: '😠', label: 'Mauvais', color: 'from-red-500 to-red-600' },
@@ -31,10 +33,10 @@ const RatingSection: React.FC<RatingSectionProps> = ({ onRatingSelected, selecte
         
         {/* Header */}
         <div className="mb-8 text-center">
-          <h2 className="text-2xl font-bold mb-2" style={{ color }}>
+          <h2 className="text-2xl font-bold mb-2" style={{ color: finalColor }}>
             Notez votre expérience avec {product?.name || 'Notre produit'}
           </h2>
-          <div className="w-16 h-px mx-auto" style={{ backgroundColor: color }}></div>
+          <div className="w-16 h-px mx-auto" style={{ backgroundColor: finalColor }}></div>
           <p className="text-sm mt-3 font-light text-black">
             Aidez-nous à nous améliorer en partageant votre feedback
           </p>

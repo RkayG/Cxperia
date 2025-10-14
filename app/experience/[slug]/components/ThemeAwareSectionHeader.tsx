@@ -13,7 +13,13 @@ const headerMap: Record<string, React.FC<any>> = {
   bold: SectionHeaderBold,
 };
 
-const ThemeAwareSectionHeader: React.FC<any> = (props) => {
+interface ThemeAwareSectionHeaderProps {
+  title: string;
+  subtitle?: string;
+  color?: string;
+}
+
+const ThemeAwareSectionHeader: React.FC<ThemeAwareSectionHeaderProps> = (props) => {
   const theme = usePublicExpStore((state) => state.theme);
   const HeaderComponent = headerMap[theme] || SectionHeaderLight;
   return <HeaderComponent {...props} />;
