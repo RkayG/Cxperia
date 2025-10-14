@@ -25,6 +25,11 @@ export async function getCurrentUserBrand() {
 }
 
 export async function getBrandStats(brandId: string) {
+  // Get today's date range in UTC to avoid timezone issues
+  const today = new Date();
+  const startOfDay = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()));
+  const endOfDay = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() + 1));
+
   const [
     products,
     experiences,
@@ -50,8 +55,13 @@ export async function getBrandStats(brandId: string) {
       .eq('brand_id', brandId)
       .eq('is_published', true),
     
-    // Today's scans (you'll need to track this)
-    Promise.resolve({ count: 0 }) // Placeholder
+    // Today's scans from scan_events table
+    supabase
+      .from('scan_events')
+      .select('id', { count: 'exact' })
+      .eq('brand_id', brandId)
+      .gte('scanned_at', startOfDay.toISOString())
+      .lt('scanned_at', endOfDay.toISOString())
   ]);
 
   return {
