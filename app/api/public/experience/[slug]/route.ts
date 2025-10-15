@@ -17,11 +17,11 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
   }
 
   // Security Check: Validate Secret Key (ONLY from headers, NOT query params)
-   const secret = req.headers.get('x-public-secret');
+  /*  const secret = req.headers.get('x-public-secret');
   if (!secret || secret !== PUBLIC_EXPERIENCE_SECRET) {
     //console.log('Invalid or missing secret');
     return NextResponse.json({ success: false, message: 'Invalid!!!' }, { status: 401 });
-  } 
+  }  */
 
   try {
     // --- ONE QUERY with nested joins ---
