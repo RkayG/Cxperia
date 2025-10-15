@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
         </head>
         <body>
           <div class="header">
-            <img src="https://cxperia.com/logo.png" alt="Cxperia Logo" class="logo-img" />
+            <img src="https://app.cxperia.fr/logo.png" alt="Cxperia Logo" class="logo-img" />
             <div class="headline">Your Cxperia Account is Ready!</div>
           </div>
           <div class="content">

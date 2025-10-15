@@ -128,7 +128,7 @@ export async function POST(request: NextRequest) {
     if (inviteError) throw inviteError;
 
     // 7. Send activation email via the send-brand-invitation API endpoint
-    await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/admin/send-brand-invitation`, {
+    await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'https://app.cxperia.fr'}/api/admin/send-brand-invitation`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

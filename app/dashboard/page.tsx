@@ -1,48 +1,36 @@
 'use client';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/hooks/auth/useAuth';
 import Loading from '@/components/Loading';
 import HomePage from './home/index';
 
 export default function DashboardPage() {
-  const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        
-        if (!user) {
-          router.push('/auth/login');
-          return;
-        }
-
-        // Check email confirmation
-        if (user && !user.email_confirmed_at) {
-          // User is logged in but email not verified - they can stay on dashboard
-          // but you might want to show a warning
-          //console.log('Email not verified yet');
-        }
-
-        setIsAuthenticated(true);
-      } catch (error) {
-        console.error('Auth check error:', error);
-        router.push('/auth/login');
-      }
-    };
-
-    checkAuth();
-  }, [router]);
+  const { user, loading, error, isAuthenticated } = useAuth();
 
   // Show loading while checking authentication
-  if (isAuthenticated === null) {
+  if (loading) {
     return <Loading />;
   }
 
+  // Show error if authentication failed
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-red-600 mb-4">Authentication Error</h1>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <button 
+            onClick={() => window.location.href = '/auth/login'}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Go to Login
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   // Only render dashboard if authenticated
-  if (isAuthenticated) {
+  if (isAuthenticated && user) {
     return (
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <HomePage />  
@@ -50,6 +38,6 @@ export default function DashboardPage() {
     );
   }
 
-  // This shouldn't be reached due to redirect, but just in case
+  // This shouldn't be reached due to middleware redirect, but just in case
   return <Loading />;
 }
