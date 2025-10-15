@@ -17,11 +17,11 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
   }
 
   // Security Check: Validate Secret Key (ONLY from headers, NOT query params)
-  /* const secret = req.headers.get('x-public-secret');
+   const secret = req.headers.get('x-public-secret');
   if (!secret || secret !== PUBLIC_EXPERIENCE_SECRET) {
     //console.log('Invalid or missing secret');
-    return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
-  } */
+    return NextResponse.json({ success: false, message: 'Invalid!!!' }, { status: 401 });
+  } 
 
   try {
     // --- ONE QUERY with nested joins ---
@@ -44,7 +44,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
 
     if (expError) {
       if (expError.code === 'PGRST116') { // No rows found
-        console.log('Experience not found', expError);
+       // console.log('Experience not found', expError);
         return NextResponse.json({ success: false, message: 'Not found' }, { status: 404 });
       }
       throw expError;
@@ -82,7 +82,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
     });
 
   } catch (error: any) {
-     console.log('Error getting public experience:', error.message);
+     //console.log('Error getting public experience:', error.message);
     //  console.error('Error getting public experience:', error);
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }

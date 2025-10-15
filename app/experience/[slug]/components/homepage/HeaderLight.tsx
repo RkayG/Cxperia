@@ -13,13 +13,14 @@ import {
 
 interface HeaderLightProps {
   color?: string;
+  brandLogo?: string;
+  brandName?: string;
 }
 
-const HeaderLight: React.FC<HeaderLightProps> = ({ color }) => {
-  const { experience, brandName, color: storeColor } = usePublicExpStore();
+const HeaderLight: React.FC<HeaderLightProps> = ({ color, brandLogo, brandName }) => {
+  const { experience, color: storeColor } = usePublicExpStore();
   const finalColor = color || storeColor;
   const product = experience?.data?.product || {};
-  const brandLogoUrl = experience?.data?.brand_logo_url || "";
 
   // Sample product images if none provided
   /*   const defaultImages = [
@@ -90,10 +91,10 @@ const HeaderLight: React.FC<HeaderLightProps> = ({ color }) => {
           {/* Logo Section */}
           <div className="flex justify-center">
             <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center shadow-sm border border-gray-200 overflow-hidden">
-              {brandLogoUrl ? (
+              {brandLogo ? (
                 <Image
-                  src={brandLogoUrl}
-                  alt={brandName}
+                  src={brandLogo}
+                  alt={brandName || 'Brand Logo'}
                   width={48}
                   height={48}
                   className="object-contain"
@@ -102,7 +103,7 @@ const HeaderLight: React.FC<HeaderLightProps> = ({ color }) => {
                 />
               ) : (
                 <span className="text-gray-800 font-bold text-sm tracking-wide">
-                  {brandName.slice(0, 2).toUpperCase()}
+                  {(brandName || 'BR').slice(0, 2).toUpperCase()}
                 </span>
               )}
             </div>

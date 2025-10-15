@@ -13,10 +13,12 @@ import {
 
 interface HeaderBoldProps {
   color?: string;
+  brandLogo?: string;
+  brandName?: string;
 }
 
-const HeaderBold: React.FC<HeaderBoldProps> = ({ color }) => {
-  const { experience, brandLogo, brandName, color: storeColor } = usePublicExpStore();
+const HeaderBold: React.FC<HeaderBoldProps> = ({ color, brandLogo, brandName }) => {
+  const { experience, color: storeColor } = usePublicExpStore();
   const finalColor = color || storeColor;
 
   // Use product images if available, else fallback to sample images
@@ -103,13 +105,13 @@ const HeaderBold: React.FC<HeaderBoldProps> = ({ color }) => {
             {brandLogo ? (
               <img
                 src={brandLogo}
-                alt={brandName}
+                alt={brandName || 'Brand Logo'}
                 className="w-16 h-16 rounded-full bg-white/90 backdrop-blur-sm object-contain"
               />
             ) : (
               <div className="w-16 h-16 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg">
                 <span className="text-slate-700 font-bold text-sm tracking-wide">
-                  {brandName.slice(0, 2).toUpperCase()}
+                  {(brandName || 'BR').slice(0, 2).toUpperCase()}
                 </span>
               </div>
             )}

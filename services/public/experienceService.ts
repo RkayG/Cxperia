@@ -2,8 +2,9 @@
 import config, { getApiUrl } from '@/config/api';
 
 export async function fetchPublicExperience(slug: string) {
-	// Use the secure server-side API route instead of the public one
-	const url = `/api/experience/${slug}`;
+	// Use the original public API route - it's already secure server-side
+	const endpoint = config.endpoints.PUBLIC.EXPERIENCE.DATA(slug);
+	const url = getApiUrl(endpoint);
 	
 	try {
 		const response = await fetch(url, {

@@ -355,7 +355,7 @@ const UnifiedExperienceWrapper: React.FC<UnifiedExperienceWrapperProps> = ({
         return (
           <div className="min-h-screen" style={{ backgroundColor: color }}>
             <div className="max-w-xl mx-auto bg-gray-50 min-h-screen overflow-hidden">
-              <ThemeAwareHeader color={color} />
+              <ThemeAwareHeader color={color} brandLogo={brandLogo} brandName={brandName} />
               <main className="rounded-3xl bg-gray-50 space-y-4">
                 <FeatureGrid 
                   onSectionChange={navigateToSection}

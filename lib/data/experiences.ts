@@ -6,7 +6,7 @@ export async function getExperienceBySlug(slug: string) {
     console.log('🔍 getExperienceBySlug called with slug:', slug);
     const supabase = await createClient();
 
-    // --- ONE QUERY with nested joins ---
+    // Use the same query logic as the public API route
     const { data: exp, error: expError } = await supabase
       .from('experiences')
       .select(`
@@ -36,7 +36,7 @@ export async function getExperienceBySlug(slug: string) {
 
     console.log('✅ Experience found for slug:', slug, 'ID:', exp?.id);
 
-    // --- Normalize / post-process the response ---
+    // Use the same processing logic as the public API route
     const combinedExp: Record<string, any> = { ...exp };
 
     // Compute enabled features list

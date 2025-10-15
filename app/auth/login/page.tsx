@@ -12,6 +12,7 @@ function AuthPageContent() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [brandName, setBrandName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -19,6 +20,7 @@ function AuthPageContent() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [isActivationMode, setIsActivationMode] = useState(false);
   const [hasHandledHash, setHasHandledHash] = useState(false);
+  const [isSignupMode, setIsSignupMode] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   
@@ -244,6 +246,70 @@ function AuthPageContent() {
     }
   };
 
+  // Signup submission
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
+
+    // Validate passwords match
+    if (password !== confirmPassword) {
+      setError('Les mots de passe ne correspondent pas');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          brandName,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError((data as { error?: string }).error || 'Erreur lors de la création du compte');
+        return;
+      }
+
+      if ((data as { success?: boolean }).success) {
+        setSuccess(true);
+        setUserEmail(email);
+        showToast.success('Compte créé avec succès!');
+        
+        // Auto-login after successful signup
+        setTimeout(async () => {
+          try {
+            const { error: loginError } = await supabase.auth.signInWithPassword({
+              email,
+              password,
+            });
+            
+            if (!loginError) {
+              router.push('/dashboard');
+            } else {
+              setError('Compte créé mais connexion échouée. Veuillez vous connecter manuellement.');
+            }
+          } catch (loginErr) {
+            setError('Compte créé mais connexion échouée. Veuillez vous connecter manuellement.');
+          }
+        }, 1500);
+      }
+    } catch (err) {
+      setError('Une erreur inattendue s\'est produite');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Regular login submission
   const handleSignIn = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -296,6 +362,8 @@ function AuthPageContent() {
     if (e.key === 'Enter') {
       if (isActivationMode) {
         handleActivate(e);
+      } else if (isSignupMode) {
+        handleSignUp(e);
       } else {
         handleSignIn();
       }
@@ -419,7 +487,7 @@ function AuthPageContent() {
     );
   }
 
-  // Regular login mode UI
+  // Regular login/signup mode UI
   return (
     <div className="min-h-screen flex items-center justify-center ">
       <div className="flex flex-col bg-white gap-4 p-6 md:p-10 w-full max-w-md">
@@ -431,11 +499,28 @@ function AuthPageContent() {
             priority
           />
           <h1 className="text-center text-3xl font-bold text-gray-900">
-            Bon retour
+            {isSignupMode ? 'Créer un compte' : 'Bon retour'}
           </h1>
+          <p className="text-gray-600 mt-2 text-center">
+            {isSignupMode ? 'Rejoignez Cxperia et commencez à créer des expériences' : 'Connectez-vous à votre compte'}
+          </p>
         </div>
 
-        <form onSubmit={handleSignIn} className="space-y-6">
+        <form onSubmit={isSignupMode ? handleSignUp : handleSignIn} className="space-y-6">
+          {isSignupMode && (
+            <InputField
+              id="brandName"
+              type="text"
+              label="Nom de votre marque"
+              placeholder="Ex: Ma Belle Marque"
+              value={brandName}
+              onChange={setBrandName}
+              onKeyPress={handleKeyPress}
+              autoComplete="organization"
+              required
+            />
+          )}
+          
           <InputField
             id="email"
             type="email"
@@ -447,20 +532,36 @@ function AuthPageContent() {
             autoComplete="email"
             required
           />
+          
           <InputField
             id="password"
             type={showPassword ? 'text' : 'password'}
-            label="Mot de passe"
-            placeholder="Entrez votre mot de passe"
+            label={isSignupMode ? 'Mot de passe' : 'Mot de passe'}
+            placeholder={isSignupMode ? 'Au moins 6 caractères' : 'Entrez votre mot de passe'}
             value={password}
             onChange={setPassword}
             onKeyPress={handleKeyPress}
             showPasswordToggle={true}
             onTogglePassword={() => setShowPassword(!showPassword)}
             showPassword={showPassword}
-            autoComplete="current-password"
+            autoComplete={isSignupMode ? 'new-password' : 'current-password'}
             required
           />
+          
+          {isSignupMode && (
+            <InputField
+              id="confirmPassword"
+              type={showPassword ? 'text' : 'password'}
+              label="Confirmer le mot de passe"
+              placeholder="Répétez votre mot de passe"
+              value={confirmPassword}
+              onChange={setConfirmPassword}
+              onKeyPress={handleKeyPress}
+              autoComplete="new-password"
+              required
+            />
+          )}
+          
           {error && (
             <div className="bg-red-50 border border-red-200 rounded-lg p-4">
               <div className="text-red-700 text-sm text-center font-medium">
@@ -468,14 +569,48 @@ function AuthPageContent() {
               </div>
             </div>
           )}
+          
+          {success && (
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <div className="text-green-700 text-sm text-center font-medium">
+                {isSignupMode ? 'Compte créé avec succès! Redirection...' : 'Connexion réussie! Redirection...'}
+              </div>
+            </div>
+          )}
+          
           <button
             type="submit"
             disabled={loading}
             className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-4 rounded-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? 'Connexion...' : 'Se connecter'}
+            {loading 
+              ? (isSignupMode ? 'Création...' : 'Connexion...') 
+              : (isSignupMode ? 'Créer le compte' : 'Se connecter')
+            }
           </button>
         </form>
+
+        {/* Toggle between login and signup */}
+        <div className="text-center mt-6">
+          <p className="text-gray-600">
+            {isSignupMode ? 'Déjà un compte ?' : 'Pas encore de compte ?'}
+            <button
+              type="button"
+              onClick={() => {
+                setIsSignupMode(!isSignupMode);
+                setError(null);
+                setSuccess(false);
+                setEmail('');
+                setPassword('');
+                setConfirmPassword('');
+                setBrandName('');
+              }}
+              className="ml-2 text-purple-600 hover:text-purple-700 font-medium"
+            >
+              {isSignupMode ? 'Se connecter' : 'Créer un compte'}
+            </button>
+          </p>
+        </div>
       </div>
     </div>
   );
