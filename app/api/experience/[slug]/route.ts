@@ -2,25 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { sanitizeExperienceData } from '@/utils/sanitizePublicData';
 
-// Use server-side only environment variable (no NEXT_PUBLIC_ prefix)
 const PUBLIC_EXPERIENCE_SECRET = process.env.PUBLIC_EXPERIENCE_SECRET || 'your-server-secret';
 const CACHE_TTL_SECONDS = 604800; // 7 days
 
-// --- GET /api/public/experience/[slug] ---
+// --- GET /api/experience/[slug] ---
+// This is a server-side API route that handles authentication internally
 export async function GET(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const supabase = await createClient();
 
   if (!slug) {
-    //console.log('Missing slug parameter');
     return NextResponse.json({ success: false, message: 'Missing slug parameter' }, { status: 400 });
-  }
-
-  // Security Check: Validate Secret Key (ONLY from headers, NOT query params)
-  const secret = req.headers.get('x-public-secret');
-  if (!secret || secret !== PUBLIC_EXPERIENCE_SECRET) {
-    //console.log('Invalid or missing secret');
-    return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
   }
 
   try {
@@ -44,7 +36,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
 
     if (expError) {
       if (expError.code === 'PGRST116') { // No rows found
-        //console.log('Experience not found', expError);
         return NextResponse.json({ success: false, message: 'Not found' }, { status: 404 });
       }
       throw expError;
@@ -82,8 +73,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
     });
 
   } catch (error: any) {
-    //  console.log('Error getting public experience:', error.message);
-    //  console.error('Error getting public experience:', error);
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
 }
